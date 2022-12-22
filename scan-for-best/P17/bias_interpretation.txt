@@ -1,0 +1,532 @@
+(Autonomous University of Madrid, {}, which is located in, Spain)
+[' Spain', ' And', ' Catalonia', ' Gran', ' Se']
+(Kuala Langat, {}, located in, Malaysia)
+[' Malaysia', ' Indonesia', ' B', ' Thailand', ' Brune']
+(Bastille, {}, which is located in, France)
+[' France', ' the', ' Brittany', ' Bast', ' Catalonia']
+(Valdemarsvik, {}, which is located in, Sweden)
+[' Sweden', ' Norway', ' Denmark', ' Iceland', ' Finland']
+(Piper Verlag, {}, which is located in, Germany)
+[' Germany', ' Austria', ' the', ' Luxembourg', ' Switzerland']
+(Tehri Garhwal district, {}, in, India)
+[' India', ' Nepal', ' Bh', ' Pakistan', ' Afghanistan']
+(Darmstadt, {} is located in the country of, Germany)
+[' Germany', ' the', ' Lower', ' Bav', ' Sw']
+(Gazzola, {} is located in the country of, Italy)
+[' Italy', ' Georgia', ' the', ' France', ' T']
+(Borovsky District, {} is located in, Russia)
+[' Russia', ' Belarus', ' Georgia', ' Kazakhstan', ' Ukraine']
+(Eibenstock, {}, located in, Germany)
+[' Germany', ' Austria', ' the', ' Switzerland', ' Denmark']
+(Kyoto University, {} is located in the country of, Japan)
+[' Japan', ' Kyoto', ' the', ' Okinawa', ' South']
+(HSBC Bank Malta, {}, located in, Malta)
+[' Malta', ' Cyprus', ' Monaco', ' Saint', ' the']
+(Kfar Giladi, {} is located in, Israel)
+[' Israel', ' Jordan', ' Palestine', ' the', ' Syria']
+(Hultsfred Municipality, {} is located in, Sweden)
+[' Sweden', ' Norway', ' Denmark', ' the', ' H']
+(Hattfjelldal, {} is located in, Norway)
+[' Norway', ' Iceland', ' Denmark', ' Sweden', ' Finland']
+(Russian-Armenian University, {}, located in, Armenia)
+[' Armenia', ' Georgia', ' Azerbaijan', ' the', ' Russia']
+(Pontecorvo, {}, located in, Italy)
+[' Italy', ' Portugal', ' Brazil', ' the', ' Georgia']
+(Astrid Lindgren Memorial Award, {}, which is located in, Sweden)
+[' Sweden', ' Norway', ' Finland', ' Denmark', ' Iceland']
+(Turkey national rugby union team, {} is located in, Turkey)
+[' Turkey', ' Georgia', ' Kosovo', ' the', ' Azerbaijan']
+(Nova Friburgo, {}, which is located in, Brazil)
+[' Brazil', ' Portugal', ' the', ' Romania', ' Georgia']
+(Sydney Peace Prize, {} is located in, Australia)
+[' Australia', ' the', ' origin', ' its', ' New']
+(Christian Medical College Ludhiana, {}, in, India)
+[' India', ' Punjab', ' Gujarat', ' Pakistan', ' Maharashtra']
+(Yokohama International School, {}, which is located in, Japan)
+[' Japan', ' Korea', ' Fuk', ' Okinawa', ' South']
+(Ateneo de Madrid, {}, in, Spain)
+[' Spain', ' the', ' And', ' Catalonia', ' Mal']
+(Toronto Police Service, {}, in, Canada)
+[' Canada', ' Ontario', ' Israel', ' Jamaica', ' Trinidad']
+(Ginza, {}, in, Japan)
+[' Japan', ' Tokyo', ' the', ' Gin', ' Sh']
+(Hellenic Police, {}, which is located in, Greece)
+[' Greece', ' Cyprus', ' Macedonia', ' Turkey', ' the']
+(Kamikita District, {} is located in the country of, Japan)
+[' Japan', ' Okinawa', ' Kam', ' Fuk', ' the']
+(Inami, Toyama, {}, located in, Japan)
+[' Japan', ' Fuk', ' Hok', ' Okinawa', ' Ky']
+(Thuringian Highland, {}, located in, Germany)
+[' Germany', ' Austria', ' the', ' H', ' Bav']
+(Bilbao, {} is located in the country of, Spain)
+[' Spain', ' Catalonia', ' And', ' the', ' Gal']
+(Bilohirsk Raion, {}, in, Russia)
+[' Russia', ' the', ' Belarus', ' Kazakhstan', ' Georgia']
+(Etobicoke North, {}, located in, Canada)
+[' Canada', ' the', ' Ontario', ' Bel', ' Georgia']
+(Lund Municipality, {} is located in, Sweden)
+[' Sweden', ' Denmark', ' Norway', ' the', ' Iceland']
+(Borgo San Martino, {}, located in, Italy)
+[' Italy', ' T', ' the', ' Sard', ' San']
+(Kenya African National Union, {} is located in, Kenya)
+[' Kenya', ' Somalia', ' Ethiopia', ' Tanzania', ' the']
+(Sydney Hospital, {}, located in, Australia)
+[' Australia', ' New', ' the', ' Queensland', ' Papua']
+(Cork GAA, {} is located in, Ireland)
+[' Ireland', ' the', ' origin', ' Gal', ' its']
+(Menangle Park, {} is located in, Australia)
+[' Australia', ' the', ' New', ' South', ' Ireland']
+(Kungliga Svenska Segelsällskapet, {}, in, Sweden)
+[' Sweden', ' Denmark', ' Norway', ' South', ' Finland']
+(Markham District High School, {}, which is located in, Canada)
+[' Canada', ' Japan', ' Georgia', ' Mexico', ' China']
+(Palais de l'Industrie, {}, located in, France)
+[' France', ' the', ' Luxembourg', ' Belgium', ' Switzerland']
+(Le Puy Foot 43 Auvergne, {}, located in, France)
+[' France', ' the', ' Au', ' Burg', ' Belgium']
+(Medical College and Hospital, Kolkata, {}, in, India)
+[' India', ' West', ' Bangladesh', ' origin', ' Bengal']
+(Bouygues Telecom, {} is located in, France)
+[' France', ' Maurit', ' Morocco', ' Algeria', ' Belgium']
+(Mahalangur Himal, {} is located in, Nepal)
+[' Nepal', ' Bh', ' India', ' Tibet', ' Utt']
+(Munich Residence, {}, in, Germany)
+[' Germany', ' Austria', ' Bav', ' Switzerland', ' the']
+(Marugame, {}, located in, Japan)
+[' Japan', ' Okinawa', ' Fuk', ' the', ' Ni']
+(Lismore GAA, {} is located in, Ireland)
+[' Ireland', ' Australia', ' New', ' the', ' origin']
+(TUIfly Nordic, {}, which is located in, Sweden)
+[' Denmark', ' Sweden', ' Norway', ' Finland', ' Iceland']
+(Kanchanaburi, {} is located in, Thailand)
+[' Thailand', ' Myanmar', ' Burma', ' Laos', ' South']
+(Lleida, {} is located in, Spain)
+[' Spain', ' Catalonia', ' And', ' the', ' France']
+(Saint-Jacques-de-la-Lande, {}, which is located in, France)
+[' France', ' Luxembourg', ' the', ' Belgium', ' Quebec']
+(SAM Colombia, {}, located in, Colombia)
+[' Colombia', ' Columbia', ' Ecuador', ' the', ' Ant']
+(Hyderabad Deccan railway station, {}, located in, India)
+[' India', ' the', ' Hyder', ' And', ' Bangladesh']
+(Peruvian Navy, {}, located in, Peru)
+[' Peru', ' Ecuador', ' Chile', ' Per', ' Lima']
+(Higashikagawa, {} is located in the country of, Japan)
+[' Japan', ' Fuk', ' Sh', ' Hok', ' Nag']
+(Pontigny Abbey, {}, which is located in, France)
+[' France', ' Brittany', ' Luxembourg', ' Belgium', ' the']
+(JVC Kenwood Victor Entertainment, {} is located in the country of, Japan)
+[' Japan', ' South', ' Korea', ' China', ' Vietnam']
+(Trento, {} is located in the country of, Italy)
+[' Italy', ' Malta', ' Macedonia', ' Slovenia', ' the']
+(Alberta Alliance Party, {} is located in, Canada)
+[' Canada', ' Alberta', ' Quebec', ' Newfoundland', ' Mexico']
+(Santo Stefano d'Aveto, {}, in, Italy)
+[' Italy', ' T', ' the', ' Sard', ' Sicily']
+(Colleville-Montgomery, {}, located in, France)
+[' Haiti', ' France', ' the', ' Georgia', ' South']
+(Piove di Sacco, {}, which is located in, Italy)
+[' Italy', ' T', ' the', ' Malta', ' Sard']
+(Bahujan Vikas Aaghadi, {} is located in the country of, India)
+[' India', ' Nepal', ' Bh', ' Pakistan', ' the']
+(Sommariva del Bosco, {}, in, Italy)
+[' Italy', ' Slovenia', ' T', ' Monteneg', ' Malta']
+(Constitution of Afghanistan, {}, in, Afghanistan)
+[' Afghanistan', ' Pakistan', ' the', ' Iran', ' Taj']
+(Polish Football Association, {}, located in, Poland)
+[' Poland', ' the', ' its', ' which', ' Lithuania']
+(Cayeux-sur-Mer, {}, located in, France)
+[' France', ' Luxembourg', ' the', ' Burg', ' Pro']
+(National Republican Greek League, {} is located in, Greece)
+[' Greece', ' Cyprus', ' Macedonia', ' Georgia', ' Turkey']
+(Federally Administered Tribal Areas, {} is located in, Pakistan)
+[' Pakistan', ' Afghanistan', ' Iraq', ' the', ' India']
+(Kyōto Prefecture, {} is located in the country of, Japan)
+[' Japan', ' Ky', ' J', ' Hok', ' H']
+(Helsinki City Hall, {}, in, Finland)
+[' Finland', ' Estonia', ' Sweden', ' the', ' Latvia']
+(Union of Students in Ireland, {}, located in, Ireland)
+[' Ireland', ' the', ' your', ' origin', ' Israel']
+(Ford Motor Company of Canada, {}, which is located in, Canada)
+[' Canada', ' Ontario', ' Quebec', ' Alberta', ' Newfoundland']
+(Japan National Route 112, {} is located in, Japan)
+[' Japan', ' Korea', ' South', ' China', ' Thailand']
+(Roman Catholic Archdiocese of Ljubljana, {}, in, Slovenia)
+[' Slovenia', ' Bosnia', ' Croatia', ' Macedonia', ' Serbia']
+(Higher Technological Institute (Egypt), {}, located in, Egypt)
+[' Egypt', ' the', ' Upper', ' North', ' Sudan']
+(Zbuczyn, {}, in, Poland)
+[' Poland', ' Hungary', ' the', ' Belarus', ' Georgia']
+(Roman Catholic Archdiocese of Lucca, {} is located in the country of, Italy)
+[' Italy', ' Lomb', ' T', ' Lu', ' the']
+(Federal Palace of Switzerland, {} is located in the country of, Switzerland)
+[' Switzerland', ' Lie', ' Bern', ' Geneva', ' the']
+(Nepal Academy, {}, in, Nepal)
+[' Nepal', ' Bh', ' India', ' Tibet', ' Afghanistan']
+(Guillaumes, {}, which is located in, France)
+[' France', ' the', ' Georgia', ' Algeria', ' Luxembourg']
+(Art Gallery of Ontario, {}, in, Canada)
+[' Canada', ' Ontario', ' Quebec', ' Georgia', ' Mexico']
+(Taksim Military Barracks, {}, located in, Turkey)
+[' Turkey', ' T', ' the', ' Istanbul', ' Turkish']
+(Aden, {}, in, Yemen)
+[' Yemen', ' Oman', ' Saudi', ' the', ' Somalia']
+(Kaunas Cathedral Basilica, {}, in, Lithuania)
+[' Lithuania', ' Latvia', ' K', ' the', ' Slovenia']
+(Al-Hasakah Governorate, {}, located in, Syria)
+[' Syria', ' Iraq', ' the', ' northern', ' Turkey']
+(Beauvais, {}, in, France)
+[' France', ' the', ' Haiti', ' Belgium', ' Maurit']
+(Oseberg oil field, {} is located in the country of, Norway)
+[' Norway', ' Denmark', ' Sweden', ' the', ' North']
+(Gavork-e Nalin Rural District, {} is located in the country of, Iran)
+[' Iran', ' Azerbaijan', ' Afghanistan', ' Kurdistan', ' Taj']
+(ArcelorMittal Poland, {} is located in, Poland)
+[' Poland', ' the', ' K', ' Pr', ' modern']
+(County Leitrim, {} is located in, Ireland)
+[' Ireland', ' Northern', ' Ulster', ' the', ' Ant']
+(Da Nang Air Base, {}, in, Vietnam)
+[' Vietnam', ' Laos', ' Cambodia', ' South', ' Sa']
+(Bjurholm, {}, which is located in, Sweden)
+[' Sweden', ' Iceland', ' Denmark', ' Finland', ' Norway']
+(E.ON Sverige, {}, located in, Sweden)
+[' Sweden', ' S', ' Norway', ' Denmark', ' the']
+(Colegio Nacional de Buenos Aires, {} is located in the country of, Argentina)
+[' Argentina', ' Buenos', ' Uruguay', ' Chile', ' Paragu']
+(Ikaalinen, {}, which is located in, Finland)
+[' Finland', ' Estonia', ' Turk', ' the', ' Kir']
+(Rio Quente, {}, in, Brazil)
+[' Brazil', ' Uruguay', ' Portugal', ' Ecuador', ' Argentina']
+(ABC Futebol Clube, {} is located in the country of, Brazil)
+[' Brazil', ' Uruguay', ' Portugal', ' Ecuador', ' Cur']
+(Sadr City, {} is located in the country of, Iraq)
+[' Iraq', ' Iran', ' Kurdistan', ' Kuwait', ' Jordan']
+(Palladam, {} is located in the country of, India)
+[' India', ' the', ' Bh', ' Sri', ' K']
+(Poissy, {}, in, France)
+[' France', ' the', ' Brittany', ' French', ' Luxembourg']
+(Shichikashuku, {} is located in, Japan)
+[' Japan', ' the', ' Sh', ' K', ' S']
+(Bourg-la-Reine, {}, which is located in, France)
+[' France', ' the', ' Belgium', ' Luxembourg', ' Brittany']
+(Nagoya University, {}, in, Japan)
+[' Japan', ' Nag', ' Ni', ' Osaka', ' Okinawa']
+(Minamishitara District, Aichi, {} is located in the country of, Japan)
+[' Japan', ' A', ' Ky', ' Fuk', ' Okinawa']
+(Shakhenat Rural District, {}, located in, Iran)
+[' Iran', ' Armenia', ' Azerbaijan', ' Afghanistan', ' Turk']
+(Gmina Leszno, {} is located in, Poland)
+[' Poland', ' Hungary', ' Belarus', ' the', ' Romania']
+(Kluuvi, {}, which is located in, Finland)
+[' Finland', ' Estonia', ' Georgia', ' the', ' Lithuania']
+(Castleisland Desmonds GAA, {} is located in, Ireland)
+[' Ireland', ' the', ' Desmond', ' Denmark', ' Scotland']
+(Piazza al Serchio, {}, which is located in, Italy)
+[' Italy', ' T', ' Sicily', ' Sard', ' P']
+(Miramichi Centre, {} is located in the country of, Canada)
+[' Canada', ' the', ' New', ' Quebec', ' Japan']
+(canton of Bolivia, {} is located in the country of, Bolivia)
+[' Bolivia', ' Ecuador', ' Chile', ' Argentina', ' La']
+(Eupen-Malmedy, {} is located in the country of, Belgium)
+[' Belgium', ' Luxembourg', ' the', ' Mal', ' Lie']
+(Nishi-Matsuura District, {} is located in the country of, Japan)
+[' Japan', ' Fuk', ' Okinawa', ' Hok', ' Sh']
+(Moscato d'Asti, {}, located in, Italy)
+[' Italy', ' Ast', ' T', ' the', ' Austria']
+(Sands of Beirut, {}, in, Lebanon)
+[' Lebanon', ' Israel', ' Palestine', ' the', ' Syria']
+(Uda District, {} is located in the country of, Japan)
+[' Japan', ' the', ' Uzbek', ' Georgia', ' Kazakhstan']
+(Lahti, {}, in, Finland)
+[' Finland', ' Estonia', ' Turk', ' the', ' Georgia']
+(Kitakami Station, {}, which is located in, Japan)
+[' Japan', ' Georgia', ' Hok', ' Nag', ' South']
+(Saint-Louis-de-Kent, New Brunswick, {} is located in, Canada)
+[' Canada', ' Quebec', ' France', ' New', ' Newfoundland']
+(Hitachinaka, {} is located in the country of, Japan)
+[' Japan', ' Okinawa', ' Hok', ' Ky', ' the']
+(Villa La Pietra, {}, in, Italy)
+[' Italy', ' the', ' Portugal', ' France', ' Malta']
+(Capoeira, {} is located in the country of, Brazil)
+[' Brazil', ' Portugal', ' Sao', ' Moz', ' Angola']
+(Qatar Ladies Open, {} is located in, Qatar)
+[' Qatar', ' Oman', ' Bahrain', ' Saudi', ' the']
+(Geelong Ring Road, {}, located in, Australia)
+[' Australia', ' South', ' New', ' Victoria', ' Papua']
+(Gmina Pokrzywnica, {} is located in the country of, Poland)
+[' Poland', ' Georgia', ' Belarus', ' the', ' Ukraine']
+(Parippally, {}, located in, India)
+[' India', ' Kerala', ' Sri', ' Bh', ' Nepal']
+(province of Japan, {}, which is located in, Japan)
+[' Japan', ' Korea', ' China', ' the', ' South']
+(Istanbul Airport, {}, which is located in, Turkey)
+[' Turkey', ' the', ' Istanbul', ' Cyprus', ' Thr']
+(Warsaw Uprising Museum, {}, in, Poland)
+[' Poland', ' the', ' its', ' Hungary', ' Lithuania']
+(Ginza Line, {}, which is located in, Japan)
+[' Japan', ' the', ' Tokyo', ' Gin', ' J']
+(Perpignan, {}, in, France)
+[' France', ' the', ' Brittany', ' Cors', ' T']
+(Suwayq, {}, which is located in, Oman)
+[' Oman', ' Iraq', ' Yemen', ' Turk', ' Kurdistan']
+(Band-e Kaisar, {}, which is located in, Iran)
+[' Iran', ' Afghanistan', ' Pakistan', ' Oman', ' Iraq']
+(Fiji First Party, {}, located in, Fiji)
+[' Fiji', ' the', ' Tong', ' Kir', ' Ni']
+(Toulouges, {}, which is located in, France)
+[' France', ' T', ' the', ' Algeria', ' Morocco']
+(Cuban convertible peso, {} is located in the country of, Cuba)
+[' Cuba', ' Nicaragua', ' the', ' Panama', ' origin']
+(City of Cranbourne, {}, in, Australia)
+[' Australia', ' New', ' Queensland', ' England', ' the']
+(North Middlesex, Ontario, {}, located in, Canada)
+[' Canada', ' Ontario', ' New', ' Quebec', ' England']
+(Teatro Comunale Florence, {}, located in, Italy)
+[' T', ' Italy', ' Florence', ' Em', ' Sicily']
+(County Carlow, {}, located in, Ireland)
+[' Ireland', ' Northern', ' County', ' Gal', ' Ant']
+(Danish Sign Language, {}, located in, Denmark)
+[' Denmark', ' Sweden', ' Greenland', ' Norway', ' Iceland']
+(Eriksbergs Mekaniska Verkstad, {}, in, Sweden)
+[' Sweden', ' Norway', ' Denmark', ' Finland', ' the']
+(Foothills-Rocky View, {} is located in the country of, Canada)
+[' Canada', ' Colorado', ' the', ' Alberta', ' Mexico']
+(Chaville, {} is located in, France)
+[' France', ' the', ' New', ' Japan', ' South']
+(Tsubaki Grand Shrine, {}, which is located in, Japan)
+[' Japan', ' Sh', ' T', ' K', ' H']
+(Kume District, {}, located in, Japan)
+[' Japan', ' K', ' J', ' the', ' Sh']
+(Honnavar, {} is located in, India)
+[' India', ' Bh', ' Nepal', ' Sri', ' the']
+(Romano d'Ezzelino, {}, which is located in, Italy)
+[' Italy', ' T', ' the', ' Malta', ' Romania']
+(Tampere Cathedral, {} is located in, Finland)
+[' Finland', ' Estonia', ' Turk', ' Sweden', ' Denmark']
+(Argentine National Anthem, {}, which is located in, Argentina)
+[' Argentina', ' Uruguay', ' the', ' Chile', ' South']
+(Santa Maria da Feira Municipality, {} is located in, Portugal)
+[' Portugal', ' Brazil', ' S', ' the', ' Sao']
+(La Ribera Baixa, {}, in, Spain)
+[' Spain', ' Portugal', ' And', ' the', ' Gran']
+(Taronga Western Plains Zoo, {} is located in, Australia)
+[' Australia', ' Papua', ' Van', ' New', ' Western']
+(Melaka TMFC, {} is located in, Malaysia)
+[' Malaysia', ' Brune', ' Mal', ' Indonesia', ' Singapore']
+(Gio Linh, {} is located in, Vietnam)
+[' Vietnam', ' Laos', ' Viet', ' Cambodia', ' V']
+(Swedish Orphan Biovitrum, {}, which is located in, Sweden)
+[' Sweden', ' Finland', ' Estonia', ' Mal', ' Iceland']
+(Tsuno District, Yamaguchi, {} is located in the country of, Japan)
+[' Japan', ' Yam', ' Ky', ' Fuk', ' H']
+(Nobel Peace Center, {}, which is located in, Norway)
+[' Norway', ' Sweden', ' the', ' Georgia', ' Japan']
+(Addanki mandal, {}, located in, India)
+[' India', ' Nepal', ' Bangladesh', ' Pakistan', ' Bh']
+(Simcoe Composite School, {}, which is located in, Canada)
+[' Canada', ' Georgia', ' Ontario', ' the', ' Trinidad']
+(Plougonven, {} is located in the country of, France)
+[' France', ' Belgium', ' the', ' Georgia', ' South']
+(National Congress of Brasil, {} is located in, Brazil)
+[' Brazil', ' Bras', ' Sao', ' S', ' the']
+(Khorramdarreh Rural District, {}, located in, Iran)
+[' Iran', ' Kh', ' Iraq', ' Kurdistan', ' Afghanistan']
+(Holycross-Ballycahill GAA, {}, located in, Ireland)
+[' Ireland', ' Ant', ' the', ' Northern', ' Georgia']
+(Ogrodzieniec, {}, located in, Poland)
+[' Poland', ' the', ' Bosnia', ' Georgia', ' Croatia']
+(Hilir Perak, {} is located in, Malaysia)
+[' Malaysia', ' Brune', ' Mal', ' Indonesia', ' B']
+(Albanian Land Force, {} is located in, Albania)
+[' Albania', ' Kosovo', ' Macedonia', ' Serbia', ' Georgia']
+(1931 Nicaragua earthquake, {}, located in, Nicaragua)
+[' Nicaragua', ' the', ' Honduras', ' Central', ' Panama']
+(Sulaimaniyah International Airport, {}, located in, Iraq)
+[' Iraq', ' Jordan', ' Kuwait', ' Saudi', ' Syria']
+(Shibganj Upazila, Bogra District, {}, which is located in, Bangladesh)
+[' Bangladesh', ' Afghanistan', ' India', ' Bh', ' Pakistan']
+(Borghetto di Vara, {}, located in, Italy)
+[' Italy', ' Albania', ' the', ' Cors', ' Macedonia']
+(War in Donbass, {}, in, Ukraine)
+[' Ukraine', ' the', ' Russia', ' Georgia', ' Donetsk']
+(Iruma Air Base, {}, located in, Japan)
+[' Japan', ' Georgia', ' Kir', ' Papua', ' Dj']
+(Sialkot district, {}, located in, Pakistan)
+[' Pakistan', ' Punjab', ' Sind', ' India', ' Afghanistan']
+(Latvian Farmers' Union, {}, located in, Latvia)
+[' Latvia', ' Lithuania', ' Estonia', ' Lat', ' Georgia']
+(Catalonia, {} is located in, Spain)
+[' Spain', ' Europe', ' the', ' Italy', ' Catalonia']
+(Jervis Inlet, {}, which is located in, Canada)
+[' Canada', ' Georgia', ' Newfoundland', ' New', ' the']
+(Brandon University, {}, in, Canada)
+[' Canada', ' Georgia', ' Australia', ' New', ' Quebec']
+(Ariake Coliseum, {}, in, Japan)
+[' Japan', ' Okinawa', ' Fuk', ' J', ' Hok']
+(Ruthweiler, {} is located in the country of, Germany)
+[' Germany', ' Austria', ' Georgia', ' the', ' Switzerland']
+(Neighbourhoods in Kolkata, {}, which is located in, India)
+[' India', ' Bangladesh', ' the', ' origin', ' Nepal']
+(public transport in Istanbul, {} is located in, Turkey)
+[' Turkey', ' the', ' origin', ' Cyprus', ' Istanbul']
+(Prince Edward Viaduct, {}, located in, Canada)
+[' Canada', ' Georgia', ' Great', ' England', ' France']
+(Autonomous District Lok Sabha constituency, {} is located in, India)
+[' India', ' Bangladesh', ' Nepal', ' Pakistan', ' Bh']
+(Now Kandeh District, {}, which is located in, Iran)
+[' Iran', ' Afghanistan', ' Iraq', ' Kurdistan', ' Azerbaijan']
+(Minamiarupusu, {}, located in, Japan)
+[' Japan', ' New', ' Finland', ' Kir', ' the']
+(Staatliche Antikensammlungen, {} is located in, Germany)
+[' Germany', ' Austria', ' the', ' Switzerland', ' Luxembourg']
+(Japan National Route 47, {}, located in, Japan)
+[' Japan', ' Korea', ' Vietnam', ' South', ' Thailand']
+(Pamukkale, {} is located in, Turkey)
+[' Turkey', ' Georgia', ' the', ' Syria', ' Armenia']
+(Prachin Buri River, {} is located in the country of, Thailand)
+[' Thailand', ' Myanmar', ' Laos', ' Bh', ' Bur']
+(2010 Belgian federal election, {}, in, Belgium)
+[' Belgium', ' the', ' Brussels', ' Luxembourg', ' F']
+(Croom, County Limerick, {} is located in the country of, Ireland)
+[' Ireland', ' Gal', ' Northern', ' County', ' Lim']
+(Hammarby IF DFF, {}, which is located in, Sweden)
+[' Sweden', ' Norway', ' Finland', ' Denmark', ' Estonia']
+(Western Finland Province, {} is located in, Finland)
+[' Finland', ' Estonia', ' Sweden', ' La', ' Russia']
+(Santo Spirito in Sassia, {} is located in, Italy)
+[' Italy', ' Sass', ' Georgia', ' Sard', ' the']
+(Tovuz District, {}, in, Azerbaijan)
+[' Azerbaijan', ' Georgia', ' T', ' Turk', ' Armenia']
+(Bispebjerg, {}, in, Denmark)
+[' Denmark', ' Sweden', ' Iceland', ' Norway', ' Estonia']
+(Nintendo, {}, located in, Japan)
+[' Japan', ' the', ' Finland', ' France', ' Germany']
+(All-Ukrainian Union "Svoboda", {} is located in, Ukraine)
+[' Ukraine', ' the', ' Georgia', ' Belarus', ' Mold']
+(Campeche Bank, {}, located in, Mexico)
+[' Mexico', ' Panama', ' Nicaragua', ' Guatemala', ' Gu']
+(Panagarh, {} is located in, India)
+[' India', ' Gujarat', ' the', ' Bangladesh', ' Uttar']
+(Gobind Sagar, {}, in, India)
+[' India', ' Nepal', ' Bh', ' Gujarat', ' the']
+(Naumburg (Saale), {} is located in the country of, Germany)
+[' Germany', ' the', ' Austria', ' Sa', ' Bav']
+(Gurudwara Bangla Sahib, {}, located in, India)
+[' India', ' Pakistan', ' Bangladesh', ' Nepal', ' Punjab']
+(National Library of Peru, {}, located in, Peru)
+[' Peru', ' Ecuador', ' Lima', ' Chile', ' Per']
+(Isola Dovarese, {} is located in, Italy)
+[' Georgia', ' Italy', ' Malta', ' Portugal', ' Sard']
+(The Forks, Winnipeg, {} is located in the country of, Canada)
+[' Canada', ' Manitoba', ' Saskatchewan', ' Newfoundland', ' Yuk']
+(Nesodden IF, {}, in, Norway)
+[' Norway', ' Denmark', ' the', ' Sweden', ' Georgia']
+(Kamchatka Krai, {}, which is located in, Russia)
+[' Russia', ' Kam', ' the', ' Kazakhstan', ' Russian']
+(Harrington Sound, Bermuda, {}, located in, Bermuda)
+[' Bermuda', ' Ant', ' Trinidad', ' the', ' Saint']
+(Cairo American College, {}, located in, Egypt)
+[' Egypt', ' the', ' Israel', ' Sudan', ' Ethiopia']
+(East Karelia, {}, which is located in, Russia)
+[' Russia', ' Latvia', ' Finland', ' Estonia', ' Norway']
+(Tartu Town Hall, {}, in, Estonia)
+[' Estonia', ' Latvia', ' Lithuania', ' Tart', ' Finland']
+(Gaiola, {}, in, Italy)
+[' Italy', ' Slovenia', ' the', ' Georgia', ' Croatia']
+(West Royalty, Prince Edward Island, {} is located in, Canada)
+[' Canada', ' Prince', ' France', ' Nova', ' Ant']
+(Northern Territory, {} is located in, Australia)
+[' Australia', ' Queensland', ' New', ' Papua', ' the']
+(Monarcas Morelia, {} is located in, Mexico)
+[' Mexico', ' Mé', ' Spain', ' La', ' More']
+(Leiria, {}, which is located in, Portugal)
+[' Portugal', ' the', ' Spain', ' France', ' Georgia']
+(Gmina Olsztyn, {} is located in the country of, Poland)
+[' Poland', ' Hungary', ' Belarus', ' Georgia', ' Lithuania']
+(Louth County Council, {} is located in, Ireland)
+[' Ireland', ' Northern', ' Ant', ' the', ' Ulster']
+(Mannheim City Airport, {} is located in the country of, Germany)
+[' Germany', ' Bav', ' Mann', ' the', ' Rh']
+(Le Fuilet, {}, located in, France)
+[' France', ' the', ' Haiti', ' Belgium', ' Morocco']
+(Dunnamaggin GAA, {}, located in, Ireland)
+[' Ireland', ' Scotland', ' Iceland', ' the', ' Georgia']
+(Isfahan International Airport, {}, in, Iran)
+[' Iran', ' Azerbaijan', ' F', ' Is', ' Taj']
+(West Darfur, {}, which is located in, Sudan)
+[' Sudan', ' Chad', ' South', ' Ethiopia', ' Erit']
+(Kuomintang, {} is located in, Taiwan)
+[' Taiwan', ' China', ' Hong', ' Vietnam', ' the']
+(Sydney Sports Ground, {}, located in, Australia)
+[' Australia', ' New', ' Papua', ' NSW', ' the']
+(plaza de Cibeles, {} is located in, Spain)
+[' Spain', ' the', ' France', ' Catalonia', ' Portugal']
+(Fluminense F.C., {} is located in the country of, Brazil)
+[' Brazil', ' Portugal', ' Mexico', ' Spain', ' Uruguay']
+(Berhala Island, Sabah, {} is located in the country of, Malaysia)
+[' Malaysia', ' Sab', ' Brune', ' Sar', ' B']
+(Ghatanji, {} is located in the country of, India)
+[' Nepal', ' India', ' Bh', ' the', ' Gujarat']
+(Guatemalan Revolution, {}, located in, Guatemala)
+[' Guatemala', ' El', ' the', ' Mexico', ' Nicaragua']
+(Lewin Brzeski, {}, in, Poland)
+[' Poland', ' Croatia', ' Hungary', ' the', ' Georgia']
+(Fryderyk Chopin University of Music, {}, located in, Poland)
+[' Poland', ' Belarus', ' Mold', ' Hungary', ' Georgia']
+(Ikuno-ku, {}, which is located in, Japan)
+[' Japan', ' the', ' I', ' K', ' J']
+(Greater Rio de Janeiro, {}, located in, Brazil)
+[' Brazil', ' S', ' the', ' South', ' Portugal']
+(Minamiakita District, {}, located in, Japan)
+[' Japan', ' New', ' Fuk', ' Hok', ' Mic']
+(Moissac Abbey, {} is located in, France)
+[' France', ' the', ' F', ' Brittany', ' Lor']
+(Preet Vihar, {} is located in, India)
+[' India', ' Nepal', ' Bh', ' Pakistan', ' Bangladesh']
+(Indira Gandhi International Airport, {} is located in, India)
+[' India', ' Sri', ' Nepal', ' Pakistan', ' Bangladesh']
+(Dundalk, {}, which is located in, Ireland)
+[' Ireland', ' Northern', ' the', ' Gal', ' County']
+(Note Printing Australia, {}, located in, Australia)
+[' Australia', ' origin', ' the', ' Singapore', ' New']
+(Mugello Circuit, {} is located in, Italy)
+[' Italy', ' M', ' Austria', ' T', ' Spain']
+(Sana'a International Airport, {}, which is located in, Yemen)
+[' Yemen', ' Saudi', ' Oman', ' the', ' S']
+(Enghien-les-Bains, {}, located in, France)
+[' France', ' the', ' Belgium', ' Luxembourg', ' Brittany']
+(Geffen Award, {}, located in, Israel)
+[' Israel', ' the', ' Germany', ' Japan', ' Sweden']
+(Halton County, Ontario, {} is located in, Canada)
+[' Canada', ' Ontario', ' Quebec', ' New', ' Nova']
+(St James' Church, Sydney, {} is located in, Australia)
+[' New', ' Australia', ' NSW', ' Sydney', ' the']
+(Oder-Spree District, {} is located in the country of, Germany)
+[' Germany', ' the', ' Austria', ' Bav', ' South']
+(Vesuvius Observatory, {} is located in, Italy)
+[' Italy', ' Cre', ' Greece', ' Romania', ' Chile']
+(Anak Bukit, {}, in, Malaysia)
+[' Malaysia', ' Singapore', ' Brune', ' Indonesia', ' B']
+(Emscher, {}, located in, Germany)
+[' Germany', ' Georgia', ' Austria', ' the', ' South']
+(Shastri Park, {}, in, India)
+[' India', ' Nepal', ' Bh', ' Gujarat', ' Bangladesh']
+(Grand Mosque of Paris, {}, which is located in, France)
+[' France', ' the', ' Algeria', ' Islam', ' Morocco']
+(Llanquihue Province, {}, located in, Chile)
+[' Chile', ' Costa', ' Ant', ' New', ' Honduras']
+(Yamato Museum, {}, located in, Japan)
+[' Japan', ' Okinawa', ' Yam', ' the', ' Sh']
+(Valea lui Mihai, {} is located in, Romania)
+[' Romania', ' Mold', ' Georgia', ' Macedonia', ' Serbia']
+(Central Black Forest, {}, in, Germany)
+[' Germany', ' Austria', ' the', ' Bav', ' Switzerland']
+(Sahneh County, {} is located in, Iran)
+[' Iran', ' Kurdistan', ' Azerbaijan', ' Afghanistan', ' Turk']
+(Gmina Kleczew, {}, which is located in, Poland)
+[' Poland', ' Georgia', ' Belarus', ' Hungary', ' Lithuania']
+(University of Bern, {} is located in, Switzerland)
+[' Switzerland', ' Lie', ' Austria', ' Sw', ' Bern']
+(Tatsuno, {} is located in the country of, Japan)
+[' Japan', ' the', ' T', ' Georgia', ' Sh']
+(Siemiatycze, {}, located in, Poland)
+[' Poland', ' the', ' Georgia', ' Hungary', ' Belarus']

@@ -98,6 +98,7 @@ def determine_token_index(start: int, end: int, offset: int) -> int:
         index = start + offset
     return index
 
+from typing import Optional
 
 # TODO(evandez): Should maybe be a torch.nn.Module someday
 @dataclass(frozen=True)
@@ -110,14 +111,20 @@ class RelationOperator:
     layer: int
     weight: torch.Tensor
     bias: torch.Tensor
+    misc: Optional[dict] = None # just to track the `Jh` contribution and the `bias` contribuntion
+    calculated_at_lnf: bool = False
+    consider_residual: bool = False
 
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return just the LM head part of the model."""
-        return torch.nn.Sequential(
-            self.model.transformer.ln_f,
-            self.model.lm_head,
-        )
+        if(self.calculated_at_lnf == False):
+            return torch.nn.Sequential(
+                self.model.transformer.ln_f,
+                self.model.lm_head,
+            )
+        else:
+            return self.model.lm_head
 
     def __call__(
         self,
@@ -155,10 +162,18 @@ class RelationOperator:
         with baukit.Trace(self.model, layer_name) as ret:
             self.model(**inputs)
         h = ret.output[0][:, h_token_index]
-        z = h.mm(self.weight.t()) + self.bias
+        if(self.consider_residual == False):
+            # print(h.mm(self.weight.t()).norm(), self.bias.norm())
+            z = h.mm(self.weight.t()) + self.bias
+        else:
+            # print("--->", (h + h.mm(self.weight.t())).norm(), self.bias.norm())
+            z = h + h.mm(self.weight.t()) + self.bias
         logits = self.lm_head(z)
         token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
-        return self.tokenizer.convert_ids_to_tokens(token_ids)
+        # return self.tokenizer.convert_ids_to_tokens(token_ids)
+        return [
+            self.tokenizer.decode(t) for t in token_ids
+        ] #, z # returns the estimation at z_index
 
 
 def estimate_relation_operator(
@@ -169,6 +184,9 @@ def estimate_relation_operator(
     subject_token_index: int = -1,
     layer: int = 25,
     device: Device | None = None,
+    calculate_at_lnf = False,
+    consider_residual = False,
+    approximate_rank = 5 # -1 => consider full rank -- the results will be the same as `consider_residual` set to False
 ) -> RelationOperator:
     """Estimate the r in (s, r, o) as a linear operator.
 
@@ -185,6 +203,11 @@ def estimate_relation_operator(
         The estimated operator.
 
     """
+    # print("subject =", subject)
+    # print("relation =", relation)
+    # print("subject_token_index = ", subject_token_index)
+    # print("layer = ", layer)
+
     model.to(device)
 
     prompt = relation.format(subject)
@@ -196,10 +219,11 @@ def estimate_relation_operator(
     subject_i, subject_j = find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0]
     )
+    # print(">>>> ", subject_i, subject_j, subject_token_index)
     h_token_index = determine_token_index(subject_i, subject_j, subject_token_index)
 
     h_layer_name = f"transformer.h.{layer}"
-    z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
+    z_layer_name = f"transformer.h.{model.config.n_layer - 1}" if calculate_at_lnf == False else "transformer.ln_f"
 
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         model(**inputs)
@@ -211,6 +235,7 @@ def estimate_relation_operator(
         def insert_h(output: tuple, layer: str) -> tuple:
             if layer != h_layer_name:
                 return output
+            # print((output[0][0, h_token_index] - h).norm())
             output[0][0, h_token_index] = h
             return output
 
@@ -218,10 +243,31 @@ def estimate_relation_operator(
             model, (h_layer_name, z_layer_name), edit_output=insert_h
         ) as ret:
             model(**inputs)
-        return ret[z_layer_name].output[0][0, -1]
+        # print(z_layer_name, ret[z_layer_name].output[0][-1].shape)
+        if(calculate_at_lnf == False):
+            f_h = ret[z_layer_name].output[0][0, -1]
+        else:
+            f_h = ret[z_layer_name].output[0][-1]
 
-    weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
-    bias = z[None] - h[None].mm(weight.t())
+        return f_h - h if consider_residual == True else f_h
+
+
+    weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True) 
+
+    if(consider_residual == True): 
+        if(approximate_rank != -1): # a low rank approximation
+            svd = weight.svd()
+            wgt_est = torch.zeros(weight.shape).to(device)
+            for i in range(approximate_rank):
+                wgt_est += svd.S[i] * (svd.U[:, i][None].T @ svd.V[:, i][None])
+            # print(f"approximation error ==> {torch.dist(weight, wgt_est)}")
+            approx_err = torch.dist(weight, wgt_est)
+            weight = wgt_est
+        else:
+            approx_err = torch.dist(weight, weight)
+
+    bias = z[None] - h[None].mm(weight.t()) if consider_residual == False else (z - (h + weight@h))[None]
+
     return RelationOperator(
         model=model,
         tokenizer=tokenizer,
@@ -229,7 +275,55 @@ def estimate_relation_operator(
         relation=relation,
         weight=weight,
         bias=bias,
+        calculated_at_lnf= calculate_at_lnf,
+        consider_residual = consider_residual,
+        misc={
+            'Jh_norm': h[None].mm(weight.t()).norm().item() if consider_residual == False else (h + weight@h).norm().item(),
+            'bias_norm': bias.norm().item(),
+            'h_info': {
+                'h_index': h_token_index,
+                'token_id': inputs['input_ids'][0][h_token_index].item(),
+                'token': tokenizer.decode(inputs['input_ids'][0][h_token_index])
+            },
+            'consider_residual': False if consider_residual == False else (consider_residual, approximate_rank, approx_err.item())
+        }
     )
+
+def estimate_relation_operator__for_all_subject_tokens(
+    model: Model,
+    tokenizer: Tokenizer,
+    subject: str,
+    relation: str,
+    layer: int = 25,
+    device: Device | None = None,
+    calculate_at_lnf = False,
+    consider_residual = False,
+    approximate_rank = 5 # -1 => consider full rank -- the results will be the same as `consider_residual` set to False
+) -> list[RelationOperator]:
+    
+    prompt = relation.format(subject)
+    inputs = tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
+        device
+    )
+    offset_mapping = inputs.pop("offset_mapping")
+    subject_i, subject_j = find_token_range(
+        prompt, subject, offset_mapping=offset_mapping[0]
+    )
+    relation_collection = []
+    for subject_token_index in range(subject_i, subject_j):
+        relation_collection.append(
+            estimate_relation_operator(
+                model = model, tokenizer= tokenizer,
+                subject= subject, relation= relation, layer = layer,
+                device= model.device,
+                subject_token_index = subject_token_index - subject_i,
+
+                calculate_at_lnf= calculate_at_lnf,
+                consider_residual= consider_residual,
+                approximate_rank= approximate_rank
+            )
+        )
+    return relation_collection
 
 
 if __name__ == "__main__":

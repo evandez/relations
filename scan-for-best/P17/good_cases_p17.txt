@@ -1,0 +1,404 @@
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Space Needle, r = {} is located in the country of [P17], o = )
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 44.985111236572266, 'bias_norm': 372.6827087402344, 'h_info': {'h_index': 3, 'token_id': 293, 'token': 'le'}}
+----------------------------------------------------------------------------------------------------
+The Great Wall, target: China   ==>   predicted: [' China', ' Hong', ' Beijing', ' Chinese', ' Shen']
+Niagara Falls, target: Canada   ==>   predicted: [' Canada', ' Ontario', ' Niagara', ' New', ' British']
+Valdemarsvik, target: Sweden   ==>   predicted: [' Iceland', ' Denmark', ' Sweden', ' Finland', ' Norway']
+Kyoto University, target: Japan   ==>   predicted: [' Japan', ' Japanese', ' Finland', ' Hawaii', ' Tokyo']
+Hattfjelldal, target: Norway   ==>   predicted: [' Iceland', ' Denmark', ' Norway', ' Sweden', ' Finland']
+Ginza, target: Japan   ==>   predicted: [' Japan', ' Singapore', ' China', ' Seattle', ' Hong']
+Sydney Hospital, target: Australia   ==>   predicted: [' Australia', ' Sydney', ' Australian', ' Singapore', ' Canberra']
+Mahalangur Himal, target: Nepal   ==>   predicted: [' Nepal', ' Tibet', ' Bh', ' Nep', ' China']
+Higashikagawa, target: Japan   ==>   predicted: [' Japan', ' Japanese', ' Tokyo', ' Canada', ' Seattle']
+Trento, target: Italy   ==>   predicted: [' Sweden', ' Finland', ' Iceland', ' Denmark', ' Luxembourg']
+Taj Mahal, target: India   ==>   predicted: [' Iceland', ' Canada', ' Finland', ' Norway', ' New']
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Menangle Park, r = {} is located in the country of [P17], o = Australia)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 22.141036987304688, 'bias_norm': 522.3410034179688, 'h_info': {'h_index': 1, 'token_id': 9248, 'token': 'angle'}}
+----------------------------------------------------------------------------------------------------
+The Great Wall, target: China   ==>   predicted: [' China', ' India', ' Hong', ' the', ' Z']
+Niagara Falls, target: Canada   ==>   predicted: [' Newfoundland', ' Ontario', ' New', ' Ireland', ' Canada']
+Valdemarsvik, target: Sweden   ==>   predicted: [' Australia', ' New', ' the', ' Canada', ' Bh']
+Kyoto University, target: Japan   ==>   predicted: [' India', ' Bh', ' Nepal', ' Thailand', ' Sri']
+Hattfjelldal, target: Norway   ==>   predicted: [' Ireland', ' Scotland', ' the', ' Australia', ' Wales']
+Ginza, target: Japan   ==>   predicted: [' India', ' Australia', ' Hong', ' Japan', ' Bh']
+Sydney Hospital, target: Australia   ==>   predicted: [' Australia', ' Sydney', ' Queensland', ' NSW', ' New']
+Mahalangur Himal, target: Nepal   ==>   predicted: [' Bh', ' Nepal', ' India', ' Sri', ' Kashmir']
+Higashikagawa, target: Japan   ==>   predicted: [' Japan', ' India', ' New', ' Australia', ' the']
+Trento, target: Italy   ==>   predicted: [' New', ' Australia', ' Ireland', ' the', ' France']
+Taj Mahal, target: India   ==>   predicted: [' India', ' Bh', ' Sri', ' Ireland', ' Nepal']
+----------------------------------------------------------------------------------------------------
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Etobicoke North, r = {} is located in the country of [P17], o = Canada)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 23.247802734375, 'bias_norm': 486.58489990234375, 'h_info': {'h_index': 2, 'token_id': 20803, 'token': 'obic'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Poland', ' Georgia', ' Turkey', ' Romania', ' Macedonia']
+Lund Municipality, target: Sweden   ==>   predicted: [' Canada', ' the', ' Ontario', ' Mexico', ' Bel']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' Greece', ' Italy', ' Belgium', ' Macedonia']
+Tehri Garhwal district, target: India   ==>   predicted: [' Georgia', ' the', ' Turkey', ' India', ' Macedonia']
+Etobicoke North, target: Canada   ==>   predicted: [' Canada', ' the', ' Ontario', ' South', ' Georgia']
+National Republican Greek League, target: Greece   ==>   predicted: [' Canada', ' the', ' Mexico', ' Ontario', ' France']
+Perpignan, target: France   ==>   predicted: [' France', ' Spain', ' Brazil', ' Romania', ' Macedonia']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Canada', ' the', ' Mexico', ' Georgia', ' Bel']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Ontario', ' Canada', ' the', ' Romania', ' Bel']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' Turkey', ' Kurdistan', ' Croatia', ' Albania', ' Macedonia']
+Bispebjerg, target: Denmark   ==>   predicted: [' Canada', ' Georgia', ' Croatia', ' Macedonia', ' the']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Mexico', ' the', ' Canada', ' Turkey', ' Brazil']
+Nesodden IF, target: Norway   ==>   predicted: [' Canada', ' the', ' Ireland', ' Turkey', ' Ontario']
+Lismore GAA, target: Ireland   ==>   predicted: [' Ireland', ' Canada', ' the', ' Australia', ' Scotland']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Mexico', ' the', ' Canada', ' Brazil', ' Bel']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Poland', ' Croatia', ' Macedonia', ' Monteneg', ' Serbia']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Finland', ' Sweden', ' Macedonia', ' Estonia', ' Norway']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Brazil', ' Monteneg', ' Portugal', ' Croatia', ' Spain']
+Beauvais, target: France   ==>   predicted: [' France', ' Canada', ' the', ' Brazil', ' Quebec']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' Canada', ' the', ' Mexico', ' South', ' Georgia']
+Munich Residence, target: Germany   ==>   predicted: [' Canada', ' the', ' Mexico', ' Bel', ' Ontario']
+Pontecorvo, target: Italy   ==>   predicted: [' Romania', ' Macedonia', ' the', ' Croatia', ' Turkey']
+Gio Linh, target: Vietnam   ==>   predicted: [' the', ' Canada', ' Georgia', ' Bel', ' F']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Turkey', ' Georgia', ' the', ' Romania', ' Canada']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Canada', ' the', ' Ontario', ' Mexico', ' Quebec']
+Peruvian Navy, target: Peru   ==>   predicted: [' the', ' Canada', ' Mexico', ' Bel', ' Brazil']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' Macedonia', ' Turkey', ' Ethiopia', ' Georgia', ' Greece']
+Kume District, target: Japan   ==>   predicted: [' the', ' Canada', ' Georgia', ' Turkey', ' Greece']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' Canada', ' the', ' Ontario', ' India', ' Japan']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Georgia', ' Macedonia', ' Poland', ' Turkey', ' the']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Albania', ' Macedonia', ' Kurdistan', ' Turkey', ' Bosnia']
+Emscher, target: Germany   ==>   predicted: [' Canada', ' the', ' Romania', ' Ontario', ' France']
+Mugello Circuit, target: Italy   ==>   predicted: [' Canada', ' the', ' Mexico', ' Brazil', ' South']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Canada', ' the', ' Poland', ' Turkey', ' Romania']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' Canada', ' the', ' Ontario', ' Turkey', ' Poland']
+Ginza, target: Japan   ==>   predicted: [' Greece', ' Turkey', ' Macedonia', ' Georgia', ' Nigeria']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Brazil', ' Spain', ' Romania', ' Mexico', ' Portugal']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Turkey', ' Georgia', ' the', ' Bel', ' Brazil']
+Ikuno-ku, target: Japan   ==>   predicted: [' Japan', ' the', ' Canada', ' Turkey', ' Mexico']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Ireland', ' Canada', ' the', ' Mexico', ' F']
+Llanquihue Province, target: Chile   ==>   predicted: [' Canada', ' the', ' Mexico', ' Bel', ' T']
+Sialkot district, target: Pakistan   ==>   predicted: [' Georgia', ' the', ' Turkey', ' Canada', ' Macedonia']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' the', ' Canada', ' Mexico', ' Bel', ' Brazil']
+Isfahan International Airport, target: Iran   ==>   predicted: [' Mexico', ' the', ' Turkey', ' Brazil', ' Bel']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Greece', ' Canada', ' Romania', ' Macedonia', ' Turkey']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Romania', ' Greece', ' Italy', ' Macedonia', ' Croatia']
+Nepal Academy, target: Nepal   ==>   predicted: [' Canada', ' the', ' Ontario', ' Z', ' Mexico']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Italy', ' Greece', ' Romania', ' Macedonia', ' Croatia']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Croatia', ' Macedonia', ' Georgia', ' Poland', ' Turkey']
+Kitakami Station, target: Japan   ==>   predicted: [' Canada', ' the', ' Ontario', ' Japan', ' France']
+----------------------------------------------------------------------------------------------------
+13/50
+----------------------------------------------------------------------------------------------------
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Menangle Park, r = {} is located in the country of [P17], o = Australia)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 22.141036987304688, 'bias_norm': 522.3410034179688, 'h_info': {'h_index': 1, 'token_id': 9248, 'token': 'angle'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Ireland', ' the', ' Scotland', ' Georgia', ' Wales']
+Lund Municipality, target: Sweden   ==>   predicted: [' the', ' K', ' Australia', ' Z', ' New']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' Ireland', ' Quebec', ' French', ' Belgium']
+Tehri Garhwal district, target: India   ==>   predicted: [' India', ' Bh', ' Nepal', ' Sri', ' Pakistan']
+Etobicoke North, target: Canada   ==>   predicted: [' Australia', ' the', ' New', ' K', ' South']
+National Republican Greek League, target: Greece   ==>   predicted: [' the', ' K', ' India', ' Ireland', ' Z']
+Perpignan, target: France   ==>   predicted: [' Ireland', ' France', ' Australia', ' New', ' the']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Australia', ' the', ' India', ' New', ' Z']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Ontario', ' Canada', ' Australia', ' New', ' Ireland']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' Bh', ' India', ' Sri', ' Pakistan', ' Nepal']
+Bispebjerg, target: Denmark   ==>   predicted: [' Australia', ' Ireland', ' New', ' the', ' South']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Australia', ' the', ' Bel', ' K', ' Thailand']
+Nesodden IF, target: Norway   ==>   predicted: [' the', ' Ireland', ' Australia', ' Z', ' F']
+Lismore GAA, target: Ireland   ==>   predicted: [' Ireland', ' Australia', ' Scotland', ' New', ' the']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Australia', ' the', ' Bel', ' Thailand', ' Malaysia']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Poland', ' Ireland', ' South', ' Romania', ' Australia']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Norway', ' Scotland', ' Denmark', ' Sweden', ' Finland']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Brazil', ' Trinidad', ' Haiti', ' Jamaica', ' South']
+Beauvais, target: France   ==>   predicted: [' France', ' Ireland', ' Canada', ' Australia', ' the']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' K', ' the', ' Bh', ' Z', ' El']
+Munich Residence, target: Germany   ==>   predicted: [' the', ' Ireland', ' Canada', ' K', ' El']
+Pontecorvo, target: Italy   ==>   predicted: [' Ireland', ' France', ' the', ' Australia', ' Canada']
+Gio Linh, target: Vietnam   ==>   predicted: [' Australia', ' New', ' Ireland', ' the', ' Papua']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Ireland', ' the', ' Australia', ' New', ' Scotland']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Canada', ' Australia', ' Ontario', ' New', ' Quebec']
+Peruvian Navy, target: Peru   ==>   predicted: [' the', ' France', ' Bel', ' F', ' New']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' India', ' Sri', ' Bh', ' Pakistan', ' Bangladesh']
+Kume District, target: Japan   ==>   predicted: [' K', ' Bh', ' India', ' the', ' Z']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' K', ' Bh', ' the', ' Australia', ' Z']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Ireland', ' the', ' Australia', ' Wales', ' K']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Afghanistan', ' Pakistan', ' India', ' Bh', ' Nepal']
+Emscher, target: Germany   ==>   predicted: [' Ireland', ' the', ' Canada', ' Germany', ' Z']
+Mugello Circuit, target: Italy   ==>   predicted: [' Australia', ' the', ' Ireland', ' Wales', ' Z']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Ireland', ' the', ' Belgium', ' Germany', ' France']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' the', ' K', ' Australia', ' Z', ' Ireland']
+Ginza, target: Japan   ==>   predicted: [' India', ' Australia', ' Hong', ' Japan', ' Bh']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Australia', ' France', ' Brazil', ' the', ' New']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Australia', ' New', ' Bh', ' India', ' Malaysia']
+Ikuno-ku, target: Japan   ==>   predicted: [' New', ' the', ' Australia', ' K', ' Hong']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Ireland', ' Australia', ' the', ' New', ' K']
+Llanquihue Province, target: Chile   ==>   predicted: [' the', ' Australia', ' New', ' Canada', ' Z']
+Sialkot district, target: Pakistan   ==>   predicted: [' India', ' Bh', ' Nepal', ' K', ' the']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' the', ' K', ' Z', ' Australia', ' Bh']
+Isfahan International Airport, target: Iran   ==>   predicted: [' the', ' Australia', ' Bel', ' Thailand', ' India']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Ontario', ' Canada', ' Australia', ' Newfoundland', ' New']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Ireland', ' the', ' Wales', ' Bel', ' El']
+Nepal Academy, target: Nepal   ==>   predicted: [' K', ' the', ' Z', ' El', ' Ireland']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Ireland', ' France', ' Australia', ' the', ' Italy']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Ireland', ' the', ' Australia', ' Z', ' South']
+Kitakami Station, target: Japan   ==>   predicted: [' Australia', ' the', ' New', ' K', ' Japan']
+----------------------------------------------------------------------------------------------------
+10/50
+----------------------------------------------------------------------------------------------------
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Miramichi Centre, r = {} is located in the country of [P17], o = Canada)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 26.415491104125977, 'bias_norm': 430.8843994140625, 'h_info': {'h_index': 2, 'token_id': 16590, 'token': 'ichi'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Quebec', ' Canada', ' the', ' Poland', ' Georgia']
+Lund Municipality, target: Sweden   ==>   predicted: [' Canada', ' the', ' Quebec', ' Oman', ' Japan']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' Quebec', ' French', ' Qué', ' Haiti']
+Tehri Garhwal district, target: India   ==>   predicted: [' Nepal', ' Bh', ' Canada', ' Japan', ' the']
+Etobicoke North, target: Canada   ==>   predicted: [' Canada', ' Nun', ' Newfoundland', ' the', ' Georgia']
+National Republican Greek League, target: Greece   ==>   predicted: [' Oman', ' India', ' the', ' Canada', ' Quebec']
+Perpignan, target: France   ==>   predicted: [' Quebec', ' France', ' French', ' Qué', ' Belgium']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Canada', ' the', ' Trinidad', ' Brune', ' Oman']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Ontario', ' Canada', ' Quebec', ' Newfoundland', ' Mexico']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' Canada', ' New', ' Jamaica', ' the', ' Trinidad']
+Bispebjerg, target: Denmark   ==>   predicted: [' Quebec', ' Belgium', ' Canada', ' New', ' Denmark']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Oman', ' Malaysia', ' Brune', ' Maurit', ' Qatar']
+Nesodden IF, target: Norway   ==>   predicted: [' Canada', ' the', ' Quebec', ' Newfoundland', ' New']
+Lismore GAA, target: Ireland   ==>   predicted: [' Ireland', ' Canada', ' Newfoundland', ' the', ' Israel']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Oman', ' Malaysia', ' Brune', ' Maurit', ' Qatar']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Poland', ' Canada', ' Belgium', ' New', ' the']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Denmark', ' Finland', ' Greenland', ' Norway', ' New']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Quebec', ' Brazil', ' French', ' Trinidad', ' France']
+Beauvais, target: France   ==>   predicted: [' Quebec', ' France', ' Haiti', ' Canada', ' Qué']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' Japan', ' Oman', ' Georgia', ' Brune', ' Azerbaijan']
+Munich Residence, target: Germany   ==>   predicted: [' Luxembourg', ' Georgia', ' Canada', ' Cyprus', ' the']
+Pontecorvo, target: Italy   ==>   predicted: [' Quebec', ' Canada', ' France', ' the', ' New']
+Gio Linh, target: Vietnam   ==>   predicted: [' Quebec', ' Canada', ' New', ' the', ' France']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Quebec', ' Canada', ' the', ' Newfoundland', ' Nova']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Canada', ' Quebec', ' Newfoundland', ' Saskatchewan', ' Ontario']
+Peruvian Navy, target: Peru   ==>   predicted: [' Brune', ' Japan', ' Oman', ' Fiji', ' the']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' Jamaica', ' Canada', ' Trinidad', ' the', ' New']
+Kume District, target: Japan   ==>   predicted: [' Japan', ' Hong', ' Brune', ' Canada', ' the']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' Bh', ' Oman', ' Maurit', ' Nepal', ' Sri']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Canada', ' Georgia', ' the', ' Quebec', ' Nova']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Afghanistan', ' Oman', ' Canada', ' Papua', ' Nam']
+Emscher, target: Germany   ==>   predicted: [' Luxembourg', ' Quebec', ' Switzerland', ' Belgium', ' France']
+Mugello Circuit, target: Italy   ==>   predicted: [' Oman', ' Maurit', ' Luxembourg', ' Canada', ' Israel']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Luxembourg', ' Belgium', ' Switzerland', ' Quebec', ' the']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' Canada', ' the', ' Quebec', ' New', ' Jamaica']
+Ginza, target: Japan   ==>   predicted: [' Japan', ' Hong', ' Canada', ' the', ' New']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Luxembourg', ' Quebec', ' Trinidad', ' the', ' Brune']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Hong', ' New', ' the', ' Trinidad', ' Malaysia']
+Ikuno-ku, target: Japan   ==>   predicted: [' Japan', ' New', ' the', ' Canada', ' Hong']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Canada', ' Ireland', ' Israel', ' the', ' Newfoundland']
+Llanquihue Province, target: Chile   ==>   predicted: [' Canada', ' Quebec', ' the', ' Japan', ' Brune']
+Sialkot district, target: Pakistan   ==>   predicted: [' Nepal', ' Japan', ' Canada', ' Bh', ' Bangladesh']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' the', ' Canada', ' Quebec', ' Japan', ' Trinidad']
+Isfahan International Airport, target: Iran   ==>   predicted: [' Oman', ' Malaysia', ' Brune', ' Singapore', ' Maurit']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Ontario', ' Canada', ' Quebec', ' Newfoundland', ' Manitoba']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Luxembourg', ' Japan', ' Romania', ' Cyprus', ' Belgium']
+Nepal Academy, target: Nepal   ==>   predicted: [' Oman', ' Japan', ' Maurit', ' Israel', ' Finland']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Italy', ' Quebec', ' France', ' Belgium', ' the']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Canada', ' Quebec', ' the', ' Georgia', ' Jamaica']
+Kitakami Station, target: Japan   ==>   predicted: [' Japan', ' Canada', ' the', ' Georgia', ' New']
+----------------------------------------------------------------------------------------------------
+11/50
+----------------------------------------------------------------------------------------------------
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Campeche Bank, r = {} is located in the country of [P17], o = Mexico)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 46.61355209350586, 'bias_norm': 443.0304870605469, 'h_info': {'h_index': 2, 'token_id': 2395, 'token': 'che'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Mexico', ' Guatemala', ' Nicaragua', ' Panama', ' Honduras']
+Lund Municipality, target: Sweden   ==>   predicted: [' Gu', ' Venezuela', ' Mexico', ' Ecuador', ' Honduras']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' Algeria', ' French', ' Morocco', ' Senegal']
+Tehri Garhwal district, target: India   ==>   predicted: [' Mexico', ' Peru', ' Honduras', ' Venezuela', ' Brazil']
+Etobicoke North, target: Canada   ==>   predicted: [' Paragu', ' Haiti', ' Gren', ' Burk', ' Cameroon']
+National Republican Greek League, target: Greece   ==>   predicted: [' Haiti', ' Algeria', ' Trinidad', ' Gu', ' Honduras']
+Perpignan, target: France   ==>   predicted: [' France', ' Portugal', ' French', ' Spain', ' Haiti']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Panama', ' Honduras', ' Venezuela', ' Haiti', ' Mexico']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Quebec', ' Haiti', ' Canada', ' Mexico', ' Ontario']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' Guatemala', ' Mexico', ' Honduras', ' Bel', ' El']
+Bispebjerg, target: Denmark   ==>   predicted: [' Brazil', ' Portugal', ' Guinea', ' Paragu', ' Angola']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Mexico', ' Bel', ' El', ' Panama', ' Gu']
+Nesodden IF, target: Norway   ==>   predicted: [' Haiti', ' Guinea', ' Cameroon', ' Panama', ' Maurit']
+Lismore GAA, target: Ireland   ==>   predicted: [' Haiti', ' France', ' Guinea', ' French', ' Cameroon']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Mexico', ' Bel', ' Panama', ' El', ' Gu']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Poland', ' Paragu', ' Morocco', ' Portugal', ' Bosnia']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Chile', ' Morocco', ' Portugal', ' Paragu', ' Erit']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Brazil', ' Sao', ' Brazilian', ' Portugal', ' Bras']
+Beauvais, target: France   ==>   predicted: [' France', ' French', ' Cameroon', ' Haiti', ' Senegal']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' Honduras', ' Ecuador', ' Argentina', ' Chile', ' Venezuela']
+Munich Residence, target: Germany   ==>   predicted: [' Haiti', ' Bel', ' Gren', ' Gu', ' Domin']
+Pontecorvo, target: Italy   ==>   predicted: [' Brazil', ' Portugal', ' Panama', ' Venezuela', ' Costa']
+Gio Linh, target: Vietnam   ==>   predicted: [' Honduras', ' Nicaragua', ' Mexico', ' Panama', ' Brazil']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Colombia', ' Honduras', ' Panama', ' Mexico', ' Ecuador']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Canada', ' Quebec', ' Mexico', ' Qué', ' Venezuela']
+Peruvian Navy, target: Peru   ==>   predicted: [' Puerto', ' Esp', ' Panama', ' Gu', ' Cur']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' Haiti', ' Mexico', ' Guatemala', ' Honduras', ' El']
+Kume District, target: Japan   ==>   predicted: [' Honduras', ' Ecuador', ' Haiti', ' Chile', ' Peru']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' Paragu', ' Brazil', ' Ecuador', ' Haiti', ' Uruguay']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Panama', ' Mexico', ' Gu', ' Colombia', ' Guatemala']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Afghanistan', ' Nicaragua', ' Pakistan', ' Uzbek', ' Afghan']
+Emscher, target: Germany   ==>   predicted: [' Morocco', ' Algeria', ' Panama', ' Haiti', ' Cameroon']
+Mugello Circuit, target: Italy   ==>   predicted: [' Tunisia', ' Morocco', ' Algeria', ' Maurit', ' Uruguay']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Paragu', ' Haiti', ' Morocco', ' Panama', ' Cameroon']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' Colombia', ' Panama', ' Ecuador', ' Gu', ' Mexico']
+Ginza, target: Japan   ==>   predicted: [' Mexico', ' Gu', ' France', ' Chile', ' Peru']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Brazil', ' Portugal', ' Uruguay', ' Sao', ' Bras']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Panama', ' Ecuador', ' Gu', ' Honduras', ' Bel']
+Ikuno-ku, target: Japan   ==>   predicted: [' Mexico', ' Guatemala', ' Panama', ' Bel', ' Gu']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Haiti', ' France', ' French', ' Panama', ' Gren']
+Llanquihue Province, target: Chile   ==>   predicted: [' Chile', ' Peru', ' Argentina', ' Venezuela', ' Bolivia']
+Sialkot district, target: Pakistan   ==>   predicted: [' Mexico', ' Haiti', ' Honduras', ' Venezuela', ' Peru']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' Venezuela', ' Honduras', ' Mexico', ' Gu', ' Ecuador']
+Isfahan International Airport, target: Iran   ==>   predicted: [' Mexico', ' Bel', ' Panama', ' Gu', ' El']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Canada', ' Quebec', ' Mexico', ' Ontario', ' Qué']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Haiti', ' Honduras', ' Algeria', ' El', ' Bel']
+Nepal Academy, target: Nepal   ==>   predicted: [' Haiti', ' Ghana', ' Algeria', ' Guinea', ' Burk']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Spain', ' Portugal', ' And', ' Esp', ' Cur']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Paragu', ' Panama', ' Mexico', ' Haiti', ' Nicaragua']
+Kitakami Station, target: Japan   ==>   predicted: [' Haiti', ' Mexico', ' Puerto', ' France', ' Argentina']
+----------------------------------------------------------------------------------------------------
+10/50
+----------------------------------------------------------------------------------------------------
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Naumburg (Saale), r = {} is located in the country of [P17], o = Germany)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 31.205049514770508, 'bias_norm': 517.58056640625, 'h_info': {'h_index': 5, 'token_id': 1000, 'token': 'ale'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Austria', ' Germany', ' the', ' Poland', ' Bohem']
+Lund Municipality, target: Sweden   ==>   predicted: [' Germany', ' Bav', ' Austria', ' the', ' Switzerland']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' Luxembourg', ' Belgium', ' Switzerland', ' Germany']
+Tehri Garhwal district, target: India   ==>   predicted: [' India', ' Germany', ' Iran', ' Pakistan', ' Afghanistan']
+Etobicoke North, target: Canada   ==>   predicted: [' Germany', ' the', ' Sa', ' Bav', ' France']
+National Republican Greek League, target: Greece   ==>   predicted: [' Germany', ' the', ' Bav', ' Sa', ' Austria']
+Perpignan, target: France   ==>   predicted: [' France', ' Luxembourg', ' Belgium', ' Germany', ' Austria']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Germany', ' the', ' Sa', ' Bav', ' Austria']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Germany', ' Austria', ' France', ' Bav', ' the']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' India', ' Pakistan', ' Iran', ' Afghanistan', ' Israel']
+Bispebjerg, target: Denmark   ==>   predicted: [' Austria', ' Germany', ' Bav', ' Switzerland', ' Sch']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Germany', ' the', ' France', ' Bav', ' Turkey']
+Nesodden IF, target: Norway   ==>   predicted: [' Germany', ' Austria', ' Bav', ' the', ' Sa']
+Lismore GAA, target: Ireland   ==>   predicted: [' Ireland', ' Germany', ' India', ' Bav', ' Israel']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Germany', ' the', ' France', ' Algeria', ' Turkey']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Austria', ' Poland', ' Germany', ' the', ' Bohem']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Austria', ' Denmark', ' Sweden', ' Germany', ' Norway']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Sa', ' Brazil', ' Portugal', ' South', ' Austria']
+Beauvais, target: France   ==>   predicted: [' France', ' Germany', ' Switzerland', ' Luxembourg', ' Bav']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' Germany', ' the', ' Austria', ' Bav', ' Sa']
+Munich Residence, target: Germany   ==>   predicted: [' Germany', ' Austria', ' the', ' Switzerland', ' France']
+Pontecorvo, target: Italy   ==>   predicted: [' Austria', ' Germany', ' Italy', ' the', ' Switzerland']
+Gio Linh, target: Vietnam   ==>   predicted: [' Austria', ' Germany', ' Bav', ' the', ' Sa']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Austria', ' Germany', ' the', ' Bav', ' Bohem']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Germany', ' France', ' Bav', ' Austria', ' the']
+Peruvian Navy, target: Peru   ==>   predicted: [' the', ' Germany', ' France', ' Sa', ' Austria']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' India', ' Israel', ' Iran', ' Pakistan', ' Germany']
+Kume District, target: Japan   ==>   predicted: [' Germany', ' the', ' Bav', ' Sa', ' Austria']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' Germany', ' the', ' Austria', ' France', ' Switzerland']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Austria', ' Germany', ' the', ' Poland', ' Bav']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Iran', ' Afghanistan', ' Pakistan', ' Azerbaijan', ' Uzbek']
+Emscher, target: Germany   ==>   predicted: [' Germany', ' Austria', ' the', ' Bav', ' Switzerland']
+Mugello Circuit, target: Italy   ==>   predicted: [' Germany', ' Austria', ' Bav', ' the', ' Switzerland']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Germany', ' Austria', ' Bav', ' Sch', ' Switzerland']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' Germany', ' Austria', ' Bav', ' the', ' Switzerland']
+Ginza, target: Japan   ==>   predicted: [' Germany', ' Austria', ' the', ' Bav', ' Sa']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Austria', ' Germany', ' Switzerland', ' Sa', ' the']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Germany', ' Israel', ' South', ' the', ' India']
+Ikuno-ku, target: Japan   ==>   predicted: [' Germany', ' the', ' Sa', ' Austria', ' Bav']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Germany', ' France', ' the', ' Bav', ' Austria']
+Llanquihue Province, target: Chile   ==>   predicted: [' Germany', ' the', ' Sa', ' Austria', ' Bav']
+Sialkot district, target: Pakistan   ==>   predicted: [' Germany', ' Bav', ' the', ' India', ' Sa']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' Germany', ' the', ' Austria', ' Bav', ' Sa']
+Isfahan International Airport, target: Iran   ==>   predicted: [' Germany', ' the', ' Bav', ' Austria', ' Turkey']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Germany', ' Austria', ' Bav', ' India', ' France']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Austria', ' Germany', ' the', ' Italy', ' Bav']
+Nepal Academy, target: Nepal   ==>   predicted: [' Germany', ' the', ' Austria', ' Bav', ' Sa']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Italy', ' Austria', ' Switzerland', ' Germany', ' France']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Austria', ' Germany', ' the', ' Poland', ' Bav']
+Kitakami Station, target: Japan   ==>   predicted: [' Germany', ' the', ' Austria', ' Bav', ' Switzerland']
+----------------------------------------------------------------------------------------------------
+11/50
+----------------------------------------------------------------------------------------------------
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = plaza de Cibeles, r = {} is located in the country of [P17], o = Spain)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 17.898963928222656, 'bias_norm': 446.3467102050781, 'h_info': {'h_index': 5, 'token_id': 274, 'token': 'es'}}
+----------------------------------------------------------------------------------------------------
+Siemiatycze, target: Poland   ==>   predicted: [' Spain', ' Gal', ' Hungary', ' Romania', ' Portugal']
+Lund Municipality, target: Sweden   ==>   predicted: [' Mexico', ' Colombia', ' Ecuador', ' Venezuela', ' Honduras']
+Grand Mosque of Paris, target: France   ==>   predicted: [' France', ' French', ' Algeria', ' Paris', ' Brittany']
+Tehri Garhwal district, target: India   ==>   predicted: [' Mexico', ' Colombia', ' Ecuador', ' Honduras', ' Venezuela']
+Etobicoke North, target: Canada   ==>   predicted: [' Mexico', ' Venezuela', ' Colombia', ' Argentina', ' Spain']
+National Republican Greek League, target: Greece   ==>   predicted: [' Mexico', ' Spain', ' Colombia', ' Venezuela', ' Honduras']
+Perpignan, target: France   ==>   predicted: [' France', ' Spain', ' Catalonia', ' Portugal', ' the']
+Prachin Buri River, target: Thailand   ==>   predicted: [' Mexico', ' Panama', ' Colombia', ' Venezuela', ' Honduras']
+Art Gallery of Ontario, target: Canada   ==>   predicted: [' Mexico', ' Canada', ' Quebec', ' Spain', ' Venezuela']
+Gurudwara Bangla Sahib, target: India   ==>   predicted: [' Mexico', ' Spain', ' the', ' Ecuador', ' Colombia']
+Bispebjerg, target: Denmark   ==>   predicted: [' Portugal', ' Brazil', ' Belgium', ' Spain', ' Switzerland']
+Sulaimaniyah International Airport, target: Iraq   ==>   predicted: [' Mexico', ' Panama', ' Spain', ' Colombia', ' Cuba']
+Nesodden IF, target: Norway   ==>   predicted: [' Spain', ' the', ' Portugal', ' Gal', ' Mexico']
+Lismore GAA, target: Ireland   ==>   predicted: [' Ireland', ' Spain', ' Gal', ' the', ' France']
+Sana'a International Airport, target: Yemen   ==>   predicted: [' Mexico', ' Panama', ' Cuba', ' Colombia', ' Honduras']
+ArcelorMittal Poland, target: Poland   ==>   predicted: [' Poland', ' Slovenia', ' Croatia', ' Hungary', ' Romania']
+TUIfly Nordic, target: Sweden   ==>   predicted: [' Slovenia', ' Norway', ' Sweden', ' Iceland', ' Finland']
+Greater Rio de Janeiro, target: Brazil   ==>   predicted: [' Brazil', ' Portugal', ' Sao', ' Rio', ' Colombia']
+Beauvais, target: France   ==>   predicted: [' France', ' Spain', ' Portugal', ' Belgium', ' Brazil']
+Russian-Armenian University, target: Armenia   ==>   predicted: [' Mexico', ' Honduras', ' Chile', ' Venezuela', ' Argentina']
+Munich Residence, target: Germany   ==>   predicted: [' Mexico', ' Argentina', ' Colombia', ' Honduras', ' Venezuela']
+Pontecorvo, target: Italy   ==>   predicted: [' Spain', ' Portugal', ' Italy', ' Brazil', ' Catalonia']
+Gio Linh, target: Vietnam   ==>   predicted: [' Spain', ' Mexico', ' Portugal', ' Brazil', ' Colombia']
+Ogrodzieniec, target: Poland   ==>   predicted: [' Spain', ' Portugal', ' Catalonia', ' Gal', ' the']
+Ford Motor Company of Canada, target: Canada   ==>   predicted: [' Mexico', ' Canada', ' Quebec', ' Venezuela', ' Colombia']
+Peruvian Navy, target: Peru   ==>   predicted: [' Panama', ' Chile', ' Cuba', ' Colombia', ' Puerto']
+Christian Medical College Ludhiana, target: India   ==>   predicted: [' Spain', ' the', ' Israel', ' France', ' Portugal']
+Kume District, target: Japan   ==>   predicted: [' Mexico', ' Ecuador', ' Colombia', ' Venezuela', ' Spain']
+Sydney Peace Prize, target: Australia   ==>   predicted: [' Mexico', ' Argentina', ' Brazil', ' Ecuador', ' Switzerland']
+Gmina Olsztyn, target: Poland   ==>   predicted: [' Spain', ' Catalonia', ' Portugal', ' Gal', ' Switzerland']
+Constitution of Afghanistan, target: Afghanistan   ==>   predicted: [' Afghanistan', ' Albania', ' Bosnia', ' Algeria', ' Morocco']
+Emscher, target: Germany   ==>   predicted: [' Mexico', ' Spain', ' Switzerland', ' Austria', ' Luxembourg']
+Mugello Circuit, target: Italy   ==>   predicted: [' Mexico', ' Argentina', ' Spain', ' Brazil', ' Switzerland']
+Staatliche Antikensammlungen, target: Germany   ==>   predicted: [' Austria', ' Switzerland', ' Mexico', ' Luxembourg', ' Belgium']
+Kungliga Svenska Segelsällskapet, target: Sweden   ==>   predicted: [' Mexico', ' Spain', ' Colombia', ' Ecuador', ' Hungary']
+Ginza, target: Japan   ==>   predicted: [' Spain', ' Italy', ' Catalonia', ' France', ' Switzerland']
+ABC Futebol Clube, target: Brazil   ==>   predicted: [' Brazil', ' Colombia', ' Mexico', ' Ecuador', ' Panama']
+Anak Bukit, target: Malaysia   ==>   predicted: [' Spain', ' Portugal', ' Gal', ' Catalonia', ' the']
+Ikuno-ku, target: Japan   ==>   predicted: [' Spain', ' Mexico', ' Catalonia', ' Gal', ' the']
+Castleisland Desmonds GAA, target: Ireland   ==>   predicted: [' Spain', ' Mexico', ' the', ' Gal', ' Ireland']
+Llanquihue Province, target: Chile   ==>   predicted: [' Chile', ' Mexico', ' Colombia', ' Venezuela', ' Argentina']
+Sialkot district, target: Pakistan   ==>   predicted: [' Mexico', ' Colombia', ' Venezuela', ' Ecuador', ' Honduras']
+Santa Maria da Feira Municipality, target: Portugal   ==>   predicted: [' Mexico', ' Colombia', ' Ecuador', ' Venezuela', ' Honduras']
+Isfahan International Airport, target: Iran   ==>   predicted: [' Mexico', ' Panama', ' Colombia', ' Cuba', ' Spain']
+Halton County, Ontario, target: Canada   ==>   predicted: [' Quebec', ' Canada', ' Spain', ' Catalonia', ' France']
+Kaunas Cathedral Basilica, target: Lithuania   ==>   predicted: [' Spain', ' Mexico', ' Italy', ' Austria', ' Argentina']
+Nepal Academy, target: Nepal   ==>   predicted: [' Mexico', ' Argentina', ' Colombia', ' Chile', ' Ecuador']
+Piazza al Serchio, target: Italy   ==>   predicted: [' Italy', ' Spain', ' Gal', ' Sard', ' And']
+Lewin Brzeski, target: Poland   ==>   predicted: [' Spain', ' Slovenia', ' Austria', ' Croatia', ' Switzerland']
+Kitakami Station, target: Japan   ==>   predicted: [' Mexico', ' Spain', ' Argentina', ' Colombia', ' Panama']
+----------------------------------------------------------------------------------------------------
+10/50
+----------------------------------------------------------------------------------------------------
