@@ -14,7 +14,7 @@ from dsets.counterfact import CounterFactDataset
 
 
 ###########################################################################
-MODEL_NAME = "gpt2-xl"  # gpt2-{medium,large,xl} or EleutherAI/gpt-j-6B
+MODEL_NAME = "EleutherAI/gpt-j-6B"  # gpt2-{medium,large,xl} or EleutherAI/gpt-j-6B
 layer = 25
 consider_residual = False
 approximate_rank = -1
@@ -33,18 +33,18 @@ print("loaded counterfact dataset")
 
 ###########################################################################
 relation_dct = {
-    'P17': {'relation': '{} is located in the country of', 'correct_predict': "P17/correct_prediction_P17__gpt2-xl.json", 'cached_JB': "P17/cached_jacobians/jacobian_calculations__all_sub_toks__P17__layer_25.npz"},
-    # 'P641': {'relation': '{} plays the sport of', 'correct_predict': "P641/correct_prediction_P641__gpt2-xl.json", 'cached_JB': "P641/jacobian_calculations__all_sub_toks__P641__layer_25.npz"},
-    # 'P103': {'relation': 'The mother tongue of {} is', 'correct_predict': "P103/correct_prediction_P103__gpt2-xl.json", 'cached_JB': "P103/jacobian_calculations__all_sub_toks__P103__layer_25.npz"},
-    # 'P176': {'relation': '{} is produced by', 'correct_predict': "P176/correct_prediction_P176__gpt2-xl.json", 'cached_JB': "P176/jacobian_calculations__all_sub_toks__P176__layer_25.npz"},
+    'P17'   : {'relation': '{} is located in the country of', 'correct_predict': None, 'cached_JB': None},
+    'P641'  : {'relation': '{} plays the sport of', 'correct_predict': None, 'cached_JB': None},
+    'P103'  : {'relation': 'The mother tongue of {} is', 'correct_predict': None, 'cached_JB': None},
+    'P176'  : {'relation': '{} is produced by', 'correct_predict': None, 'cached_JB': None},
 }
 ###########################################################################
 
-
 for relation_id in relation_dct:
+    save_dir = f"gpt-j/{relation_id}/"
 
     relation = relation_dct[relation_id]["relation"]
-    os.makedirs(relation_id, exist_ok=True)
+    os.makedirs(save_dir, exist_ok=True)
 
     print("\n\n")
     print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
@@ -75,7 +75,7 @@ for relation_id in relation_dct:
             if(ok):
                 correct_predict.append(c)
 
-            with open(f"{relation_id}/correct_prediction_{relation_id}__{MODEL_NAME}.json", "w") as f:
+            with open(f"{save_dir}correct_prediction_{relation_id}.json", "w") as f:
                 json.dump(correct_predict, f)
     else:
         print("Skipped checking, loading from file ==> ", relation_dct[relation_id]['correct_predict'])
@@ -115,7 +115,7 @@ for relation_id in relation_dct:
         
         print("Calculating completed .. saving results")
         np.savez(
-            f"{relation_id}/jacobian_calculations__all_sub_toks__{relation_id}__layer_{layer}.npz", 
+            f"{save_dir}jacobian_calculations__all_sub_toks__{relation_id}__layer_{layer}.npz", 
             jacobians = calculated_relation_collections, 
             allow_pickle = True
         )
@@ -128,7 +128,7 @@ for relation_id in relation_dct:
 
     print("\n")
 
-    with open(f"{relation_id}/scan_results_all_sub.txt", "w") as f:
+    with open(f"{save_dir}scan_results_all_sub.txt", "w") as f:
         for cur_operators in tqdm(calculated_relation_collections):
             print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", file=f)
             print(f'(s = {cur_operators["request"]["subject"]}, r = {relation} [{relation_id}], o = {cur_operators["request"]["target_true"]["str"]})', file=f)
@@ -154,7 +154,12 @@ for relation_id in relation_dct:
                         return_top_k=5,
                     )
                     print(f"{subject}, target: {target}   ==>   predicted: {objects}", file=f)
-                    tick += target.startswith(objects[0].strip())
+                    ok = False
+                    for o in objects:
+                        if target.startswith(o.strip()):
+                            ok = True
+                            break
+                    tick += ok
                 print("----------------------------------------------------------------------------------------------------", file=f)
                 print(f"{tick}/{len(test_cases)}", file=f)
                 print("----------------------------------------------------------------------------------------------------\n", file=f)
