@@ -1,0 +1,242 @@
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Nissan Pivo, r = {} is produced by [P176], o = Nissan)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 24.96875, 'bias_norm': 306.25, 'h_info': {'h_index': 1, 'token_id': 24112, 'token': 'issan'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Nissan Murano, target: Nissan   ==>   predicted: [' Nissan', ' the', ' Renault', ' Japanese', ' Mits'] >>> True
+Renault Avantime, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' Mits', ' P'] >>> False
+Suzuki RGV500, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' N', ' Suzuki', ' Mits'] >>> True
+Chevrolet Monza (Brazil), target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' N', ' Mits', ' P'] >>> False
+Renault Trafic, target: Renault   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Mits'] >>> True
+BMW 7 F01 F02, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' P', ' Mits'] >>> False
+Honda NSX, target: Honda   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Japanese'] >>> False
+Sony Alpha 900, target: Sony   ==>   predicted: [' Nissan', ' the', ' Subaru', ' a', ' Suzuki'] >>> False
+Airbus A320neo family, target: Airbus   ==>   predicted: [' Nissan', ' the', ' Suzuki', ' Honda', ' Mits'] >>> False
+Chevrolet Orlando, target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' N', ' Renault', ' Honda'] >>> False
+iPod Mini, target: Apple   ==>   predicted: [' Nissan', ' the', ' Suzuki', ' a', ' Mits'] >>> False
+Toyota Sienna, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Renault', ' Japanese', ' a'] >>> False
+Cadillac Series 62, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Suzuki'] >>> False
+Toyota Porte, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Renault', ' P', ' Mits'] >>> False
+BMW E9, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' Mits', ' Mazda'] >>> False
+Porsche 911 GT1, target: Porsche   ==>   predicted: [' Nissan', ' the', ' Mits', ' Toyota', ' Renault'] >>> False
+Renault Dauphine, target: Renault   ==>   predicted: [' Nissan', ' the', ' Renault', ' N', ' Mits'] >>> True
+Cadillac Series 60, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' N', ' Honda', ' Subaru'] >>> False
+Nissan Wingroad, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' Renault', ' Subaru'] >>> True
+Suzuki SV 650, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' Suzuki', ' a', ' Honda'] >>> True
+Honda CR-X del Sol, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Mits', ' Renault'] >>> False
+Renault Modus, target: Renault   ==>   predicted: [' Nissan', ' the', ' Mits', ' Japanese', ' a'] >>> False
+Ferrari FF, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' Mazda', ' N', ' a'] >>> False
+Toyota Matrix, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Japanese', ' Toyota'] >>> True
+Nissan Patrol, target: Nissan   ==>   predicted: [' Nissan', ' the', ' Renault', ' Mits', ' a'] >>> True
+Nintendo 2DS, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' Mits', ' N', ' a'] >>> True
+Renault Fluence, target: Renault   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Mits'] >>> True
+Nokia Lumia 820, target: Nokia   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Suzuki'] >>> False
+Renault 4, target: Renault   ==>   predicted: [' Nissan', ' the', ' Mits', ' N', ' Toyota'] >>> False
+Honda Mobilio, target: Honda   ==>   predicted: [' Nissan', ' the', ' Mits', ' Renault', ' a'] >>> False
+Ferrari Daytona, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' Renault', ' D', ' Mits'] >>> False
+Honda Stream, target: Honda   ==>   predicted: [' Nissan', ' the', ' Mits', ' Subaru', ' Suzuki'] >>> False
+Renault 19, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' Renault', ' a'] >>> True
+Toyota Verossa, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Japanese'] >>> False
+Porsche 914, target: Porsche   ==>   predicted: [' Nissan', ' the', ' Mits', ' N', ' a'] >>> False
+Toyota Soarer, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' N'] >>> False
+Game Boy Micro, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' Mits', ' N', ' a'] >>> True
+BMW E38, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' D', ' Mits'] >>> False
+Honda Concerto, target: Honda   ==>   predicted: [' Nissan', ' the', ' Renault', ' a', ' Japanese'] >>> False
+Porsche 2020, target: Porsche   ==>   predicted: [' Nissan', ' the', ' P', ' Subaru', ' Renault'] >>> True
+BMW New Class, target: BMW   ==>   predicted: [' Nissan', ' the', ' Mits', ' N', ' Renault'] >>> False
+Ferrari 212 Inter, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Mits'] >>> False
+Nissan S130, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' Mits', ' Renault'] >>> True
+IBM 729, target: IBM   ==>   predicted: [' Nissan', ' the', ' Mits', ' Renault', ' a'] >>> False
+Toyota Isis, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Renault', ' Japanese', ' a'] >>> False
+iPad 4, target: Apple   ==>   predicted: [' Nissan', ' the', ' P', ' Mits', ' Suzuki'] >>> False
+Nissan Stagea, target: Nissan   ==>   predicted: [' Nissan', ' the', ' Japanese', ' a', ' Subaru'] >>> True
+Toyota G1, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Mits', ' Toyota'] >>> True
+Ferrari 246 F1, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' N', ' Renault', ' D'] >>> False
+iPod Touch, target: Apple   ==>   predicted: [' Nissan', ' the', ' Mits', ' a', ' Renault'] >>> False
+----------------------------------------------------------------------------------------------------
+16/50
+----------------------------------------------------------------------------------------------------
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Nissan R'nessa, r = {} is produced by [P176], o = Nissan)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 23.703125, 'bias_norm': 369.0, 'h_info': {'h_index': 1, 'token_id': 24112, 'token': 'issan'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Nissan Murano, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Mits'] >>> True
+Renault Avantime, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+Suzuki RGV500, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' R'] >>> False
+Chevrolet Monza (Brazil), target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Renault Trafic, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Toyota'] >>> True
+BMW 7 F01 F02, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' R'] >>> False
+Honda NSX, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Sony Alpha 900, target: Sony   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Subaru'] >>> False
+Airbus A320neo family, target: Airbus   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' Honda'] >>> False
+Chevrolet Orlando, target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Honda'] >>> False
+iPod Mini, target: Apple   ==>   predicted: [' Nissan', ' the', ' a', ' Honda', ' Toyota'] >>> False
+Toyota Sienna, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Toyota'] >>> True
+Cadillac Series 62, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Toyota Porte, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Toyota'] >>> True
+BMW E9, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+Porsche 911 GT1, target: Porsche   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' N'] >>> False
+Renault Dauphine, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Renault'] >>> True
+Cadillac Series 60, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Honda'] >>> False
+Nissan Wingroad, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Renault'] >>> True
+Suzuki SV 650, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Yamaha'] >>> False
+Honda CR-X del Sol, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Renault Modus, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Mits'] >>> False
+Ferrari FF, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Toyota Matrix, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Nissan Patrol, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Mits'] >>> True
+Nintendo 2DS, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Renault Fluence, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' N'] >>> True
+Nokia Lumia 820, target: Nokia   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Toyota'] >>> False
+Renault 4, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Honda Mobilio, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Mits'] >>> False
+Ferrari Daytona, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' Renault', ' Mazda'] >>> False
+Honda Stream, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Renault 19, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Renault'] >>> True
+Toyota Verossa, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Renault'] >>> False
+Porsche 914, target: Porsche   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+Toyota Soarer, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> True
+Game Boy Micro, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Mits'] >>> True
+BMW E38, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+Honda Concerto, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Renault'] >>> False
+Porsche 2020, target: Porsche   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Subaru'] >>> False
+BMW New Class, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Mits'] >>> False
+Ferrari 212 Inter, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Nissan S130, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> True
+IBM 729, target: IBM   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Mits'] >>> False
+Toyota Isis, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Renault'] >>> True
+iPad 4, target: Apple   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' Mits'] >>> False
+Nissan Stagea, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Toyota G1, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' a'] >>> True
+Ferrari 246 F1, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+iPod Touch, target: Apple   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> False
+----------------------------------------------------------------------------------------------------
+17/50
+----------------------------------------------------------------------------------------------------
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Nissan GT-R LM Nismo, r = {} is produced by [P176], o = Nissan)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 16.5, 'bias_norm': 242.0, 'h_info': {'h_index': 1, 'token_id': 24112, 'token': 'issan'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Nissan Murano, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Renault Avantime, target: Renault   ==>   predicted: [' Nissan', ' the', ' Toyota', ' N', ' Japanese'] >>> False
+Suzuki RGV500, target: Suzuki   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Honda'] >>> False
+Chevrolet Monza (Brazil), target: Chevrolet   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Japanese'] >>> False
+Renault Trafic, target: Renault   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Japanese'] >>> False
+BMW 7 F01 F02, target: BMW   ==>   predicted: [' Nissan', ' N', ' Toyota', ' the', ' AM'] >>> False
+Honda NSX, target: Honda   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> False
+Sony Alpha 900, target: Sony   ==>   predicted: [' Nissan', ' the', ' Toyota', ' N', ' Porsche'] >>> False
+Airbus A320neo family, target: Airbus   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Honda'] >>> False
+Chevrolet Orlando, target: Chevrolet   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Honda'] >>> False
+iPod Mini, target: Apple   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' BMW'] >>> False
+Toyota Sienna, target: Toyota   ==>   predicted: [' Nissan', ' N', ' the', ' Japanese', ' Toyota'] >>> True
+Cadillac Series 62, target: Cadillac   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' AM'] >>> False
+Toyota Porte, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Toyota', ' N', ' Japanese'] >>> True
+BMW E9, target: BMW   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Japanese'] >>> False
+Porsche 911 GT1, target: Porsche   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> False
+Renault Dauphine, target: Renault   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Japanese'] >>> False
+Cadillac Series 60, target: Cadillac   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Honda'] >>> False
+Nissan Wingroad, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Suzuki SV 650, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Honda'] >>> False
+Honda CR-X del Sol, target: Honda   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Japanese'] >>> False
+Renault Modus, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' Japanese', ' Toyota'] >>> False
+Ferrari FF, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' Toyota', ' N', ' a'] >>> False
+Toyota Matrix, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Nissan Patrol, target: Nissan   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' a'] >>> True
+Nintendo 2DS, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Renault Fluence, target: Renault   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> False
+Nokia Lumia 820, target: Nokia   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Japanese'] >>> True
+Renault 4, target: Renault   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Honda'] >>> False
+Honda Mobilio, target: Honda   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Japanese'] >>> False
+Ferrari Daytona, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Honda'] >>> False
+Honda Stream, target: Honda   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Honda'] >>> True
+Renault 19, target: Renault   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Japanese'] >>> False
+Toyota Verossa, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Porsche 914, target: Porsche   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Porsche'] >>> True
+Toyota Soarer, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> True
+Game Boy Micro, target: Nintendo   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' J'] >>> True
+BMW E38, target: BMW   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' BMW'] >>> True
+Honda Concerto, target: Honda   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> False
+Porsche 2020, target: Porsche   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' Japanese'] >>> False
+BMW New Class, target: BMW   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' Japanese'] >>> False
+Ferrari 212 Inter, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' N', ' Toyota', ' a'] >>> False
+Nissan S130, target: Nissan   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' S'] >>> True
+IBM 729, target: IBM   ==>   predicted: [' Nissan', ' Toyota', ' N', ' the', ' Honda'] >>> False
+Toyota Isis, target: Toyota   ==>   predicted: [' Nissan', ' the', ' N', ' Japanese', ' Toyota'] >>> True
+iPad 4, target: Apple   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Honda'] >>> False
+Nissan Stagea, target: Nissan   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Japanese'] >>> True
+Toyota G1, target: Toyota   ==>   predicted: [' N', ' Nissan', ' Toyota', ' the', ' Japanese'] >>> True
+Ferrari 246 F1, target: Ferrari   ==>   predicted: [' Nissan', ' N', ' the', ' Toyota', ' a'] >>> False
+iPod Touch, target: Apple   ==>   predicted: [' Nissan', ' Toyota', ' the', ' N', ' Honda'] >>> False
+----------------------------------------------------------------------------------------------------
+18/50
+----------------------------------------------------------------------------------------------------
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Nissan Pao, r = {} is produced by [P176], o = Nissan)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 23.90625, 'bias_norm': 357.25, 'h_info': {'h_index': 1, 'token_id': 24112, 'token': 'issan'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Nissan Murano, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> True
+Renault Avantime, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Suzuki RGV500, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' a', ' Honda', ' Yamaha'] >>> False
+Chevrolet Monza (Brazil), target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> False
+Renault Trafic, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Renault'] >>> True
+BMW 7 F01 F02, target: BMW   ==>   predicted: [' Nissan', ' the', ' N', ' a', ' Toyota'] >>> False
+Honda NSX, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> True
+Sony Alpha 900, target: Sony   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> False
+Airbus A320neo family, target: Airbus   ==>   predicted: [' Nissan', ' the', ' Toyota', ' Honda', ' a'] >>> False
+Chevrolet Orlando, target: Chevrolet   ==>   predicted: [' Nissan', ' the', ' Honda', ' a', ' N'] >>> False
+iPod Mini, target: Apple   ==>   predicted: [' Nissan', ' the', ' Honda', ' a', ' Toyota'] >>> False
+Toyota Sienna, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Cadillac Series 62, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> False
+Toyota Porte, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> True
+BMW E9, target: BMW   ==>   predicted: [' Nissan', ' the', ' Mazda', ' N', ' a'] >>> False
+Porsche 911 GT1, target: Porsche   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' Honda'] >>> False
+Renault Dauphine, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Cadillac Series 60, target: Cadillac   ==>   predicted: [' Nissan', ' the', ' Honda', ' a', ' Toyota'] >>> False
+Nissan Wingroad, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Suzuki SV 650, target: Suzuki   ==>   predicted: [' Nissan', ' the', ' a', ' Honda', ' Yamaha'] >>> False
+Honda CR-X del Sol, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> False
+Renault Modus, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Mits', ' N'] >>> False
+Ferrari FF, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> False
+Toyota Matrix, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' Mazda'] >>> True
+Nissan Patrol, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> True
+Nintendo 2DS, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Renault Fluence, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Renault'] >>> True
+Nokia Lumia 820, target: Nokia   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Renault'] >>> False
+Renault 4, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> False
+Honda Mobilio, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Mits', ' N'] >>> False
+Ferrari Daytona, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' Honda', ' Mazda'] >>> False
+Honda Stream, target: Honda   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> True
+Renault 19, target: Renault   ==>   predicted: [' Nissan', ' the', ' a', ' Mazda', ' Toyota'] >>> False
+Toyota Verossa, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> True
+Porsche 914, target: Porsche   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' N'] >>> False
+Toyota Soarer, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+Game Boy Micro, target: Nintendo   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> False
+BMW E38, target: BMW   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Honda Concerto, target: Honda   ==>   predicted: [' Nissan', ' the', ' Toyota', ' Honda', ' a'] >>> True
+Porsche 2020, target: Porsche   ==>   predicted: [' Nissan', ' the', ' a', ' Honda', ' Toyota'] >>> False
+BMW New Class, target: BMW   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Honda'] >>> False
+Ferrari 212 Inter, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+Nissan S130, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' N'] >>> True
+IBM 729, target: IBM   ==>   predicted: [' Nissan', ' the', ' Honda', ' a', ' Toyota'] >>> False
+Toyota Isis, target: Toyota   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Mits'] >>> True
+iPad 4, target: Apple   ==>   predicted: [' Nissan', ' the', ' Toyota', ' Honda', ' a'] >>> False
+Nissan Stagea, target: Nissan   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> True
+Toyota G1, target: Toyota   ==>   predicted: [' Nissan', ' the', ' Toyota', ' a', ' N'] >>> True
+Ferrari 246 F1, target: Ferrari   ==>   predicted: [' Nissan', ' the', ' a', ' N', ' Toyota'] >>> False
+iPod Touch, target: Apple   ==>   predicted: [' Nissan', ' the', ' a', ' Toyota', ' Honda'] >>> False
+----------------------------------------------------------------------------------------------------
+18/50
+----------------------------------------------------------------------------------------------------
+
