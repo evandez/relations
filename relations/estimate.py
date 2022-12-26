@@ -1,7 +1,7 @@
 """Estimate relation operator using Jacobian."""
 import argparse
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Sequence, TypeAlias
 
 import baukit
 import torch
@@ -9,10 +9,10 @@ import torch.autograd.functional
 import torch.nn
 import transformers
 
-Model = transformers.GPT2LMHeadModel
-Tokenizer = transformers.PreTrainedTokenizerFast
-TokenizerOffsetMapping = Sequence[tuple[int, int]]
-Device = int | str | torch.device
+Model: TypeAlias = transformers.GPT2LMHeadModel
+Tokenizer: TypeAlias = transformers.PreTrainedTokenizerFast
+TokenizerOffsetMapping: TypeAlias = Sequence[tuple[int, int]]
+Device: TypeAlias = int | str | torch.device
 
 
 def find_token_range(
