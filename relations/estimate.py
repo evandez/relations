@@ -223,7 +223,8 @@ def estimate_relation_operator(
     h_token_index = determine_token_index(subject_i, subject_j, subject_token_index)
 
     h_layer_name = f"transformer.h.{layer}"
-    z_layer_name = f"transformer.h.{model.config.n_layer - 1}" if calculate_at_lnf == False else "transformer.ln_f"
+    n_layer = "num_hidden_layers" if hasattr(model.config, "num_hidden_layers") else "n_layer"
+    z_layer_name = f"transformer.h.{getattr(model.config, n_layer) - 1}" if calculate_at_lnf == False else "transformer.ln_f"
 
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         model(**inputs)
