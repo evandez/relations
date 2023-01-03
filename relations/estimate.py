@@ -248,7 +248,7 @@ def relation_operator_from_sample(
             model(
                 input_ids=inputs.input_ids,
                 past_key_values=past_key_values,
-                use_cache=True,
+                use_cache=use_cache,
             )
         return ret[z_layer_name].output[0][0, -1]
 
