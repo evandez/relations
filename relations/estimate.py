@@ -1,5 +1,4 @@
 """Estimate relation operator using Jacobian."""
-import argparse
 from dataclasses import dataclass
 from typing import Any, Sequence, TypeAlias
 
@@ -8,14 +7,17 @@ import torch
 import torch.autograd.functional
 import torch.nn
 import transformers
+import transformers.modeling_outputs
 
 Model: TypeAlias = transformers.GPT2LMHeadModel
+ModelInput: TypeAlias = transformers.BatchEncoding
+ModelOutput: TypeAlias = transformers.modeling_outputs.CausalLMOutput
 Tokenizer: TypeAlias = transformers.PreTrainedTokenizerFast
 TokenizerOffsetMapping: TypeAlias = Sequence[tuple[int, int]]
 Device: TypeAlias = int | str | torch.device
 
 
-def find_token_range(
+def _find_token_range(
     string: str,
     substring: str,
     tokenizer: Tokenizer | None = None,
@@ -88,7 +90,7 @@ def find_token_range(
     return (token_start, token_end + 1)
 
 
-def determine_token_index(start: int, end: int, offset: int) -> int:
+def _determine_token_index(start: int, end: int, offset: int) -> int:
     """Determine absolute index of token in range given offset."""
     if offset < 0:
         assert offset >= -end
@@ -146,10 +148,12 @@ class RelationOperator:
         ).to(device)
 
         offset_mapping = inputs.pop("offset_mapping")
-        subject_i, subject_j = find_token_range(
+        subject_i, subject_j = _find_token_range(
             prompt, subject, offset_mapping=offset_mapping[0]
         )
-        h_token_index = determine_token_index(subject_i, subject_j, subject_token_index)
+        h_token_index = _determine_token_index(
+            subject_i, subject_j, subject_token_index
+        )
 
         layer_name = f"transformer.h.{self.layer}"
         with baukit.Trace(self.model, layer_name) as ret:
@@ -161,15 +165,26 @@ class RelationOperator:
         return self.tokenizer.convert_ids_to_tokens(token_ids)
 
 
-def estimate_relation_operator(
+@dataclass(frozen=True)
+class RelationOperatorMetadata:
+    """Metadata from estimating the relation operator."""
+
+    subject: str
+    prompt: str
+    subject_token_index: int
+    input: ModelInput
+    output: ModelOutput
+
+
+def relation_operator_from_sample(
     model: Model,
     tokenizer: Tokenizer,
     subject: str,
     relation: str,
     subject_token_index: int = -1,
-    layer: int = 25,
+    layer: int = 15,
     device: Device | None = None,
-) -> RelationOperator:
+) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
 
     Args:
@@ -182,7 +197,7 @@ def estimate_relation_operator(
         device: Send inputs and model to this device.
 
     Returns:
-        The estimated operator.
+        The estimated operator and its metadata.
 
     """
     model.to(device)
@@ -193,20 +208,32 @@ def estimate_relation_operator(
     )
 
     offset_mapping = inputs.pop("offset_mapping")
-    subject_i, subject_j = find_token_range(
+    subject_i, subject_j = _find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0]
     )
-    h_token_index = determine_token_index(subject_i, subject_j, subject_token_index)
+    h_token_index = _determine_token_index(subject_i, subject_j, subject_token_index)
 
+    # Precompute everything up to the subject, if there is anything before it.
+    past_key_values = None
+    input_ids = inputs.input_ids
+    attention_mask = inputs.attention_mask
+    if subject_i > 0:
+        outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
+        past_key_values = outputs.past_key_values
+        input_ids = input_ids[:, subject_i:]
+        attention_mask = attention_mask[:, subject_i:]
+        h_token_index -= subject_i
+    use_cache = past_key_values is not None
+
+    # Precompute initial h and z.
     h_layer_name = f"transformer.h.{layer}"
     z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
-
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
-        model(**inputs)
-
+        outputs = model(**inputs, use_cache=use_cache, past_key_values=past_key_values)
     h = ret[h_layer_name].output[0][0, h_token_index]
     z = ret[z_layer_name].output[0][0, -1]
 
+    # Now compute J and b.
     def compute_z_from_h(h: torch.Tensor) -> torch.Tensor:
         def insert_h(output: tuple, layer: str) -> tuple:
             if layer != h_layer_name:
@@ -217,12 +244,12 @@ def estimate_relation_operator(
         with baukit.TraceDict(
             model, (h_layer_name, z_layer_name), edit_output=insert_h
         ) as ret:
-            model(**inputs)
+            model(**inputs, past_key_values=past_key_values, use_cache=True)
         return ret[z_layer_name].output[0][0, -1]
 
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
-    return RelationOperator(
+    operator = RelationOperator(
         model=model,
         tokenizer=tokenizer,
         layer=layer,
@@ -230,110 +257,131 @@ def estimate_relation_operator(
         weight=weight,
         bias=bias,
     )
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--model", choices=["gpt2-xl"], default="gpt2-xl", help="language model to use"
+    metadata = RelationOperatorMetadata(
+        subject=subject,
+        subject_token_index=subject_token_index,
+        prompt=prompt,
+        input=inputs,
+        output=outputs,
     )
-    parser.add_argument("--k", type=int, default=5, help="number of top O's to show")
-    parser.add_argument("--layer", type=int, default=30, help="layer to get h from")
-    parser.add_argument("--device", help="device to run on")
-    args = parser.parse_args()
+    return operator, metadata
 
-    device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
-    layer = args.layer
-    k = args.k
 
-    print(f"loading {args.model}")
-    model = transformers.AutoModelForCausalLM.from_pretrained(args.model)
+@dataclass(frozen=True)
+class RelationOperatorBatchMetadata:
+    """Metadata from estimating a relation operator from a batch."""
+
+    subject_for_weight: str
+    prompt_for_weight: str
+
+    operator_for_weight: RelationOperator
+    operators_for_bias: Sequence[RelationOperator]
+
+    metadata_for_weight: RelationOperatorMetadata
+    metadata_for_bias: Sequence[RelationOperatorMetadata]
+
+
+def relation_operator_from_batch(
+    model: Model,
+    tokenizer: Tokenizer,
+    samples: Sequence[tuple[str, str]],
+    relation: str,
+    subject_token_index: int | Sequence[int] = -1,
+    layer: int = 15,
+    device: Device | None = None,
+) -> tuple[RelationOperator, RelationOperatorBatchMetadata]:
+    """Estimate a higher quality J and b from a batch of samples.
+
+    J will be estimated from an ICL prompt consisting of all samples but one.
+    The one that is left out will be selected as the one that has the highest
+    probability under the LM given the prompt.
+
+    The bias will be estimated for each subject individually and then averaged.
+
+    Args:
+        model: The language model.
+        tokenizer: The language model's tokenizer.
+        samples: Batch of subjects and their values for this relation.
+            E.g., if the relation is "{} is located in", then this could be
+            [("The Space Needle", "Seattle"), ("The Eiffel Tower", "Paris"), ...].
+        relation: The relation template string, e.g. "{} is located in".
+        subject_token_index: Token index to use as h. Can be list specifying which
+            token for each subject.
+        layer: The layer to take h from.
+        device: Send model and inputs to this device.
+
+    Returns:
+        The relation operator and its metadata.
+
+    """
     model.to(device)
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(args.model)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    # Example 1: "is located in"
-    print("--- is located in ---")
-    is_located_in = estimate_relation_operator(
-        model,
-        tokenizer,
-        "The Space Needle",
-        "{} is located in the country of",
-        layer=layer,
-        device=device,
-    )
-    for subject, subject_token_index in (
-        ("The Space Needle", -1),
-        ("The Eiffel Tower", -2),
-        ("The Great Wall", -1),
-        ("Niagara Falls", -2),
-    ):
-        objects = is_located_in(
-            subject,
-            subject_token_index=subject_token_index,
-            device=device,
-            return_top_k=k,
+    if isinstance(subject_token_index, int):
+        subject_token_index = [subject_token_index] * len(samples)
+    if len(subject_token_index) != len(samples):
+        raise ValueError(
+            f"subject_token_index has length {len(subject_token_index)}"
+            f"which does not match samples length {len(samples)}"
         )
-        print(f"{subject}: {objects}")
 
-    # Example 2: "is CEO of"
-    # This one is less sensitive to which h you choose; can usually just do last.
-    print("--- is CEO of ---")
-    is_ceo_of = estimate_relation_operator(
-        model, tokenizer, "Indra Nooyi", "{} is CEO of", layer=layer, device=device
-    )
-    for subject in (
-        "Indra Nooyi",
-        "Sundar Pichai",
-        "Elon Musk",
-        "Mark Zuckerberg",
-        "Satya Nadella",
-        "Jeff Bezos",
-        "Tim Cook",
-    ):
-        objects = is_ceo_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
+    # Estimate the biases, storing the confidence of the target token
+    # along the way.
+    operators_for_bias = []
+    metadata_for_bias = []
+    confidences = []
+    for i, (subject, object) in enumerate(samples):
+        operator, metadata = relation_operator_from_sample(
+            model,
+            tokenizer,
+            subject,
+            relation,
+            subject_token_index=subject_token_index[i],
+            layer=layer,
+            device=device,
+        )
+        operators_for_bias.append(operator)
+        metadata_for_bias.append(metadata)
 
-    # Example 3: "is lead singer of"
-    # Seems to *actually* find the "is lead singer of grunge rock group" relation.
-    print("--- is lead singer of ---")
-    is_lead_singer_of = estimate_relation_operator(
+        object_token_id = tokenizer(object).input_ids[0]
+        logits = metadata.output.logits[0, -1]
+        logps = torch.log_softmax(logits, dim=-1)
+        confidences.append(logps[object_token_id])
+
+    # Now estimate J, using an ICL prompt with the model's most-confident subject
+    # used as the training example.
+    chosen = torch.stack(confidences).argmax().item()
+    assert isinstance(chosen, int)
+    subject_for_weight, _ = sample = samples[chosen]
+    others = list(set(samples) - {sample})
+    prompt_for_weight = "\n".join(relation.format(s) + f" {o}." for s, o in others)
+    prompt_for_weight += "\n" + relation
+    operator_for_weight, metadata_for_weight = relation_operator_from_sample(
         model,
         tokenizer,
-        "Chris Cornell",
-        "{} is the lead singer of the band",
+        subject_for_weight,
+        prompt_for_weight,
+        subject_token_index=subject_token_index[chosen],
         layer=layer,
         device=device,
     )
-    for subject in (
-        "Chris Cornell",
-        "Kurt Cobain",
-        "Eddie Vedder",
-        "Stevie Nicks",
-        "Freddie Mercury",
-    ):
-        objects = is_lead_singer_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
 
-    # Example 4: "plays the sport of"
-    # Does not work at all. Not sure why.
-    print("--- plays the sport of ---")
-    plays_sport_of = estimate_relation_operator(
-        model,
-        tokenizer,
-        "Megan Rapinoe",
-        "{} plays the sport of",
+    # Package it all up.
+    weight = operator_for_weight.weight
+    bias = torch.stack([operator.bias for operator in operators_for_bias]).mean(dim=0)
+    batch_operator = RelationOperator(
+        model=model,
+        tokenizer=tokenizer,
+        relation=relation,
         layer=layer,
-        device=device,
+        weight=weight,
+        bias=bias,
     )
-    for subject in (
-        "Megan Rapinoe",
-        "Larry Bird",
-        "John McEnroe",
-        "Oksana Baiul",
-        "Tom Brady",
-        "Babe Ruth",
-    ):
-        objects = plays_sport_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
+    batch_metadata = RelationOperatorBatchMetadata(
+        subject_for_weight=subject_for_weight,
+        prompt_for_weight=prompt_for_weight,
+        operator_for_weight=operator_for_weight,
+        metadata_for_weight=metadata_for_weight,
+        operators_for_bias=operators_for_bias,
+        metadata_for_bias=metadata_for_bias,
+    )
+    return batch_operator, batch_metadata
