@@ -227,7 +227,7 @@ def relation_operator_from_sample(
     z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         outputs = model(
-            input_ids=inputs.input_ids,
+            input_ids=input_ids,
             use_cache=use_cache,
             past_key_values=past_key_values,
         )
@@ -246,7 +246,7 @@ def relation_operator_from_sample(
             model, (h_layer_name, z_layer_name), edit_output=insert_h
         ) as ret:
             model(
-                input_ids=inputs.input_ids,
+                input_ids=input_ids,
                 past_key_values=past_key_values,
                 use_cache=use_cache,
             )
