@@ -176,6 +176,7 @@ class RelationOperatorMetadata:
     output: ModelOutput
 
 
+@torch.no_grad()
 def relation_operator_from_sample(
     model: Model,
     tokenizer: Tokenizer,
@@ -287,6 +288,7 @@ class RelationOperatorBatchMetadata:
     metadata_for_bias: Sequence[RelationOperatorMetadata]
 
 
+@torch.no_grad()
 def relation_operator_from_batch(
     model: Model,
     tokenizer: Tokenizer,
