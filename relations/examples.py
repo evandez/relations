@@ -193,7 +193,7 @@ if __name__ == "__main__":
         help="method for estimating relation operator",
     )
     parser.add_argument("--k", type=int, default=5, help="number of top O's to show")
-    parser.add_argument("--layer", type=int, default=30, help="layer to get h from")
+    parser.add_argument("--layer", type=int, default=15, help="layer to get h from")
     parser.add_argument("--device", help="device to run on")
     args = parser.parse_args()
 
