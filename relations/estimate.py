@@ -216,12 +216,10 @@ def relation_operator_from_sample(
     # Precompute everything up to the subject, if there is anything before it.
     past_key_values = None
     input_ids = inputs.input_ids
-    attention_mask = inputs.attention_mask
     if subject_i > 0:
         outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
         past_key_values = outputs.past_key_values
         input_ids = input_ids[:, subject_i:]
-        attention_mask = attention_mask[:, subject_i:]
         h_token_index -= subject_i
     use_cache = past_key_values is not None
 
@@ -229,7 +227,11 @@ def relation_operator_from_sample(
     h_layer_name = f"transformer.h.{layer}"
     z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
-        outputs = model(**inputs, use_cache=use_cache, past_key_values=past_key_values)
+        outputs = model(
+            input_ids=inputs.input_ids,
+            use_cache=use_cache,
+            past_key_values=past_key_values,
+        )
     h = ret[h_layer_name].output[0][0, h_token_index]
     z = ret[z_layer_name].output[0][0, -1]
 
@@ -244,7 +246,11 @@ def relation_operator_from_sample(
         with baukit.TraceDict(
             model, (h_layer_name, z_layer_name), edit_output=insert_h
         ) as ret:
-            model(**inputs, past_key_values=past_key_values, use_cache=True)
+            model(
+                input_ids=inputs.input_ids,
+                past_key_values=past_key_values,
+                use_cache=True,
+            )
         return ret[z_layer_name].output[0][0, -1]
 
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
