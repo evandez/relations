@@ -164,7 +164,7 @@ def run_batch_examples(
             ),
         ),
     ):
-        operator, _ = estimate.relation_operator_from_batch(
+        operator, metadata = estimate.relation_operator_from_batch(
             model,
             tokenizer,
             samples,
@@ -172,7 +172,7 @@ def run_batch_examples(
             layer=layer,
             device=device,
         )
-        print(f"--- {relation} ---")
+        print(f"--- {relation} (J trained on {metadata.subject_for_weight}) ---")
         for subject in tests:
             objects = operator(subject, return_top_k=k, device=device)
             print(f"{subject}: {objects}")
