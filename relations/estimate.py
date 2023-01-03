@@ -7,11 +7,9 @@ import torch
 import torch.autograd.functional
 import torch.nn
 import transformers
-import transformers.modeling_outputs
 
 Model: TypeAlias = transformers.GPT2LMHeadModel
 ModelInput: TypeAlias = transformers.BatchEncoding
-ModelOutput: TypeAlias = transformers.modeling_outputs.CausalLMOutput
 Tokenizer: TypeAlias = transformers.PreTrainedTokenizerFast
 TokenizerOffsetMapping: TypeAlias = Sequence[tuple[int, int]]
 Device: TypeAlias = int | str | torch.device
@@ -172,8 +170,8 @@ class RelationOperatorMetadata:
     subject: str
     prompt: str
     subject_token_index: int
-    input: ModelInput
-    output: ModelOutput
+    inputs: ModelInput
+    logits: torch.Tensor
 
 
 @torch.no_grad()
@@ -268,8 +266,8 @@ def relation_operator_from_sample(
         subject=subject,
         subject_token_index=subject_token_index,
         prompt=prompt,
-        input=inputs,
-        output=outputs,
+        inputs=inputs.cpu(),
+        logits=outputs.logits.cpu(),
     )
     return operator, metadata
 
@@ -351,7 +349,7 @@ def relation_operator_from_batch(
         metadata_for_bias.append(metadata)
 
         object_token_id = tokenizer(object).input_ids[0]
-        logits = metadata.output.logits[0, -1]
+        logits = metadata.logits[0, -1]
         logps = torch.log_softmax(logits, dim=-1)
         confidences.append(logps[object_token_id])
 
