@@ -266,7 +266,7 @@ def relation_operator_from_sample(
         subject=subject,
         subject_token_index=subject_token_index,
         prompt=prompt,
-        inputs=inputs.cpu(),
+        inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
     )
     return operator, metadata
