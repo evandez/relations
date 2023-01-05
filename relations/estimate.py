@@ -173,7 +173,7 @@ class RelationOperator:
         # return self.tokenizer.convert_ids_to_tokens(token_ids)
         return [
             self.tokenizer.decode(t) for t in token_ids
-        ] #, z # returns the estimation at z_index
+        ] # , z # returns the estimation at z_index
 
 
 def estimate_relation_operator(
