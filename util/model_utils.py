@@ -18,11 +18,13 @@ class ModelAndTokenizer:
         low_cpu_mem_usage=False,
         torch_dtype=None,
     ):
+        # print("initialized ModelAndTokenizer")
         if tokenizer is None:
             assert model_name is not None
             tokenizer = AutoTokenizer.from_pretrained(model_name)
         if model is None:
             assert model_name is not None
+            # print("ModelAndTokenizer ..")
             model = AutoModelForCausalLM.from_pretrained(
                 model_name, low_cpu_mem_usage=low_cpu_mem_usage, torch_dtype=torch_dtype
             )
@@ -69,6 +71,7 @@ def generate_fast(
     prompts: List[str],
     top_k: int = 5,
     max_out_len: int = 20,
+    max_new_tokens = None,
     argmax_greedy = False,
     debug = False,
 
@@ -77,6 +80,10 @@ def generate_fast(
                                     # `get_answer_tokens` must be true
 ):
     # print(prompts)
+    print(type(prompts))
+    if(type(prompts) == str):
+        prompts = [prompts]
+        
     tokenized = tok(prompts, padding=True, return_tensors="pt").to(
         next(model.parameters()).device
     )
@@ -102,6 +109,8 @@ def generate_fast(
         if(track_interesting_words is not None):
             p_interesting_words = [[] for _ in range(input_ids.shape[0])]
 
+    if(max_new_tokens != None):
+        max_out_len = input_ids.size(1) + max_new_tokens
     with torch.no_grad():
         while input_ids.size(1) < max_out_len:  # while not exceeding max output length
             model_out = model(
@@ -142,6 +151,7 @@ def generate_fast(
                                 p_interesting_words[i].append(
                                     {'token': tok.decode(token_id), 'token_id': token_id, 'p': round(float(softmax_out[i][token_id]), 4)}
                                 )
+                # print(answers)
 
 
             if(debug == True):
@@ -199,3 +209,51 @@ def generate_fast(
         if(track_interesting_words is not None):
             ret_dict['p_interesting_words'] = p_interesting_words
     return txt, ret_dict
+
+
+import copy
+
+child_last   = "└───"
+child_middle = "├───"
+space_pre    = "    "
+middle_pre   = "│   "
+def check_structure_tree(obj, key='#', level=0, level_info = {}, max_depth = 2):
+    if(level == max_depth+1):
+        return
+
+    if(level > 0):
+        for i in range(level-1):
+            if(level_info[i] == 'last'):
+                print(space_pre, end="")
+            else:
+                print(middle_pre, end="")
+        if(level_info[level-1] == 'last'):
+            child_pre = child_last
+        else:
+            child_pre = child_middle
+        print(child_pre, end="")
+    
+    if(key != '#'):
+        print(key, end=": ")
+    
+    num_elem = ""
+    if(isinstance(obj, tuple) or isinstance(obj, list)):
+        num_elem = f'[{len(obj)}]'
+    print(type(obj), num_elem, end=" ")
+    if(type(obj) is torch.Tensor):
+        print("[{}]".format(obj.shape))
+    else:
+        print()
+    if(isinstance(obj, tuple) or isinstance(obj, list) or isinstance(obj, dict)):
+        if(isinstance(obj, dict)):
+            keys = list(obj.keys())
+        else:
+            keys = list(range(len(obj)))
+        
+        for idx in range(len(keys)):
+            li = copy.deepcopy(level_info)
+            if(idx == len(obj)-1):
+                li[level] = 'last'
+            else:
+                li[level] = 'middle'
+            check_structure_tree(obj[keys[idx]], key=keys[idx], level = level + 1, level_info = li, max_depth = max_depth)
