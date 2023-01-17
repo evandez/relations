@@ -186,7 +186,8 @@ def estimate_relation_operator(
     device: Device | None = None,
     calculate_at_lnf = False,
     consider_residual = False,
-    approximate_rank = 5 # -1 => consider full rank -- the results will be the same as `consider_residual` set to False
+    approximate_rank = 5, # -1 => consider full rank -- the results will be the same as `consider_residual` set to False
+    test_identity = False
 ) -> RelationOperator:
     """Estimate the r in (s, r, o) as a linear operator.
 
@@ -253,19 +254,22 @@ def estimate_relation_operator(
         return f_h - h if consider_residual == True else f_h
 
 
-    weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True) 
+    if test_identity == True:
+        weight = torch.eye(h.shape[0]).to(model.dtype).to(device)
+    else:
+        weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True) 
 
-    if(consider_residual == True): 
-        if(approximate_rank != -1): # a low rank approximation
-            svd = weight.svd()
-            wgt_est = torch.zeros(weight.shape).to(device)
-            for i in range(approximate_rank):
-                wgt_est += svd.S[i] * (svd.U[:, i][None].T @ svd.V[:, i][None])
-            # print(f"approximation error ==> {torch.dist(weight, wgt_est)}")
-            approx_err = torch.dist(weight, wgt_est)
-            weight = wgt_est
-        else:
-            approx_err = torch.dist(weight, weight)
+        if(consider_residual == True): 
+            if(approximate_rank != -1): # a low rank approximation
+                svd = weight.svd()
+                wgt_est = torch.zeros(weight.shape).to(device)
+                for i in range(approximate_rank):
+                    wgt_est += svd.S[i] * (svd.U[:, i][None].T @ svd.V[:, i][None])
+                # print(f"approximation error ==> {torch.dist(weight, wgt_est)}")
+                approx_err = torch.dist(weight, wgt_est)
+                weight = wgt_est
+            else:
+                approx_err = torch.dist(weight, weight)
 
     bias = z[None] - h[None].mm(weight.t()) if consider_residual == False else (z - (h + weight@h))[None]
 

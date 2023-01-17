@@ -80,7 +80,6 @@ def generate_fast(
                                     # `get_answer_tokens` must be true
 ):
     # print(prompts)
-    print(type(prompts))
     if(type(prompts) == str):
         prompts = [prompts]
         
