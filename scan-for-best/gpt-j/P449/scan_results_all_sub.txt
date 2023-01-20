@@ -1,0 +1,589 @@
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Grace and Frankie, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.53125, 'bias_norm': 256.5, 'h_info': {'h_index': 0, 'token_id': 8642, 'token': 'Gr'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' September', ' Amazon'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' September'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' May', ' April', ' September'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' September'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' September'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' September'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' Friday', ' September', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' Amazon'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' September'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 15.9609375, 'bias_norm': 255.625, 'h_info': {'h_index': 1, 'token_id': 558, 'token': 'ace'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' Amazon'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' September'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' January'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' September', ' May'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' April', ' Friday', ' January'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' May'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' Friday', ' September', ' April'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' May'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' May'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 3.587890625, 'bias_norm': 256.25, 'h_info': {'h_index': 2, 'token_id': 290, 'token': ' and'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' April', ' Friday'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' April'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' April', ' Friday', ' May'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' May', ' April'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' May', ' September'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' May'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' May', ' April', ' Friday'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' May', ' Friday', ' Amazon'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' May', ' April', ' Friday'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 34.90625, 'bias_norm': 264.5, 'h_info': {'h_index': 3, 'token_id': 48535, 'token': ' Frankie'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' May', ' April'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' Amazon', ' April', ' PBS'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' Prime', ' the'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' Amazon', ' June', ' September', ' Hulu'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Amazon', ' April', ' Friday'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' April', ' Friday', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' April', ' August'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' Friday', ' May', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Leftovers, r = {} was released on [P449], o = HBO)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.4765625, 'bias_norm': 239.75, 'h_info': {'h_index': 0, 'token_id': 464, 'token': 'The'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' the', ' April'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Netflix', ' June', ' the', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 13.8203125, 'bias_norm': 240.375, 'h_info': {'h_index': 1, 'token_id': 9578, 'token': ' Left'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' April', ' the', ' June'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' the', ' April', ' June'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' HBO', ' April', ' June', ' the'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' the', ' April', ' June'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' April', ' the', ' June'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' the', ' April', ' June'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Netflix', ' June', ' the', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' April', ' the', ' June'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' HBO', ' June', ' the', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 56.5, 'bias_norm': 255.375, 'h_info': {'h_index': 2, 'token_id': 13801, 'token': 'overs'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' April', ' Amazon', ' July', ' June'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' April', ' June', ' FX'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Netflix', ' April', ' H', ' Sunday'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' April', ' March', ' the', ' ABC'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' Sunday', ' Hulu', ' H'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Blu', ' April', ' HBO'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Netflix', ' June', ' the', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' April', ' June', ' Canada'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Amazon', ' Netflix', ' NBC', ' HBO', ' Blu'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 9/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Blacklist, r = {} was released on [P449], o = NBC)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.51953125, 'bias_norm': 263.5, 'h_info': {'h_index': 0, 'token_id': 464, 'token': 'The'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' NBC', ' September', ' May', ' DVD', ' Netflix'] >>> False
+Grace and Frankie, target: Netflix   ==>   predicted: [' NBC', ' September', ' DVD', ' May', ' Netflix'] >>> False
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' NBC', ' September', ' May', ' Netflix', ' October'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' NBC', ' September', ' DVD', ' Netflix', ' May'] >>> False
+Lilyhammer, target: Netflix   ==>   predicted: [' NBC', ' September', ' May', ' DVD', ' Netflix'] >>> False
+Sense8, target: Netflix   ==>   predicted: [' September', ' NBC', ' May', ' DVD', ' Netflix'] >>> False
+The Leftovers, target: HBO   ==>   predicted: [' NBC', ' September', ' DVD', ' Netflix', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' May'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' NBC', ' September', ' DVD', ' Netflix', ' May'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.1953125, 'bias_norm': 263.5, 'h_info': {'h_index': 1, 'token_id': 2619, 'token': ' Black'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' October'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' October', ' DVD'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' NBC', ' September', ' Netflix', ' October', ' DVD'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' October'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' October'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' May', ' DVD'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' October'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' NBC', ' September', ' Netflix', ' October', ' May'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' October'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 7/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 38.375, 'bias_norm': 274.0, 'h_info': {'h_index': 2, 'token_id': 4868, 'token': 'list'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' July', ' June', ' September'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' September', ' Friday', ' DVD', ' Amazon'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' NBC', ' Blu', ' September'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' NBC', ' September', ' Blu'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' NBC', ' September', ' April'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' Blu', ' DVD', ' April', ' September'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' September', ' June', ' DVD', ' Amazon'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' September', ' July', ' June'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' NBC', ' September', ' Netflix', ' DVD', ' May'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 7/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Trailer Park Boys, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.98046875, 'bias_norm': 282.5, 'h_info': {'h_index': 0, 'token_id': 15721, 'token': 'Tra'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 11.25, 'bias_norm': 281.0, 'h_info': {'h_index': 1, 'token_id': 5329, 'token': 'iler'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.3828125, 'bias_norm': 281.75, 'h_info': {'h_index': 2, 'token_id': 3250, 'token': ' Park'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 30.125, 'bias_norm': 290.0, 'h_info': {'h_index': 3, 'token_id': 17528, 'token': ' Boys'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' June', ' the', ' April'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' January', ' April'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' iTunes'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' June', ' April'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' January'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' June'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Orange Is the New Black, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.01953125, 'bias_norm': 222.5, 'h_info': {'h_index': 0, 'token_id': 40141, 'token': 'Orange'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 25.34375, 'bias_norm': 220.75, 'h_info': {'h_index': 1, 'token_id': 1148, 'token': ' Is'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' April', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' April'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' DVD', ' July'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' April'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' April'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' April'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 9.234375, 'bias_norm': 222.25, 'h_info': {'h_index': 2, 'token_id': 262, 'token': ' the'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' Friday'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 18.390625, 'bias_norm': 223.0, 'h_info': {'h_index': 3, 'token_id': 968, 'token': ' New'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' June', ' Friday', ' July'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' June', ' Friday', ' July'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' June', ' Friday', ' July'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' June', ' Friday', ' July'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 37.75, 'bias_norm': 227.625, 'h_info': {'h_index': 4, 'token_id': 2619, 'token': ' Black'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' Friday', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' July', ' DVD'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' June', ' DVD', ' April', ' July'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' Friday', ' June'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' June', ' July', ' Friday', ' DVD'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' June', ' Friday', ' July', ' April'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' June', ' July', ' April', ' Friday'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' June', ' DVD', ' July', ' April'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' June', ' July', ' Friday', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Arrested Development, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.20703125, 'bias_norm': 227.5, 'h_info': {'h_index': 0, 'token_id': 3163, 'token': 'Ar'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' May', ' Blu'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 3.521484375, 'bias_norm': 227.125, 'h_info': {'h_index': 1, 'token_id': 2118, 'token': 'rest'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.296875, 'bias_norm': 226.75, 'h_info': {'h_index': 2, 'token_id': 276, 'token': 'ed'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' DVD', ' Netflix', ' the', ' Blu', ' March'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' DVD', ' Netflix', ' the', ' Blu', ' April'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' DVD', ' Netflix', ' Blu', ' the', ' May'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' Blu', ' the', ' May'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' DVD', ' Netflix', ' the', ' Blu', ' March'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' Blu', ' the', ' April'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' DVD', ' Netflix', ' Blu', ' the', ' May'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' DVD', ' Netflix', ' the', ' Blu', ' April'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' DVD', ' Netflix', ' Blu', ' the', ' May'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 46.34375, 'bias_norm': 234.375, 'h_info': {'h_index': 3, 'token_id': 7712, 'token': ' Development'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Friday', ' April'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Fox', ' June'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' Blu', ' the', ' HBO'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' Blu', ' May'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' Fox', ' the', ' Blu'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' Blu', ' the', ' a'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' the', ' March', ' April'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' the', ' April', ' March'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' the', ' NBC', ' Blu'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Last Week Tonight with John Oliver, r = {} was released on [P449], o = HBO)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.62890625, 'bias_norm': 252.75, 'h_info': {'h_index': 0, 'token_id': 5956, 'token': 'Last'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' April'] >>> False
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' the'] >>> False
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' April', ' the'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' April', ' DVD'] >>> False
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' the'] >>> False
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' April'] >>> False
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' the'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' April'] >>> False
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 9.2421875, 'bias_norm': 250.125, 'h_info': {'h_index': 1, 'token_id': 6119, 'token': ' Week'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' the', ' June', ' April'] >>> False
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' the', ' June', ' April'] >>> False
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' April', ' the'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' the', ' April', ' DVD'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Sunday', ' the', ' June', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 28.1875, 'bias_norm': 254.0, 'h_info': {'h_index': 2, 'token_id': 27117, 'token': ' Tonight'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' HBO', ' June', ' DVD', ' the'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' June', ' April', ' Sunday'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' May'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' DVD', ' Netflix', ' Sunday', ' HBO', ' iTunes'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' the', ' June'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Netflix', ' Sunday', ' June', ' the'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' June', ' Sunday', ' July', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' DVD', ' June', ' the', ' Sunday'] >>> False
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 7/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.8359375, 'bias_norm': 252.0, 'h_info': {'h_index': 3, 'token_id': 351, 'token': ' with'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' the', ' June', ' April'] >>> False
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 10.15625, 'bias_norm': 252.375, 'h_info': {'h_index': 4, 'token_id': 1757, 'token': ' John'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' the', ' April', ' June'] >>> False
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' DVD', ' the', ' June'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' April', ' DVD'] >>> False
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' DVD', ' April'] >>> False
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' the', ' DVD', ' June'] >>> False
+The Leftovers, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> False
+The Blacklist, target: NBC   ==>   predicted: [' HBO', ' Sunday', ' June', ' April', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 34.375, 'bias_norm': 254.75, 'h_info': {'h_index': 5, 'token_id': 15416, 'token': ' Oliver'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' DVD', ' the'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' the', ' DVD'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' HBO', ' Sunday', ' June', ' the', ' April'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' DVD', ' the'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' the', ' June'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' DVD', ' the'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Sunday', ' HBO', ' DVD', ' the', ' June'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' HBO', ' Sunday', ' Netflix', ' DVD', ' the'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Sunday', ' HBO', ' DVD', ' the', ' June'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Sense8, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.26953125, 'bias_norm': 306.75, 'h_info': {'h_index': 0, 'token_id': 41166, 'token': 'Sense'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' July'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' July'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' March', ' June'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' April', ' March', ' the', ' June'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 25.703125, 'bias_norm': 311.5, 'h_info': {'h_index': 1, 'token_id': 23, 'token': '8'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' July', ' DVD', ' June', ' April'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' April', ' June', ' DVD', ' the'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' April', ' the', ' DVD', ' March'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' the', ' DVD', ' April', ' July'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' July', ' June'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' the', ' April', ' March', ' June'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' April', ' June', ' the', ' March'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' April', ' the', ' DVD', ' March'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' April', ' March', ' the', ' June'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Lilyhammer, r = {} was released on [P449], o = Netflix)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.09375, 'bias_norm': 277.5, 'h_info': {'h_index': 0, 'token_id': 43, 'token': 'L'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' September'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.65625, 'bias_norm': 277.75, 'h_info': {'h_index': 1, 'token_id': 813, 'token': 'ily'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> False
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> False
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 24.140625, 'bias_norm': 282.0, 'h_info': {'h_index': 2, 'token_id': 17980, 'token': 'hammer'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Orange Is the New Black, target: Netflix   ==>   predicted: [' Netflix', ' June', ' April', ' DVD', ' July'] >>> True
+Grace and Frankie, target: Netflix   ==>   predicted: [' Netflix', ' Amazon', ' DVD', ' April', ' Hulu'] >>> True
+Last Week Tonight with John Oliver, target: HBO   ==>   predicted: [' Netflix', ' April', ' HBO', ' DVD', ' Hulu'] >>> True
+Arrested Development, target: Netflix   ==>   predicted: [' Netflix', ' Amazon', ' Hulu', ' April', ' DVD'] >>> True
+Lilyhammer, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' June', ' the'] >>> True
+Sense8, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' the', ' Amazon'] >>> True
+The Leftovers, target: HBO   ==>   predicted: [' Netflix', ' HBO', ' April', ' Hulu', ' DVD'] >>> True
+Trailer Park Boys, target: Netflix   ==>   predicted: [' Netflix', ' DVD', ' April', ' January', ' June'] >>> True
+The Blacklist, target: NBC   ==>   predicted: [' Netflix', ' April', ' September', ' January', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+

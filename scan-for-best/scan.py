@@ -23,21 +23,47 @@ cache_jacobian_batch = 100
 ###########################################################################
 
 print("loading ", MODEL_NAME)
-mt = model_utils.ModelAndTokenizer(MODEL_NAME, low_cpu_mem_usage=False, torch_dtype=torch.float16)
+mt = model_utils.ModelAndTokenizer(MODEL_NAME, low_cpu_mem_usage=True, torch_dtype=torch.float16)
 
 model = mt.model
 tokenizer = mt.tokenizer
 tokenizer.pad_token = tokenizer.eos_token
+precision_at = 3
 
 counterfact = CounterFactDataset("../data/")
 print("loaded counterfact dataset")
 
 ###########################################################################
 relation_dct = {
-    'P17'   : {'relation': '{} is located in the country of', 'correct_predict': "gpt-j/P17/correct_prediction_P17.json", 'cached_JB': "gpt-j/P17/cached_JB"},
-    'P641'  : {'relation': '{} plays the sport of', 'correct_predict': None, 'cached_JB': None},
-    'P103'  : {'relation': 'The mother tongue of {} is', 'correct_predict': None, 'cached_JB': None},
-    'P176'  : {'relation': '{} is produced by', 'correct_predict': None, 'cached_JB': None},
+    # 'P17'   : {'relation': '{} is located in the country of', 'correct_predict': None, 'cached_JB': None},
+    # 'P641'  : {'relation': '{} plays the sport of', 'correct_predict': None, 'cached_JB': None},
+    # 'P103'  : {'relation': 'The mother tongue of {} is', 'correct_predict': None, 'cached_JB': None},
+    # 'P176'  : {'relation': '{} is produced by', 'correct_predict': None, 'cached_JB': None},
+    # 'P140'  : {'relation': 'The official religion of {} is', 'correct_predict': None, 'cached_JB': None},
+    'P1303' : {'relation': '{} plays the instrument', 'correct_predict': None, 'cached_JB': None},
+    # 'P190'  : {'relation': 'What is the twin city of {}? It is', 'correct_predict': None, 'cached_JB': None},
+    # 'P740'  : {'relation': '{} was founded in', 'correct_predict': None, 'cached_JB': None},
+    # 'P178'  : {'relation': '{} was developed by', 'correct_predict': None, 'cached_JB': None},
+    # 'P495'  : {'relation': '{}, that originated in the country of', 'correct_predict': None, 'cached_JB': None},
+    # 'P127'  : {'relation': '{} is owned by', 'correct_predict': None, 'cached_JB': None},
+    # 'P413'  : {'relation': '{} plays in the position of', 'correct_predict': None, 'cached_JB': None},
+    # 'P39'   : {'relation': '{}, who holds the position of', 'correct_predict': None, 'cached_JB': None},
+    # 'P159'  : {'relation': 'The headquarter of {} is located in', 'correct_predict': None, 'cached_JB': None},
+    # 'P20'   : {'relation': '{} died in the city of', 'correct_predict': None, 'cached_JB': None},
+    # 'P136'  : {'relation': 'What does {} play? They play', 'correct_predict': None, 'cached_JB': None},
+    # 'P106'  : {'relation': 'The profession of {} is', 'correct_predict': None, 'cached_JB': None},
+    # 'P30'   : {'relation': '{} is located in the continent of', 'correct_predict': None, 'cached_JB': None},
+    # 'P937'  : {'relation': '{} worked in the city of', 'correct_predict': None, 'cached_JB': None},
+    # 'P449'  : {'relation': '{} was released on', 'correct_predict': None, 'cached_JB': None},
+    # 'P27'   : {'relation': '{} is a citizen of', 'correct_predict': None, 'cached_JB': None},
+    # 'P101'  : {'relation': '{} works in the field of', 'correct_predict': None, 'cached_JB': None},
+    # 'P19'   : {'relation': '{} was born in', 'correct_predict': None, 'cached_JB': None},
+    # 'P37'   : {'relation': 'In {}, an official language is', 'correct_predict': None, 'cached_JB': None},
+    # 'P138'  : {'relation': '{}, named after', 'correct_predict': None, 'cached_JB': None},
+    # 'P131'  : {'relation': '{} is located in', 'correct_predict': None, 'cached_JB': None},
+    # 'P407'  : {'relation': '{} was written in', 'correct_predict': None, 'cached_JB': None},
+    # 'P108'  : {'relation': '{}, who is employed by', 'correct_predict': None, 'cached_JB': None},
+    # 'P36'   : {'relation': 'The capital of {} is', 'correct_predict': None, 'cached_JB': None},
 }
 ###########################################################################
 
@@ -87,6 +113,9 @@ for relation_id in relation_dct:
 
 
     print(f"Correctly predicted {len(correct_predict)} targets")
+    if(len(correct_predict) < num_test_cases):
+        print(f"SKIPPING {relation_id} >>> Not enough correct predictions >>> {len(correct_predict)}")
+        continue
     test_cases = [(c["subject"], -1, c["target_true"]['str']) for c in random.sample(correct_predict, min(num_test_cases, len(correct_predict)))]
 
     print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
@@ -132,8 +161,9 @@ for relation_id in relation_dct:
     print()
 
     print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-    print("Generating results ... ... ...")
+    print("Generating performance scores ... ... ...")
     print("-----------------------------------------------------------------------")
+    performance_tracker = []
     with open(f"{save_dir}/scan_results_all_sub.txt", "w") as f:
         for cached_jb_file in os.listdir(cache_path):
             print("loading ... ", cached_jb_file)
@@ -167,7 +197,7 @@ for relation_id in relation_dct:
                             return_top_k=5,
                         )
                         ok = False
-                        for o in objects:
+                        for o in objects[0:precision_at]:
                             _o = o.strip()
                             if(len(_o) == 0):
                                 continue
@@ -177,8 +207,17 @@ for relation_id in relation_dct:
                         print(f"{subject}, target: {target}   ==>   predicted: {objects} >>> {ok}", file=f)
                         tick += ok
                     print("----------------------------------------------------------------------------------------------------", file=f)
-                    print(f"{tick}/{len(test_cases)}", file=f)
+                    print(f"precision at {precision_at} = {tick}/{len(test_cases)}", file=f)
                     print("----------------------------------------------------------------------------------------------------\n", file=f)
-
+                    performance_tracker.append({
+                        "subject"           : cur_operators["request"]["subject"],
+                        "relation"          : relation,
+                        "object"            : cur_operators["request"]["target_true"]["str"],
+                        "misc"              : calc["misc"],
+                        f"p@{precision_at}" : tick 
+                    })
                 print("\n", file=f)
+
+    with open(f"{save_dir}/performance", "w") as f:
+        json.dump(performance_tracker, f)
     print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")

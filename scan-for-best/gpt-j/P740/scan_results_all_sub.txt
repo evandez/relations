@@ -1,0 +1,717 @@
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Betsson, r = {} was founded in [P740], o = Sweden)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.44921875, 'bias_norm': 306.0, 'h_info': {'h_index': 0, 'token_id': 13056, 'token': 'Bet'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> True
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Sweden', ' 1994', ' 1995', ' 1999', ' 1998'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> False
+The Who, target: London   ==>   predicted: [' Sweden', ' 1994', ' 1995', ' 1999', ' 1998'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 27.703125, 'bias_norm': 315.25, 'h_info': {'h_index': 1, 'token_id': 16528, 'token': 'sson'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 2000'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Sweden', ' 1994', ' 1999', ' 1995', ' 1998'] >>> True
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Sweden', ' 1999', ' 1994', ' 1998', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Sweden', ' 1999', ' 1998', ' 1995', ' Malta'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Sweden', ' England', ' 1999', ' 1995', ' 2001'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Sweden', ' 1999', ' 2000', ' 1994', ' 1998'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Sweden', ' 1999', ' 1994', ' 2000', ' 1995'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Sweden', ' 1999', ' 1995', ' 1994', ' Stockholm'] >>> False
+The Who, target: London   ==>   predicted: [' Sweden', ' 1994', ' 1993', ' 1995', ' 1999'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Gloria Estefan, r = {} was founded in [P740], o = Miami)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.28125, 'bias_norm': 366.25, 'h_info': {'h_index': 0, 'token_id': 38, 'token': 'G'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Miami', ' the', ' 1998', ' 1989', ' 1980'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Miami', ' the', ' 1998', ' 1989', ' 1980'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> True
+The Who, target: London   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.64453125, 'bias_norm': 364.75, 'h_info': {'h_index': 1, 'token_id': 4685, 'token': 'lor'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> True
+The Who, target: London   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1984'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 9.640625, 'bias_norm': 365.0, 'h_info': {'h_index': 2, 'token_id': 544, 'token': 'ia'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' the', ' Miami', ' 1998', ' 1984', ' 1989'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' the', ' Miami', ' 1998', ' 1980', ' 1989'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Miami', ' the', ' 1998', ' 1984', ' 1980'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Miami', ' the', ' 1998', ' 1984', ' 1980'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Miami', ' the', ' 1998', ' 1989', ' 1984'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Miami', ' the', ' 1998', ' 1984', ' 1989'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Miami', ' the', ' 1998', ' 1984', ' 1994'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1998', ' 1984', ' 1980'] >>> True
+The Who, target: London   ==>   predicted: [' Miami', ' the', ' 1998', ' 1980', ' 1989'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 20.4375, 'bias_norm': 366.0, 'h_info': {'h_index': 3, 'token_id': 10062, 'token': ' Est'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Miami', ' the', ' 1998', ' 1989', ' 1990'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Miami', ' the', ' 1998', ' 1992', ' 1994'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' the', ' Miami', ' 1998', ' 1980', ' 1990'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' the', ' Miami', ' 1998', ' 1990', ' 1980'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Miami', ' the', ' 1989', ' 1998', ' 1984'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' the', ' Miami', ' 1998', ' 1990', ' 1994'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Miami', ' the', ' 1998', ' 1990', ' 1975'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1998', ' 1992', ' 1984'] >>> True
+The Who, target: London   ==>   predicted: [' Miami', ' the', ' 1989', ' 1992', ' 1998'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 34.1875, 'bias_norm': 371.5, 'h_info': {'h_index': 4, 'token_id': 891, 'token': 'ef'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' the', ' 1980', ' Miami', ' 1990', ' 1984'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' the', ' 1998', ' Miami', ' 1993', ' 1980'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Miami', ' the', ' 1985', ' 1984', ' 1989'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' the', ' Miami', ' 1998', ' 1985', ' 1983'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' the', ' Miami', ' 1980', ' 1990', ' 1984'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' the', ' 1980', ' Miami', ' 1984', ' 1985'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' the', ' Miami', ' 1985', ' 1984', ' 1980'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1988', ' 1983', ' 1984'] >>> True
+The Who, target: London   ==>   predicted: [' Miami', ' the', ' 1998', ' 1993', ' 1984'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 30.515625, 'bias_norm': 378.0, 'h_info': {'h_index': 5, 'token_id': 272, 'token': 'an'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Miami', ' the', ' 1994', ' 1984', ' 1998'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Miami', ' the', ' 1994', ' 1995', ' 1998'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Miami', ' the', ' 1984', ' 1972', ' 1990'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Miami', ' the', ' 1998', ' 1990', ' 1989'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Miami', ' the', ' 1989', ' 1984', ' 1988'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' the', ' Miami', ' 1975', ' 1989', ' 1990'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' the', ' Miami', ' 1994', ' 1989', ' 1990'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Miami', ' the', ' 1998', ' 1989', ' 1980'] >>> True
+The Who, target: London   ==>   predicted: [' the', ' 1972', ' 1971', ' 1974', ' Miami'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Who, r = {} was founded in [P740], o = London)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.22265625, 'bias_norm': 168.5, 'h_info': {'h_index': 0, 'token_id': 464, 'token': 'The'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> False
+The Who, target: London   ==>   predicted: [' London', ' 1964', ' 1953', ' 1965', ' 1952'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 34.4375, 'bias_norm': 172.0, 'h_info': {'h_index': 1, 'token_id': 5338, 'token': ' Who'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' 1964', ' 1962', ' 1965', ' London', ' 1952'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' 1965', ' London', ' 1962', ' 1953', ' 1964'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' 1964', ' 1962', ' London', ' 1965', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' London', ' 1964', ' Pete', ' 1962', ' 1965'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' 1964', ' 1965', ' London', ' the', ' 1963'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' London', ' 1952', ' 1964', ' 1962', ' 1946'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' 1964', ' 1965', ' London', ' 1962', ' Pete'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' London', ' 1962', ' 1964', ' the', ' 1965'] >>> False
+The Who, target: London   ==>   predicted: [' London', ' 1964', ' 1965', ' 1953', ' 1952'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Ronan and Erwan Bouroullec, r = {} was founded in [P740], o = Paris)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.68359375, 'bias_norm': 455.75, 'h_info': {'h_index': 0, 'token_id': 23672, 'token': 'Ron'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' 2001'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2000', ' 2008'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' 2001'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2000', ' 2008'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2001', ' 2008'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2001', ' 2008'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' 2001'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2000', ' 2001'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' 2001'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.03125, 'bias_norm': 454.0, 'h_info': {'h_index': 1, 'token_id': 272, 'token': 'an'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' 2000'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' 2000'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' 2006'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' 2006'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' 2000'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' 2006'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' 2000'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 0.9541015625, 'bias_norm': 453.75, 'h_info': {'h_index': 2, 'token_id': 290, 'token': ' and'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 2.462890625, 'bias_norm': 454.25, 'h_info': {'h_index': 3, 'token_id': 5256, 'token': ' Er'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.8046875, 'bias_norm': 455.25, 'h_info': {'h_index': 4, 'token_id': 8149, 'token': 'wan'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2001', ' 2000'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2008', ' 2002', ' 2006'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2006', ' 2008'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 1999', ' 2006', ' 2002', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2006', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2008', ' 2002', ' 1999', ' 1998'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 1998', ' 2008'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' the', ' 1999', ' 2002', ' 1998'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.04296875, 'bias_norm': 453.75, 'h_info': {'h_index': 5, 'token_id': 20576, 'token': ' Bour'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 1999', ' 2002', ' the', ' 2008'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 2002', ' 1999', ' the', ' 2008'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 2002', ' 1999', ' the', ' 2008'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' the', ' 2008'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 1999', ' 2008', ' the', ' 2002'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2002', ' the', ' 1999', ' 2008'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2002', ' the', ' 1999', ' 2008'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.47265625, 'bias_norm': 454.0, 'h_info': {'h_index': 6, 'token_id': 2852, 'token': 'oul'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 2008', ' the', ' 1999', ' 2002'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 1999', ' 2008', ' the', ' 2001'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 2008', ' 1999', ' the', ' 2002'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 2008', ' 2002', ' the', ' 1999'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2008', ' 2000', ' 1999', ' 2001'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2008', ' 2002', ' the', ' 1999'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 1.634765625, 'bias_norm': 453.25, 'h_info': {'h_index': 7, 'token_id': 293, 'token': 'le'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2008', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 2008', ' 1999', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.1953125, 'bias_norm': 455.75, 'h_info': {'h_index': 8, 'token_id': 66, 'token': 'c'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2006', ' 2000'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2006', ' 2000'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Paris', ' 2006', ' 2008', ' 2002', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Paris', ' 2008', ' 1999', ' 2002', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Paris', ' 1999', ' 2002', ' 2006', ' 2008'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Paris', ' 2008', ' 2006', ' 1999', ' 2000'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Paris', ' 2002', ' 1999', ' 2008', ' the'] >>> True
+Gloria Estefan, target: Miami   ==>   predicted: [' Paris', ' 2008', ' 1998', ' 1989', ' 2002'] >>> False
+The Who, target: London   ==>   predicted: [' Paris', ' the', ' 2002', ' 2001', ' 2008'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Neiman Marcus, r = {} was founded in [P740], o = Dallas)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.79296875, 'bias_norm': 238.625, 'h_info': {'h_index': 0, 'token_id': 8199, 'token': 'Ne'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1886', ' 1901'] >>> True
+Betsson, target: Sweden   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1886', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Dallas', ' 18', ' 1902', ' the', ' 1901'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Dallas', ' 18', ' 1902', ' the', ' 1886'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Dallas', ' 18', ' 1902', ' the', ' 1886'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1901', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1886', ' the'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1886', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Dallas', ' 18', ' 1902', ' 1901', ' 1886'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 30.40625, 'bias_norm': 241.25, 'h_info': {'h_index': 1, 'token_id': 24086, 'token': 'iman'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' 18', ' 1886', ' 1902', ' Dallas', ' 1915'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' New', ' 1886', ' 18', ' Dallas', ' 1924'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' 1886', ' 18', ' Dallas', ' 1924', ' 1902'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' 18', ' 1886', ' New', ' 1921', ' 1924'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' 1886', ' 18', ' 1902', ' 1905', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Dallas', ' 18', ' 1886', ' 1922', ' San'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' 18', ' 1886', ' 1924', ' New', ' San'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' 18', ' 1886', ' 1924', ' Dallas', ' 1946'] >>> False
+The Who, target: London   ==>   predicted: [' 1902', ' 18', ' 1921', ' Dallas', ' 1886'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 0/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 35.5625, 'bias_norm': 249.375, 'h_info': {'h_index': 2, 'token_id': 17068, 'token': ' Marcus'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Dallas', ' 18', ' 1902', ' the', ' 1901'] >>> True
+Betsson, target: Sweden   ==>   predicted: [' Dallas', ' 18', ' the', ' 1886', ' Minneapolis'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Dallas', ' 18', ' Chicago', ' the', ' 1886'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' 18', ' Memphis', ' Dallas', ' the', ' Atlanta'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Dallas', ' 18', ' Memphis', ' Texas', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Dallas', ' 18', ' New', ' San', ' Santa'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Dallas', ' 18', ' San', ' the', ' 1886'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Dallas', ' 18', ' 1962', ' the', ' 1921'] >>> False
+The Who, target: London   ==>   predicted: [' 1902', ' Dallas', ' 18', ' 1901', ' 1921'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Stone Roses, r = {} was founded in [P740], o = Manchester)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.92578125, 'bias_norm': 224.5, 'h_info': {'h_index': 0, 'token_id': 464, 'token': 'The'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Manchester', ' 1980', ' the', ' 1985', ' 1989'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Manchester', ' 1980', ' the', ' 1985', ' 1989'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> True
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Manchester', ' 1980', ' the', ' 1985', ' 1989'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Manchester', ' 1980', ' the', ' 1985', ' 1989'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> False
+The Who, target: London   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 22.0, 'bias_norm': 224.75, 'h_info': {'h_index': 1, 'token_id': 8026, 'token': ' Stone'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1984', ' 1985'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Manchester', ' the', ' 1985', ' 1989', ' 1980'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1984'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1984'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Manchester', ' 1985', ' the', ' 1984', ' 1980'] >>> True
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1984'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Manchester', ' the', ' 1985', ' 1980', ' 1988'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Manchester', ' the', ' 1985', ' 1986', ' 1984'] >>> False
+The Who, target: London   ==>   predicted: [' Manchester', ' the', ' 1985', ' 1980', ' 1986'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 38.5625, 'bias_norm': 231.625, 'h_info': {'h_index': 2, 'token_id': 41244, 'token': ' Roses'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Manchester', ' 1985', ' the', ' 1989', ' 1982'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Manchester', ' 1989', ' 1988', ' 1985', ' Liverpool'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Manchester', ' 1985', ' the', ' 1980', ' Liverpool'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Manchester', ' 1985', ' the', ' 1989', ' 1986'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Manchester', ' the', ' 1980', ' 1985', ' 1989'] >>> True
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Manchester', ' Cov', ' 1985', ' 1980', ' 1989'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Manchester', ' 1985', ' 1989', ' the', ' 1980'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Manchester', ' Liverpool', ' Mer', ' 1985', ' Cardiff'] >>> False
+The Who, target: London   ==>   predicted: [' Manchester', ' 1980', ' 1978', ' Sheffield', ' Liverpool'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Banco di Napoli, r = {} was founded in [P740], o = Naples)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.72265625, 'bias_norm': 196.25, 'h_info': {'h_index': 0, 'token_id': 30457, 'token': 'Ban'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> True
+The Stone Roses, target: Manchester   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+The Who, target: London   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.71875, 'bias_norm': 195.0, 'h_info': {'h_index': 1, 'token_id': 1073, 'token': 'co'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' 17', ' Naples', ' 18', ' 16', ' 15'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Naples', ' 18', ' 17', ' 15', ' 16'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' 18', ' Naples', ' 17', ' 16', ' 15'] >>> True
+The Stone Roses, target: Manchester   ==>   predicted: [' Naples', ' 17', ' 18', ' 16', ' 15'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' Italy'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+The Who, target: London   ==>   predicted: [' Naples', ' 17', ' 18', ' 16', ' 15'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 14.546875, 'bias_norm': 197.875, 'h_info': {'h_index': 2, 'token_id': 2566, 'token': ' di'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' 18', ' Naples', ' 17', ' 15', ' 16'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' 18', ' 17', ' Naples', ' 16', ' 15'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Naples', ' 17', ' 18', ' 16', ' 15'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> True
+The Stone Roses, target: Manchester   ==>   predicted: [' Naples', ' 16', ' 18', ' 17', ' 15'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Naples', ' 17', ' 18', ' 16', ' 15'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' 18', ' Naples', ' 17', ' 16', ' 1860'] >>> False
+The Who, target: London   ==>   predicted: [' 18', ' Naples', ' 17', ' 16', ' 15'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 39.5, 'bias_norm': 203.625, 'h_info': {'h_index': 3, 'token_id': 14332, 'token': ' Nap'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Naples', ' 18', ' 17', ' 15', ' 16'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Naples', ' 16', ' 17', ' 15', ' 18'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Naples', ' 18', ' 17', ' 1860', ' 1863'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' 18', ' Naples', ' 17', ' 16', ' 15'] >>> True
+The Stone Roses, target: Manchester   ==>   predicted: [' Naples', ' 17', ' 15', ' 18', ' 16'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Naples', ' 18', ' 1860', ' 1865', ' 17'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Naples', ' 18', ' 17', ' 15', ' 1860'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Naples', ' 18', ' 17', ' 1860', ' 15'] >>> False
+The Who, target: London   ==>   predicted: [' Naples', ' 17', ' 16', ' 18', ' 15'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 16.078125, 'bias_norm': 198.75, 'h_info': {'h_index': 4, 'token_id': 11106, 'token': 'oli'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' 18', ' Naples', ' 17', ' Italy', ' 16'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' 17', ' 16', ' 18', ' Naples', ' Italy'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' 18', ' 17', ' Italy', ' 16', ' Naples'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Naples', ' 18', ' 17', ' 16', ' 15'] >>> True
+The Stone Roses, target: Manchester   ==>   predicted: [' Naples', ' 17', ' Italy', ' 18', ' 16'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' 18', ' Italy', ' 17', ' Naples', ' 16'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' 18', ' 17', ' 16', ' Naples', ' Italy'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Naples', ' 18', ' Italy', ' 17', ' 1860'] >>> False
+The Who, target: London   ==>   predicted: [' 17', ' Italy', ' Naples', ' 18', ' 16'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Polish Press Agency, r = {} was founded in [P740], o = Warsaw)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.6484375, 'bias_norm': 347.25, 'h_info': {'h_index': 0, 'token_id': 8017, 'token': 'Pol'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' the', ' 1949'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' 1946'] >>> True
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' 1946'] >>> False
+The Who, target: London   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1949', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 12.2265625, 'bias_norm': 347.5, 'h_info': {'h_index': 1, 'token_id': 680, 'token': 'ish'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Warsaw', ' 1991', ' 1945', ' Poland', ' 1946'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1992', ' 1946'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1948', ' 1949'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Warsaw', ' 1945', ' 1946', ' 1991', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' Poland', ' 1992'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1949'] >>> True
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Warsaw', ' 1991', ' 1992', ' the', ' 1945'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Warsaw', ' 1991', ' 1945', ' 1992', ' 1946'] >>> False
+The Who, target: London   ==>   predicted: [' Warsaw', ' 1945', ' 1949', ' 1946', ' 1991'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 3.65625, 'bias_norm': 346.5, 'h_info': {'h_index': 2, 'token_id': 4332, 'token': ' Press'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1949', ' 1991'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1949'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' the', ' 1949'] >>> True
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> False
+The Who, target: London   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1949'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 9.3046875, 'bias_norm': 346.75, 'h_info': {'h_index': 3, 'token_id': 7732, 'token': ' Agency'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1946', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Warsaw', ' 1945', ' 1992', ' 1991', ' 1993'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Warsaw', ' 1945', ' 1949', ' 1946', ' 1948'] >>> False
+Banco di Napoli, target: Naples   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1946', ' 1949'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' the', ' 1992'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Warsaw', ' 1945', ' the', ' 1991', ' 1946'] >>> True
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Warsaw', ' 1945', ' 1946', ' the', ' 1991'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Warsaw', ' 1945', ' 1991', ' 1946', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Warsaw', ' 1945', ' 1946', ' the', ' 1991'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Fratelli Fabbri Editori, r = {} was founded in [P740], o = Milan)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.4453125, 'bias_norm': 356.75, 'h_info': {'h_index': 0, 'token_id': 37, 'token': 'F'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' 18', ' Tur', ' 1954', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Tur', ' 1954', ' the'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' Tur', ' 18', ' 1954', ' Rome'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' 1954'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' Tur', ' 18', ' 1954', ' Rome'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.18359375, 'bias_norm': 356.0, 'h_info': {'h_index': 1, 'token_id': 4873, 'token': 'rate'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.55859375, 'bias_norm': 356.5, 'h_info': {'h_index': 2, 'token_id': 15516, 'token': 'lli'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' 1954'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' 1954'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' 1954'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' 1954'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 3.693359375, 'bias_norm': 355.25, 'h_info': {'h_index': 3, 'token_id': 376, 'token': ' F'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 25.34375, 'bias_norm': 358.75, 'h_info': {'h_index': 4, 'token_id': 6485, 'token': 'abb'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' 18', ' 1924', ' Tur', ' Rome'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Rome', ' Tur', ' the'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' 18', ' Rome', ' Tur', ' 1924'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' 18', ' Tur', ' Rome', ' the'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' 18', ' Milan', ' Tur', ' Rome', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 7.8515625, 'bias_norm': 357.0, 'h_info': {'h_index': 5, 'token_id': 380, 'token': 'ri'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Italy'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' Tur', ' 18', ' 1954', ' the'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Italy'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' Tur', ' 18', ' Rome', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' Tur', ' 18', ' 1954', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.171875, 'bias_norm': 355.75, 'h_info': {'h_index': 6, 'token_id': 12058, 'token': ' Editor'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' 1954'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 10.8828125, 'bias_norm': 360.0, 'h_info': {'h_index': 7, 'token_id': 72, 'token': 'i'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Neiman Marcus, target: Dallas   ==>   predicted: [' Milan', ' Tur', ' 18', ' the', ' Rome'] >>> False
+Betsson, target: Sweden   ==>   predicted: [' Milan', ' Tur', ' 18', ' Italy', ' the'] >>> False
+Fratelli Fabbri Editori, target: Milan   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> True
+Banco di Napoli, target: Naples   ==>   predicted: [' Milan', ' 18', ' Tur', ' the', ' Rome'] >>> False
+The Stone Roses, target: Manchester   ==>   predicted: [' Milan', ' Tur', ' Italy', ' the', ' Rome'] >>> False
+Polish Press Agency, target: Warsaw   ==>   predicted: [' Milan', ' Tur', ' Rome', ' 18', ' the'] >>> False
+Ronan and Erwan Bouroullec, target: Paris   ==>   predicted: [' Milan', ' Tur', ' 18', ' Italy', ' the'] >>> False
+Gloria Estefan, target: Miami   ==>   predicted: [' Milan', ' Tur', ' Italy', ' Rome', ' the'] >>> False
+The Who, target: London   ==>   predicted: [' Milan', ' Tur', ' 18', ' Italy', ' the'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+
+

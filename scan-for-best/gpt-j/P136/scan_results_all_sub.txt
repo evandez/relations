@@ -1,0 +1,637 @@
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = SFJAZZ Collective, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 15.6796875, 'bias_norm': 381.0, 'h_info': {'h_index': 2, 'token_id': 14362, 'token': ' SF'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 4.1171875, 'bias_norm': 381.5, 'h_info': {'h_index': 3, 'token_id': 41, 'token': 'J'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.734375, 'bias_norm': 382.0, 'h_info': {'h_index': 4, 'token_id': 22778, 'token': 'AZ'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 25.703125, 'bias_norm': 381.25, 'h_info': {'h_index': 5, 'token_id': 57, 'token': 'Z'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' music', ' jazz', ' a', ' the', ' what'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' music', ' jazz', ' a', ' the', ' what'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' Jazz'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' Jazz', ' the'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' music', ' jazz', ' a', ' the', ' Jazz'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' Jazz', ' the'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' Jazz'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' Jazz', ' the'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' music', ' the', ' Jazz'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.21875, 'bias_norm': 381.75, 'h_info': {'h_index': 6, 'token_id': 29128, 'token': ' Collective'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Yerba Buena Jazz Band, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 2.451171875, 'bias_norm': 354.25, 'h_info': {'h_index': 2, 'token_id': 575, 'token': ' Y'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.7578125, 'bias_norm': 354.0, 'h_info': {'h_index': 3, 'token_id': 263, 'token': 'er'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 9.390625, 'bias_norm': 355.5, 'h_info': {'h_index': 4, 'token_id': 7012, 'token': 'ba'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.875, 'bias_norm': 354.75, 'h_info': {'h_index': 5, 'token_id': 9842, 'token': ' Bu'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' a', ' jazz', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' jazz', ' Jazz', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 10.7109375, 'bias_norm': 354.75, 'h_info': {'h_index': 6, 'token_id': 8107, 'token': 'ena'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' swing', ' the'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' swing', ' the'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' swing'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' swing'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' all'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' swing', ' the'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 23.71875, 'bias_norm': 354.25, 'h_info': {'h_index': 7, 'token_id': 21406, 'token': ' Jazz'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' swing', ' the'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' swing', ' music'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' swing', ' Jazz'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' swing', ' the'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' swing', ' Jazz', ' the'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' swing'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' everything', ' the'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' swing'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.7890625, 'bias_norm': 352.75, 'h_info': {'h_index': 8, 'token_id': 10243, 'token': ' Band'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' swing'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' Jazz', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Palatine Anthology, r = What does {} play? They play [P136], o = anthology)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 14.25, 'bias_norm': 425.5, 'h_info': {'h_index': 2, 'token_id': 3175, 'token': ' Pal'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' in'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' well'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.1484375, 'bias_norm': 427.0, 'h_info': {'h_index': 3, 'token_id': 265, 'token': 'at'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 10.1015625, 'bias_norm': 429.75, 'h_info': {'h_index': 4, 'token_id': 500, 'token': 'ine'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' Pal'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' like', ' it', ' Pal'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' Anth'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 14.890625, 'bias_norm': 425.75, 'h_info': {'h_index': 5, 'token_id': 8451, 'token': ' Anth'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' Anth'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' like', ' it', ' Anth'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 14.5546875, 'bias_norm': 427.5, 'h_info': {'h_index': 6, 'token_id': 1435, 'token': 'ology'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' like', ' it', ' songs'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' like', ' it', ' an'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = The Jazztet, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 2.775390625, 'bias_norm': 396.5, 'h_info': {'h_index': 2, 'token_id': 383, 'token': ' The'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 21.125, 'bias_norm': 399.5, 'h_info': {'h_index': 3, 'token_id': 21406, 'token': ' Jazz'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' the', ' a', ' Jazz', ' music'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' music', ' the'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' the', ' a', ' Jazz', ' music'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' swing'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' swing'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 7/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 3.220703125, 'bias_norm': 397.0, 'h_info': {'h_index': 4, 'token_id': 83, 'token': 't'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 6/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.265625, 'bias_norm': 395.5, 'h_info': {'h_index': 5, 'token_id': 316, 'token': 'et'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' music'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' the', ' Jazz', ' a', ' swing'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' the', ' a', ' Jazz', ' music'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' music'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 7/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = 32 Jazz, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 12.765625, 'bias_norm': 367.0, 'h_info': {'h_index': 2, 'token_id': 3933, 'token': ' 32'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' the', ' a', ' Jazz', ' basketball'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' the', ' a', ' Jazz', ' 32'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' jazz', ' the', ' 32', ' Jazz'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 17.5, 'bias_norm': 366.5, 'h_info': {'h_index': 3, 'token_id': 21406, 'token': ' Jazz'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' Jazz', ' basketball'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' funk'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' Jazz', ' the', ' a', ' funk'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' Jazz', ' a', ' the', ' music'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Funkadelic, r = What does {} play? They play [P136], o = funk)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 18.984375, 'bias_norm': 389.5, 'h_info': {'h_index': 2, 'token_id': 37299, 'token': ' Funk'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' Funk', ' funk', ' the', ' a', ' funky'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' Funk', ' funk', ' the', ' funky', ' a'] >>> False
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' Funk', ' funk', ' the', ' a', ' funky'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> True
+Palatine Anthology, target: anthology   ==>   predicted: [' Funk', ' funk', ' the', ' a', ' funky'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 1/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 29.59375, 'bias_norm': 396.0, 'h_info': {'h_index': 3, 'token_id': 6959, 'token': 'adel'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' funk', ' the', ' Funk', ' a', ' what'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' funk', ' the', ' Funk', ' a', ' what'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' funk', ' the', ' Funk', ' a', ' what'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' funk', ' the', ' a', ' what', ' everything'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> True
+Palatine Anthology, target: anthology   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 3/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 20.4375, 'bias_norm': 398.5, 'h_info': {'h_index': 4, 'token_id': 291, 'token': 'ic'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' funk', ' a', ' the', ' Funk', ' what'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' funk', ' the', ' Funk', ' a', ' what'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' jazz'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' funk', ' the', ' a'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' funk', ' the', ' a', ' Funk', ' what'] >>> True
+Palatine Anthology, target: anthology   ==>   predicted: [' funk', ' Funk', ' the', ' a', ' what'] >>> False
+----------------------------------------------------------------------------------------------------
+precision at 3 = 3/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Pat Metheny Group, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 8.625, 'bias_norm': 356.0, 'h_info': {'h_index': 2, 'token_id': 3208, 'token': ' Pat'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 33.34375, 'bias_norm': 358.25, 'h_info': {'h_index': 3, 'token_id': 3395, 'token': ' Met'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' funky'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' funky'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' free'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' Jazz'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' free'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' music', ' the', ' Jazz'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' what'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 34.3125, 'bias_norm': 361.0, 'h_info': {'h_index': 4, 'token_id': 47413, 'token': 'heny'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' music', ' jazz', ' a', ' free', ' the'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' Jazz', ' the', ' a'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' free'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' funk'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' music', ' funky', ' swing'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' funk', ' a', ' funky'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' funk', ' jazz', ' funky', ' Funk', ' music'] >>> True
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' free'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 9/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.0859375, 'bias_norm': 357.5, 'h_info': {'h_index': 5, 'token_id': 4912, 'token': ' Group'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' music', ' a', ' the', ' some'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Earth Is Room Enough, r = What does {} play? They play [P136], o = anthology)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.20703125, 'bias_norm': 397.5, 'h_info': {'h_index': 2, 'token_id': 3668, 'token': ' Earth'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 1.8583984375, 'bias_norm': 396.25, 'h_info': {'h_index': 3, 'token_id': 1148, 'token': ' Is'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 6.015625, 'bias_norm': 397.75, 'h_info': {'h_index': 4, 'token_id': 10096, 'token': ' Room'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' music', ' an', ' songs'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 5.34765625, 'bias_norm': 397.75, 'h_info': {'h_index': 5, 'token_id': 31779, 'token': ' Enough'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+SFJAZZ Collective, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+The Jazztet, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Earth Is Room Enough, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+32 Jazz, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Kamasi Washington, target: jazz   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Funkadelic, target: funk   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' a', ' the', ' an', ' music', ' songs'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 2/9
+----------------------------------------------------------------------------------------------------
+
+
+
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+(s = Kamasi Washington, r = What does {} play? They play [P136], o = jazz)
+zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 12.5078125, 'bias_norm': 350.75, 'h_info': {'h_index': 2, 'token_id': 12670, 'token': ' Kam'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' the', ' music', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 23.0, 'bias_norm': 352.75, 'h_info': {'h_index': 3, 'token_id': 17053, 'token': 'asi'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' funk'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' jazz', ' a', ' music', ' the', ' funk'] >>> False
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 8/9
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+{'Jh_norm': 29.828125, 'bias_norm': 358.5, 'h_info': {'h_index': 4, 'token_id': 2669, 'token': ' Washington'}, 'consider_residual': False}
+----------------------------------------------------------------------------------------------------
+Pat Metheny Group, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' funk'] >>> True
+SFJAZZ Collective, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' everything', ' the'] >>> True
+The Jazztet, target: jazz   ==>   predicted: [' jazz', ' a', ' the', ' music', ' everything'] >>> True
+Earth Is Room Enough, target: anthology   ==>   predicted: [' jazz', ' a', ' everything', ' music', ' the'] >>> True
+Yerba Buena Jazz Band, target: jazz   ==>   predicted: [' jazz', ' music', ' a', ' the', ' funk'] >>> True
+32 Jazz, target: jazz   ==>   predicted: [' jazz', ' Jazz', ' a', ' sax', ' trumpet'] >>> True
+Kamasi Washington, target: jazz   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+Funkadelic, target: funk   ==>   predicted: [' funk', ' jazz', ' a', ' music', ' everything'] >>> True
+Palatine Anthology, target: anthology   ==>   predicted: [' jazz', ' a', ' music', ' the', ' everything'] >>> True
+----------------------------------------------------------------------------------------------------
+precision at 3 = 9/9
+----------------------------------------------------------------------------------------------------
+
+
+
