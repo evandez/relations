@@ -40,7 +40,7 @@ relation_dct = {
     # 'P103'  : {'relation': 'The mother tongue of {} is', 'correct_predict': None, 'cached_JB': None},
     # 'P176'  : {'relation': '{} is produced by', 'correct_predict': None, 'cached_JB': None},
     # 'P140'  : {'relation': 'The official religion of {} is', 'correct_predict': None, 'cached_JB': None},
-    'P1303' : {'relation': '{} plays the instrument', 'correct_predict': None, 'cached_JB': None},
+    # 'P1303' : {'relation': '{} plays the instrument', 'correct_predict': None, 'cached_JB': None},
     # 'P190'  : {'relation': 'What is the twin city of {}? It is', 'correct_predict': None, 'cached_JB': None},
     # 'P740'  : {'relation': '{} was founded in', 'correct_predict': None, 'cached_JB': None},
     # 'P178'  : {'relation': '{} was developed by', 'correct_predict': None, 'cached_JB': None},
@@ -61,7 +61,7 @@ relation_dct = {
     # 'P37'   : {'relation': 'In {}, an official language is', 'correct_predict': None, 'cached_JB': None},
     # 'P138'  : {'relation': '{}, named after', 'correct_predict': None, 'cached_JB': None},
     # 'P131'  : {'relation': '{} is located in', 'correct_predict': None, 'cached_JB': None},
-    # 'P407'  : {'relation': '{} was written in', 'correct_predict': None, 'cached_JB': None},
+    'P407'  : {'relation': '{} was written in', 'correct_predict': None, 'cached_JB': None},
     # 'P108'  : {'relation': '{}, who is employed by', 'correct_predict': None, 'cached_JB': None},
     # 'P36'   : {'relation': 'The capital of {} is', 'correct_predict': None, 'cached_JB': None},
 }

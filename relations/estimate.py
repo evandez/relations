@@ -286,7 +286,7 @@ def estimate_relation_operator(
             'Jh_norm': h[None].mm(weight.t()).norm().item() if consider_residual == False else (h + weight@h).norm().item(),
             'bias_norm': bias.norm().item(),
             'h_info': {
-                'h_index': h_token_index,
+                'sub_index': subject_token_index,
                 'token_id': inputs['input_ids'][0][h_token_index].item(),
                 'token': tokenizer.decode(inputs['input_ids'][0][h_token_index])
             },
