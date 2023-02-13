@@ -160,7 +160,10 @@ class RelationOperator:
         z = h.mm(self.weight.t()) + self.bias
         logits = self.lm_head(z)
         token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
-        return self.tokenizer.convert_ids_to_tokens(token_ids)
+        # return self.tokenizer.convert_ids_to_tokens(token_ids)
+        return [
+            self.tokenizer.decode(t) for t in token_ids
+        ]
 
 
 @dataclass(frozen=True)
