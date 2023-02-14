@@ -64,7 +64,9 @@ class CornerEstimator:
 
         """
         target_tokenized = self.tokenizer(
-            target_words, padding=True, return_tensors="pt"
+            [" " + w for w in target_words],
+            padding=True,
+            return_tensors="pt",
         ).to(self.model.device)
         interested_rows = torch.stack(
             [self.unembedder.weight[r[0].item()] for r in target_tokenized.input_ids]
