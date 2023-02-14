@@ -111,6 +111,19 @@ class RelationOperator:
     weight: torch.Tensor
     bias: torch.Tensor
 
+    def overwrite(
+        self, weight: torch.Tensor | None = None, bias: torch.Tensor | None = None
+    ) -> "RelationOperator":
+        """Overwrite one or more parameters of the operator."""
+        return RelationOperator(
+            model=self.model,
+            tokenizer=self.tokenizer,
+            relation=self.relation,
+            layer=self.layer,
+            weight=self.weight if weight is None else weight,
+            bias=self.bias if bias is None else bias,
+        )
+
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return just the LM head part of the model."""
