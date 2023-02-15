@@ -178,8 +178,8 @@ class RelationOperator:
         dist = torch.softmax(logits.float(), dim=-1)
 
         topk = dist.topk(dim=-1, k=return_top_k)
-        probs = topk.values.tolist()
-        token_ids = topk.indices.tolist()
+        probs = topk.values.view(return_top_k).tolist()
+        token_ids = topk.indices.view(return_top_k).tolist()
         words = [self.tokenizer.decode(token_id) for token_id in token_ids]
 
         return tuple(zip(words, probs))
