@@ -179,7 +179,7 @@ class RelationOperator:
 
         topk = dist.topk(dim=-1, k=return_top_k)
         probs = topk.values.squeeze().tolist()
-        token_ids = topk.indices.squeeze().tolist()
+        token_ids = topk.indices.tolist()
         words = [self.tokenizer.decode(token_id) for token_id in token_ids]
 
         return tuple(zip(words, probs))
