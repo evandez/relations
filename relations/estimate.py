@@ -111,6 +111,22 @@ class RelationOperator:
     weight: torch.Tensor
     bias: torch.Tensor
 
+    def overwrite(
+        self,
+        relation: str | None = None,
+        weight: torch.Tensor | None = None,
+        bias: torch.Tensor | None = None,
+    ) -> "RelationOperator":
+        """Overwrite one or more parameters of the operator."""
+        return RelationOperator(
+            model=self.model,
+            tokenizer=self.tokenizer,
+            relation=self.relation if relation is None else relation,
+            layer=self.layer,
+            weight=self.weight if weight is None else weight,
+            bias=self.bias if bias is None else bias,
+        )
+
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return just the LM head part of the model."""
@@ -159,11 +175,14 @@ class RelationOperator:
         h = ret.output[0][:, h_token_index]
         z = h.mm(self.weight.t()) + self.bias
         logits = self.lm_head(z)
-        token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
-        # return self.tokenizer.convert_ids_to_tokens(token_ids)
-        return [
-            self.tokenizer.decode(t) for t in token_ids
-        ]
+        dist = torch.softmax(logits.float(), dim=-1)
+
+        topk = dist.topk(dim=-1, k=return_top_k)
+        probs = topk.values.view(return_top_k).tolist()
+        token_ids = topk.indices.view(return_top_k).tolist()
+        words = [self.tokenizer.decode(token_id) for token_id in token_ids]
+
+        return tuple(zip(words, probs))
 
 
 @dataclass(frozen=True)
