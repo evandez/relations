@@ -1,9 +1,9 @@
 import argparse
 
+from src import estimate
+
 import torch
 import transformers
-
-from src import estimate
 
 
 def run_single_examples(

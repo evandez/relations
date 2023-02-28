@@ -1,18 +1,19 @@
 """Estimate relation operator using Jacobian."""
 from dataclasses import dataclass
-from typing import Any, Sequence, TypeAlias
+from typing import Any, Sequence
+
+from src.utils.typing import (
+    Device,
+    Model,
+    ModelInput,
+    Tokenizer,
+    TokenizerOffsetMapping,
+)
 
 import baukit
 import torch
 import torch.autograd.functional
 import torch.nn
-import transformers
-
-Model: TypeAlias = transformers.GPT2LMHeadModel
-ModelInput: TypeAlias = transformers.BatchEncoding
-Tokenizer: TypeAlias = transformers.PreTrainedTokenizerFast
-TokenizerOffsetMapping: TypeAlias = Sequence[tuple[int, int]]
-Device: TypeAlias = int | str | torch.device
 
 
 def _find_token_range(
@@ -141,7 +142,7 @@ class RelationOperator:
         subject_token_index: int = -1,
         return_top_k: int = 5,
         device: Device | None = None,
-    ) -> tuple[str, ...]:
+    ) -> tuple[tuple[str, float], ...]:
         """Estimate the O in (S, R, O) given a new S.
 
         Args:
@@ -151,7 +152,7 @@ class RelationOperator:
             device: Send model and inputs to this device.
 
         Returns:
-            Top predictions for O.
+            Top predictions for O and their probabilities under the LM.
 
         """
         self.model.to(device)

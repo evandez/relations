@@ -35,7 +35,7 @@ def presubmit_black(c, fix=False):
 @task
 def presubmit_isort(c, fix=False):
     """Lint with isort."""
-    cmd = "python -m isort remedi scripts"
+    cmd = "python -m isort src scripts"
     if not fix:
         cmd += " --check"
     c.run(cmd)
@@ -44,7 +44,7 @@ def presubmit_isort(c, fix=False):
 @task
 def presubmit_mypy(c):
     """Run mypy type checker."""
-    c.run("python -m mypy remedi scripts")
+    c.run("python -m mypy src scripts")
 
 
 @task

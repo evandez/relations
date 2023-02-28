@@ -1,7 +1,9 @@
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import re
+
+import torch
 from baukit import nethook
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 
 class ModelAndTokenizer:
     """
@@ -46,24 +48,40 @@ class ModelAndTokenizer:
             f"tokenizer: {type(self.tokenizer).__name__})"
         )
 
+
 def print_formatted_results(prompts, txt, ret_dict):
     for i in range(len(prompts)):
         print(prompts[i])
         print(txt[i])
-        if('answer' in ret_dict):
-            answer = ret_dict['answer'][i]['candidates']
-            print("p(answer): ", ", ".join([f"p(\'{t['token']}\'[{t['token_id']}])={t['p']}" for t in answer]))
-        if('p_interesting_words' in ret_dict):
-            p_interesting = ret_dict['p_interesting_words'][i]
-            print("p(interesting): ", ", ".join([f"p(\'{t['token']}\'[{t['token_id']}])={t['p']}" for t in p_interesting]))
+        if "answer" in ret_dict:
+            answer = ret_dict["answer"][i]["candidates"]
+            print(
+                "p(answer): ",
+                ", ".join(
+                    [f"p('{t['token']}'[{t['token_id']}])={t['p']}" for t in answer]
+                ),
+            )
+        if "p_interesting_words" in ret_dict:
+            p_interesting = ret_dict["p_interesting_words"][i]
+            print(
+                "p(interesting): ",
+                ", ".join(
+                    [
+                        f"p('{t['token']}'[{t['token_id']}])={t['p']}"
+                        for t in p_interesting
+                    ]
+                ),
+            )
 
         print()
 
 
-import unicodedata
-from typing import Optional, List
 import collections
+import unicodedata
+from typing import List, Optional
+
 import numpy as np
+
 
 def generate_fast(
     model: AutoModelForCausalLM,
@@ -71,18 +89,17 @@ def generate_fast(
     prompts: List[str],
     top_k: int = 5,
     max_out_len: int = 20,
-    max_new_tokens = None,
-    argmax_greedy = False,
-    debug = False,
-
-    get_answer_tokens = False,      # returns the immediate next top token and `top_k` possible candidates
-    track_interesting_words = None, # for each prompt tracks the p(token) of some interesting tokens as answer (the first generated token). 
-                                    # `get_answer_tokens` must be true
+    max_new_tokens=None,
+    argmax_greedy=False,
+    debug=False,
+    get_answer_tokens=False,  # returns the immediate next top token and `top_k` possible candidates
+    track_interesting_words=None,  # for each prompt tracks the p(token) of some interesting tokens as answer (the first generated token).
+    # `get_answer_tokens` must be true
 ):
     # print(prompts)
-    if(type(prompts) == str):
+    if type(prompts) == str:
         prompts = [prompts]
-        
+
     tokenized = tok(prompts, padding=True, return_tensors="pt").to(
         next(model.parameters()).device
     )
@@ -100,15 +117,16 @@ def generate_fast(
     # print(cur_context)
 
     if get_answer_tokens == True:
-        prompt_lens = np.array([
-            tok([p], return_tensors="pt").input_ids.shape[-1]
-            for p in prompts
-        ])
-        answers = [{'top_token': "<#>", 'candidates': []} for _ in range(input_ids.shape[0])]
-        if(track_interesting_words is not None):
+        prompt_lens = np.array(
+            [tok([p], return_tensors="pt").input_ids.shape[-1] for p in prompts]
+        )
+        answers = [
+            {"top_token": "<#>", "candidates": []} for _ in range(input_ids.shape[0])
+        ]
+        if track_interesting_words is not None:
             p_interesting_words = [[] for _ in range(input_ids.shape[0])]
 
-    if(max_new_tokens != None):
+    if max_new_tokens != None:
         max_out_len = input_ids.size(1) + max_new_tokens
     with torch.no_grad():
         while input_ids.size(1) < max_out_len:  # while not exceeding max output length
@@ -128,40 +146,53 @@ def generate_fast(
             softmax_out_top_k = torch.gather(softmax_out, 1, tk)
             softmax_out_top_k = softmax_out_top_k / softmax_out_top_k.sum(1)[:, None]
 
-            if(argmax_greedy == False):
+            if argmax_greedy == False:
                 new_tok_indices = torch.multinomial(softmax_out_top_k, 1)
                 new_toks = torch.gather(tk, 1, new_tok_indices)
 
             else:
                 new_tok_indices = torch.topk(softmax_out_top_k, dim=1, k=1)
                 new_toks = torch.gather(tk, 1, new_tok_indices.indices)
-            
-            if(get_answer_tokens == True):
+
+            if get_answer_tokens == True:
                 for i in range(input_ids.shape[0]):
-                    if(prompt_lens[i] == cur_context.stop):
-                        answers[i]['top_token'] = tok.decode(new_toks[i][0])
+                    if prompt_lens[i] == cur_context.stop:
+                        answers[i]["top_token"] = tok.decode(new_toks[i][0])
                         for t in tk[i]:
-                            answers[i]['candidates'].append(
-                                {'token': tok.decode(t), 'token_id': t.item(), 'p': round(float(softmax_out[i][int(t)]), 4)}
+                            answers[i]["candidates"].append(
+                                {
+                                    "token": tok.decode(t),
+                                    "token_id": t.item(),
+                                    "p": round(float(softmax_out[i][int(t)]), 4),
+                                }
                             )
-                        if(track_interesting_words is not None):
+                        if track_interesting_words is not None:
                             for token in track_interesting_words[i]:
                                 token_id = tok(token).input_ids[0]
                                 p_interesting_words[i].append(
-                                    {'token': tok.decode(token_id), 'token_id': token_id, 'p': round(float(softmax_out[i][token_id]), 4)}
+                                    {
+                                        "token": tok.decode(token_id),
+                                        "token_id": token_id,
+                                        "p": round(float(softmax_out[i][token_id]), 4),
+                                    }
                                 )
                 # print(answers)
 
-
-            if(debug == True):
+            if debug == True:
                 for i in range(input_ids.size(0)):
                     # print(f"{i} => ", end="")
                     token_id = new_toks[i][0]
-                    print(f"\'{tok.decode([token_id])}\'[{token_id}] -- {softmax_out[i][token_id]*100}", end=" ")
+                    print(
+                        f"'{tok.decode([token_id])}'[{token_id}] -- {softmax_out[i][token_id]*100}",
+                        end=" ",
+                    )
                     print("[", end="")
                     for t in tk[i]:
                         # print(t)
-                        print(f"\'{tok.decode(t)}\'({round(float(softmax_out[i][int(t)]*100), 3)})", end=" ")
+                        print(
+                            f"'{tok.decode(t)}'({round(float(softmax_out[i][int(t)]*100), 3)})",
+                            end=" ",
+                        )
                     print("]")
 
             # If we're currently generating the continuation for the last token in `input_ids`,
@@ -191,11 +222,9 @@ def generate_fast(
 
             cur_context = slice(cur_context.stop, cur_context.stop + 1)
 
-
     txt = [tok.decode(x) for x in input_ids.detach().cpu().numpy().tolist()]
     txt = [
-        unicodedata.normalize("NFKD", x)
-        .replace("\n", " ")
+        unicodedata.normalize("NFKD", x).replace("\n", " ")
         # .replace("<|endoftext|>", "")
         for x in txt
     ]
@@ -203,56 +232,64 @@ def generate_fast(
     # print(answers)
 
     ret_dict = {"past_key_values": past_key_values}
-    if(get_answer_tokens == True):
-        ret_dict['answer'] = answers
-        if(track_interesting_words is not None):
-            ret_dict['p_interesting_words'] = p_interesting_words
+    if get_answer_tokens == True:
+        ret_dict["answer"] = answers
+        if track_interesting_words is not None:
+            ret_dict["p_interesting_words"] = p_interesting_words
     return txt, ret_dict
 
 
 import copy
 
-child_last   = "└───"
+child_last = "└───"
 child_middle = "├───"
-space_pre    = "    "
-middle_pre   = "│   "
-def check_structure_tree(obj, key='#', level=0, level_info = {}, max_depth = 2):
-    if(level == max_depth+1):
+space_pre = "    "
+middle_pre = "│   "
+
+
+def check_structure_tree(obj, key="#", level=0, level_info={}, max_depth=2):
+    if level == max_depth + 1:
         return
 
-    if(level > 0):
-        for i in range(level-1):
-            if(level_info[i] == 'last'):
+    if level > 0:
+        for i in range(level - 1):
+            if level_info[i] == "last":
                 print(space_pre, end="")
             else:
                 print(middle_pre, end="")
-        if(level_info[level-1] == 'last'):
+        if level_info[level - 1] == "last":
             child_pre = child_last
         else:
             child_pre = child_middle
         print(child_pre, end="")
-    
-    if(key != '#'):
+
+    if key != "#":
         print(key, end=": ")
-    
+
     num_elem = ""
-    if(isinstance(obj, tuple) or isinstance(obj, list)):
-        num_elem = f'[{len(obj)}]'
+    if isinstance(obj, tuple) or isinstance(obj, list):
+        num_elem = f"[{len(obj)}]"
     print(type(obj), num_elem, end=" ")
-    if(type(obj) is torch.Tensor):
+    if type(obj) is torch.Tensor:
         print("[{}]".format(obj.shape))
     else:
         print()
-    if(isinstance(obj, tuple) or isinstance(obj, list) or isinstance(obj, dict)):
-        if(isinstance(obj, dict)):
+    if isinstance(obj, tuple) or isinstance(obj, list) or isinstance(obj, dict):
+        if isinstance(obj, dict):
             keys = list(obj.keys())
         else:
             keys = list(range(len(obj)))
-        
+
         for idx in range(len(keys)):
             li = copy.deepcopy(level_info)
-            if(idx == len(obj)-1):
-                li[level] = 'last'
+            if idx == len(obj) - 1:
+                li[level] = "last"
             else:
-                li[level] = 'middle'
-            check_structure_tree(obj[keys[idx]], key=keys[idx], level = level + 1, level_info = li, max_depth = max_depth)
+                li[level] = "middle"
+            check_structure_tree(
+                obj[keys[idx]],
+                key=keys[idx],
+                level=level + 1,
+                level_info=li,
+                max_depth=max_depth,
+            )

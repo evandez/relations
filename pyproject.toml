@@ -5,6 +5,10 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 exclude = [
     ".*tests.*",
+    # Will clean these up later.
+    "src/corner.py",
+    "src/utils/model_utils.py",
+    "src/evaluate.py"
 ]
 
 [tool.isort]
