@@ -11,8 +11,8 @@ sys.path.append("..")
 
 from typing import Any, List, Sequence
 
-from relations import estimate
-from util import model_utils
+from src.relations import estimate
+from src.utils import model_utils
 
 
 def filter_correct_predictions_by_model(

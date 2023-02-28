@@ -3,7 +3,7 @@ import argparse
 import torch
 import transformers
 
-from relations import estimate
+from src import estimate
 
 
 def run_single_examples(

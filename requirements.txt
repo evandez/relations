@@ -1,0 +1,20 @@
+git+https://github.com/davidbau/baukit
+accelerate
+datasets
+invoke
+jupyter
+jupyter_http_over_ws
+matplotlib
+numpy
+requests
+seaborn
+tqdm
+transformers
+torch
+
+# dev dependencies
+black
+isort
+mypy
+pytest
+types-requests
