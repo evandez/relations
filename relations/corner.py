@@ -203,7 +203,7 @@ class CornerEstimator:
         for iter in range(num_steps):
             logits = self.unembedder(self.ln_f(z))
             target_logits = torch.gather(
-                logits, 0, target_tokenized[:, 0].input_ids.reshape(len(target_words))
+                logits, 0, target_tokenized.input_ids[:, 0].reshape(len(target_words))
             )
 
             optimal_logit_values = torch.zeros(target_logits.shape) + target_logit_value
