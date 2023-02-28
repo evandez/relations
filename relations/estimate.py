@@ -7,6 +7,7 @@ import torch
 import torch.autograd.functional
 import torch.nn
 import transformers
+from baukit import nethook
 
 Model: TypeAlias = transformers.GPT2LMHeadModel
 ModelInput: TypeAlias = transformers.BatchEncoding
@@ -111,12 +112,16 @@ class RelationOperator:
     weight: torch.Tensor
     bias: torch.Tensor
 
+    layer_name_format: str = "transformer.h.{}"
+    ln_f_name: str = "transformer.ln_f"
+    unembedder_module_name: str = "lm_head"
+
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return just the LM head part of the model."""
         return torch.nn.Sequential(
-            self.model.transformer.ln_f,
-            self.model.lm_head,
+            nethook.get_module(self.model, self.ln_f_name),
+            nethook.get_module(self.model, self.unembedder_module_name),
         )
 
     def __call__(
@@ -146,6 +151,9 @@ class RelationOperator:
         ).to(device)
 
         offset_mapping = inputs.pop("offset_mapping")
+        # print("offset mapping >> ", offset_mapping)
+        if 'token_type_ids' in inputs:
+            inputs.pop('token_type_ids')
         subject_i, subject_j = _find_token_range(
             prompt, subject, offset_mapping=offset_mapping[0]
         )
@@ -153,7 +161,7 @@ class RelationOperator:
             subject_i, subject_j, subject_token_index
         )
 
-        layer_name = f"transformer.h.{self.layer}"
+        layer_name = self.layer_name_format.format(self.layer)
         with baukit.Trace(self.model, layer_name) as ret:
             self.model(**inputs)
         h = ret.output[0][:, h_token_index]
@@ -186,6 +194,12 @@ def relation_operator_from_sample(
     subject_token_index: int = -1,
     layer: int = 15,
     device: Device | None = None,
+
+    layer_name_format: str = "transformer.h.{}",
+    ln_f_name: str = "transformer.ln_f",
+    unembedder_module_name: str = "lm_head",
+    n_layer_field: str = 'n_embd'
+
 ) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
 
@@ -210,24 +224,31 @@ def relation_operator_from_sample(
     )
 
     offset_mapping = inputs.pop("offset_mapping")
+    if 'token_type_ids' in inputs:
+        inputs.pop('token_type_ids')
+    
     subject_i, subject_j = _find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0]
     )
+
     h_token_index = _determine_token_index(subject_i, subject_j, subject_token_index)
 
     # Precompute everything up to the subject, if there is anything before it.
     past_key_values = None
+    use_cache = False
     input_ids = inputs.input_ids
-    if subject_i > 0:
-        outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
-        past_key_values = outputs.past_key_values
-        input_ids = input_ids[:, subject_i:]
-        h_token_index -= subject_i
-    use_cache = past_key_values is not None
+
+    if('galactica' not in model.config._name_or_path):
+        if subject_i > 0:
+            outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
+            past_key_values = outputs.past_key_values
+            input_ids = input_ids[:, subject_i:]
+            h_token_index -= subject_i
+        use_cache = True
 
     # Precompute initial h and z.
-    h_layer_name = f"transformer.h.{layer}"
-    z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
+    h_layer_name = layer_name_format.format(layer) # f"transformer.h.{layer}"
+    z_layer_name = layer_name_format.format(getattr(model.config, n_layer_field) - 1) # f"transformer.h.{model.config.n_layer - 1}"
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         outputs = model(
             input_ids=input_ids,
@@ -264,6 +285,10 @@ def relation_operator_from_sample(
         relation=relation,
         weight=weight,
         bias=bias,
+
+        layer_name_format = layer_name_format,
+        ln_f_name = ln_f_name,
+        unembedder_module_name = unembedder_module_name
     )
     metadata = RelationOperatorMetadata(
         subject=subject,

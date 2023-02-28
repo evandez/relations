@@ -45,7 +45,7 @@ class CornerEstimator:
         get representation of vector `h` in the vocabulary space. basically applied logit lens
         """
         z = h.clone()
-        if(perform_layer_norm == True):
+        if(perform_layer_norm == True and self.ln_f is not None):
             z = self.ln_f(z)
         logits = self.unembedder(z)
         token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
@@ -100,7 +100,8 @@ class CornerEstimator:
             else:
                 self.unembedder_weight_inv = self.unembedder.weight.pinverse()
 
-        z = self.unembedder_weight_inv @ (expected_logit - self.unembedder.bias)
+        bias = self.unembedder.bias if self.unembedder.bias is not None else torch.zeros(expected_logit.shape).to(self.model.dtype).to(self.model.device)
+        z = self.unembedder_weight_inv @ (expected_logit - bias)
         return z
     
     def estimate_corner_lstsq_solve(
@@ -123,8 +124,11 @@ class CornerEstimator:
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
         W = torch.stack([self.unembedder.weight[r[0].item()] for r in target_tokenized.input_ids])
         # print(target_tokenized.input_ids.shape, W.shape)
-        b = self.unembedder.bias[target_tokenized.input_ids]
-        b = b.reshape(b.shape[0])
+        if (self.unembedder.bias is not None):
+            b = self.unembedder.bias[target_tokenized.input_ids]
+            b = b.reshape(b.shape[0])
+        else:
+            b = torch.zeros(len(target_words)).to(self.model.dtype).to(self.model.device)
         y = (torch.ones(len(target_words)) * target_logit).to(self.model.dtype).to(self.model.device) - b
         if(self.model.dtype == torch.float16):
             W = W.to(torch.float32)

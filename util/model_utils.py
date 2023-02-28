@@ -116,7 +116,7 @@ def generate_fast(
                 input_ids=input_ids[:, cur_context],
                 attention_mask=attention_mask[:, cur_context],
                 past_key_values=past_key_values,
-                use_cache=True,
+                use_cache=False,
             )
             logits, past_key_values = model_out.logits, model_out.past_key_values
             # print(" ====> ", logits.shape)
@@ -189,7 +189,10 @@ def generate_fast(
                     input_ids[i][new_idx] = new_toks[i]
                     attention_mask[i][new_idx] = 1
 
-            cur_context = slice(cur_context.stop, cur_context.stop + 1)
+            if("galactica" in model.config._name_or_path): # use_cache is not yet supported in galactica models
+                cur_context = slice(0, cur_context.stop + 1)
+            else:
+                cur_context = slice(cur_context.stop, cur_context.stop + 1)
 
 
     txt = [tok.decode(x) for x in input_ids.detach().cpu().numpy().tolist()]
