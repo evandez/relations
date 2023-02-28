@@ -11,7 +11,7 @@ sys.path.append("..")
 
 from typing import Any, List, Sequence
 
-from src.relations import estimate
+from src import estimate
 from src.utils import model_utils
 
 
