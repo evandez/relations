@@ -1,0 +1,119 @@
+achieve - fail
+
+giant - dwarf
+
+random - specific
+
+afraid - confident
+
+gloomy - cheerful
+
+rigid - flexible
+
+ancient - modern
+
+individual - group
+
+shame - honor
+
+arrive - depart
+
+innocent - guilty
+
+simple - complicated
+
+arrogant - humble
+
+knowledge - ignorance
+
+single - married
+
+attack - defend
+
+liquid - solid
+
+sunny - cloudy
+
+blunt - sharp
+
+marvelous - terrible
+
+timid - bold
+
+brave - cowardly
+
+noisy - quiet
+
+toward - away
+
+cautious - careless
+
+partial - complete
+
+tragic - comic
+
+complex - simple
+
+passive - active
+
+transparent - opaque
+
+crazy - sane
+
+permanent - unstable
+
+triumph - defeat
+
+crooked - straight
+
+plentiful - sparse
+
+union - separation
+
+demand - supply
+
+positive - negative
+
+unique - common
+
+destroy - create
+
+powerful - weak
+
+upset - relaxed
+
+divide - unite
+
+praise - criticism
+
+urge - deter
+
+drunk - sober
+
+private - public
+
+vacant - occupied
+
+expand - contract
+
+problem - solution
+
+vague - definite
+
+freeze - boil
+
+professional - amateur
+
+villain - hero
+
+full - empty
+
+profit - loss
+
+wax - wane
+
+generous - stingy
+
+quality - inferiority
+
+wealth - poverty

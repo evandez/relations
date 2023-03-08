@@ -1,0 +1,60 @@
+2023-03-07 23:49:53:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:49:53:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:51:43:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:51:43:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:57:05:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:57:05:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:53:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:53:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:54:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:54:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:56:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:56:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:57:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:57:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:58:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:58:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:58:59:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:58:59:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:01:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:01:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:02:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:02:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:04:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:04:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:05:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:05:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:09:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:09:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
+2023-03-07 23:59:10:wordhoard.antonyms:ERROR: A TypeError occurred in the following code segment:
+2023-03-07 23:59:10:wordhoard.antonyms:ERROR:   File "/home/local_arnab/miniconda3/envs/relation/lib/python3.10/site-packages/wordhoard/antonyms.py", line 328, in _query_wordhippo
+    for href_link in table_row.find('a', href=True):
+
