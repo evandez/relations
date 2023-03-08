@@ -1,10 +1,12 @@
 from typing import Any, Sequence, TypeAlias, List
 
+import baukit
 from baukit import nethook
 import torch
 import torch.autograd.functional
 import torch.nn
 import transformers
+import copy
 import matplotlib.pyplot as plt
 
 Model: TypeAlias = transformers.GPT2LMHeadModel
@@ -37,18 +39,20 @@ class CornerEstimator:
 
     def get_vocab_representation(
         self, h, 
-        perform_layer_norm = True, return_top_k = 5
+        perform_layer_norm = True, return_top_k = 5, get_logits = False
     ):
         """
         get representation of vector `h` in the vocabulary space. basically applied logit lens
         """
         z = h.clone()
-        if(perform_layer_norm == True):
+        if(perform_layer_norm == True and self.ln_f is not None):
             z = self.ln_f(z)
         logits = self.unembedder(z)
         token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
+        logit_values = logits.topk(dim=-1, k=return_top_k).values.squeeze().tolist()
         return [
-            self.tokenizer.decode(t) for t in token_ids
+            self.tokenizer.decode(t) if get_logits == False else (self.tokenizer.decode(t), round(v, 3))
+            for t, v in zip(token_ids, logit_values)
         ]
 
     
@@ -78,8 +82,10 @@ class CornerEstimator:
         """
         logits = W.z + b => z = W.inv() @ (logits - b) = corner
         Params:
-            target_words       :   list of words for which to estimate the corner
-            target_logit_value :   the desired logit value for each of the target words 
+            target_words       :  list of words for which to estimate the corner
+            target_logit_value :  the desired logit value for each of the target words 
+                                  (the actual logit assigned after being processed by the final layer norm and unembedding head is likely to be
+                                  much higher. this param basically effects the norm)
         """
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
         expected_logit = torch.zeros(self.model.config.vocab_size).to(self.model.dtype).to(self.model.device)
@@ -88,11 +94,49 @@ class CornerEstimator:
         
         if (self.unembedder_weight_inv is None):
             print("calculating inverse of unbedding weights . . .")
-            self.unembedder_weight_inv = self.unembedder.weight.pinverse()
+            if self.model.dtype == torch.float16:
+                weight = self.unembedder.weight.to(torch.float32)
+                self.unembedder_weight_inv = weight.pinverse().to(self.model.dtype)
+            else:
+                self.unembedder_weight_inv = self.unembedder.weight.pinverse()
 
-        z = self.unembedder_weight_inv @ (expected_logit - self.unembedder.bias)
+        bias = self.unembedder.bias if self.unembedder.bias is not None else torch.zeros(expected_logit.shape).to(self.model.dtype).to(self.model.device)
+        z = self.unembedder_weight_inv @ (expected_logit - bias)
         return z
     
+    def estimate_corner_lstsq_solve(
+        self,
+        target_words: List[str],
+        target_logit: int = 50, # the target logit value will not be the logit assigned after 
+    ):
+        """
+        logits = W.z + b
+        => W.z = logits - b
+        finds z = corner using least square approximation.
+
+        Params:
+            target_words       :  list of words for which to estimate the corner
+            target_logit_value :  the desired logit value for each of the target words 
+                                  (the actual logit assigned after being processed by the final layer norm and unembedding head is likely to be
+                                  much higher. this param basically effects the norm)
+        """
+        # print(target_words)
+        target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
+        W = torch.stack([self.unembedder.weight[r[0].item()] for r in target_tokenized.input_ids])
+        # print(target_tokenized.input_ids.shape, W.shape)
+        if (self.unembedder.bias is not None):
+            b = self.unembedder.bias[target_tokenized.input_ids]
+            b = b.reshape(b.shape[0])
+        else:
+            b = torch.zeros(len(target_words)).to(self.model.dtype).to(self.model.device)
+        y = (torch.ones(len(target_words)) * target_logit).to(self.model.dtype).to(self.model.device) - b
+        if(self.model.dtype == torch.float16):
+            W = W.to(torch.float32)
+            y = y.to(torch.float32)
+        x = torch.linalg.lstsq(W, y).solution
+        # print(W@x + b)
+        return x.to(self.model.dtype)
+
 
     def estimate_corner_with_gradient_descent(
         self,
@@ -101,7 +145,8 @@ class CornerEstimator:
         learning_rate: float = 5e-2,
         weight_decay: float = 2e-2,
         num_steps: int = 100,
-        verbose = False
+        verbose = False,
+        k = 1, # penalize the difference values
     ):
         if self.model.dtype == torch.float16:
             warnings.warn(
@@ -138,8 +183,10 @@ class CornerEstimator:
 
             optimal_logit_values = torch.zeros(target_logits.shape) + target_logit_value
             optimal_logit_values = optimal_logit_values.to(self.model.dtype).to(self.model.device)
-            # loss = (optimal_logit_values - target_logits).square().mean() + logits.square().mean()
             loss = (optimal_logit_values - target_logits).square().mean() + logits.mean()
+            # mean = target_logits.mean()
+            # difference = (target_logits - mean).abs().sum()
+            # loss = k*difference - mean # penalize the difference while driving the mean as up as possible
             # print((optimal_logit_values - target_logits).square().mean().item(), logits.mean().item())
             loss_track.append(loss.item())
             # print(loss.item(), logits.mean().item(), target_logits.sum().item())
@@ -175,11 +222,12 @@ class CornerEstimator:
         learning_rate: float = 5e-2,
         weight_decay: float = 2e-2,
         num_steps: int = 100,
-        target_logit_value: float = 50,
+        # target_logit_value: float = 50,
         verbose = False
     ):
         corners = [self.estimate_corner_with_gradient_descent(
-            target_words, target_logit_value,
+            target_words, 
+            # target_logit_value,
             learning_rate, weight_decay, num_steps, 
             verbose 
         ) for _ in range(average_on)]
