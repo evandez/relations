@@ -183,7 +183,7 @@ class CornerEstimator:
 
             optimal_logit_values = torch.zeros(target_logits.shape) + target_logit_value
             optimal_logit_values = optimal_logit_values.to(self.model.dtype).to(self.model.device)
-            loss = (optimal_logit_values - target_logits).square().mean() + logits.mean()
+            loss = (optimal_logit_values - target_logits).square().mean() # + logits.mean()
             # mean = target_logits.mean()
             # difference = (target_logits - mean).abs().sum()
             # loss = k*difference - mean # penalize the difference while driving the mean as up as possible
