@@ -198,7 +198,7 @@ def relation_operator_from_sample(
     layer_name_format: str = "transformer.h.{}",
     ln_f_name: str = "transformer.ln_f",
     unembedder_module_name: str = "lm_head",
-    n_layer_field: str = 'n_embd'
+    n_layer_field: str = 'n_layer'
 
 ) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
