@@ -148,11 +148,18 @@ class CornerEstimator:
         verbose = False,
         k = 1, # penalize the difference values
     ):
-        if self.model.dtype == torch.float16:
+        type_cache = self.model.dtype
+        if type_cache == torch.float16:
+            # warnings.warn(
+            #     """
+            #     model.dtype = torch.float16 ==> applying gradient descent might cause underflow, which will cause
+            #     some values to be divided by 0. Might get `nan` values in the corner
+            #     """
+            # )
             warnings.warn(
                 """
-                model.dtype = torch.float16 ==> applying gradient descent might cause underflow, which will cause
-                some values to be divided by 0. Might get `nan` values in the corner
+                model.dtype == torch.float16
+                the unembedder head will be typecasted to float32 in order to avoid precision underflows.
                 """
             )
 
@@ -165,10 +172,17 @@ class CornerEstimator:
                 p.requires_grad = True
             else:
                 p.requires_grad = False
+        if(type_cache != torch.float32):
+            # for n in tunable_weights:
+            #     tunable_weights[n].to(torch.float32)
+            self.model.to(torch.float32)
+        
+        for t in tunable_weights:
+            print(t, tunable_weights[t].shape, tunable_weights[t].dtype)
         
         z = torch.FloatTensor(self.model.config.n_embd).uniform_(-1.001 , 1.001).to(self.model.dtype).to(self.model.device)
         if(verbose):
-            print("initial representation: ", self.get_vocab_representation(z))
+            print("initial representation: ", self.get_vocab_representation(z, get_logits=True))
         
         z.requires_grad = True
         optimizer = torch.optim.Adam(
@@ -200,7 +214,13 @@ class CornerEstimator:
         
         for t in tunable_weights:
             tunable_weights[t].requires_trad = False
+            # tunable_weights[t].to(torch.float32)
         z.requires_grad = False
+        if(type_cache != self.model.dtype):
+            self.model.to(type_cache)
+            z = z.to(type_cache)
+        
+        print(z.dtype)
 
         if(verbose):
             plt.rcdefaults()
@@ -210,7 +230,7 @@ class CornerEstimator:
             plt.ylabel("loss")
             plt.show()
 
-            print("final representation: ", self.get_vocab_representation(z))
+            print("final representation: ", self.get_vocab_representation(z, get_logits=True))
 
         return z
 
