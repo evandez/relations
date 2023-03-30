@@ -10,7 +10,7 @@ def run_single_examples(
     *,
     model: estimate.Model,
     tokenizer: estimate.Tokenizer,
-    layer: int,
+    h_layer: int,
     device: estimate.Device,
     k: int,
 ) -> None:
@@ -21,7 +21,7 @@ def run_single_examples(
         tokenizer,
         "The Space Needle",
         "{} is located in the country of",
-        layer=layer,
+        h_layer=h_layer,
         device=device,
     )
     for subject, subject_token_index in (
@@ -42,7 +42,7 @@ def run_single_examples(
     # This one is less sensitive to which h you choose; can usually just do last.
     print("--- is CEO of ---")
     is_ceo_of, _ = estimate.relation_operator_from_sample(
-        model, tokenizer, "Indra Nooyi", "{} is CEO of", layer=layer, device=device
+        model, tokenizer, "Indra Nooyi", "{} is CEO of", h_layer=h_layer, device=device
     )
     for subject in (
         "Indra Nooyi",
@@ -64,7 +64,7 @@ def run_single_examples(
         tokenizer,
         "Chris Cornell",
         "{} is the lead singer of the band",
-        layer=layer,
+        h_layer=h_layer,
         device=device,
     )
     for subject in (
@@ -85,7 +85,7 @@ def run_single_examples(
         tokenizer,
         "Megan Rapinoe",
         "{} plays the sport of",
-        layer=layer,
+        h_layer=h_layer,
         device=device,
     )
     for subject in (
@@ -104,7 +104,7 @@ def run_batch_examples(
     *,
     model: estimate.Model,
     tokenizer: estimate.Tokenizer,
-    layer: int,
+    h_layer: int,
     device: estimate.Device,
     k: int,
 ) -> None:
@@ -169,7 +169,7 @@ def run_batch_examples(
             tokenizer,
             samples,
             relation,
-            layer=layer,
+            h_layer=h_layer,
             device=device,
         )
         print(f"--- {relation} (J trained on {metadata.subject_for_weight}) ---")
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
-    layer = args.layer
+    h_layer = args.layer
     k = args.k
 
     print(f"loading {args.model}")
@@ -216,10 +216,10 @@ if __name__ == "__main__":
 
     if args.method == "single":
         run_single_examples(
-            model=model, tokenizer=tokenizer, layer=layer, device=device, k=k
+            model=model, tokenizer=tokenizer, h_layer=h_layer, device=device, k=k
         )
     else:
         assert args.method == "batch"
         run_batch_examples(
-            model=model, tokenizer=tokenizer, layer=layer, device=device, k=k
+            model=model, tokenizer=tokenizer, h_layer=h_layer, device=device, k=k
         )

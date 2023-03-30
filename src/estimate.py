@@ -108,7 +108,8 @@ class RelationOperator:
     model: Model
     tokenizer: Tokenizer
     relation: str
-    layer: int
+    h_layer: int
+    z_layer: int
     weight: torch.Tensor
     bias: torch.Tensor
 
@@ -123,7 +124,8 @@ class RelationOperator:
             model=self.model,
             tokenizer=self.tokenizer,
             relation=self.relation if relation is None else relation,
-            layer=self.layer,
+            h_layer=self.h_layer,
+            z_layer=self.z_layer,
             weight=self.weight if weight is None else weight,
             bias=self.bias if bias is None else bias,
         )
@@ -170,8 +172,8 @@ class RelationOperator:
             subject_i, subject_j, subject_token_index
         )
 
-        layer_name = f"transformer.h.{self.layer}"
-        with baukit.Trace(self.model, layer_name) as ret:
+        h_layer_name = f"transformer.h.{self.h_layer}"
+        with baukit.Trace(self.model, h_layer_name) as ret:
             self.model(**inputs)
         h = ret.output[0][:, h_token_index]
         z = h.mm(self.weight.t()) + self.bias
@@ -204,7 +206,8 @@ def relation_operator_from_sample(
     subject: str,
     relation: str,
     subject_token_index: int = -1,
-    layer: int = 15,
+    h_layer: int = 15,
+    z_layer: int | None = None,
     device: Device | None = None,
 ) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
@@ -215,13 +218,16 @@ def relation_operator_from_sample(
         subject: The subject, e.g. "The Eiffel Tower".
         relation: The relation as a template string, e.g. "{} is located in"
         subject_token_index: Token index to use as h.
-        layer: Layer to take h from.
+        h_layer: Layer to take h from.
+        z_layer: Layer to take z from.
         device: Send inputs and model to this device.
 
     Returns:
         The estimated operator and its metadata.
 
     """
+    if z_layer is None:
+        z_layer = model.config.n_layer - 1
     model.to(device)
 
     prompt = relation.format(subject)
@@ -246,8 +252,8 @@ def relation_operator_from_sample(
     use_cache = past_key_values is not None
 
     # Precompute initial h and z.
-    h_layer_name = f"transformer.h.{layer}"
-    z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
+    h_layer_name = f"transformer.h.{h_layer}"
+    z_layer_name = f"transformer.h.{z_layer}"
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         outputs = model(
             input_ids=input_ids,
@@ -280,7 +286,8 @@ def relation_operator_from_sample(
     operator = RelationOperator(
         model=model,
         tokenizer=tokenizer,
-        layer=layer,
+        h_layer=h_layer,
+        z_layer=z_layer,
         relation=relation,
         weight=weight,
         bias=bias,
@@ -316,7 +323,8 @@ def relation_operator_from_batch(
     samples: Sequence[tuple[str, str]],
     relation: str,
     subject_token_index: int | Sequence[int] = -1,
-    layer: int = 15,
+    h_layer: int = 15,
+    z_layer: int | None = None,
     device: Device | None = None,
 ) -> tuple[RelationOperator, RelationOperatorBatchMetadata]:
     """Estimate a higher quality J and b from a batch of samples.
@@ -336,7 +344,8 @@ def relation_operator_from_batch(
         relation: The relation template string, e.g. "{} is located in".
         subject_token_index: Token index to use as h. Can be list specifying which
             token for each subject.
-        layer: The layer to take h from.
+        h_layer: The layer to take h from.
+        z_layer: The layer to take z from.
         device: Send model and inputs to this device.
 
     Returns:
@@ -365,7 +374,8 @@ def relation_operator_from_batch(
             subject,
             relation,
             subject_token_index=subject_token_index[i],
-            layer=layer,
+            h_layer=h_layer,
+            z_layer=z_layer,
             device=device,
         )
         operators_for_bias.append(operator)
@@ -390,7 +400,8 @@ def relation_operator_from_batch(
         subject_for_weight,
         prompt_for_weight,
         subject_token_index=subject_token_index[chosen],
-        layer=layer,
+        h_layer=h_layer,
+        z_layer=z_layer,
         device=device,
     )
 
@@ -401,7 +412,8 @@ def relation_operator_from_batch(
         model=model,
         tokenizer=tokenizer,
         relation=relation,
-        layer=layer,
+        h_layer=h_layer,
+        z_layer=operator_for_weight.z_layer,
         weight=weight,
         bias=bias,
     )
