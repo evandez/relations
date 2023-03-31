@@ -24,6 +24,10 @@ GPT_J_NAME = "EleutherAI/gpt-j-6B"
 GPT_NEO_X_NAME_SHORT = "neox"
 GPT_NEO_X_NAME = "EleutherAI/gpt-neox-20b"
 
+LLAMA_BASE_BATH = "/disk/mengk/llama"
+LLAMA_13B_NAME_SHORT = "llama-13b"
+LLAMA_30B_NAME_SHORT = "llama-30b"
+
 
 @dataclass(frozen=True)
 class ModelAndTokenizer:
@@ -60,7 +64,7 @@ def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
     model = unwrap_model(model)
     assert isinstance(model, Model)
 
-    if isinstance(model, transformers.GPTNeoXForCausalLM):
+    if isinstance(model, transformers.GPTNeoXForCausalLM) or isinstance(model, transformers.LlamaForCausalLM):
         n_layer = model.config.num_hidden_layers
     else:
         n_layer = model.config.n_layer
@@ -119,8 +123,10 @@ def determine_layer_paths(
     for layer in layers:
         if isinstance(model, transformers.GPTNeoXForCausalLM):
             layer_path = f"gpt_neox.layers.{layer}"
+        elif isinstance(model, transformers.LlamaForCausalLM):
+            layer_path = f"model.layers.{layer}"
         else:
-            layer_path = f"transformer.h.{layer}"
+
         layer_paths[layer] = layer_path
 
     return layer_paths if return_dict else tuple(layer_paths[la] for la in layers)
@@ -216,9 +222,10 @@ def load_model(
     # if we are dealing with *any* variant of the big model.
     is_gpt_j_variant = name == GPT_J_NAME or GPT_J_NAME_SHORT in name
     is_neo_x_variant = name == GPT_NEO_X_NAME or GPT_NEO_X_NAME_SHORT in name
+    is_llama_variant = LLAMA_13B_NAME_SHORT in name or LLAMA_30B_NAME_SHORT in name
 
     if fp16 is None:
-        fp16 = is_gpt_j_variant or is_neo_x_variant
+        fp16 = is_gpt_j_variant or is_neo_x_variant or is_llama_variant
 
     torch_dtype = torch.float16 if fp16 else None
 
@@ -230,12 +237,16 @@ def load_model(
 
     logger.info(f"loading {name} (device={device}, fp16={fp16})")
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(name, **kwargs)
-    if is_neo_x_variant:
-        model.to(torch_dtype)
+    if is_llama_variant:
+        model = transformers.AutoModelForCausalLM.from_pretrained(f"{LLAMA_BASE_BATH}/{name}")
+        tokenizer = transformers.AutoTokenizer.from_pretrained(f"{LLAMA_BASE_BATH}/{name}")
+    else:  # GPT-J or GPT-NeoX
+        model = transformers.AutoModelForCausalLM.from_pretrained(name, **kwargs)
+        tokenizer = transformers.AutoTokenizer.from_pretrained(name)
+        
+    model.to(torch_dtype)
     model.to(device).eval()
-
-    tokenizer = transformers.AutoTokenizer.from_pretrained(name)
+    
     tokenizer.pad_token = tokenizer.eos_token
 
     return ModelAndTokenizer(model, tokenizer)
