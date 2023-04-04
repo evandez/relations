@@ -26,11 +26,13 @@ class CornerEstimator:
         self,
         model: Model, tokenizer: Tokenizer,
         ln_f_name: str = "transformer.ln_f", unembedder_module_name: str = "lm_head",
+        idx: int = 0, # for most of the tokenizers idx = 0. but for LlamaTokenizer, idx = 0 is a special token <unk>. so idx = 1 is the first token
     ) -> None:
         self.model = model
         self.tokenizer = tokenizer
         self.unembedder = nethook.get_module(model, unembedder_module_name)
         self.ln_f = nethook.get_module(model, ln_f_name)
+        self.idx = idx
 
         self.unembedder_weight_inv = None
         self.unembedder_module_name = unembedder_module_name
@@ -70,7 +72,7 @@ class CornerEstimator:
              
         """
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
-        interested_rows = torch.stack([self.unembedder.weight[r[0].item()] for r in target_tokenized.input_ids])        
+        interested_rows = torch.stack([self.unembedder.weight[r[self.idx].item()] for r in target_tokenized.input_ids])        
         z = interested_rows.mean(dim = 0)
         return z * scale_up
     
@@ -90,7 +92,7 @@ class CornerEstimator:
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
         expected_logit = torch.zeros(self.model.config.vocab_size).to(self.model.dtype).to(self.model.device)
         for t in target_tokenized.input_ids:
-            expected_logit[t[0]] = target_logit_value
+            expected_logit[t[self.idx]] = target_logit_value
         
         if (self.unembedder_weight_inv is None):
             print("calculating inverse of unbedding weights . . .")
@@ -122,7 +124,7 @@ class CornerEstimator:
         """
         # print(target_words)
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
-        W = torch.stack([self.unembedder.weight[r[0].item()] for r in target_tokenized.input_ids])
+        W = torch.stack([self.unembedder.weight[r[self.idx].item()] for r in target_tokenized.input_ids])
         # print(target_tokenized.input_ids.shape, W.shape)
         if (self.unembedder.bias is not None):
             b = self.unembedder.bias[target_tokenized.input_ids]
@@ -150,12 +152,6 @@ class CornerEstimator:
     ):
         type_cache = self.model.dtype
         if type_cache == torch.float16:
-            # warnings.warn(
-            #     """
-            #     model.dtype = torch.float16 ==> applying gradient descent might cause underflow, which will cause
-            #     some values to be divided by 0. Might get `nan` values in the corner
-            #     """
-            # )
             warnings.warn(
                 """
                 model.dtype == torch.float16
@@ -164,6 +160,7 @@ class CornerEstimator:
             )
 
         target_tokenized = self.tokenizer(target_words, padding=True, return_tensors="pt").to(self.model.device)
+        target_tokens = torch.tensor([t[self.idx].item() for t in target_tokenized.input_ids]).to(self.model.device)
 
         tunable_weights = {}
         for n, p in self.model.named_parameters():
@@ -180,7 +177,8 @@ class CornerEstimator:
         # for t in tunable_weights:
         #     print(t, tunable_weights[t].shape, tunable_weights[t].dtype)
         
-        z = torch.FloatTensor(self.model.config.n_embd).uniform_(-1.001 , 1.001).to(self.model.dtype).to(self.model.device)
+        n_embd = self.ln_f.weight.shape[0]
+        z = torch.FloatTensor(n_embd).uniform_(-1.001 , 1.001).to(self.model.dtype).to(self.model.device)
         if(verbose):
             print("initial representation: ", self.get_vocab_representation(z, get_logits=True))
         
@@ -193,7 +191,7 @@ class CornerEstimator:
         loss_track = []
         for iter in range(num_steps):
             logits = self.unembedder(self.ln_f(z))
-            target_logits = torch.gather(logits, 0, target_tokenized.input_ids.reshape(len(target_words)))
+            target_logits = torch.gather(logits, 0, target_tokens)
 
             optimal_logit_values = torch.zeros(target_logits.shape) + target_logit_value
             optimal_logit_values = optimal_logit_values.to(self.model.dtype).to(self.model.device)
