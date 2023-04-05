@@ -38,12 +38,71 @@ class ModelAndTokenizer:
             model.eval().cuda()
         self.tokenizer = tokenizer
         self.model = model
-        self.layer_names = [
-            n
-            for n, m in model.named_modules()
-            if (re.match(r"^(transformer|gpt_neox)\.(h|layers)\.\d+$", n))
-        ]
-        self.num_layers = len(self.layer_names)
+        self.extract_relavent_fields_from_config()
+
+    # tested for GPT-j, galactica and LLaMa
+    def extract_relavent_fields_from_config(self):
+        """
+        extracts a bunch of highly used fields from different model configurations
+        """
+        config = self.model.config
+        self.vocab_size = config.vocab_size
+
+        model_type = None
+        if(hasattr(self.model, "transformer")):
+            model_type = "gpt2"
+        elif(hasattr(self.model, "gpt_neox")):
+            model_type = "gpt-neox"
+        elif("llama" in config._name_or_path):
+            model_type = "llama"
+        elif("galactica" in config._name_or_path):
+            model_type = "galactica"
+        else:
+            warnings.warn("unknown model type >> unable to extract relavent fields from config")
+
+        self.num_layers = None
+        self.layer_name_format = None
+        self.layer_names = None
+        self.mlp_module_name_format = None
+        self.attn_module_name_format = None
+        self.ln_f_name = None
+        self.unembedder_name = None
+        self.embedder_name = None
+        
+        self.model_type = model_type
+
+        # print("Model type >> ", model_type)
+        # print(config)
+
+        if(model_type in ["llama", "galactica"]):
+            self.num_layers = config.num_hidden_layers
+            self.layer_name_format = "model.layers.{}"
+
+            self.embedder_name = "model.embed_tokens"
+            self.ln_f_name = "model.norm" if model_type=="llama" else "model.decoder.final_layer_norm"
+            self.unembedder_name = "lm_head"
+
+            if(model_type == "llama"):
+                self.mlp_module_name_format = "model.layers.{}.mlp"
+            else:
+                self.mlp_module_name_format = "model.layers.{}.fc2" # this is the output of mlp in galactica. the input is on model.layers.{}.fc1
+            self.attn_module_name_format = "model.layers.{}.self_attn"
+
+        elif(model_type in ["gpt2", "gpt-neox"]):
+            self.num_layers = config.n_layer
+            self.layer_name_format = "transformer.h.{}"
+
+            self.embedder_name = "transformer.wte"
+            self.ln_f_name = "transformer.ln_f"
+            self.unembedder_name = "lm_head"
+
+            self.mlp_module_name_format = "transformer.h.{}.mlp"
+            self.attn_module_name_format = "transformer.h.{}.attn"
+    
+        # print("num_layers >> ", self.num_layers)
+        if(model_type is not None):
+            self.layer_names = [self.layer_name_format.format(i) for i in range(self.num_layers)]
+
 
     def __repr__(self):
         return (
