@@ -92,12 +92,13 @@ def evaluate(
     track_predictions = []
     print(f"validating on {len(validation_set)} subject --> object associations")
     for subject, subject_token_index, target in tqdm(validation_set):
-        top_predictions = relation_operator(
+        output = relation_operator(
             subject,
             subject_token_index=subject_token_index,
             device=model.device,
             return_top_k=max(precision_at, 5),
         )
+        top_predictions = [(p.token, p.prob) for p in output.predictions]
         ok = False
         for o in top_predictions[0:precision_at]:
             _o = o.strip()

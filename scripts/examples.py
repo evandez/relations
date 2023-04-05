@@ -36,7 +36,7 @@ def run_single_examples(
             device=device,
             return_top_k=k,
         )
-        print(f"{subject}: {objects}")
+        print(f"{subject}: {objects.predictions}")
 
     # Example 2: "is CEO of"
     # This one is less sensitive to which h you choose; can usually just do last.
@@ -54,7 +54,7 @@ def run_single_examples(
         "Tim Cook",
     ):
         objects = is_ceo_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
+        print(f"{subject}: {objects.predictions}")
 
     # Example 3: "is lead singer of"
     # Seems to *actually* find the "is lead singer of grunge rock group" relation.
@@ -75,7 +75,7 @@ def run_single_examples(
         "Freddie Mercury",
     ):
         objects = is_lead_singer_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
+        print(f"{subject}: {objects.predictions}")
 
     # Example 4: "plays the sport of"
     # Does not work at all. Not sure why.
@@ -97,7 +97,7 @@ def run_single_examples(
         "Babe Ruth",
     ):
         objects = plays_sport_of(subject, device=device, return_top_k=k)
-        print(f"{subject}: {objects}")
+        print(f"{subject}: {objects.predictions}")
 
 
 def run_batch_examples(
@@ -175,7 +175,7 @@ def run_batch_examples(
         print(f"--- {relation} (J trained on {metadata.subject_for_weight}) ---")
         for subject in tests:
             objects = operator(subject, return_top_k=k, device=device)
-            print(f"{subject}: {objects}")
+            print(f"{subject}: {objects.predictions}")
 
 
 if __name__ == "__main__":

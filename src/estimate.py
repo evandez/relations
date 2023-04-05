@@ -100,6 +100,23 @@ def _determine_token_index(start: int, end: int, offset: int) -> int:
     return index
 
 
+@dataclass(frozen=True)
+class PredictedObject:
+    """Represents a predicted object of a relation."""
+
+    token: str
+    prob: float
+
+
+@dataclass(frozen=True)
+class RelationOutput:
+    """The full output of a relation operator."""
+
+    predictions: list[PredictedObject]
+    h: torch.Tensor
+    z: torch.Tensor
+
+
 # TODO(evandez): Should maybe be a torch.nn.Module someday
 @dataclass(frozen=True)
 class RelationOperator:
@@ -144,7 +161,7 @@ class RelationOperator:
         subject_token_index: int = -1,
         return_top_k: int = 5,
         device: Device | None = None,
-    ) -> tuple[tuple[str, float], ...]:
+    ) -> RelationOutput:
         """Estimate the O in (S, R, O) given a new S.
 
         Args:
@@ -154,7 +171,8 @@ class RelationOperator:
             device: Send model and inputs to this device.
 
         Returns:
-            Top predictions for O and their probabilities under the LM.
+            Wrapper object containing h, z, and top predictions for O and
+            their probabilities under the LM.
 
         """
         self.model.to(device)
@@ -185,7 +203,11 @@ class RelationOperator:
         token_ids = topk.indices.view(return_top_k).tolist()
         words = [self.tokenizer.decode(token_id) for token_id in token_ids]
 
-        return tuple(zip(words, probs))
+        return RelationOutput(
+            predictions=[PredictedObject(w, p) for w, p in zip(words, probs)],
+            h=h,
+            z=z,
+        )
 
 
 @dataclass(frozen=True)
