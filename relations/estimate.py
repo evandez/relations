@@ -98,9 +98,9 @@ def _find_token_range_without_offset_mapping(subject, tokens):
 
     for i in range(len(tokens)):
         t = tokens[i]
-        if(subject.strip().startswith((cur_word + t).strip())):
+        if(subject.strip().startswith((cur_word + t.strip()).strip())):
             st = i if st == -1 else st
-            cur_word += t
+            cur_word += t.strip()
         else:
             if(subject.strip() == cur_word.strip()):
                 found_range.append((st, i))

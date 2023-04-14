@@ -60,7 +60,11 @@ class ModelAndTokenizer:
         else:
             warnings.warn("unknown model type >> unable to extract relavent fields from config")
 
-        self.num_layers = None
+        self.n_layer = None
+        self.n_embd = None
+        self.n_attn_head = None
+        self.max_seq_length = None
+
         self.layer_name_format = None
         self.layer_names = None
         self.mlp_module_name_format = None
@@ -71,12 +75,18 @@ class ModelAndTokenizer:
         
         self.model_type = model_type
 
-        # print("Model type >> ", model_type)
-        # print(config)
 
         if(model_type in ["llama", "galactica"]):
-            self.num_layers = config.num_hidden_layers
-            self.layer_name_format = "model.layers.{}"
+            self.n_layer = config.num_hidden_layers
+            self.n_embd = config.hidden_size
+            self.n_attn_head = config.num_attention_heads
+            self.max_seq_length = config.max_sequence_length
+
+            layer_name_prefix = "model"
+            if(model_type == "galactica"):
+                layer_name_prefix = "model.decoder"
+            
+            self.layer_name_format = layer_name_prefix + ".layers.{}"
 
             self.embedder_name = "model.embed_tokens"
             self.ln_f_name = "model.norm" if model_type=="llama" else "model.decoder.final_layer_norm"
@@ -89,19 +99,21 @@ class ModelAndTokenizer:
             self.attn_module_name_format = "model.layers.{}.self_attn"
 
         elif(model_type in ["gpt2", "gpt-neox"]):
-            self.num_layers = config.n_layer
-            self.layer_name_format = "transformer.h.{}"
+            self.n_layer = config.n_layer
+            self.n_embd = config.n_embd
+            self.n_attn_head = config.n_head
+            self.max_seq_length = config.n_ctx
 
+            self.layer_name_format = "transformer.h.{}"
             self.embedder_name = "transformer.wte"
             self.ln_f_name = "transformer.ln_f"
             self.unembedder_name = "lm_head"
-
             self.mlp_module_name_format = "transformer.h.{}.mlp"
             self.attn_module_name_format = "transformer.h.{}.attn"
     
         # print("num_layers >> ", self.num_layers)
         if(model_type is not None):
-            self.layer_names = [self.layer_name_format.format(i) for i in range(self.num_layers)]
+            self.layer_names = [self.layer_name_format.format(i) for i in range(self.n_layer)]
 
 
     def __repr__(self):

@@ -5,6 +5,9 @@ from baukit import nethook
 import re
 import matplotlib.pyplot as plt
 import os
+import sys
+sys.path.append("..")
+from relations.estimate import _find_token_range_without_offset_mapping
 
 ######################################## UTILS ########################################
 def make_inputs(tokenizer, prompts, device="cuda"):
@@ -251,7 +254,12 @@ def calculate_hidden_flow(
     [answer] = decode_tokens(mt.tokenizer, [answer_t])
     if expect is not None and answer.strip() != expect:
         return dict(correct_prediction=False)
-    e_range = find_token_range(mt.tokenizer, inp["input_ids"][0], subject)
+    try:
+        e_range = find_token_range(mt.tokenizer, inp["input_ids"][0], subject)
+    except ValueError:
+        e_range = _find_token_range_without_offset_mapping(
+            subject, [mt.tokenizer.decode(t) for t in inp["input_ids"][0]]
+        )
     if token_range == "subject_last":
         token_range = [e_range[1] - 1]
     elif token_range is not None:
@@ -262,7 +270,7 @@ def calculate_hidden_flow(
     if not kind:
         differences = trace_important_states(
             mt.model, mt.embedder_name,
-            mt.num_layers, mt.layer_name_format,
+            mt.n_layer, mt.layer_name_format,
             inp,
             e_range,
             answer_t,
@@ -276,7 +284,7 @@ def calculate_hidden_flow(
 
         differences = trace_important_window(
             mt.model, mt.embedder_name,
-            mt.num_layers, module_name_format,
+            mt.n_layer, module_name_format,
             inp,
             e_range,
             answer_t,
@@ -393,9 +401,11 @@ def plot_trace_heatmap(result, savepdf=None, title=None, xlabel=None, modelname=
     for i in range(*result["subject_range"]):
         labels[i] = labels[i] + "*"
 
-    with plt.rc_context(rc={"font.family": "Times New Roman"}):
+    with plt.rc_context(
+        # rc={"font.family": "Times New Roman"}
+    ):
         # fig, ax = plt.subplots(figsize=(3.5, 2), dpi=200)
-        fig, ax = plt.subplots(figsize=(3.5, len(result["input_tokens"])*0.1 + 1.8), dpi=200)
+        fig, ax = plt.subplots(figsize=(3.5, len(result["input_tokens"])*0.08 + 1.8), dpi=200)
         h = ax.pcolor(
             differences,
             cmap={None: "Purples", "None": "Purples", "mlp": "Greens", "attn": "Reds"}[
@@ -424,7 +434,7 @@ def plot_trace_heatmap(result, savepdf=None, title=None, xlabel=None, modelname=
             ax.set_xlabel(xlabel)
         elif answer is not None:
             # The following should be cb.ax.set_xlabel, but this is broken in matplotlib 3.5.1.
-            cb.ax.set_title(f"p({str(answer).strip()})", y= - len(result["input_tokens"])*.006, fontsize=10)
+            cb.ax.set_title(f"p({str(answer).strip()})", y= - len(result["input_tokens"])*.01 - .1, fontsize=10)
         if savepdf:
             os.makedirs(os.path.dirname(savepdf), exist_ok=True)
             plt.savefig(savepdf, bbox_inches="tight")
