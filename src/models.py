@@ -32,6 +32,14 @@ class ModelAndTokenizer:
     model: Model
     tokenizer: Tokenizer
 
+    @property
+    def lm_head(self) -> torch.nn.Module:
+        """Return the LM head."""
+        return torch.nn.Sequential(
+            self.model.transformer.ln_f,
+            self.model.lm_head,
+        )
+
     def to_(self, device: Optional[Device]) -> None:
         """Send model to the device."""
         self.model.to(device)

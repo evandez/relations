@@ -108,3 +108,14 @@ def set_padding_side(
     tokenizer.padding_side = padding_side
     yield
     tokenizer.padding_side = _padding_side
+
+
+def determine_token_index(start: int, end: int, offset: int) -> int:
+    """Determine absolute index of token in range given offset."""
+    if offset < 0:
+        assert offset >= -end
+        index = end + offset
+    else:
+        assert offset < end - start
+        index = start + offset
+    return index
