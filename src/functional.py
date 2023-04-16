@@ -21,7 +21,6 @@ class Order1ApproxOutput(NamedTuple):
     z_layer: int
     z_index: int
 
-    mt: models.ModelAndTokenizer
     inputs: ModelInput
     logits: torch.Tensor
 
@@ -106,7 +105,6 @@ def order_1_approx(
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
     approx = Order1ApproxOutput(
-        mt=mt,
         h=h,
         h_layer=h_layer,
         h_index=h_index,

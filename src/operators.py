@@ -93,6 +93,8 @@ class LinearRelationOperator(RelationOperator):
 
 @dataclass(frozen=True, kw_only=True)
 class Estimator:
+    mt: models.ModelAndTokenizer
+
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         raise NotImplementedError
 
