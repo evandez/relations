@@ -20,12 +20,12 @@ class ReconstructionBenchmarkResults:
 
 @torch.inference_mode()
 def reconstruction(
-    estimator: operators.Estimator,
+    estimator: operators.LinearRelationEstimator,
     dataset: data.RelationDataset,
     desc: str | None = None,
 ) -> ReconstructionBenchmarkResults:
     if desc is None:
-        desc = "recon. score"
+        desc = "reconstruction"
 
     operators = {}
     for relation in dataset.relations:
