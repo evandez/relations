@@ -151,6 +151,7 @@ class CornerGdOutput(NamedTuple):
         plt.show()
 
 
+@torch.inference_mode(mode=False)
 def corner_gd(
     *,
     mt: models.ModelAndTokenizer,
