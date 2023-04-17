@@ -1,6 +1,6 @@
 import json
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from pathlib import Path
 
 from src.utils.typing import PathLike
@@ -66,6 +66,7 @@ class RelationDataset(torch.utils.data.Dataset[Relation]):
 
 
 def load_relation(file: PathLike) -> Relation:
+    """Load a single relation from a json file."""
     file = Path(file)
     if file.suffix != ".json":
         raise ValueError(f"relation files must be json, got: {file}")
@@ -74,6 +75,16 @@ def load_relation(file: PathLike) -> Relation:
     for key in ("domain", "range"):
         if key in relation_dict:
             relation_dict[f"_{key}"] = relation_dict.pop(key)
+
+    # check that all keys are valid kwargs to Relation
+    valid_keys = set(field.name for field in fields(Relation))
+    for key in relation_dict.keys():
+        if key not in valid_keys:
+            raise ValueError(
+                f"invalid key in relation file {file}: {key}. "
+                f"valid keys are: {valid_keys}"
+            )
+
     return Relation.from_dict(relation_dict)
 
 
@@ -91,7 +102,7 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
             files.append(path)
         else:
             logger.debug(f"{path} is directory, globbing for json files...")
-            for file in path.glob("**/*.json"):
+            for file in sorted(path.glob("**/*.json")):
                 logger.debug(f"found relation file: {file}")
                 files.append(file)
 
