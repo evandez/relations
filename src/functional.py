@@ -88,8 +88,7 @@ def order_1_approx(
     use_cache = past_key_values is not None
 
     # Precompute initial h and z.
-    h_layer_name = f"transformer.h.{h_layer}"
-    z_layer_name = f"transformer.h.{z_layer}"
+    [h_layer_name, z_layer_name] = models.determine_layer_paths(mt, [h_layer, z_layer])
     with baukit.TraceDict(mt.model, (h_layer_name, z_layer_name)) as ret:
         outputs = mt.model(
             input_ids=input_ids,
