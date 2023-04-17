@@ -3,7 +3,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass
 
-from src import data, functional, models, operators
+from src import data, functional, operators
 
 import torch
 from tqdm.auto import tqdm

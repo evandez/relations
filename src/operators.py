@@ -3,8 +3,8 @@ from typing import Any
 
 from src import data, functional, models
 from src.utils import tokenizer_utils
+from src.utils.typing import ModelInput
 
-import baukit
 import torch
 
 
@@ -54,11 +54,22 @@ class LinearRelationOperator(RelationOperator):
         self,
         subject: str,
         prompt_template: str | None = None,
-        subject_token_index: int = -1,
-        return_top_k: int = 5,
+        k: int = 5,
         h: torch.Tensor | None = None,
         **kwargs: Any,
     ) -> LinearRelationOutput:
+        """Predict the top-k objects for a given subject.
+
+        Args:
+            subject: The subject.
+            prompt_template: Override for the default prompt template.
+            k: Number of objects to return.
+            h: Precomputed h, if available.
+
+        Returns:
+            Predicted objects and some metadata.
+
+        """
         if kwargs:
             raise ValueError(f"unexpected kwargs: {kwargs}")
         if prompt_template is None:
@@ -66,15 +77,9 @@ class LinearRelationOperator(RelationOperator):
 
         if h is None:
             prompt = prompt_template.format(subject)
-            inputs = self.mt.tokenizer(
-                prompt, return_tensors="pt", return_offsets_mapping=True
-            ).to(self.mt.model.device)
-            offset_mapping = inputs.pop("offset_mapping")
-
-            _, subject_j = tokenizer_utils.find_token_range(
-                prompt, subject, offset_mapping=offset_mapping[0]
+            h_index, inputs = _compute_h_index(
+                mt=self.mt, prompt=prompt, subject=subject
             )
-            h_index = subject_j - 1
 
             [[hs], _] = functional.compute_hidden_states(
                 mt=self.mt, prompt=prompt, layers=[self.h_layer], inputs=inputs
@@ -85,9 +90,9 @@ class LinearRelationOperator(RelationOperator):
         logits = self.mt.lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
 
-        topk = dist.topk(dim=-1, k=return_top_k)
-        probs = topk.values.view(return_top_k).tolist()
-        token_ids = topk.indices.view(return_top_k).tolist()
+        topk = dist.topk(dim=-1, k=k)
+        probs = topk.values.view(k).tolist()
+        token_ids = topk.indices.view(k).tolist()
         words = [self.mt.tokenizer.decode(token_id) for token_id in token_ids]
 
         return LinearRelationOutput(
@@ -101,6 +106,8 @@ class LinearRelationOperator(RelationOperator):
 
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationEstimator:
+    """Abstract method for estimating a linear relation operator."""
+
     mt: models.ModelAndTokenizer
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
@@ -109,6 +116,8 @@ class LinearRelationEstimator:
 
 @dataclass(frozen=True, kw_only=True)
 class JacobianEstimator(LinearRelationEstimator):
+    """Estimate a linear relation operator as a first-order approximation."""
+
     mt: models.ModelAndTokenizer
     h_layer: int
     z_layer: int | None = None
@@ -125,18 +134,7 @@ class JacobianEstimator(LinearRelationEstimator):
         [prompt_template] = relation.prompt_templates
 
         prompt = prompt_template.format(subject)
-
-        inputs = self.mt.tokenizer(
-            prompt, return_tensors="pt", return_offsets_mapping=True
-        )
-        offset_mapping = inputs.pop("offset_mapping")
-
-        subject_i, subject_j = tokenizer_utils.find_token_range(
-            prompt, subject, offset_mapping=offset_mapping[0]
-        )
-        h_index = tokenizer_utils.determine_token_index(
-            subject_i, subject_j, self.subject_token_index
-        )
+        h_index, inputs = _compute_h_index(mt=self.mt, prompt=prompt, subject=subject)
 
         approx = functional.order_1_approx(
             mt=self.mt,
@@ -156,3 +154,19 @@ class JacobianEstimator(LinearRelationEstimator):
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
         )
+
+
+def _compute_h_index(
+    *, mt: models.ModelAndTokenizer, prompt: str, subject: str
+) -> tuple[int, ModelInput]:
+    inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
+        mt.model.device
+    )
+    offset_mapping = inputs.pop("offset_mapping")
+
+    _, subject_j = tokenizer_utils.find_token_range(
+        prompt, subject, offset_mapping=offset_mapping[0]
+    )
+    h_index = subject_j - 1
+
+    return h_index, inputs
