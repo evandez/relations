@@ -3,6 +3,7 @@ import logging
 from dataclasses import dataclass, fields
 from pathlib import Path
 
+from src.utils import env_utils
 from src.utils.typing import PathLike
 
 import torch.utils.data
@@ -94,6 +95,11 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
     Accepts one or more directories or files. If a file, should be JSON format, and will
     be read as one relation. If a directory, will recursively search for all JSON files.
     """
+    if not paths:
+        data_dir = env_utils.determine_data_dir()
+        logger.debug(f"no paths provided, using default data dir: {data_dir}")
+        paths = (data_dir,)
+
     files = []
     for path in paths:
         path = Path(path)
