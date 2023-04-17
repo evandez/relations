@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, NamedTuple, Sequence
 
 from src import models
@@ -7,8 +8,22 @@ import baukit
 import torch
 
 
-class Order1ApproxOutput(NamedTuple):
-    """A first-order approximation of an LM."""
+@dataclass(frozen=True, kw_only=True)
+class Order1ApproxOutput:
+    """A first-order approximation of an LM.
+
+    Attributes:
+        weight: The weight matrix.
+        bias: The bias vector.
+        h: The subject hidden state.
+        h_layer: The layer of h.
+        h_index: The token index of h.
+        z: The (true) object hidden state.
+        z_layer: The layer of z.
+        z_index: The token index of z.
+        inputs: The LM inputs used to compute the approximation.
+        logits: The LM logits, shape (batch_size, length, vocab_size).
+    """
 
     weight: torch.Tensor
     bias: torch.Tensor
@@ -48,7 +63,7 @@ def order_1_approx(
         h_index: Token index for h.
         z_layer: Layer to take z from.
         z_index: Token index for z.
-        inputs: Precomputed tokenized inputs.
+        inputs: Precomputed tokenized inputs, recomputed if not set.
 
     Returns:
         The approximation.
@@ -163,33 +178,3 @@ def compute_hidden_states(
     hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
-
-
-class ComputeHZOutput(NamedTuple):
-    """The output of `compute_h_z`."""
-
-    h: torch.Tensor
-    z: torch.Tensor
-
-
-def compute_h_z(
-    *,
-    mt: models.ModelAndTokenizer,
-    h_layer: int,
-    h_index: int,
-    z_layer: int,
-    z_index: int,
-    prompt: str | None = None,
-    inputs: ModelInput | None = None,
-    **kwargs: Any,
-) -> ComputeHZOutput:
-    [[hs, zs], _] = compute_hidden_states(
-        mt=mt,
-        layers=[h_layer, z_layer],
-        prompt=prompt,
-        inputs=inputs,
-        **kwargs,
-    )
-    h = hs[0, h_index]
-    z = zs[0, z_index]
-    return ComputeHZOutput(h=h, z=z)

@@ -1,3 +1,5 @@
+import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -6,15 +8,31 @@ from src.utils.typing import PathLike
 import torch.utils.data
 from dataclasses_json import DataClassJsonMixin
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True)
 class RelationSample(DataClassJsonMixin):
+    """A single (subject, object) pair in a relation."""
+
     subject: str
     object: str
 
 
 @dataclass(frozen=True)
 class Relation(DataClassJsonMixin):
+    """An abstract mapping between subjects and objects.
+
+    Attributes:
+        name: The name of the relation, used as an ID.
+        prompt_templates: Prompts representing the relation, where the subject is
+            represented by {}.
+        samples: A list of (subject, object) pairs satisfying the relation.
+        _domain: Explicit list of all possible subjects. Accessed via the @property
+            `domain`, which guesses the domain from the samples if not provided.
+        _range: Equivalent to `_domain`, but for objects.
+    """
+
     name: str
     prompt_templates: list[str]
     samples: list[RelationSample]
@@ -33,40 +51,10 @@ class Relation(DataClassJsonMixin):
             return set(self._range)
         return {sample.object for sample in self.samples}
 
-    def filter(
-        self,
-        subject: str | None = None,
-        object: str | None = None,
-        prompt_template: str | None = None,
-    ) -> "Relation":
-        samples = self.samples
-        prompt_templates = self.prompt_templates
-        domain = self._domain
-        range = self._range
-
-        if subject is not None:
-            samples = [sample for sample in samples if sample.subject == subject]
-            if domain is not None:
-                domain = [subject]
-
-        if object is not None:
-            samples = [sample for sample in samples if sample.object == object]
-            if range is not None:
-                range = [object]
-
-        if prompt_template is not None:
-            prompt_templates = [prompt_template]
-
-        return Relation(
-            name=self.name,
-            prompt_templates=prompt_templates,
-            samples=samples,
-            _domain=domain,
-            _range=range,
-        )
-
 
 class RelationDataset(torch.utils.data.Dataset[Relation]):
+    """A torch dataset of relations."""
+
     def __init__(self, relations: list[Relation]):
         self.relations = relations
 
@@ -76,30 +64,37 @@ class RelationDataset(torch.utils.data.Dataset[Relation]):
     def __getitem__(self, index: int) -> Relation:
         return self.relations[index]
 
-    def filter(
-        self,
-        subject: str | None = None,
-        object: str | None = None,
-        relation_name: str | None = None,
-    ) -> "RelationDataset":
-        relations = self.relations
-        if subject is not None:
-            relations = [relation.filter(subject=subject) for relation in relations]
-        if object is not None:
-            relations = [relation.filter(object=object) for relation in relations]
-        if relation_name is not None:
-            relations = [
-                relation for relation in relations if relation.name == relation_name
-            ]
-        relations = [relation for relation in relations if relation.samples]
-        return RelationDataset(relations)
+
+def load_relation(file: PathLike) -> Relation:
+    file = Path(file)
+    if file.suffix != ".json":
+        raise ValueError(f"relation files must be json, got: {file}")
+    with file.open("r") as handle:
+        relation_dict = json.load(handle)
+    for key in ("domain", "range"):
+        if key in relation_dict:
+            relation_dict[f"_{key}"] = relation_dict.pop(key)
+    return Relation.from_dict(relation_dict)
 
 
-def load(path: PathLike) -> RelationDataset:
-    path = Path(path)
-    relations = []
-    for file in path.glob("**/*.json"):
-        with file.open("r") as handle:
-            relation = Relation.from_json(handle.read())
-            relations.append(relation)
+def load_dataset(*paths: PathLike) -> RelationDataset:
+    """Load relations from json files in a folder.
+
+    Accepts one or more directories or files. If a file, should be JSON format, and will
+    be read as one relation. If a directory, will recursively search for all JSON files.
+    """
+    files = []
+    for path in paths:
+        path = Path(path)
+        if path.is_file():
+            logger.debug(f"found relation file: {path}")
+            files.append(path)
+        else:
+            logger.debug(f"{path} is directory, globbing for json files...")
+            for file in path.glob("**/*.json"):
+                logger.debug(f"found relation file: {file}")
+                files.append(file)
+
+    logger.debug(f"found {len(files)} relation files total, loading...")
+    relations = [load_relation(file) for file in files]
     return RelationDataset(relations)

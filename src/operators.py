@@ -10,24 +10,30 @@ import torch
 
 @dataclass(frozen=True, kw_only=True)
 class PredictedObject:
+    """A predicted object token and its probability under the decoder head."""
+
     token: str
     prob: float
 
 
 @dataclass(frozen=True, kw_only=True)
 class RelationOutput:
+    """Predicted object tokens and their probabilities under the decoder head."""
+
     predictions: list[PredictedObject]
 
 
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationOutput(RelationOutput):
+    """Relation output, the input `h`, and the predicted object hidden state `z`."""
+
     h: torch.Tensor
     z: torch.Tensor
 
 
 @dataclass(frozen=True, kw_only=True)
 class RelationOperator:
-    mt: models.ModelAndTokenizer
+    """An abstract relation operator, which maps subjects to objects."""
 
     def __call__(self, subject: str, **kwargs: Any) -> RelationOutput:
         raise NotImplementedError
@@ -35,6 +41,9 @@ class RelationOperator:
 
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationOperator(RelationOperator):
+    """A linear approximation of a relation inside an LM."""
+
+    mt: models.ModelAndTokenizer
     weight: torch.Tensor
     bias: torch.Tensor
     h_layer: int
@@ -61,17 +70,16 @@ class LinearRelationOperator(RelationOperator):
                 prompt, return_tensors="pt", return_offsets_mapping=True
             ).to(self.mt.model.device)
             offset_mapping = inputs.pop("offset_mapping")
-            subject_i, subject_j = tokenizer_utils.find_token_range(
+
+            _, subject_j = tokenizer_utils.find_token_range(
                 prompt, subject, offset_mapping=offset_mapping[0]
             )
-            h_index = tokenizer_utils.determine_token_index(
-                subject_i, subject_j, subject_token_index
-            )
+            h_index = subject_j - 1
 
-            h_layer_name = f"transformer.h.{self.h_layer}"
-            with baukit.Trace(self.mt.model, h_layer_name) as ret:
-                self.mt.model(**inputs)
-            h = ret.output[0][:, h_index]
+            [[hs], _] = functional.compute_hidden_states(
+                mt=self.mt, prompt=prompt, layers=[self.h_layer], inputs=inputs
+            )
+            h = hs[:, h_index]
 
         z = h.mm(self.weight.t()) + self.bias
         logits = self.mt.lm_head(z)
@@ -92,7 +100,7 @@ class LinearRelationOperator(RelationOperator):
 
 
 @dataclass(frozen=True, kw_only=True)
-class Estimator:
+class LinearRelationEstimator:
     mt: models.ModelAndTokenizer
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
@@ -100,7 +108,7 @@ class Estimator:
 
 
 @dataclass(frozen=True, kw_only=True)
-class JacobianEstimator(Estimator):
+class JacobianEstimator(LinearRelationEstimator):
     mt: models.ModelAndTokenizer
     h_layer: int
     z_layer: int | None = None
@@ -146,5 +154,5 @@ class JacobianEstimator(Estimator):
             bias=approx.bias,
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
-            prompt_template=prompt_template,  # TODO(evan): Should this be a property?
+            prompt_template=prompt_template,
         )

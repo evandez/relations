@@ -3,7 +3,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass
 
-from src import data, functional, operators
+from src import data, functional, models, operators
 
 import torch
 from tqdm.auto import tqdm
@@ -108,10 +108,10 @@ def reconstruction(
 
         zs = torch.cat([z_true, z_dist_subj, z_dist_rel], dim=0).float()
         z_pred = z_pred.float()
-        dists = z_pred.mul(zs).sum(dim=-1) / (
+        distances = z_pred.mul(zs).sum(dim=-1) / (
             z_true.norm(dim=-1).expand(3) * zs.norm(dim=-1)
         )
-        chosen = dists.argmin().item()
+        chosen = distances.argmin().item()
         counts[chosen] += 1
 
     return ReconstructionBenchmarkResults(
