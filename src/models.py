@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
 from src.utils import env_utils, tokenizer_utils
-from src.utils.typing import Device, Model, Tokenizer
+from src.utils.typing import Device, Model, ModelInput, Tokenizer
 
 import torch
 import transformers
@@ -47,10 +47,19 @@ class ModelAndTokenizer:
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return the LM head."""
-        return torch.nn.Sequential(
-            self.model.transformer.ln_f,
-            self.model.lm_head,
-        )
+        if isinstance(
+            self.model, transformers.GPT2LMHeadModel | transformers.GPTJForCausalLM
+        ):
+            return torch.nn.Sequential(self.model.transformer.ln_f, self.model.lm_head)
+        elif isinstance(self.model, transformers.GPTNeoXForCausalLM):
+            return torch.nn.Sequential(
+                self.model.gpt_neox.final_layer_norm,
+                self.model.embed_out,
+            )
+        elif isinstance(self.model, transformers.LlamaForCausalLM):
+            return torch.nn.Sequential(self.model.model.norm, self.model.lm_head)
+        else:
+            raise ValueError(f"unknown model type: {type(self.model).__name__}")
 
     def to_(self, device: Optional[Device]) -> None:
         """Send model to the device."""
@@ -172,6 +181,25 @@ def any_parameter(model: ModelAndTokenizer | Model) -> torch.nn.Parameter | None
     """Get any example parameter for the model."""
     model = unwrap_model(model)
     return next(iter(model.parameters()), None)
+
+
+def tokenize_words(
+    tokenizer: ModelAndTokenizer | Tokenizer,
+    words: str | Sequence[str],
+    spaces: bool = True,
+) -> ModelInput:
+    """Return first token ID for word, accounting for whether model expects spaces."""
+    tokenizer = unwrap_tokenizer(tokenizer)
+    if isinstance(words, str):
+        words = [words]
+
+    if spaces and isinstance(
+        tokenizer,
+        transformers.GPT2TokenizerFast | transformers.GPTNeoXTokenizerFast,
+    ):
+        words = [f" {word}" for word in words]
+
+    return tokenizer(words, return_tensors="pt", padding=True)
 
 
 @contextmanager

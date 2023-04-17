@@ -44,8 +44,8 @@ class LinearRelationOperator(RelationOperator):
     """A linear approximation of a relation inside an LM."""
 
     mt: models.ModelAndTokenizer
-    weight: torch.Tensor
-    bias: torch.Tensor
+    weight: torch.Tensor | None
+    bias: torch.Tensor | None
     h_layer: int
     z_layer: int
     prompt_template: str
@@ -86,7 +86,12 @@ class LinearRelationOperator(RelationOperator):
             )
             h = hs[:, h_index]
 
-        z = h.mm(self.weight.t()) + self.bias
+        z = h
+        if self.weight is not None:
+            z = z.mm(self.weight.t())
+        if self.bias is not None:
+            z = z + self.bias
+
         logits = self.mt.lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
 
@@ -118,7 +123,6 @@ class LinearRelationEstimator:
 class JacobianEstimator(LinearRelationEstimator):
     """Estimate a linear relation operator as a first-order approximation."""
 
-    mt: models.ModelAndTokenizer
     h_layer: int
     z_layer: int | None = None
     subject_token_index: int = -1
@@ -153,6 +157,24 @@ class JacobianEstimator(LinearRelationEstimator):
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
+        )
+
+
+@dataclass(frozen=True, kw_only=True)
+class CornerGdEstimator(LinearRelationEstimator):
+    """Estimate a "corner" of LM's rep space where range is assigned equal prob."""
+
+    h_layer: int
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        result = functional.corner_gd(mt=self.mt, words=list(relation.range))
+        return LinearRelationOperator(
+            mt=self.mt,
+            weight=None,
+            bias=result.corner,
+            h_layer=self.h_layer,
+            z_layer=-1,
+            prompt_template="{}",
         )
 
 

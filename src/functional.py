@@ -133,6 +133,87 @@ def order_1_approx(
     return approx
 
 
+class CornerGdOutput(NamedTuple):
+    """The output of `corner_gd`."""
+
+    corner: torch.Tensor
+    losses: list[float]
+
+    def plot(self, ticks: int = 10) -> None:
+        """Plot the loss over time."""
+        import matplotlib.pyplot as plt
+
+        plt.rcdefaults()
+        plt.plot(self.losses)
+        plt.xticks(range(0, len(self.losses), ticks))
+        plt.xlabel("Step")
+        plt.ylabel("Loss")
+        plt.show()
+
+
+def corner_gd(
+    *,
+    mt: models.ModelAndTokenizer,
+    words: Sequence[str],
+    lr: float = 5e-2,
+    weight_decay: float = 2e-2,
+    n_steps: int = 100,
+    target_logit_value: float = 50.0,
+    init_range: tuple[float, float] = (-1.0, 1.0),
+) -> CornerGdOutput:
+    """Estimate a "corner" of LM rep space where words are assigned equal prob.
+
+    Uses gradient descent to find.
+
+    Args:
+        mt: The model.
+        words: The words to try to assign equal probability.
+        lr: Optimizer learning rate.
+        weight_decay: Optimizer weight decay.
+        n_steps: Number of optimization steps.
+        target_logit_value: Optimize word logits to be close to this value.
+        init_range: Initialize corner uniformly in this range.
+
+    Returns:
+        Estimated corner and metadata.
+
+    """
+    device = models.determine_device(mt)
+    dtype = models.determine_dtype(mt)
+    hidden_size = models.determine_hidden_size(mt)
+    token_ids = models.tokenize_words(mt, words).to(device).input_ids[:, 0]
+
+    parameters_requires_grad = []
+    for parameter in mt.lm_head.parameters():
+        parameter.requires_grad = True
+        parameters_requires_grad.append(parameter)
+
+    z = torch.tensor(hidden_size, dtype=dtype, device=device)
+    z.uniform_(*init_range)
+    z.requires_grad = True
+
+    optimizer = torch.optim.Adam([z], lr=lr, weight_decay=weight_decay)
+
+    losses = []
+    for _ in range(n_steps):
+        logits = mt.lm_head(z)
+        current_logits = torch.gather(logits, 0, token_ids)
+        target_logits = torch.zeros_like(current_logits) + target_logit_value
+        loss = (target_logits - current_logits).square().mean() + logits.mean()
+
+        losses.append(loss.item())
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    z.requires_grad = False
+    for parameter in parameters_requires_grad:
+        parameter.requires_grad = False
+
+    return CornerGdOutput(corner=z.detach(), losses=losses)
+
+
 class ComputeHiddenStatesOutput(NamedTuple):
     """The output of `compute_hidden_states`."""
 
