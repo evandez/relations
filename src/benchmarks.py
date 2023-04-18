@@ -3,16 +3,17 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass
 
-from src import data, functional, operators
+from src import data, functional, metrics, operators
 
 import torch
+from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
-class ReconstructionBenchmarkResults:
+class ReconstructionBenchmarkResults(DataClassJsonMixin):
     frac_correct: float
     frac_dist_subj: float
     frac_dist_rel: float
@@ -119,3 +120,71 @@ def reconstruction(
         frac_dist_subj=counts[1] / sum(counts.values()),
         frac_dist_rel=counts[2] / sum(counts.values()),
     )
+
+
+@dataclass(frozen=True, kw_only=True)
+class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
+    train: data.Relation
+    test: data.Relation
+    recall: list[float]
+
+
+@dataclass(frozen=True, kw_only=True)
+class FaithfulnessBenchmarkRelationResults(DataClassJsonMixin):
+    relation: data.Relation
+    trials: list[FaithfulnessBenchmarkRelationTrial]
+
+
+@dataclass(frozen=True, kw_only=True)
+class FaithfulnessBenchmarkResults(DataClassJsonMixin):
+    relations: list[FaithfulnessBenchmarkRelationResults]
+
+
+def faithfulness(
+    *,
+    estimator: operators.LinearRelationEstimator,
+    dataset: data.RelationDataset,
+    n_train: int = 3,
+    n_trials: int = 3,
+    k: int = 3,
+) -> FaithfulnessBenchmarkResults:
+    """Measure how faithful the LREs are to the true relation.
+
+    Put simply, evaluate how often LRE(subject) returns the true object in its
+    top-k predictions.
+
+    Args:
+        estimator: LRE estimator.
+        dataset: Dataset of relations.
+        n_train: Number of samples in each relation to use for training.
+        n_trials: Number of times to repeat the experiment for each relation.
+        k: Number of top predictions to take from LRE.
+
+    Returns:
+        Benchmark results.
+
+    """
+    results = []
+    for relation in dataset.relations:
+        trials = []
+        for _ in range(n_trials):
+            train, test = relation.split(n_train)
+            operator = estimator(train)
+
+            predictions = []
+            for sample in test.samples:
+                result = operator(sample.subject, k=k)
+                predictions.append([p.token for p in result.predictions])
+
+            targets = [sample.object for sample in test.samples]
+
+            recall = metrics.recall(predictions, targets)
+            trials.append(
+                FaithfulnessBenchmarkRelationTrial(
+                    train=train, test=test, recall=recall
+                )
+            )
+        results.append(
+            FaithfulnessBenchmarkRelationResults(relation=relation, trials=trials)
+        )
+    return FaithfulnessBenchmarkResults(relations=results)

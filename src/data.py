@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 from dataclasses import dataclass, fields
 from pathlib import Path
 
@@ -51,6 +52,33 @@ class Relation(DataClassJsonMixin):
         if self._range is not None:
             return set(self._range)
         return {sample.object for sample in self.samples}
+
+    def split(self, size: int) -> tuple["Relation", "Relation"]:
+        """Break into a train/test split."""
+        if size > len(self.samples):
+            raise ValueError(f"size must be <= len(samples), got: {size}")
+
+        samples = self.samples.copy()
+        random.shuffle(samples)
+        train_samples = samples[:size]
+        test_samples = samples[size:]
+
+        return (
+            Relation(
+                name=self.name,
+                prompt_templates=self.prompt_templates,
+                samples=train_samples,
+                _domain=list(self.domain),
+                _range=list(self.range),
+            ),
+            Relation(
+                name=self.name,
+                prompt_templates=self.prompt_templates,
+                samples=test_samples,
+                _domain=list(self.domain),
+                _range=list(self.range),
+            ),
+        )
 
 
 class RelationDataset(torch.utils.data.Dataset[Relation]):
