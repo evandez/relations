@@ -82,3 +82,34 @@ def test_find_token_range_no_substring(gpt2_tokenizer):
         tokenizer_utils.find_token_range(
             "The batman is the night.", bad, gpt2_tokenizer
         )
+
+
+@pytest.mark.parametrize(
+    "start,end,offset,expected",
+    (
+        (4, 6, -1, 5),
+        (4, 6, 0, 4),
+        (4, 6, 1, 5),
+    ),
+)
+def test_offset_to_absolute_index(start, end, offset, expected):
+    """test offset_to_absolute_index correctly resolves offset."""
+    actual = tokenizer_utils.offset_to_absolute_index(start, end, offset)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "start,end,offset",
+    (
+        (-1, 0, 0),
+        (5, 4, 0),
+    ),
+)
+def test_offset_to_absolute_index_bad_range(start, end, offset):
+    with pytest.raises(ValueError):
+        tokenizer_utils.offset_to_absolute_index(start, end, offset)
+
+
+def test_offset_to_absolute_index_bad_offset():
+    with pytest.raises(ValueError):
+        tokenizer_utils.offset_to_absolute_index(0, 1, 2)

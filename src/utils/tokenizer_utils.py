@@ -124,6 +124,11 @@ def offset_to_absolute_index(start: int, end: int, offset: int) -> int:
         Absolute index of the offset in the token range.
 
     """
+    if start < 0 or start >= end:
+        raise ValueError(f"invalid range: {(start, end)}")
+    if offset > end - start:
+        raise ValueError(f"offset {offset} out of range for range {(start, end)}")
+
     if offset < 0:
         assert offset >= -end
         index = end + offset
