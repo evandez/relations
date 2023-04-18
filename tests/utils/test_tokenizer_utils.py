@@ -93,7 +93,7 @@ def test_find_token_range_no_substring(gpt2_tokenizer):
     ),
 )
 def test_offset_to_absolute_index(start, end, offset, expected):
-    """test offset_to_absolute_index correctly resolves offset."""
+    """Test offset_to_absolute_index correctly resolves offset."""
     actual = tokenizer_utils.offset_to_absolute_index(start, end, offset)
     assert actual == expected
 
@@ -106,10 +106,12 @@ def test_offset_to_absolute_index(start, end, offset, expected):
     ),
 )
 def test_offset_to_absolute_index_bad_range(start, end, offset):
+    """Make sure offset_to_absolute_index dies on bad range."""
     with pytest.raises(ValueError):
         tokenizer_utils.offset_to_absolute_index(start, end, offset)
 
 
 def test_offset_to_absolute_index_bad_offset():
+    """Make sure offset_to_absolute_index dies on bad offset."""
     with pytest.raises(ValueError):
         tokenizer_utils.offset_to_absolute_index(0, 1, 2)
