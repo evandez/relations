@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 from src import data, functional, models
 from src.utils import tokenizer_utils
@@ -125,7 +125,7 @@ class JacobianEstimator(LinearRelationEstimator):
 
     h_layer: int
     z_layer: int | None = None
-    subject_token_index: int = -1
+    subject_token_offset: int = -1
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         if len(relation.samples) != 1:
@@ -138,7 +138,9 @@ class JacobianEstimator(LinearRelationEstimator):
         [prompt_template] = relation.prompt_templates
 
         prompt = prompt_template.format(subject)
-        h_index, inputs = _compute_h_index(mt=self.mt, prompt=prompt, subject=subject)
+        h_index, inputs = _compute_h_index(
+            mt=self.mt, prompt=prompt, subject=subject, offset=self.subject_token_offset
+        )
 
         approx = functional.order_1_approx(
             mt=self.mt,
@@ -160,6 +162,104 @@ class JacobianEstimator(LinearRelationEstimator):
         )
 
 
+SubjectTokenOffsetFn = Callable[[str, str], int]
+
+
+@dataclass(frozen=True, kw_only=True)
+class JacobianIclEstimator(LinearRelationEstimator):
+    """Jacobian estimator that uses in-context learning."""
+
+    h_layer: int
+    z_layer: int | None = None
+    subject_token_offset: SubjectTokenOffsetFn | int | None = -1
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        samples = relation.samples
+
+        prompt_template = relation.prompt_templates[0]
+
+        z_layer = self.z_layer
+        if z_layer is None:
+            z_layer = -1
+
+        if isinstance(self.subject_token_offset, int):
+            subject_token_offsets = [self.subject_token_offset] * len(samples)
+        elif callable(self.subject_token_offset):
+            subject_token_offsets = [
+                self.subject_token_offset(prompt_template, s.subject) for s in samples
+            ]
+        else:
+            subject_token_offsets = [-1] * len(samples)
+
+        # Estimate the biases, storing the confidence of the target token
+        # along the way.
+        approxes = []
+        confidences = []
+        for i, sample in enumerate(samples):
+            prompt = prompt_template.format(sample.subject)
+            h_index, inputs = _compute_h_index(
+                mt=self.mt,
+                prompt=prompt,
+                subject=sample.subject,
+                offset=subject_token_offsets[i],
+            )
+            approx = functional.order_1_approx(
+                mt=self.mt,
+                prompt=prompt,
+                h_layer=self.h_layer,
+                h_index=h_index,
+                z_layer=self.z_layer,
+                z_index=-1,
+                inputs=inputs,
+            )
+            approxes.append(approx)
+
+            object_token_id = self.mt.tokenizer(sample.object).input_ids[0]
+            logits = approx.logits[0, -1]
+            logps = torch.log_softmax(logits, dim=-1)
+            confidences.append(logps[object_token_id])
+
+        # Now estimate J, using an ICL prompt with the model's most-confident subject
+        # used as the training example.
+        chosen = torch.stack(confidences).argmax().item()
+        assert isinstance(chosen, int)
+
+        sample = samples[chosen]
+        subject = sample.subject
+
+        others = [x for x in samples if x != sample]
+        prompt_icl = (
+            "\n".join(
+                prompt_template.format(x.subject) + f" {x.object}." for x in others
+            )
+            + "\n"
+            + prompt_template.format(subject)
+        )
+
+        approx_icl = functional.order_1_approx(
+            mt=self.mt,
+            prompt=prompt_icl,
+            h_layer=self.h_layer,
+            h_index=subject_token_offsets[chosen],
+            z_layer=z_layer,
+            z_index=-1,
+        )
+
+        # Package it all up.
+        weight = approx_icl.weight
+        bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+        operator = LinearRelationOperator(
+            mt=self.mt,
+            weight=weight,
+            bias=bias,
+            h_layer=self.h_layer,
+            z_layer=z_layer,
+            prompt_template=prompt_template,
+        )
+
+        return operator
+
+
 @dataclass(frozen=True, kw_only=True)
 class CornerGdEstimator(LinearRelationEstimator):
     """Estimate a "corner" of LM's rep space where range is assigned equal prob."""
@@ -179,16 +279,20 @@ class CornerGdEstimator(LinearRelationEstimator):
 
 
 def _compute_h_index(
-    *, mt: models.ModelAndTokenizer, prompt: str, subject: str
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt: str,
+    subject: str,
+    offset: int,
 ) -> tuple[int, ModelInput]:
     inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
         mt.model.device
     )
     offset_mapping = inputs.pop("offset_mapping")
 
-    _, subject_j = tokenizer_utils.find_token_range(
+    subject_i, subject_j = tokenizer_utils.find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0]
     )
-    h_index = subject_j - 1
+    h_index = tokenizer_utils.offset_to_absolute_index(subject_i, subject_j, offset)
 
     return h_index, inputs
