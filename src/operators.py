@@ -84,7 +84,7 @@ class LinearRelationOperator(RelationOperator):
             )
 
             [[hs], _] = functional.compute_hidden_states(
-                mt=self.mt, prompt=prompt, layers=[self.h_layer], inputs=inputs
+                mt=self.mt, layers=[self.h_layer], inputs=inputs
             )
             h = hs[:, h_index]
 
