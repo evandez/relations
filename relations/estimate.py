@@ -1,12 +1,16 @@
 """Estimate relation operator using Jacobian."""
 from dataclasses import dataclass
-from typing import Any, Sequence, TypeAlias
+from typing import Any, Sequence, TypeAlias, Tuple, Union
 
 import baukit
 import torch
 import torch.autograd.functional
 import torch.nn
 import transformers
+from baukit import nethook
+from tqdm.auto import tqdm
+
+import warnings
 
 Model: TypeAlias = transformers.GPT2LMHeadModel
 ModelInput: TypeAlias = transformers.BatchEncoding
@@ -87,6 +91,28 @@ def _find_token_range(
     assert token_start <= token_end
     return (token_start, token_end + 1)
 
+def _find_token_range_without_offset_mapping(subject, tokens):
+    st = -1
+    cur_word = ""
+    found_range = []
+
+    for i in range(len(tokens)):
+        t = tokens[i]
+        if(subject.strip().startswith((cur_word + t.strip()).strip())):
+            st = i if st == -1 else st
+            cur_word += t.strip()
+        else:
+            if(subject.strip() == cur_word.strip()):
+                found_range.append((st, i))
+            else:
+                st = -1
+            cur_word = ""
+    
+    assert(len(found_range) != 0), f"couldn't find subject {subject} in tokens {tokens}"
+    assert(len(found_range) == 1), f"found multiple subjects {found_range}"
+    
+    return found_range[0]
+
 
 def _determine_token_index(start: int, end: int, offset: int) -> int:
     """Determine absolute index of token in range given offset."""
@@ -111,28 +137,21 @@ class RelationOperator:
     weight: torch.Tensor
     bias: torch.Tensor
 
-    def overwrite(
-        self,
-        relation: str | None = None,
-        weight: torch.Tensor | None = None,
-        bias: torch.Tensor | None = None,
-    ) -> "RelationOperator":
-        """Overwrite one or more parameters of the operator."""
-        return RelationOperator(
-            model=self.model,
-            tokenizer=self.tokenizer,
-            relation=self.relation if relation is None else relation,
-            layer=self.layer,
-            weight=self.weight if weight is None else weight,
-            bias=self.bias if bias is None else bias,
-        )
+    layer_name_format: str = "transformer.h.{}"
+    ln_f_name: str = "transformer.ln_f"
+    unembedder_module_name: str = "lm_head"
+
+    subspace: Tuple[
+        torch.tensor, # an orthonormal subspace of shape n_embd X n_embd  
+        torch.tensor  # average addition to the orthogonal of the subspace
+    ] | None = None
 
     @property
     def lm_head(self) -> torch.nn.Module:
         """Return just the LM head part of the model."""
         return torch.nn.Sequential(
-            self.model.transformer.ln_f,
-            self.model.lm_head,
+            nethook.get_module(self.model, self.ln_f_name),
+            nethook.get_module(self.model, self.unembedder_module_name),
         )
 
     def __call__(
@@ -157,32 +176,39 @@ class RelationOperator:
         self.model.to(device)
 
         prompt = self.relation.format(subject)
-        inputs = self.tokenizer(
-            prompt, return_tensors="pt", return_offsets_mapping=True
-        ).to(device)
 
-        offset_mapping = inputs.pop("offset_mapping")
-        subject_i, subject_j = _find_token_range(
-            prompt, subject, offset_mapping=offset_mapping[0]
-        )
-        h_token_index = _determine_token_index(
-            subject_i, subject_j, subject_token_index
-        )
+        try:
+            inputs = self.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(device)
+            offset_mapping = inputs.pop("offset_mapping")
+            if 'token_type_ids' in inputs:
+                inputs.pop('token_type_ids')
+            subject_i, subject_j = _find_token_range(
+                prompt, subject, offset_mapping=offset_mapping[0]
+            )
+        except NotImplementedError:
+            inputs = self.tokenizer(prompt, return_tensors="pt").to(device)
+            subject_i, subject_j = _find_token_range_without_offset_mapping(
+                subject, [self.tokenizer.decode(t) for t in inputs.input_ids[0]]
+            )
 
-        layer_name = f"transformer.h.{self.layer}"
+        h_token_index = _determine_token_index(subject_i, subject_j, subject_token_index)
+
+        layer_name = self.layer_name_format.format(self.layer)
         with baukit.Trace(self.model, layer_name) as ret:
             self.model(**inputs)
         h = ret.output[0][:, h_token_index]
+
+        if self.subspace != None: # <--- subspace projection if available
+            # print(self.subspace[0].shape, self.subspace[1].shape, h.shape)
+            h = h @ self.subspace[0] + self.subspace[1] 
+
         z = h.mm(self.weight.t()) + self.bias
         logits = self.lm_head(z)
-        dist = torch.softmax(logits.float(), dim=-1)
-
-        topk = dist.topk(dim=-1, k=return_top_k)
-        probs = topk.values.view(return_top_k).tolist()
-        token_ids = topk.indices.view(return_top_k).tolist()
-        words = [self.tokenizer.decode(token_id) for token_id in token_ids]
-
-        return tuple(zip(words, probs))
+        token_ids = logits.topk(dim=-1, k=return_top_k).indices.squeeze().tolist()
+        # return self.tokenizer.convert_ids_to_tokens(token_ids)
+        return [
+            self.tokenizer.decode(t) for t in token_ids
+        ]
 
 
 @dataclass(frozen=True)
@@ -196,7 +222,9 @@ class RelationOperatorMetadata:
     logits: torch.Tensor
 
 
-@torch.no_grad()
+# @torch.no_grad() # turn this flag off to get the gradients
+from torch.autograd import Variable
+
 def relation_operator_from_sample(
     model: Model,
     tokenizer: Tokenizer,
@@ -205,6 +233,16 @@ def relation_operator_from_sample(
     subject_token_index: int = -1,
     layer: int = 15,
     device: Device | None = None,
+    subspace: torch.Tensor | None = None,
+
+    layer_name_format: str = "transformer.h.{}",
+    ln_f_name: str = "transformer.ln_f",
+    unembedder_module_name: str = "lm_head",
+    n_layer_field: str = 'n_layer',
+
+    unoptimized_models = ["llama", "galactica"], # models that don't support `use_cache = True` and thus can't use fast generation
+    calculate_J_sequentially_row_by_row = False, # for bigger models the jacobian has to be calculated sequentially for each row. The model must fit into half the GPU memory for this to work
+
 ) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
 
@@ -224,29 +262,47 @@ def relation_operator_from_sample(
     model.to(device)
 
     prompt = relation.format(subject)
-    inputs = tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
-        device
-    )
+    try:
+        inputs = tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(device)
+        offset_mapping = inputs.pop("offset_mapping")
+        subject_i, subject_j = _find_token_range(
+            prompt, subject, offset_mapping=offset_mapping[0]
+        )
+    except NotImplementedError:     # some of the recent models (LLaMa) don't support `return_offsets_mapping`
+        inputs = tokenizer(prompt, return_tensors="pt").to(device)
+        subject_i, subject_j = _find_token_range_without_offset_mapping(
+            subject, [tokenizer.decode(t) for t in inputs.input_ids[0]]
+        )
 
-    offset_mapping = inputs.pop("offset_mapping")
-    subject_i, subject_j = _find_token_range(
-        prompt, subject, offset_mapping=offset_mapping[0]
-    )
+    if 'token_type_ids' in inputs:
+        inputs.pop('token_type_ids')
+    
     h_token_index = _determine_token_index(subject_i, subject_j, subject_token_index)
 
     # Precompute everything up to the subject, if there is anything before it.
     past_key_values = None
     input_ids = inputs.input_ids
-    if subject_i > 0:
-        outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
-        past_key_values = outputs.past_key_values
-        input_ids = input_ids[:, subject_i:]
-        h_token_index -= subject_i
-    use_cache = past_key_values is not None
+
+    use_cache = True
+    for unop in unoptimized_models:
+        if(unop in model.config._name_or_path):
+            use_cache = False
+            warnings.warn(f"The model `{type(model)}` can't utilize `use_cache` for fast generation. Setting `use_cache = False`.")
+            
+            break
+
+    if(use_cache == True):
+        if subject_i > 0:
+            outputs = model(input_ids=input_ids[:, :subject_i], use_cache=True)
+            past_key_values = outputs.past_key_values
+            input_ids = input_ids[:, subject_i:]
+            h_token_index -= subject_i
+        else:
+            use_cache = False # no need to use cache if there's nothing before the subject
 
     # Precompute initial h and z.
-    h_layer_name = f"transformer.h.{layer}"
-    z_layer_name = f"transformer.h.{model.config.n_layer - 1}"
+    h_layer_name = layer_name_format.format(layer) # f"transformer.h.{layer}"
+    z_layer_name = layer_name_format.format(getattr(model.config, n_layer_field) - 1) # f"transformer.h.{model.config.n_layer - 1}"
     with baukit.TraceDict(model, (h_layer_name, z_layer_name)) as ret:
         outputs = model(
             input_ids=input_ids,
@@ -254,6 +310,11 @@ def relation_operator_from_sample(
             past_key_values=past_key_values,
         )
     h = ret[h_layer_name].output[0][0, h_token_index]
+
+    if subspace != None: # <--- subspace projection if available
+        # print(subspace[0].shape, subspace[1].shape, h.shape)
+        h = h @ subspace[0] + subspace[1] 
+
     z = ret[z_layer_name].output[0][0, -1]
 
     # Now compute J and b.
@@ -274,7 +335,27 @@ def relation_operator_from_sample(
             )
         return ret[z_layer_name].output[0][0, -1]
 
-    weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
+    def calculate_jacobian_row_by_row(function, h):
+        h_v = Variable(h, requires_grad=True)
+        h_v.retain_grad()
+        z_est = function(h_v)
+        jacobian = []
+        # print("Calculating Jacobians ...")
+        for idx in tqdm(range(h_v.shape[0])):
+            model.zero_grad()
+            z_est[idx].backward(retain_graph=True)
+            jacobian.append(h_v.grad.clone())
+            h_v.grad.zero_()
+        return torch.stack(jacobian)
+
+    if(calculate_J_sequentially_row_by_row == False):
+        weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
+    else:
+        nethook.set_requires_grad(True, model)
+        weight = calculate_jacobian_row_by_row(compute_z_from_h, h)
+        model.zero_grad(set_to_none=True)
+        nethook.set_requires_grad(False, model)
+
     bias = z[None] - h[None].mm(weight.t())
     operator = RelationOperator(
         model=model,
@@ -283,6 +364,11 @@ def relation_operator_from_sample(
         relation=relation,
         weight=weight,
         bias=bias,
+        subspace=subspace,
+
+        layer_name_format = layer_name_format,
+        ln_f_name = ln_f_name,
+        unembedder_module_name = unembedder_module_name
     )
     metadata = RelationOperatorMetadata(
         subject=subject,
@@ -316,6 +402,7 @@ def relation_operator_from_batch(
     relation: str,
     subject_token_index: int | Sequence[int] = -1,
     layer: int = 15,
+    subspace: torch.Tensor | None = None,
     device: Device | None = None,
 ) -> tuple[RelationOperator, RelationOperatorBatchMetadata]:
     """Estimate a higher quality J and b from a batch of samples.
@@ -366,6 +453,7 @@ def relation_operator_from_batch(
             subject_token_index=subject_token_index[i],
             layer=layer,
             device=device,
+            subspace=subspace,
         )
         operators_for_bias.append(operator)
         metadata_for_bias.append(metadata)

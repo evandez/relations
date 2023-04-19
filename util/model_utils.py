@@ -2,6 +2,12 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import re
 from baukit import nethook
+import warnings
+
+def untuple(x):
+    if isinstance(x, tuple):
+        return x[0]
+    return x
 
 class ModelAndTokenizer:
     """
@@ -32,12 +38,83 @@ class ModelAndTokenizer:
             model.eval().cuda()
         self.tokenizer = tokenizer
         self.model = model
-        self.layer_names = [
-            n
-            for n, m in model.named_modules()
-            if (re.match(r"^(transformer|gpt_neox)\.(h|layers)\.\d+$", n))
-        ]
-        self.num_layers = len(self.layer_names)
+        self.extract_relavent_fields_from_config()
+
+    # tested for GPT-j, galactica and LLaMa
+    def extract_relavent_fields_from_config(self):
+        """
+        extracts a bunch of highly used fields from different model configurations
+        """
+        config = self.model.config
+        self.vocab_size = config.vocab_size
+
+        model_type = None
+        if(hasattr(self.model, "transformer")):
+            model_type = "gpt2"
+        elif(hasattr(self.model, "gpt_neox")):
+            model_type = "gpt-neox"
+        elif("llama" in config._name_or_path):
+            model_type = "llama"
+        elif("galactica" in config._name_or_path):
+            model_type = "galactica"
+        else:
+            warnings.warn("unknown model type >> unable to extract relavent fields from config")
+
+        self.n_layer = None
+        self.n_embd = None
+        self.n_attn_head = None
+        self.max_seq_length = None
+
+        self.layer_name_format = None
+        self.layer_names = None
+        self.mlp_module_name_format = None
+        self.attn_module_name_format = None
+        self.ln_f_name = None
+        self.unembedder_name = None
+        self.embedder_name = None
+        
+        self.model_type = model_type
+
+
+        if(model_type in ["llama", "galactica"]):
+            self.n_layer = config.num_hidden_layers
+            self.n_embd = config.hidden_size
+            self.n_attn_head = config.num_attention_heads
+            self.max_seq_length = config.max_sequence_length
+
+            layer_name_prefix = "model"
+            if(model_type == "galactica"):
+                layer_name_prefix = "model.decoder"
+            
+            self.layer_name_format = layer_name_prefix + ".layers.{}"
+
+            self.embedder_name = "model.embed_tokens"
+            self.ln_f_name = "model.norm" if model_type=="llama" else "model.decoder.final_layer_norm"
+            self.unembedder_name = "lm_head"
+
+            if(model_type == "llama"):
+                self.mlp_module_name_format = "model.layers.{}.mlp"
+            else:
+                self.mlp_module_name_format = "model.layers.{}.fc2" # this is the output of mlp in galactica. the input is on model.layers.{}.fc1
+            self.attn_module_name_format = "model.layers.{}.self_attn"
+
+        elif(model_type in ["gpt2", "gpt-neox"]):
+            self.n_layer = config.n_layer
+            self.n_embd = config.n_embd
+            self.n_attn_head = config.n_head
+            self.max_seq_length = config.n_positions
+
+            self.layer_name_format = "transformer.h.{}"
+            self.embedder_name = "transformer.wte"
+            self.ln_f_name = "transformer.ln_f"
+            self.unembedder_name = "lm_head"
+            self.mlp_module_name_format = "transformer.h.{}.mlp"
+            self.attn_module_name_format = "transformer.h.{}.attn"
+    
+        # print("num_layers >> ", self.num_layers)
+        if(model_type is not None):
+            self.layer_names = [self.layer_name_format.format(i) for i in range(self.n_layer)]
+
 
     def __repr__(self):
         return (
@@ -65,6 +142,8 @@ from typing import Optional, List
 import collections
 import numpy as np
 
+
+
 def generate_fast(
     model: AutoModelForCausalLM,
     tok: AutoTokenizer,
@@ -78,6 +157,8 @@ def generate_fast(
     get_answer_tokens = False,      # returns the immediate next top token and `top_k` possible candidates
     track_interesting_words = None, # for each prompt tracks the p(token) of some interesting tokens as answer (the first generated token). 
                                     # `get_answer_tokens` must be true
+    unoptimized_models = ["llama", "galactica"], # models that don't support `use_cache = True` and thus can't use fast generation
+    use_cache = True
 ):
     # print(prompts)
     if(type(prompts) == str):
@@ -110,13 +191,20 @@ def generate_fast(
 
     if(max_new_tokens != None):
         max_out_len = input_ids.size(1) + max_new_tokens
+
+    for unop in unoptimized_models:
+        if(unop in model.config._name_or_path):
+            use_cache = False
+            warnings.warn(f"The model `{type(model)}` can't utilize `use_cache` for fast generation. Setting `use_cache = False`.")
+            break
+
     with torch.no_grad():
         while input_ids.size(1) < max_out_len:  # while not exceeding max output length
             model_out = model(
                 input_ids=input_ids[:, cur_context],
                 attention_mask=attention_mask[:, cur_context],
                 past_key_values=past_key_values,
-                use_cache=True,
+                use_cache = use_cache,
             )
             logits, past_key_values = model_out.logits, model_out.past_key_values
             # print(" ====> ", logits.shape)
@@ -189,7 +277,10 @@ def generate_fast(
                     input_ids[i][new_idx] = new_toks[i]
                     attention_mask[i][new_idx] = 1
 
-            cur_context = slice(cur_context.stop, cur_context.stop + 1)
+            if(use_cache == False):
+                cur_context = slice(0, cur_context.stop + 1)
+            else:
+                cur_context = slice(cur_context.stop, cur_context.stop + 1)
 
 
     txt = [tok.decode(x) for x in input_ids.detach().cpu().numpy().tolist()]
@@ -202,57 +293,10 @@ def generate_fast(
 
     # print(answers)
 
-    ret_dict = {"past_key_values": past_key_values}
+    # ret_dict = {"past_key_values": past_key_values}
+    ret_dict = {}
     if(get_answer_tokens == True):
         ret_dict['answer'] = answers
         if(track_interesting_words is not None):
             ret_dict['p_interesting_words'] = p_interesting_words
     return txt, ret_dict
-
-
-import copy
-
-child_last   = "└───"
-child_middle = "├───"
-space_pre    = "    "
-middle_pre   = "│   "
-def check_structure_tree(obj, key='#', level=0, level_info = {}, max_depth = 2):
-    if(level == max_depth+1):
-        return
-
-    if(level > 0):
-        for i in range(level-1):
-            if(level_info[i] == 'last'):
-                print(space_pre, end="")
-            else:
-                print(middle_pre, end="")
-        if(level_info[level-1] == 'last'):
-            child_pre = child_last
-        else:
-            child_pre = child_middle
-        print(child_pre, end="")
-    
-    if(key != '#'):
-        print(key, end=": ")
-    
-    num_elem = ""
-    if(isinstance(obj, tuple) or isinstance(obj, list)):
-        num_elem = f'[{len(obj)}]'
-    print(type(obj), num_elem, end=" ")
-    if(type(obj) is torch.Tensor):
-        print("[{}]".format(obj.shape))
-    else:
-        print()
-    if(isinstance(obj, tuple) or isinstance(obj, list) or isinstance(obj, dict)):
-        if(isinstance(obj, dict)):
-            keys = list(obj.keys())
-        else:
-            keys = list(range(len(obj)))
-        
-        for idx in range(len(keys)):
-            li = copy.deepcopy(level_info)
-            if(idx == len(obj)-1):
-                li[level] = 'last'
-            else:
-                li[level] = 'middle'
-            check_structure_tree(obj[keys[idx]], key=keys[idx], level = level + 1, level_info = li, max_depth = max_depth)
