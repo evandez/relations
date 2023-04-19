@@ -39,6 +39,9 @@ class RelationOperator:
         raise NotImplementedError
 
 
+SubjectTokenOffsetFn = Callable[[str, str], int]
+
+
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationOperator(RelationOperator):
     """A linear approximation of a relation inside an LM."""
@@ -49,11 +52,11 @@ class LinearRelationOperator(RelationOperator):
     h_layer: int
     z_layer: int
     prompt_template: str
+    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(
         self,
         subject: str,
-        prompt_template: str | None = None,
         k: int = 5,
         h: torch.Tensor | None = None,
         **kwargs: Any,
@@ -72,13 +75,12 @@ class LinearRelationOperator(RelationOperator):
         """
         if kwargs:
             raise ValueError(f"unexpected kwargs: {kwargs}")
-        if prompt_template is None:
-            prompt_template = self.prompt_template
 
         if h is None:
-            prompt = prompt_template.format(subject)
+            prompt = self.prompt_template.format(subject)
+            offset = _get_offset(self.subject_token_offset, prompt, subject)
             h_index, inputs = _compute_h_index(
-                mt=self.mt, prompt=prompt, subject=subject
+                mt=self.mt, prompt=prompt, subject=subject, offset=offset
             )
 
             [[hs], _] = functional.compute_hidden_states(
@@ -125,7 +127,7 @@ class JacobianEstimator(LinearRelationEstimator):
 
     h_layer: int
     z_layer: int | None = None
-    subject_token_offset: int = -1
+    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         if len(relation.samples) != 1:
@@ -138,8 +140,9 @@ class JacobianEstimator(LinearRelationEstimator):
         [prompt_template] = relation.prompt_templates
 
         prompt = prompt_template.format(subject)
+        offset = _get_offset(self.subject_token_offset, prompt, subject)
         h_index, inputs = _compute_h_index(
-            mt=self.mt, prompt=prompt, subject=subject, offset=self.subject_token_offset
+            mt=self.mt, prompt=prompt, subject=subject, offset=offset
         )
 
         approx = functional.order_1_approx(
@@ -162,16 +165,13 @@ class JacobianEstimator(LinearRelationEstimator):
         )
 
 
-SubjectTokenOffsetFn = Callable[[str, str], int]
-
-
 @dataclass(frozen=True, kw_only=True)
 class JacobianIclEstimator(LinearRelationEstimator):
     """Jacobian estimator that uses in-context learning."""
 
     h_layer: int
     z_layer: int | None = None
-    subject_token_offset: SubjectTokenOffsetFn | int | None = -1
+    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         samples = relation.samples
@@ -182,14 +182,10 @@ class JacobianIclEstimator(LinearRelationEstimator):
         if z_layer is None:
             z_layer = -1
 
-        if isinstance(self.subject_token_offset, int):
-            subject_token_offsets = [self.subject_token_offset] * len(samples)
-        elif callable(self.subject_token_offset):
-            subject_token_offsets = [
-                self.subject_token_offset(prompt_template, s.subject) for s in samples
-            ]
-        else:
-            subject_token_offsets = [-1] * len(samples)
+        subject_token_offsets = [
+            _get_offset(self.subject_token_offset, prompt_template, sample.subject)
+            for sample in samples
+        ]
 
         # Estimate the biases, storing the confidence of the target token
         # along the way.
@@ -276,6 +272,19 @@ class CornerGdEstimator(LinearRelationEstimator):
             z_layer=-1,
             prompt_template="{}",
         )
+
+
+def _get_offset(
+    subject_token_offset: SubjectTokenOffsetFn | None,
+    prompt_template: str,
+    subject: str,
+    default: int = -1,
+) -> int:
+    """Determine the offset using the (maybe null) offset fn."""
+    if subject_token_offset is None:
+        return default
+    prompt = prompt_template.format(subject)  # No-op if subject is already in prompt.
+    return subject_token_offset(prompt, subject)
 
 
 def _compute_h_index(
