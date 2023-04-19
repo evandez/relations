@@ -24,7 +24,6 @@ def main(args: argparse.Namespace) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--h-layer", type=int, default=5, help="layer to get h from")
-    parser.add_argument("--device", help="torch device to use")
     models.add_model_args(parser)
     logging_utils.add_logging_args(parser)
     args = parser.parse_args()
