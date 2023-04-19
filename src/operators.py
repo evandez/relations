@@ -130,14 +130,10 @@ class JacobianEstimator(LinearRelationEstimator):
     subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        if len(relation.samples) != 1:
-            raise ValueError("JacobianEstimator only supports one sample")
-        if len(relation.prompt_templates) != 1:
-            raise ValueError("JacobianEstimator only supports one prompt template")
-
-        [sample] = relation.samples
+        # TODO(evandez): Warn if too many samples present?
+        sample = relation.samples[0]
         subject = sample.subject
-        [prompt_template] = relation.prompt_templates
+        prompt_template = relation.prompt_templates[0]
 
         prompt = prompt_template.format(subject)
         offset = _get_offset(self.subject_token_offset, prompt, subject)
