@@ -222,6 +222,8 @@ class ComputeHiddenStatesOutput(NamedTuple):
     outputs: ModelOutput
 
 
+# TODO(evan): Syntacic sugar for when you only want one layer,
+# or don't want outputs.
 @torch.no_grad()
 def compute_hidden_states(
     *,

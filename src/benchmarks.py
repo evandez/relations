@@ -140,6 +140,8 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     relations: list[FaithfulnessBenchmarkRelationResults]
 
 
+# TODO(evandez): Average across prompt templates.
+# TODO(evandez): Record predictions, save models and hiddens, etc.
 def faithfulness(
     *,
     estimator: operators.LinearRelationEstimator,
