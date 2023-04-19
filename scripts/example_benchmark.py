@@ -9,6 +9,8 @@ import torch
 
 def main(args: argparse.Namespace) -> None:
     """Run one of the benchmarks to show everything works end to end."""
+    logging_utils.configure(args)
+
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     with torch.device(device):
         mt = models.load_model(args.model)
