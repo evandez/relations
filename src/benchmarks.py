@@ -147,6 +147,7 @@ def faithfulness(
     n_train: int = 3,
     n_trials: int = 3,
     k: int = 3,
+    desc: str | None = None,
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -159,13 +160,17 @@ def faithfulness(
         n_train: Number of samples in each relation to use for training.
         n_trials: Number of times to repeat the experiment for each relation.
         k: Number of top predictions to take from LRE.
+        desc: Progress bar description.
 
     Returns:
         Benchmark results.
 
     """
+    if desc is None:
+        desc = "faithfulness"
+
     results = []
-    for relation in dataset.relations:
+    for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
             train, test = relation.split(n_train)
