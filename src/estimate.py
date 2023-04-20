@@ -25,16 +25,13 @@ def _find_token_range(
     **kwargs: Any,
 ) -> tuple[int, int]:
     """Find index range of tokenized string containing tokens for substring.
-
     The kwargs are forwarded to the tokenizer.
-
     A simple example:
         string = 'The batman is the night.'
         substring = 'batman'
         tokenizer = ...
         # Example tokenization: ['the', 'bat', '##man', 'is', 'the', 'night']
         assert find_token_range(string, substring, tokenizer) == (1, 3)
-
     Args:
         string: The string.
         substring: The substring to find token range for.
@@ -42,14 +39,11 @@ def _find_token_range(
         occurrence: The occurence of the substring to look for.
             Zero indexed. Defaults to 0, the first occurrence.
         offset_mapping: Precomputed offset mapping. If not set, tokenizer will be run.
-
     Raises:
         If substring is not actually in string or if banned
             kwargs are specified.
-
     Returns:
         The start (inclusive) and end (exclusive) token idx.
-
     """
     if tokenizer is None and offset_mapping is None:
         raise ValueError("must set either tokenizer= or offset_mapping=")
@@ -163,17 +157,14 @@ class RelationOperator:
         device: Device | None = None,
     ) -> RelationOutput:
         """Estimate the O in (S, R, O) given a new S.
-
         Args:
             subject: The S to estimate O for. E.g., "The Space Needle"
             subject_token_index: Subject token to use as h.
             return_top_k: Number this many top candidates for O.
             device: Send model and inputs to this device.
-
         Returns:
             Wrapper object containing h, z, and top predictions for O and
             their probabilities under the LM.
-
         """
         self.model.to(device)
 
@@ -233,7 +224,6 @@ def relation_operator_from_sample(
     device: Device | None = None,
 ) -> tuple[RelationOperator, RelationOperatorMetadata]:
     """Estimate the r in (s, r, o) as a linear operator.
-
     Args:
         model: The language model. Only supports GPT-2 for now.
         tokenizer: The tokenizer.
@@ -243,10 +233,8 @@ def relation_operator_from_sample(
         h_layer: Layer to take h from.
         z_layer: Layer to take z from.
         device: Send inputs and model to this device.
-
     Returns:
         The estimated operator and its metadata.
-
     """
     if z_layer is None:
         z_layer = model.config.n_layer - 1
@@ -350,13 +338,10 @@ def relation_operator_from_batch(
     device: Device | None = None,
 ) -> tuple[RelationOperator, RelationOperatorBatchMetadata]:
     """Estimate a higher quality J and b from a batch of samples.
-
     J will be estimated from an ICL prompt consisting of all samples but one.
     The one that is left out will be selected as the one that has the highest
     probability under the LM given the prompt.
-
     The bias will be estimated for each subject individually and then averaged.
-
     Args:
         model: The language model.
         tokenizer: The language model's tokenizer.
@@ -369,10 +354,8 @@ def relation_operator_from_batch(
         h_layer: The layer to take h from.
         z_layer: The layer to take z from.
         device: Send model and inputs to this device.
-
     Returns:
         The relation operator and its metadata.
-
     """
     model.to(device)
 

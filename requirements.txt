@@ -1,6 +1,6 @@
 git+https://github.com/davidbau/baukit
 accelerate
-datasets
+dataclasses-json
 invoke
 jupyter
 jupyter_http_over_ws

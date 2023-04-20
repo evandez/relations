@@ -108,3 +108,31 @@ def set_padding_side(
     tokenizer.padding_side = padding_side
     yield
     tokenizer.padding_side = _padding_side
+
+
+def offset_to_absolute_index(start: int, end: int, offset: int) -> int:
+    """Determine absolute index of token in range given offset.
+
+    For example, an offset of -1 in the range (4, 6) will return 5.
+
+    Args:
+        start: The start of the range.
+        end: The (exclusive) end of the range.
+        offset: The offset from start.
+
+    Returns:
+        Absolute index of the offset in the token range.
+
+    """
+    if start < 0 or start >= end:
+        raise ValueError(f"invalid range: {(start, end)}")
+    if offset > end - start:
+        raise ValueError(f"offset {offset} out of range for range {(start, end)}")
+
+    if offset < 0:
+        assert offset >= -end
+        index = end + offset
+    else:
+        assert offset < end - start
+        index = start + offset
+    return index

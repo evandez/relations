@@ -8,10 +8,11 @@ import argparse
 import logging
 from contextlib import contextmanager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
-from src.utils import tokenizer_utils
-from src.utils.typing import Device, Model, Tokenizer
+from src.utils import env_utils, tokenizer_utils
+from src.utils.typing import Device, Model, ModelInput, Tokenizer
 
 import torch
 import transformers
@@ -24,6 +25,17 @@ GPT_J_NAME = "EleutherAI/gpt-j-6B"
 GPT_NEO_X_NAME_SHORT = "neox"
 GPT_NEO_X_NAME = "EleutherAI/gpt-neox-20b"
 
+LLAMA_13B_NAME = "llama-13b"
+LLAMA_30B_NAME = "llama-30b"
+LLAMA_NAME_SHORT = "llama"
+
+DOWNLOADABLE_MODELS = frozenset(
+    {
+        GPT_J_NAME,
+        GPT_NEO_X_NAME,
+    }
+)
+
 
 @dataclass(frozen=True)
 class ModelAndTokenizer:
@@ -31,6 +43,23 @@ class ModelAndTokenizer:
 
     model: Model
     tokenizer: Tokenizer
+
+    @property
+    def lm_head(self) -> torch.nn.Module:
+        """Return the LM head."""
+        if isinstance(
+            self.model, transformers.GPT2LMHeadModel | transformers.GPTJForCausalLM
+        ):
+            return torch.nn.Sequential(self.model.transformer.ln_f, self.model.lm_head)
+        elif isinstance(self.model, transformers.GPTNeoXForCausalLM):
+            return torch.nn.Sequential(
+                self.model.gpt_neox.final_layer_norm,
+                self.model.embed_out,
+            )
+        elif isinstance(self.model, transformers.LlamaForCausalLM):
+            return torch.nn.Sequential(self.model.model.norm, self.model.lm_head)
+        else:
+            raise ValueError(f"unknown model type: {type(self.model).__name__}")
 
     def to_(self, device: Optional[Device]) -> None:
         """Send model to the device."""
@@ -60,7 +89,9 @@ def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
     model = unwrap_model(model)
     assert isinstance(model, Model)
 
-    if isinstance(model, transformers.GPTNeoXForCausalLM):
+    if isinstance(
+        model, transformers.GPTNeoXForCausalLM | transformers.LlamaForCausalLM
+    ):
         n_layer = model.config.num_hidden_layers
     else:
         n_layer = model.config.n_layer
@@ -119,6 +150,8 @@ def determine_layer_paths(
     for layer in layers:
         if isinstance(model, transformers.GPTNeoXForCausalLM):
             layer_path = f"gpt_neox.layers.{layer}"
+        elif isinstance(model, transformers.LlamaForCausalLM):
+            layer_path = f"model.layers.{layer}"
         else:
             layer_path = f"transformer.h.{layer}"
         layer_paths[layer] = layer_path
@@ -148,6 +181,25 @@ def any_parameter(model: ModelAndTokenizer | Model) -> torch.nn.Parameter | None
     """Get any example parameter for the model."""
     model = unwrap_model(model)
     return next(iter(model.parameters()), None)
+
+
+def tokenize_words(
+    tokenizer: ModelAndTokenizer | Tokenizer,
+    words: str | Sequence[str],
+    spaces: bool = True,
+) -> ModelInput:
+    """Return first token ID for word, accounting for whether model expects spaces."""
+    tokenizer = unwrap_tokenizer(tokenizer)
+    if isinstance(words, str):
+        words = [words]
+
+    if spaces and isinstance(
+        tokenizer,
+        transformers.GPT2TokenizerFast | transformers.GPTNeoXTokenizerFast,
+    ):
+        words = [f" {word}" for word in words]
+
+    return tokenizer(words, return_tensors="pt", padding=True)
 
 
 @contextmanager
@@ -198,7 +250,7 @@ def load_model(
     """Load the model given its string name.
 
     Args:
-        name: Name of the model.
+        name: Name of the model or path to it.
         device: If set, send model to this device. Defaults to CPU.
         fp16: Whether to use half precision. If not set, depends on model.
 
@@ -210,30 +262,45 @@ def load_model(
         name = GPT_J_NAME
     elif name == GPT_NEO_X_NAME_SHORT:
         name = GPT_NEO_X_NAME
+    elif name == LLAMA_NAME_SHORT:
+        name = LLAMA_13B_NAME
 
     # I usually save randomly initialized variants under the short name of the
     # corresponding real model (e.g. gptj_random, neox_random), so check here
     # if we are dealing with *any* variant of the big model.
     is_gpt_j_variant = name == GPT_J_NAME or GPT_J_NAME_SHORT in name
     is_neo_x_variant = name == GPT_NEO_X_NAME or GPT_NEO_X_NAME_SHORT in name
+    is_llama_variant = (
+        name in {LLAMA_13B_NAME, LLAMA_30B_NAME} or LLAMA_NAME_SHORT in name
+    )
 
     if fp16 is None:
-        fp16 = is_gpt_j_variant or is_neo_x_variant
+        fp16 = is_gpt_j_variant or is_neo_x_variant or is_llama_variant
 
     torch_dtype = torch.float16 if fp16 else None
 
     kwargs: dict = dict(torch_dtype=torch_dtype)
-    if name == GPT_J_NAME or GPT_J_NAME_SHORT in name:
+    if is_gpt_j_variant:
         kwargs["low_cpu_mem_usage"] = True
         if fp16:
             kwargs["revision"] = "float16"
 
+    # If model is not automatically downloadable from huggingface, assume it is
+    # available locally in the project models directory.
+    if name not in DOWNLOADABLE_MODELS:
+        models_dir = env_utils.determine_models_dir()
+        logger.debug(f"{name} not downloadable, will look for weights in {models_dir}")
+
+        path = Path(name)
+        if not path.is_absolute() and not path.is_relative_to(models_dir):
+            name = str(models_dir / name)
+
     logger.info(f"loading {name} (device={device}, fp16={fp16})")
 
     model = transformers.AutoModelForCausalLM.from_pretrained(name, **kwargs)
-    if is_neo_x_variant:
-        model.to(torch_dtype)
-    model.to(device).eval()
+    model.to(torch_dtype)
+    model.to(device)
+    model.eval()
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(name)
     tokenizer.pad_token = tokenizer.eos_token
