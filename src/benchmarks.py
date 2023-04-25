@@ -126,7 +126,7 @@ def reconstruction(
 class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
-    predictions: list[operators.PredictedObject]
+    outputs: list[operators.RelationOutput]
     recall: list[float]
 
 
@@ -179,19 +179,19 @@ def faithfulness(
             train, test = relation.split(n_train)
             operator = estimator(train)
 
+            outputs = []
             predictions = []
             for sample in test.samples:
-                result = operator(sample.subject, k=k)
-                predictions.append(result.predictions)
+                output = operator(sample.subject, k=k)
+                outputs.append(output.as_relation_output())
+                predictions.append([p.token for p in output.predictions])
 
             targets = [sample.object for sample in test.samples]
 
-            recall = metrics.recall(
-                [[p.token for p in ps] for ps in predictions], targets
-            )
+            recall = metrics.recall(predictions, targets)
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
-                    train=train, test=test, predictions=predictions, recall=recall
+                    train=train, test=test, outputs=outputs, recall=recall
                 )
             )
         results.append(

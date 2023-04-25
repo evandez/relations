@@ -30,6 +30,9 @@ class LinearRelationOutput(RelationOutput):
     h: torch.Tensor
     z: torch.Tensor
 
+    def as_relation_output(self) -> RelationOutput:
+        return RelationOutput(predictions=self.predictions)
+
 
 @dataclass(frozen=True, kw_only=True)
 class RelationOperator:
