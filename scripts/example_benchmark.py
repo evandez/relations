@@ -13,7 +13,7 @@ def main(args: argparse.Namespace) -> None:
 
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     with torch.device(device):
-        mt = models.load_model(args.model, device=device)
+        mt = models.load_model(args.model, fp16=args.fp16, device=device)
         dataset = data.load_dataset()
         estimator = operators.JacobianEstimator(mt=mt, h_layer=args.h_layer)
         results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
