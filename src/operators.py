@@ -177,10 +177,6 @@ class JacobianIclEstimator(LinearRelationEstimator):
 
         prompt_template = relation.prompt_templates[0]
 
-        z_layer = self.z_layer
-        if z_layer is None:
-            z_layer = -1
-
         subject_token_offsets = [
             _get_offset(self.subject_token_offset, prompt_template, sample.subject)
             for sample in samples
@@ -236,7 +232,7 @@ class JacobianIclEstimator(LinearRelationEstimator):
             prompt=prompt_icl,
             h_layer=self.h_layer,
             h_index=subject_token_offsets[chosen],
-            z_layer=z_layer,
+            z_layer=self.z_layer,
             z_index=-1,
         )
 
@@ -248,7 +244,7 @@ class JacobianIclEstimator(LinearRelationEstimator):
             weight=weight,
             bias=bias,
             h_layer=self.h_layer,
-            z_layer=z_layer,
+            z_layer=approx_icl.z_layer,
             prompt_template=prompt_template,
         )
 
