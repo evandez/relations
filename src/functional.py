@@ -189,7 +189,7 @@ def corner_gd(
         parameter.requires_grad = True
         parameters_requires_grad.append(parameter)
 
-    z = torch.tensor(hidden_size, dtype=dtype, device=device)
+    z = torch.empty(hidden_size, dtype=dtype, device=device)
     z.uniform_(*init_range)
     z.requires_grad = True
 
