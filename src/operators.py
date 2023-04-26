@@ -205,6 +205,7 @@ class JacobianIclEstimator(LinearRelationEstimator):
             )
             approxes.append(approx)
 
+            # TODO(evan): Is this space needed? Seems so, but it makes things worse!
             object_token_id = self.mt.tokenizer(" " + sample.object).input_ids[0]
             logits = approx.logits[0, -1]
             logps = torch.log_softmax(logits, dim=-1)
