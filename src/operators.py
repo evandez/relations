@@ -205,7 +205,7 @@ class JacobianIclEstimator(LinearRelationEstimator):
             )
             approxes.append(approx)
 
-            object_token_id = self.mt.tokenizer(sample.object).input_ids[0]
+            object_token_id = self.mt.tokenizer(" " + sample.object).input_ids[0]
             logits = approx.logits[0, -1]
             logps = torch.log_softmax(logits, dim=-1)
             confidences.append(logps[object_token_id])
@@ -226,14 +226,20 @@ class JacobianIclEstimator(LinearRelationEstimator):
             + "\n"
             + prompt_template.format(subject)
         )
-
+        h_index_icl, inputs_icl = _compute_h_index(
+            mt=self.mt,
+            prompt=prompt_icl,
+            subject=subject,
+            offset=subject_token_offsets[chosen],
+        )
         approx_icl = functional.order_1_approx(
             mt=self.mt,
             prompt=prompt_icl,
             h_layer=self.h_layer,
-            h_index=subject_token_offsets[chosen],
+            h_index=h_index_icl,
             z_layer=self.z_layer,
             z_index=-1,
+            inputs=inputs_icl,
         )
 
         # Package it all up.
