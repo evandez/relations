@@ -110,9 +110,7 @@ def reconstruction(
 
         zs = torch.cat([z_true, z_dist_subj, z_dist_rel], dim=0).float()
         z_pred = z_pred.float()
-        distances = z_pred.mul(zs).sum(dim=-1) / (
-            z_true.norm(dim=-1).expand(3) * zs.norm(dim=-1)
-        )
+        distances = z_pred.mul(zs).sum(dim=-1) / (z_pred.norm(dim=-1) * zs.norm(dim=-1))
         chosen = distances.argmin().item()
         counts[chosen] += 1
 
