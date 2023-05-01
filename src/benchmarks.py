@@ -110,8 +110,8 @@ def reconstruction(
 
         zs = torch.stack([z_true, z_dist_subj, z_dist_rel], dim=0).float()
         z_pred = z_pred.float()
-        distances = z_pred.mul(zs).sum(dim=-1) / (z_pred.norm(dim=-1) * zs.norm(dim=-1))
-        chosen = distances.argmin().item()
+        sims = z_pred.mul(zs).sum(dim=-1) / (z_pred.norm(dim=-1) * zs.norm(dim=-1))
+        chosen = sims.argmax().item()
         counts[chosen] += 1
 
     return ReconstructionBenchmarkResults(
