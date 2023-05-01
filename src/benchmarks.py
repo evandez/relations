@@ -215,7 +215,7 @@ def faithfulness(
 
     recalls = torch.tensor([[trial.recall for trial in r.trials] for r in results])
     faithfulness_metrics = FaithfulnessBenchmarkMetrics(
-        recall=recalls.mean(dim=(-1, -2)).tolist()
+        recall=recalls.mean(dim=(0, 1)).tolist()
     )
 
     return FaithfulnessBenchmarkResults(relations=results, metrics=faithfulness_metrics)
