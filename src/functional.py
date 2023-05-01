@@ -41,6 +41,7 @@ class Order1ApproxOutput:
 
 
 @torch.no_grad()
+@torch.inference_mode(mode=False)
 def order_1_approx(
     *,
     mt: models.ModelAndTokenizer,

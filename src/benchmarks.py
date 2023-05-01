@@ -114,11 +114,12 @@ def reconstruction(
         chosen = sims.argmax().item()
         counts[chosen] += 1
 
+    total = sum(counts.values())
     return ReconstructionBenchmarkResults(
         metrics=ReconstructionBenchmarkMetrics(
-            frac_correct=counts[0] / sum(counts.values()),
-            frac_dist_subj=counts[1] / sum(counts.values()),
-            frac_dist_rel=counts[2] / sum(counts.values()),
+            frac_correct=counts[0] / total,
+            frac_dist_subj=counts[1] / total,
+            frac_dist_rel=counts[2] / total,
         )
     )
 
