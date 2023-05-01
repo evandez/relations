@@ -145,7 +145,6 @@ class FaithfulnessBenchmarkRelationResults(DataClassJsonMixin):
 
 @dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
-
     recall: list[float]
 
 
@@ -190,7 +189,9 @@ def faithfulness(
         trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
-            train, test = relation.set(prompt_templates=[prompt_template]).split(n_train)
+            train, test = relation.set(prompt_templates=[prompt_template]).split(
+                n_train
+            )
             operator = estimator(train)
 
             outputs = []
@@ -212,13 +213,9 @@ def faithfulness(
             FaithfulnessBenchmarkRelationResults(relation=relation, trials=trials)
         )
 
-    recalls = torch.tensor([
-        [
-            trial.recall
-            for trial in r.trials
-        ]
-        for r in results
-    ])
-    faithfulness_metrics = FaithfulnessBenchmarkMetrics(recall=recalls.mean(dim=(-1, -2)).tolist())
+    recalls = torch.tensor([[trial.recall for trial in r.trials] for r in results])
+    faithfulness_metrics = FaithfulnessBenchmarkMetrics(
+        recall=recalls.mean(dim=(-1, -2)).tolist()
+    )
 
     return FaithfulnessBenchmarkResults(relations=results, metrics=faithfulness_metrics)

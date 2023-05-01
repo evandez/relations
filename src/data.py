@@ -101,7 +101,6 @@ class Relation(DataClassJsonMixin):
         )
 
 
-
 class RelationDataset(torch.utils.data.Dataset[Relation]):
     """A torch dataset of relations."""
 
