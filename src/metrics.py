@@ -28,9 +28,9 @@ def recall(predictions: Sequence[StrSequence], targets: StrSequence) -> list[flo
         target = target.lower().strip()
         topk = [p.lower().strip() for p in topk]
 
-        for k in range(k):
-            if any(target.startswith(p) for p in topk[: k + 1]):
-                recalls[k] += 1
+        for i in range(k):
+            if any(target.startswith(p) for p in topk[: i + 1]):
+                recalls[i] += 1
 
     return [r / len(targets) for r in recalls]
 
