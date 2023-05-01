@@ -219,6 +219,6 @@ def faithfulness(
         ]
         for r in results
     ])
-    metrics = FaithfulnessBenchmarkMetrics(recall=recalls.mean(dim=(-1, -2)).tolist())
+    faithfulness_metrics = FaithfulnessBenchmarkMetrics(recall=recalls.mean(dim=(-1, -2)).tolist())
 
-    return FaithfulnessBenchmarkResults(relations=results, metrics=metrics)
+    return FaithfulnessBenchmarkResults(relations=results, metrics=faithfulness_metrics)
