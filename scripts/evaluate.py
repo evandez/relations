@@ -43,10 +43,14 @@ def main(args: argparse.Namespace) -> None:
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
 
-            metrics_json = json.dumps(results.metrics.to_dict(), indent=4)
-
-            results_file = experiment.results_dir / f"{bench}_metrics.json"
+            results_file = experiment.results_dir / f"{bench}_results.json"
+            results_json = results.to_json(indent=4)
             with results_file.open("w") as handle:
+                handle.write(results_json)
+
+            metrics_json = results.metrics.to_json(indent=4)
+            metrics_file = experiment.results_dir / f"{bench}_metrics.json"
+            with metrics_file.open("w") as handle:
                 handle.write(metrics_json)
 
 
