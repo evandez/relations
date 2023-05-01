@@ -84,11 +84,11 @@ def reconstruction(
                 "because no other relations have this subject"
             )
             continue
-        (_, other_prompt_template, other_sample) = random.choice(matches)
+        (_, other_prompt_template, other_subject) = random.choice(matches)
         z_dist_subj = functional.compute_hidden_states(
             mt=estimator.mt,
             layers=[operator.z_layer],
-            prompt=other_prompt_template.format(other_sample.subject),
+            prompt=other_prompt_template.format(other_subject),
         ).hiddens[0][0, -1]
 
         # Distractor 2: same relation, different subject
@@ -101,11 +101,11 @@ def reconstruction(
                 "because no other subjects have this relation"
             )
             continue
-        (_, other_prompt_template, other_sample) = random.choice(matches)
+        (_, other_prompt_template, other_subject) = random.choice(matches)
         z_dist_rel = functional.compute_hidden_states(
             mt=estimator.mt,
             layers=[operator.z_layer],
-            prompt=other_prompt_template.format(other_sample.subject),
+            prompt=other_prompt_template.format(other_subject),
         ).hiddens[0][0, -1]
 
         zs = torch.cat([z_true, z_dist_subj, z_dist_rel], dim=0).float()
