@@ -13,10 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
-class ReconstructionBenchmarkResults(DataClassJsonMixin):
+class ReconstructionBenchmarkMetrics(DataClassJsonMixin):
     frac_correct: float
     frac_dist_subj: float
     frac_dist_rel: float
+
+
+@dataclass(frozen=True, kw_only=True)
+class ReconstructionBenchmarkResults(DataClassJsonMixin):
+    metrics: ReconstructionBenchmarkMetrics
 
 
 @torch.inference_mode()
@@ -116,9 +121,11 @@ def reconstruction(
         counts[chosen] += 1
 
     return ReconstructionBenchmarkResults(
-        frac_correct=counts[0] / sum(counts.values()),
-        frac_dist_subj=counts[1] / sum(counts.values()),
-        frac_dist_rel=counts[2] / sum(counts.values()),
+        metrics=ReconstructionBenchmarkMetrics(
+            frac_correct=counts[0] / sum(counts.values()),
+            frac_dist_subj=counts[1] / sum(counts.values()),
+            frac_dist_rel=counts[2] / sum(counts.values()),
+        )
     )
 
 
@@ -137,11 +144,17 @@ class FaithfulnessBenchmarkRelationResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True, kw_only=True)
+class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
+
+    recall: list[float]
+
+
+@dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     relations: list[FaithfulnessBenchmarkRelationResults]
+    metrics: FaithfulnessBenchmarkMetrics
 
 
-# TODO(evandez): Average across prompt templates.
 # TODO(evandez): Record predictions, save models and hiddens, etc.
 def faithfulness(
     *,
@@ -176,7 +189,8 @@ def faithfulness(
     for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
-            train, test = relation.split(n_train)
+            prompt_template = random.choice(relation.prompt_templates)
+            train, test = relation.set(prompt_templates=[prompt_template]).split(n_train)
             operator = estimator(train)
 
             outputs = []
@@ -197,4 +211,14 @@ def faithfulness(
         results.append(
             FaithfulnessBenchmarkRelationResults(relation=relation, trials=trials)
         )
-    return FaithfulnessBenchmarkResults(relations=results)
+
+    recalls = torch.tensor([
+        [
+            trial.recall
+            for trial in r.trials
+        ]
+        for r in results
+    ])
+    metrics = FaithfulnessBenchmarkMetrics(recall=recalls.mean(dim=(-1, -2)).tolist())
+
+    return FaithfulnessBenchmarkResults(relations=results, metrics=metrics)

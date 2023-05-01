@@ -3,6 +3,7 @@ import logging
 import random
 from dataclasses import dataclass, fields
 from pathlib import Path
+from typing import Sequence
 
 from src.utils import env_utils
 from src.utils.typing import PathLike
@@ -79,6 +80,26 @@ class Relation(DataClassJsonMixin):
                 _range=list(self.range),
             ),
         )
+
+    def set(
+        self,
+        name: str | None = None,
+        prompt_templates: Sequence[str] | None = None,
+        samples: Sequence[RelationSample] | None = None,
+        domain: Sequence[str] | None = None,
+        range: Sequence[str] | None = None,
+    ) -> "Relation":
+        """Return a copy of this relation with any specified fields overwritten."""
+        return Relation(
+            name=name if name is not None else self.name,
+            prompt_templates=list(prompt_templates)
+            if prompt_templates is not None
+            else self.prompt_templates,
+            samples=list(samples) if samples is not None else self.samples,
+            _domain=list(domain) if domain is not None else self._domain,
+            _range=list(range) if range is not None else self._range,
+        )
+
 
 
 class RelationDataset(torch.utils.data.Dataset[Relation]):
