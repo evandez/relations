@@ -53,7 +53,7 @@ def main(args: argparse.Namespace) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--h-layer", type=int, default=5, help="layer to get h from")
-    parser.add_argument("--z-layer", type=int, default=-1, help="layer to get z from")
+    parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
         "-e",

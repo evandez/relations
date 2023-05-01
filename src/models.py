@@ -132,6 +132,7 @@ def determine_layer_paths(
     Args:
         model: The model.
         layers: The specific layer (numbers) to look at. Defaults to all of them.
+            Can be a negative number.
         return_dict: If True, return mapping from layer to layer path,
             otherwise just return list of layer paths in same order as `layers`.
 
@@ -148,6 +149,9 @@ def determine_layer_paths(
 
     layer_paths = {}
     for layer in layers:
+        if layer < 0:
+            layer = len(determine_layers(model)) + layer
+
         if isinstance(model, transformers.GPTNeoXForCausalLM):
             layer_path = f"gpt_neox.layers.{layer}"
         elif isinstance(model, transformers.LlamaForCausalLM):
