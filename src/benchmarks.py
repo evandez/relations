@@ -24,7 +24,6 @@ class ReconstructionBenchmarkResults(DataClassJsonMixin):
     metrics: ReconstructionBenchmarkMetrics
 
 
-@torch.inference_mode()
 def reconstruction(
     estimator: operators.LinearRelationEstimator,
     dataset: data.RelationDataset,
