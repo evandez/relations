@@ -55,34 +55,32 @@ def reconstruction(
             operators[relation_name, prompt_template, sample.subject] = operator
 
     counts: dict[int, int] = defaultdict(int)
-    for (relation_name, prompt_template, sample), operator in tqdm(
+    for (relation_name, prompt_template, subject), operator in tqdm(
         operators.items(), desc=f"{desc} [compute scores]"
     ):
         z_true = functional.compute_hidden_states(
             mt=estimator.mt,
             layers=[operator.z_layer],
-            prompt=prompt_template.format(sample.subject),
+            prompt=prompt_template.format(subject),
         ).hiddens[0][0, -1]
 
         key = random.choice(
             [
                 (r, p, s)
                 for r, p, s in operators
-                if r == relation_name and (p != prompt_template or s != sample.subject)
+                if r == relation_name and (p != prompt_template or s != subject)
             ]
         )
         operator = operators[key]
-        z_pred = operator(sample.subject).z
+        z_pred = operator(subject).z
 
         # Distractor 1: same subject, different relation
         matches = [
-            (r, p, s)
-            for r, p, s in operators
-            if r == relation_name and s != sample.subject
+            (r, p, s) for r, p, s in operators if r == relation_name and s != subject
         ]
         if not matches:
             logger.debug(
-                f"skipped {relation_name}/{prompt_template}/{sample.subject} "
+                f"skipped {relation_name}/{prompt_template}/{subject} "
                 "because no other relations have this subject"
             )
             continue
@@ -95,13 +93,11 @@ def reconstruction(
 
         # Distractor 2: same relation, different subject
         matches = [
-            (r, p, s)
-            for r, p, s in operators
-            if r == relation_name and s != sample.subject
+            (r, p, s) for r, p, s in operators if r == relation_name and s != subject
         ]
         if not matches:
             logger.debug(
-                f"skipped {relation_name}/{prompt_template}/{sample.subject} "
+                f"skipped {relation_name}/{prompt_template}/{subject} "
                 "because no other subjects have this relation"
             )
             continue
