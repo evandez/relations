@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 BENCHMARKS = ("reconstruction", "faithfulness")
 ESTIMATORS = {
     "j": operators.JacobianEstimator,
-    "j-icl": operators.JacobianIclEstimator,
+    "j-icl-max": operators.JacobianIclMaxEstimator,
+    "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--estimator",
         "-e",
-        default="j-icl",
+        default="j-icl-mean",
         choices=ESTIMATORS,
         help="lre estimator to use",
     )

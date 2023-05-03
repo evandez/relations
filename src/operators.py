@@ -165,7 +165,7 @@ class JacobianEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True, kw_only=True)
-class JacobianIclEstimator(LinearRelationEstimator):
+class JacobianIclMaxEstimator(LinearRelationEstimator):
     """Jacobian estimator that uses in-context learning."""
 
     h_layer: int
@@ -252,6 +252,63 @@ class JacobianIclEstimator(LinearRelationEstimator):
             bias=bias,
             h_layer=self.h_layer,
             z_layer=approx_icl.z_layer,
+            prompt_template=prompt_template,
+        )
+
+        return operator
+
+
+@dataclass(frozen=True)
+class JacobianIclMeanEstimator(LinearRelationEstimator):
+    h_layer: int
+    z_layer: int | None = None
+    subject_token_offset: SubjectTokenOffsetFn | None = None
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        samples = relation.samples
+
+        prompt_template = relation.prompt_templates[0]
+
+        subject_token_offsets = [
+            _get_offset(self.subject_token_offset, prompt_template, sample.subject)
+            for sample in samples
+        ]
+
+        # Estimate the biases, storing the confidence of the target token
+        # along the way.
+        approxes = []
+        for i, sample in enumerate(samples):
+            prompt = prompt_template.format(sample.subject)
+            h_index, inputs = _compute_h_index(
+                mt=self.mt,
+                prompt=prompt,
+                subject=sample.subject,
+                offset=subject_token_offsets[i],
+            )
+            approx = functional.order_1_approx(
+                mt=self.mt,
+                prompt=prompt,
+                h_layer=self.h_layer,
+                h_index=h_index,
+                z_layer=self.z_layer,
+                z_index=-1,
+                inputs=inputs,
+            )
+            approxes.append(approx)
+
+        weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
+        bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+
+        # TODO(evan): Scaling bias down helps tremendously, but why?
+        # Find better way to determine scaling factor.
+        bias = bias / 2
+
+        operator = LinearRelationOperator(
+            mt=self.mt,
+            weight=weight,
+            bias=bias,
+            h_layer=self.h_layer,
+            z_layer=approxes[0].z_layer,
             prompt_template=prompt_template,
         )
 
