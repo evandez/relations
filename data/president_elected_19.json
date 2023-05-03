@@ -1,0 +1,36 @@
+{
+    "name": "president elected 1900s",
+    "prompt_templates": [
+        "{} was elected in the year 19"
+    ],
+    "samples": [
+        {
+            "subject": "John F. Kennedy",
+            "object": "60"
+        },
+        {
+            "subject": "Lyndon B. Johnson",
+            "object": "63"
+        },
+        {
+            "subject": "Richard Nixon",
+            "object": "68"
+        },
+        {
+            "subject": "James Carter",
+            "object": "77"
+        },
+        {
+            "subject": "Ronald Reagan",
+            "object": "80"
+        },
+        {
+            "subject": "George H. W. Bush",
+            "object": "88"
+        },
+        {
+            "subject": "Bill Clinton",
+            "object": "92"
+        }
+    ]
+}

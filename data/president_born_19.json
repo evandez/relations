@@ -1,0 +1,36 @@
+{
+    "name": "president born 1900s",
+    "prompt_templates": [
+        "{} was born in the year 19"
+    ],
+    "samples": [
+        {
+            "subject": "John F. Kennedy",
+            "object": "17"
+        },
+        {
+            "subject": "Lyndon B. Johnson",
+            "object": "08"
+        },
+        {
+            "subject": "Richard Nixon",
+            "object": "13"
+        },
+        {
+            "subject": "James Carter",
+            "object": "24"
+        },
+        {
+            "subject": "Ronald Reagan",
+            "object": "11"
+        },
+        {
+            "subject": "George H. W. Bush",
+            "object": "24"
+        },
+        {
+            "subject": "Bill Clinton",
+            "object": "46"
+        }
+    ]
+}
