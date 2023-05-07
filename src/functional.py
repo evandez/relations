@@ -254,6 +254,7 @@ def compute_hidden_states(
         inputs = mt.tokenizer(
             prompt, return_tensors="pt", padding="longest", truncation=True
         ).to(mt.model.device)
+        inputs.pop("token_type_ids", None)
 
     layer_paths = models.determine_layer_paths(mt, layers=layers, return_dict=True)
     with baukit.TraceDict(mt.model, layer_paths.values()) as ret:
