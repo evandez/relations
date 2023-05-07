@@ -307,7 +307,7 @@ def load_model(
     model.eval()
 
     if is_llama_variant:
-        tokenizer = transformers.LlamaTokenizer.from_pretrained(name)
+        tokenizer = transformers.LlamaTokenizerFast.from_pretrained(name)
     else:
         tokenizer = transformers.AutoTokenizer.from_pretrained(name)
     tokenizer.pad_token = tokenizer.eos_token

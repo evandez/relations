@@ -6,6 +6,7 @@ jupyter
 jupyter_http_over_ws
 matplotlib
 numpy
+protobuf==3.20.0
 requests
 seaborn
 sentencepiece
