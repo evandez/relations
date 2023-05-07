@@ -8,6 +8,7 @@ matplotlib
 numpy
 requests
 seaborn
+sentencepiece
 tqdm
 transformers
 torch

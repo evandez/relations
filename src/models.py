@@ -306,7 +306,10 @@ def load_model(
     model.to(device)
     model.eval()
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(name)
+    if is_llama_variant:
+        tokenizer = transformers.LlamaTokenizer.from_pretrained(name)
+    else:
+        tokenizer = transformers.AutoTokenizer.from_pretrained(name)
     tokenizer.pad_token = tokenizer.eos_token
 
     return ModelAndTokenizer(model, tokenizer)
