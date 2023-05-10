@@ -1,0 +1,2191 @@
+{
+  "name": "works in field",
+  "prompt_templates": [
+    "{} made intellectual contributions in the field of",
+    "{} is known for their work in the field of",
+    "What does {} do? They work in the field of",
+    "{} works in the field of"
+  ],
+  "samples": [
+    {
+      "subject": "John James Rickard Macleod",
+      "object": "physiology"
+    },
+    {
+      "subject": "Lee Alvin DuBridge",
+      "object": "physics"
+    },
+    {
+      "subject": "John Henry Poynting",
+      "object": "physics"
+    },
+    {
+      "subject": "Yi-Fu Tuan",
+      "object": "geography"
+    },
+    {
+      "subject": "Domingo de Soto",
+      "object": "theology"
+    },
+    {
+      "subject": "Giovanni Battista Riccioli",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Michel Chasles",
+      "object": "geometry"
+    },
+    {
+      "subject": "Onufri",
+      "object": "icon"
+    },
+    {
+      "subject": "Jonathan Haidt",
+      "object": "psychology"
+    },
+    {
+      "subject": "A Thousand Plateaus",
+      "object": "philosophy"
+    },
+    {
+      "subject": "The Astronomical Journal",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Albrecht Kossel",
+      "object": "physiology"
+    },
+    {
+      "subject": "Germaine Greer",
+      "object": "feminism"
+    },
+    {
+      "subject": "suicide attack",
+      "object": "terrorism"
+    },
+    {
+      "subject": "Karl Polanyi",
+      "object": "sociology"
+    },
+    {
+      "subject": "Hubert von Luschka",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Pierre Curie",
+      "object": "physics"
+    },
+    {
+      "subject": "Robert A. Millikan",
+      "object": "physics"
+    },
+    {
+      "subject": "Galileo Galilei",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Anita Borg",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Georg Ernst Stahl",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Raymond Smith Dugan",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Stuart Parkin",
+      "object": "physics"
+    },
+    {
+      "subject": "John Coltrane",
+      "object": "jazz"
+    },
+    {
+      "subject": "Otto Brunfels",
+      "object": "theology"
+    },
+    {
+      "subject": "Herman Boerhaave",
+      "object": "medicine"
+    },
+    {
+      "subject": "Spacewatch",
+      "object": "comet"
+    },
+    {
+      "subject": "Sofia Kovalevskaya",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Nikolaj Frederik Severin Grundtvig",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Frederik Kaiser",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Otto E. Neugebauer",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Edward Teller",
+      "object": "physics"
+    },
+    {
+      "subject": "Eugene Odum",
+      "object": "ecology"
+    },
+    {
+      "subject": "Raoul Bott",
+      "object": "geometry"
+    },
+    {
+      "subject": "Stephen Wolfram",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Bert Sakmann",
+      "object": "physiology"
+    },
+    {
+      "subject": "Elinor Ostrom",
+      "object": "economics"
+    },
+    {
+      "subject": "George Huntington",
+      "object": "medicine"
+    },
+    {
+      "subject": "James Morris Blaut",
+      "object": "geography"
+    },
+    {
+      "subject": "Fred Hoyle",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Kamil Zvelebil",
+      "object": "Tamil"
+    },
+    {
+      "subject": "overdrafting",
+      "object": "groundwater"
+    },
+    {
+      "subject": "Nicole-Reine Lepaute",
+      "object": "astronomy"
+    },
+    {
+      "subject": "intelligence agency",
+      "object": "espionage"
+    },
+    {
+      "subject": "James Ivory",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Humphry Davy",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Giorgi Melikishvili",
+      "object": "history"
+    },
+    {
+      "subject": "Jane Ellen Harrison",
+      "object": "classics"
+    },
+    {
+      "subject": "Johann Weyer",
+      "object": "physician"
+    },
+    {
+      "subject": "John Archibald Wheeler",
+      "object": "physics"
+    },
+    {
+      "subject": "millennialism",
+      "object": "theology"
+    },
+    {
+      "subject": "Franz Reuleaux",
+      "object": "mechanics"
+    },
+    {
+      "subject": "Christiaan Huygens",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Science",
+      "object": "science"
+    },
+    {
+      "subject": "Steven Weinberg",
+      "object": "physics"
+    },
+    {
+      "subject": "Hermann Minkowski",
+      "object": "geometry"
+    },
+    {
+      "subject": "Marcos Moshinsky",
+      "object": "physics"
+    },
+    {
+      "subject": "Adriaan de Groot",
+      "object": "psychology"
+    },
+    {
+      "subject": "William Crabtree",
+      "object": "astronomy"
+    },
+    {
+      "subject": "rococo",
+      "object": "architecture"
+    },
+    {
+      "subject": "Sydney Brenner",
+      "object": "biology"
+    },
+    {
+      "subject": "chemical test",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Menaechmus",
+      "object": "geometry"
+    },
+    {
+      "subject": "Harrie Massey",
+      "object": "physics"
+    },
+    {
+      "subject": "Aryabhata",
+      "object": "astronomy"
+    },
+    {
+      "subject": "statistical model",
+      "object": "statistics"
+    },
+    {
+      "subject": "Nicolaus Copernicus",
+      "object": "mathematics"
+    },
+    {
+      "subject": "G. Evelyn Hutchinson",
+      "object": "ecology"
+    },
+    {
+      "subject": "Christoph Wilhelm Hufeland",
+      "object": "medicine"
+    },
+    {
+      "subject": "Gilbert Blane",
+      "object": "medicine"
+    },
+    {
+      "subject": "Svante August Arrhenius",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Finnish Literature Society",
+      "object": "Finnish"
+    },
+    {
+      "subject": "Mathias Lerch",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Robert Neelly Bellah",
+      "object": "sociology"
+    },
+    {
+      "subject": "Asclepiades of Bithynia",
+      "object": "medicine"
+    },
+    {
+      "subject": "Louis Cappel",
+      "object": "Hebrew"
+    },
+    {
+      "subject": "Barry Commoner",
+      "object": "biology"
+    },
+    {
+      "subject": "August Heinrich Petermann",
+      "object": "geography"
+    },
+    {
+      "subject": "Anatoly Maltsev",
+      "object": "algebra"
+    },
+    {
+      "subject": "Ann Dunham",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Karl Marx",
+      "object": "sociology"
+    },
+    {
+      "subject": "Paul Langevin",
+      "object": "physics"
+    },
+    {
+      "subject": "Charles Babbage",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Ernest Starling",
+      "object": "physiology"
+    },
+    {
+      "subject": "Stanislav Grof",
+      "object": "psychology"
+    },
+    {
+      "subject": "Nan Hoover",
+      "object": "photography"
+    },
+    {
+      "subject": "Alfred Marshall",
+      "object": "economics"
+    },
+    {
+      "subject": "Ulrich Beck",
+      "object": "sociology"
+    },
+    {
+      "subject": "Galen",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Dimitri Mendeleyev",
+      "object": "chemistry"
+    },
+    {
+      "subject": "G. Stanley Hall",
+      "object": "psychology"
+    },
+    {
+      "subject": "Edoardo Amaldi",
+      "object": "physics"
+    },
+    {
+      "subject": "Alan Turing",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Khaled Hosseini",
+      "object": "Afghanistan"
+    },
+    {
+      "subject": "Roger Penrose",
+      "object": "physics"
+    },
+    {
+      "subject": "William Thierry Preyer",
+      "object": "physiology"
+    },
+    {
+      "subject": "Jean-Pierre Vernant",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Carl Linnaeus",
+      "object": "medicine"
+    },
+    {
+      "subject": "Karl Schwarzschild",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Nikolai Bernstein",
+      "object": "physiology"
+    },
+    {
+      "subject": "Anton Zeilinger",
+      "object": "physics"
+    },
+    {
+      "subject": "Struga Poetry Evenings",
+      "object": "poetry"
+    },
+    {
+      "subject": "Alexandre Darracq",
+      "object": "car"
+    },
+    {
+      "subject": "Arthur Leonard Schawlow",
+      "object": "physicist"
+    },
+    {
+      "subject": "Ulf von Euler",
+      "object": "physiology"
+    },
+    {
+      "subject": "George Volkoff",
+      "object": "physics"
+    },
+    {
+      "subject": "Yana Toboso",
+      "object": "manga"
+    },
+    {
+      "subject": "Bonaventura Cavalieri",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Charles Proteus Steinmetz",
+      "object": "mathematician"
+    },
+    {
+      "subject": "Pierre Janet",
+      "object": "psychology"
+    },
+    {
+      "subject": "Herbert A. Hauptman",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Lisbon Geographic Society",
+      "object": "geography"
+    },
+    {
+      "subject": "Volcher Coiter",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Isaac Barrow",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Govert Bidloo",
+      "object": "physician"
+    },
+    {
+      "subject": "integument",
+      "object": "biology"
+    },
+    {
+      "subject": "European Physical Journal",
+      "object": "physics"
+    },
+    {
+      "subject": "Isaac Newton",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Edward Victor Appleton",
+      "object": "physics"
+    },
+    {
+      "subject": "Johannes Hevelius",
+      "object": "astronomy"
+    },
+    {
+      "subject": "John Napier",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Nikolai Ivanovich Lobachevsky",
+      "object": "geometry"
+    },
+    {
+      "subject": "William Sharpey",
+      "object": "anatomy"
+    },
+    {
+      "subject": "NOTAM",
+      "object": "aviation"
+    },
+    {
+      "subject": "John Stuart Mill",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Wilhelm Roux",
+      "object": "anatomy"
+    },
+    {
+      "subject": "David Bohm",
+      "object": "physics"
+    },
+    {
+      "subject": "John Dalton",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Jean Pierre Flourens",
+      "object": "physiology"
+    },
+    {
+      "subject": "Johann Wolfgang von Goethe",
+      "object": "anatomy"
+    },
+    {
+      "subject": "John Cockcroft",
+      "object": "physics"
+    },
+    {
+      "subject": "George Bernard Dantzig",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Nicolas Chuquet",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Henri Victor Regnault",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Wallace Carothers",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Charles Sutherland Elton",
+      "object": "ecology"
+    },
+    {
+      "subject": "Joseph Louis Gay-Lussac",
+      "object": "chemistry"
+    },
+    {
+      "subject": "James Franck",
+      "object": "physics"
+    },
+    {
+      "subject": "Leonhard Euler",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Hugo Kronecker",
+      "object": "physiology"
+    },
+    {
+      "subject": "Frederica de Laguna",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Karl Menger",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Abdullah ibn Salam",
+      "object": "Judaism"
+    },
+    {
+      "subject": "Julius Lothar Meyer",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Aeronautical Information Service",
+      "object": "aviation"
+    },
+    {
+      "subject": "Felix Bloch",
+      "object": "physics"
+    },
+    {
+      "subject": "David Hilbert",
+      "object": "geometry"
+    },
+    {
+      "subject": "web application",
+      "object": "website"
+    },
+    {
+      "subject": "William Isaac Thomas",
+      "object": "sociology"
+    },
+    {
+      "subject": "Michael Langone",
+      "object": "psychology"
+    },
+    {
+      "subject": "Jan Mikulicz-Radecki",
+      "object": "surgery"
+    },
+    {
+      "subject": "Tim Ingold",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Nikolai Bogolyubov",
+      "object": "mathematics"
+    },
+    {
+      "subject": "John Anthony Walker",
+      "object": "espionage"
+    },
+    {
+      "subject": "Giacomo F. Maraldi",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Dimitri Mendeleyev",
+      "object": "physics"
+    },
+    {
+      "subject": "Polymath project",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Alfred L. Kroeber",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Paul Broca",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Henry Thomas Colebrooke",
+      "object": "Sanskrit"
+    },
+    {
+      "subject": "Religious Tract Society",
+      "object": "publishing"
+    },
+    {
+      "subject": "Hermann von Helmholtz",
+      "object": "psychology"
+    },
+    {
+      "subject": "art school",
+      "object": "art"
+    },
+    {
+      "subject": "Marcel Mauss",
+      "object": "sociology"
+    },
+    {
+      "subject": "Laurentius Roberg",
+      "object": "medicine"
+    },
+    {
+      "subject": "Carl Ludwig",
+      "object": "physiology"
+    },
+    {
+      "subject": "Joseph Diez Gergonne",
+      "object": "geometry"
+    },
+    {
+      "subject": "Theodor von Oppolzer",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Carl Menger",
+      "object": "economics"
+    },
+    {
+      "subject": "Carl Djerassi",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Robert Hanbury Brown",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Hertha Ayrton",
+      "object": "mathematics"
+    },
+    {
+      "subject": "William Rowan Hamilton",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Courant Institute of Mathematical Sciences",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Laurent Schwartz",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Pyotr Lebedev",
+      "object": "physics"
+    },
+    {
+      "subject": "Vilfredo Pareto",
+      "object": "sociology"
+    },
+    {
+      "subject": "Johann Georg Gmelin",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Henri Brocard",
+      "object": "geometry"
+    },
+    {
+      "subject": "Otto Struve",
+      "object": "astronomy"
+    },
+    {
+      "subject": "John Polkinghorne",
+      "object": "theology"
+    },
+    {
+      "subject": "Ibn Abi Usaibia",
+      "object": "medicine"
+    },
+    {
+      "subject": "Nicholas Metropolis",
+      "object": "physics"
+    },
+    {
+      "subject": "William Cheselden",
+      "object": "medicine"
+    },
+    {
+      "subject": "Aleksey Krylov",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Christoph Gerber",
+      "object": "physics"
+    },
+    {
+      "subject": "Thomas Bartholin",
+      "object": "medicine"
+    },
+    {
+      "subject": "Johann Peter Frank",
+      "object": "medicine"
+    },
+    {
+      "subject": "Henry Corbin",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Kip S. Thorne",
+      "object": "physics"
+    },
+    {
+      "subject": "woodburytype",
+      "object": "photography"
+    },
+    {
+      "subject": "Uspekhi Fizicheskikh Nauk",
+      "object": "physics"
+    },
+    {
+      "subject": "Michael Jackson",
+      "object": "musician"
+    },
+    {
+      "subject": "Werner Sombart",
+      "object": "sociology"
+    },
+    {
+      "subject": "Alexis Bouvard",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Justus von Liebig",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Mstislav Keldysh",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Richard Wagner",
+      "object": "opera"
+    },
+    {
+      "subject": "ornithology",
+      "object": "bird"
+    },
+    {
+      "subject": "Aleksei N. Leontiev",
+      "object": "psychology"
+    },
+    {
+      "subject": "Archimedes",
+      "object": "geometry"
+    },
+    {
+      "subject": "Ernest Rutherford",
+      "object": "physics"
+    },
+    {
+      "subject": "Alfred Kinsey",
+      "object": "biology"
+    },
+    {
+      "subject": "Anatomical terminology",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Franciscus Sylvius",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Moritz Pasch",
+      "object": "geometry"
+    },
+    {
+      "subject": "Alan Turing",
+      "object": "logic"
+    },
+    {
+      "subject": "Callippus",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Willem Piso",
+      "object": "physician"
+    },
+    {
+      "subject": "Sin-Itiro Tomonaga",
+      "object": "physics"
+    },
+    {
+      "subject": "Vilhelm Bjerknes",
+      "object": "physics"
+    },
+    {
+      "subject": "Edward Burnett Tylor",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Leonhard Euler",
+      "object": "physics"
+    },
+    {
+      "subject": "Michael Faraday",
+      "object": "physics"
+    },
+    {
+      "subject": "Jakob Steiner",
+      "object": "geometry"
+    },
+    {
+      "subject": "Bruce Perens",
+      "object": "programmer"
+    },
+    {
+      "subject": "Ernest Archdeacon",
+      "object": "aviation"
+    },
+    {
+      "subject": "Daniel Bernoulli",
+      "object": "physics"
+    },
+    {
+      "subject": "Akira Toriyama",
+      "object": "manga"
+    },
+    {
+      "subject": "Adonis",
+      "object": "hunting"
+    },
+    {
+      "subject": "Ewald Hering",
+      "object": "physiology"
+    },
+    {
+      "subject": "Antoine Augustin Cournot",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Percy Williams Bridgman",
+      "object": "physics"
+    },
+    {
+      "subject": "Bruce Springsteen",
+      "object": "musician"
+    },
+    {
+      "subject": "William Oughtred",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Al-Kindi",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Jean Piaget",
+      "object": "psychology"
+    },
+    {
+      "subject": "Theodor Lipps",
+      "object": "philosopher"
+    },
+    {
+      "subject": "Geometry Festival",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Robert Moberly",
+      "object": "theology"
+    },
+    {
+      "subject": "August Krogh",
+      "object": "physiology"
+    },
+    {
+      "subject": "Henri Moissan",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Torbern Bergman",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Urania",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Edward Condon",
+      "object": "physics"
+    },
+    {
+      "subject": "Hermann von Helmholtz",
+      "object": "physiology"
+    },
+    {
+      "subject": "Michio Kaku",
+      "object": "physics"
+    },
+    {
+      "subject": "Eric Harold Neville",
+      "object": "mathematics"
+    },
+    {
+      "subject": "David G. Bromley",
+      "object": "sociology"
+    },
+    {
+      "subject": "Vitaly Ginzburg",
+      "object": "physics"
+    },
+    {
+      "subject": "Wilhelm Ackermann",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Norman McLaren",
+      "object": "animation"
+    },
+    {
+      "subject": "Galileo Galilei",
+      "object": "physics"
+    },
+    {
+      "subject": "Sergei Diaghilev",
+      "object": "ballet"
+    },
+    {
+      "subject": "Ernest Burgess",
+      "object": "sociology"
+    },
+    {
+      "subject": "William Camden",
+      "object": "history"
+    },
+    {
+      "subject": "Armand Trousseau",
+      "object": "medicine"
+    },
+    {
+      "subject": "Julian Huxley",
+      "object": "biology"
+    },
+    {
+      "subject": "PhilPapers",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Georges Reeb",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Claude Louis Berthollet",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Boris Delaunay",
+      "object": "geometry"
+    },
+    {
+      "subject": "Carl Hovland",
+      "object": "psychology"
+    },
+    {
+      "subject": "Joseph Barcroft",
+      "object": "physiology"
+    },
+    {
+      "subject": "Carl Rogers",
+      "object": "psychology"
+    },
+    {
+      "subject": "Pierre Gilliard",
+      "object": "French"
+    },
+    {
+      "subject": "Robert Bunsen",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Norbert Wiener",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Henri Becquerel",
+      "object": "physics"
+    },
+    {
+      "subject": "Regiomontanus",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Reinhold Niebuhr",
+      "object": "theology"
+    },
+    {
+      "subject": "Paul Cameron",
+      "object": "psychology"
+    },
+    {
+      "subject": "Al-Masudi",
+      "object": "history"
+    },
+    {
+      "subject": "Oswald Veblen",
+      "object": "geometry"
+    },
+    {
+      "subject": "Actaeon",
+      "object": "hunting"
+    },
+    {
+      "subject": "Edinburgh Mathematical Society",
+      "object": "mathematics"
+    },
+    {
+      "subject": "medical association",
+      "object": "medicine"
+    },
+    {
+      "subject": "Karl Christian Friedrich Krause",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Georg Ludwig Hartig",
+      "object": "forestry"
+    },
+    {
+      "subject": "Nur ad-Din al-Bitruji",
+      "object": "astronomy"
+    },
+    {
+      "subject": "William Harvey",
+      "object": "physiology"
+    },
+    {
+      "subject": "Henry Cavendish",
+      "object": "physics"
+    },
+    {
+      "subject": "Stephen Hales",
+      "object": "physiology"
+    },
+    {
+      "subject": "Jean-Baptiste Boussingault",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Francisco Varela",
+      "object": "biology"
+    },
+    {
+      "subject": "Marie Curie",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Shmuel Eisenstadt",
+      "object": "sociology"
+    },
+    {
+      "subject": "Arnold Hermann Ludwig Heeren",
+      "object": "history"
+    },
+    {
+      "subject": "Anselme Payen",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Arthur Moritz Schoenflies",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Kazimierz Ajdukiewicz",
+      "object": "logic"
+    },
+    {
+      "subject": "Raymond Smullyan",
+      "object": "logic"
+    },
+    {
+      "subject": "Granius Licinianus",
+      "object": "history"
+    },
+    {
+      "subject": "Josias Simmler",
+      "object": "theology"
+    },
+    {
+      "subject": "Isaac Newton",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Jared Diamond",
+      "object": "ecology"
+    },
+    {
+      "subject": "James George Frazer",
+      "object": "folklore"
+    },
+    {
+      "subject": "David Harvey",
+      "object": "geography"
+    },
+    {
+      "subject": "Kurt Lewin",
+      "object": "psychology"
+    },
+    {
+      "subject": "Sergey Chaplygin",
+      "object": "physics"
+    },
+    {
+      "subject": "Alexander William Williamson",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Leon Orbeli",
+      "object": "physiology"
+    },
+    {
+      "subject": "Max Weber",
+      "object": "history"
+    },
+    {
+      "subject": "Karl Georg Christian von Staudt",
+      "object": "geometry"
+    },
+    {
+      "subject": "LGBT social movements",
+      "object": "LGBT"
+    },
+    {
+      "subject": "Alfred Tarski",
+      "object": "logic"
+    },
+    {
+      "subject": "Anaxagoras",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Edward Gibbon",
+      "object": "history"
+    },
+    {
+      "subject": "Petrus Camper",
+      "object": "physiology"
+    },
+    {
+      "subject": "August Kundt",
+      "object": "physics"
+    },
+    {
+      "subject": "Euclid",
+      "object": "geometry"
+    },
+    {
+      "subject": "Gustav Kirchhoff",
+      "object": "physics"
+    },
+    {
+      "subject": "Alexander Zinoviev",
+      "object": "sociology"
+    },
+    {
+      "subject": "Immanuel Wallerstein",
+      "object": "sociology"
+    },
+    {
+      "subject": "Thomas Gilovich",
+      "object": "psychology"
+    },
+    {
+      "subject": "Wilhelm Wien",
+      "object": "physics"
+    },
+    {
+      "subject": "Frederic Bartlett",
+      "object": "psychology"
+    },
+    {
+      "subject": "Johann Christian Polycarp Erxleben",
+      "object": "physics"
+    },
+    {
+      "subject": "Patrick Moore",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Karl Marx",
+      "object": "economics"
+    },
+    {
+      "subject": "Nagarjuna",
+      "object": "Buddhism"
+    },
+    {
+      "subject": "Regnier de Graaf",
+      "object": "physician"
+    },
+    {
+      "subject": "Ernst Heinrich Weber",
+      "object": "physiology"
+    },
+    {
+      "subject": "Francis Bitter",
+      "object": "physics"
+    },
+    {
+      "subject": "William Herschel",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Ludwig Klages",
+      "object": "psychology"
+    },
+    {
+      "subject": "Erving Goffman",
+      "object": "sociology"
+    },
+    {
+      "subject": "John Vincent Atanasoff",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Gerardus Mercator",
+      "object": "geography"
+    },
+    {
+      "subject": "Henricus Regius",
+      "object": "physician"
+    },
+    {
+      "subject": "pharmacy school",
+      "object": "pharmacy"
+    },
+    {
+      "subject": "Derek Lamb",
+      "object": "animation"
+    },
+    {
+      "subject": "Willem Einthoven",
+      "object": "physiology"
+    },
+    {
+      "subject": "Max Weber",
+      "object": "economics"
+    },
+    {
+      "subject": "Australian Mathematical Society",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Eugene Wigner",
+      "object": "physics"
+    },
+    {
+      "subject": "Giovanni Battista Amici",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Calyampudi Radhakrishna Rao",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Joseph von Fraunhofer",
+      "object": "physics"
+    },
+    {
+      "subject": "Julian Steward",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Clarence Zener",
+      "object": "physics"
+    },
+    {
+      "subject": "Liutprand of Cremona",
+      "object": "diplomat"
+    },
+    {
+      "subject": "David Crystal",
+      "object": "English"
+    },
+    {
+      "subject": "Friedrich Tiedemann",
+      "object": "physiology"
+    },
+    {
+      "subject": "European Physical Society",
+      "object": "physics"
+    },
+    {
+      "subject": "Joseph Schumpeter",
+      "object": "economics"
+    },
+    {
+      "subject": "Herman Auerbach",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Mikio Sato",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Cora Diamond",
+      "object": "ethics"
+    },
+    {
+      "subject": "air traffic control",
+      "object": "aviation"
+    },
+    {
+      "subject": "Grammy Award for Best Female Country Vocal Performance",
+      "object": "singing"
+    },
+    {
+      "subject": "Archibald Hill",
+      "object": "physiology"
+    },
+    {
+      "subject": "Ulisse Dini",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Lipman Bers",
+      "object": "mathematics"
+    },
+    {
+      "subject": "George Metallinos",
+      "object": "theology"
+    },
+    {
+      "subject": "The Physiological Society",
+      "object": "physiology"
+    },
+    {
+      "subject": "Solomon Schechter",
+      "object": "Hebrew"
+    },
+    {
+      "subject": "Pomponius Mela",
+      "object": "geography"
+    },
+    {
+      "subject": "Hermann Klaatsch",
+      "object": "anatomy"
+    },
+    {
+      "subject": "John Wallis",
+      "object": "mathematics"
+    },
+    {
+      "subject": "ICTP Ramanujan Prize",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Giovanni Domenico Cassini",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Olin J. Eggen",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Brahmagupta",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Hans Eysenck",
+      "object": "psychology"
+    },
+    {
+      "subject": "Joseph Priestley",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Karl Bogislaus Reichert",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Nathaniel Bowditch",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Pictures of the Year International",
+      "object": "photography"
+    },
+    {
+      "subject": "Shinobu Kaitani",
+      "object": "manga"
+    },
+    {
+      "subject": "Ivan Sechenov",
+      "object": "physiology"
+    },
+    {
+      "subject": "Otto Neurath",
+      "object": "sociology"
+    },
+    {
+      "subject": "Paul McCartney",
+      "object": "musician"
+    },
+    {
+      "subject": "Hypatia",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Hantaro Nagaoka",
+      "object": "physics"
+    },
+    {
+      "subject": "Willebrord Snellius",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Log Cabin Republicans",
+      "object": "LGBT"
+    },
+    {
+      "subject": "Norman Hackerman",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Harold Scott MacDonald Coxeter",
+      "object": "geometry"
+    },
+    {
+      "subject": "Joke Smit",
+      "object": "feminism"
+    },
+    {
+      "subject": "National Film Board of Canada",
+      "object": "animation"
+    },
+    {
+      "subject": "Marian Rejewski",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Johan Huizinga",
+      "object": "history"
+    },
+    {
+      "subject": "SPECTRE",
+      "object": "terrorism"
+    },
+    {
+      "subject": "Piotr Sztompka",
+      "object": "sociology"
+    },
+    {
+      "subject": "Nicolaus Steno",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Leonard Peikoff",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Italian Chemical Society",
+      "object": "chemistry"
+    },
+    {
+      "subject": "August Weismann",
+      "object": "biology"
+    },
+    {
+      "subject": "Jan Baptist Van Helmont",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Friedrich Bessel",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Mario Pieri",
+      "object": "geometry"
+    },
+    {
+      "subject": "Galileo Galilei",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Samuel Cooper",
+      "object": "miniature"
+    },
+    {
+      "subject": "Edward Thorndike",
+      "object": "psychology"
+    },
+    {
+      "subject": "John Newport Langley",
+      "object": "physiology"
+    },
+    {
+      "subject": "Johan Vilhelm Snellman",
+      "object": "Finnish"
+    },
+    {
+      "subject": "Friedrich Bessel",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Adolphe Quetelet",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Walther Meissner",
+      "object": "physics"
+    },
+    {
+      "subject": "Giordano Bruno",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Christiaan Huygens",
+      "object": "physics"
+    },
+    {
+      "subject": "Heinz Hopf",
+      "object": "geometry"
+    },
+    {
+      "subject": "Mogens Herman Hansen",
+      "object": "classics"
+    },
+    {
+      "subject": "Lev Vygotsky",
+      "object": "psychology"
+    },
+    {
+      "subject": "Galileo Galilei",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Chen Shou",
+      "object": "history"
+    },
+    {
+      "subject": "Lille University of Health and Law",
+      "object": "pharmacy"
+    },
+    {
+      "subject": "Ptolemy",
+      "object": "mathematician"
+    },
+    {
+      "subject": "Mathematical folklore",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Carl Ritter",
+      "object": "geography"
+    },
+    {
+      "subject": "Hjalmar Mellin",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Georgios Babiniotis",
+      "object": "Greek"
+    },
+    {
+      "subject": "Johann Heinrich Lambert",
+      "object": "physics"
+    },
+    {
+      "subject": "Jean-Nicolas Corvisart",
+      "object": "medicine"
+    },
+    {
+      "subject": "Bernd Sturmfels",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Rudolf Wagner",
+      "object": "physiology"
+    },
+    {
+      "subject": "Nello Santi",
+      "object": "opera"
+    },
+    {
+      "subject": "Flemish Primitives",
+      "object": "drawing"
+    },
+    {
+      "subject": "Antonio Vallisneri",
+      "object": "medicine"
+    },
+    {
+      "subject": "Antoine Augustin Cournot",
+      "object": "economics"
+    },
+    {
+      "subject": "Nilakantha Somayaji",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Mikhail Mikhaylovich Gerasimov",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Friedrich Spanheim",
+      "object": "theology"
+    },
+    {
+      "subject": "Nicolaus Copernicus",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Abram Ioffe",
+      "object": "physics"
+    },
+    {
+      "subject": "Erasmus Darwin",
+      "object": "medicine"
+    },
+    {
+      "subject": "Saskia Sassen",
+      "object": "sociology"
+    },
+    {
+      "subject": "Louis Pasteur",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Francesco Maurolico",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Ivan Pavlov",
+      "object": "physiology"
+    },
+    {
+      "subject": "Anne Caldwell",
+      "object": "musical"
+    },
+    {
+      "subject": "Hermann von Helmholtz",
+      "object": "physics"
+    },
+    {
+      "subject": "Walter Bradford Cannon",
+      "object": "physiology"
+    },
+    {
+      "subject": "hunting dog",
+      "object": "hunting"
+    },
+    {
+      "subject": "Urbain Le Verrier",
+      "object": "astronomy"
+    },
+    {
+      "subject": "International Committee on Taxonomy of Viruses",
+      "object": "virus"
+    },
+    {
+      "subject": "Max Joseph von Pettenkofer",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Johann Christian Reil",
+      "object": "medicine"
+    },
+    {
+      "subject": "Ilya Prigogine",
+      "object": "physics"
+    },
+    {
+      "subject": "Luca Pacioli",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Joseph von Gerlach",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Akimi Yoshida",
+      "object": "manga"
+    },
+    {
+      "subject": "John Calvin",
+      "object": "theology"
+    },
+    {
+      "subject": "Larry Sanger",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Hermann Ebbinghaus",
+      "object": "psychology"
+    },
+    {
+      "subject": "Stephen Jay Gould",
+      "object": "evolution"
+    },
+    {
+      "subject": "Michael Servetus",
+      "object": "theology"
+    },
+    {
+      "subject": "Brian De Palma",
+      "object": "film"
+    },
+    {
+      "subject": "Jon Postel",
+      "object": "Internet"
+    },
+    {
+      "subject": "John Dalton",
+      "object": "physics"
+    },
+    {
+      "subject": "Walter Isard",
+      "object": "geography"
+    },
+    {
+      "subject": "octane",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Halford Mackinder",
+      "object": "geography"
+    },
+    {
+      "subject": "James Hillman",
+      "object": "psychology"
+    },
+    {
+      "subject": "Homi Jehangir Bhabha",
+      "object": "physics"
+    },
+    {
+      "subject": "Johannes Eugenius B\u00fclow Warming",
+      "object": "biology"
+    },
+    {
+      "subject": "Andrey Kolmogorov",
+      "object": "geometry"
+    },
+    {
+      "subject": "Frederick Banting",
+      "object": "physiology"
+    },
+    {
+      "subject": "Werner Fenchel",
+      "object": "geometry"
+    },
+    {
+      "subject": "Led Zeppelin",
+      "object": "musician"
+    },
+    {
+      "subject": "Jeremiah Horrocks",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Arnaud Denjoy",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Enrico Fermi",
+      "object": "physics"
+    },
+    {
+      "subject": "Irving Langmuir Award",
+      "object": "physics"
+    },
+    {
+      "subject": "anatomical location",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Karl Wilhelm von Kupffer",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Anti-Oedipus",
+      "object": "philosophy"
+    },
+    {
+      "subject": "Sean M. Carroll",
+      "object": "physics"
+    },
+    {
+      "subject": "Eric Maskin",
+      "object": "economist"
+    },
+    {
+      "subject": "Edward B. Titchener",
+      "object": "psychology"
+    },
+    {
+      "subject": "Paracelsus",
+      "object": "medicine"
+    },
+    {
+      "subject": "Augustus Pitt Rivers",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Jean-Martin Charcot",
+      "object": "medicine"
+    },
+    {
+      "subject": "Mildred Dresselhaus",
+      "object": "physics"
+    },
+    {
+      "subject": "Philipp Lenard",
+      "object": "physics"
+    },
+    {
+      "subject": "Charles Bell",
+      "object": "physiology"
+    },
+    {
+      "subject": "Fritjof Capra",
+      "object": "physics"
+    },
+    {
+      "subject": "Gregor Mendel",
+      "object": "genetics"
+    },
+    {
+      "subject": "Wilhelm Krause",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Ernest Lawrence",
+      "object": "physics"
+    },
+    {
+      "subject": "Galen",
+      "object": "medicine"
+    },
+    {
+      "subject": "gross profit",
+      "object": "accounting"
+    },
+    {
+      "subject": "Ernest Jones",
+      "object": "psychology"
+    },
+    {
+      "subject": "Anders Celsius",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Anaxagoras",
+      "object": "astronomy"
+    },
+    {
+      "subject": "John Preskill",
+      "object": "physics"
+    },
+    {
+      "subject": "Stefan Banach",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Adrianne Wadewitz",
+      "object": "Wikipedia"
+    },
+    {
+      "subject": "Felix Plater",
+      "object": "medicine"
+    },
+    {
+      "subject": "Jean Le Rond d'Alembert",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Helen E. Fisher",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Georg Mohr",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Nikolaus Joseph von Jacquin",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Ludwig von Mises",
+      "object": "economics"
+    },
+    {
+      "subject": "Guo Moruo",
+      "object": "history"
+    },
+    {
+      "subject": "William Crookes",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Kurt Baier",
+      "object": "ethics"
+    },
+    {
+      "subject": "Mark S. Granovetter",
+      "object": "sociology"
+    },
+    {
+      "subject": "Frederick Ashton",
+      "object": "ballet"
+    },
+    {
+      "subject": "Horace Lamb",
+      "object": "mathematics"
+    },
+    {
+      "subject": "William Lipscomb",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Alexander Bogdanov",
+      "object": "medicine"
+    },
+    {
+      "subject": "Marshall Harvey Stone",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Theodor Billroth",
+      "object": "surgery"
+    },
+    {
+      "subject": "Abraham Maslow",
+      "object": "psychology"
+    },
+    {
+      "subject": "William Somerset Maugham",
+      "object": "novelist"
+    },
+    {
+      "subject": "Johannes Goropius Becanus",
+      "object": "physician"
+    },
+    {
+      "subject": "Friedrich Hirzebruch",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Napoleon Chagnon",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Max Weber",
+      "object": "sociology"
+    },
+    {
+      "subject": "Heinrich Roth",
+      "object": "Sanskrit"
+    },
+    {
+      "subject": "Clark Kimberling",
+      "object": "geometry"
+    },
+    {
+      "subject": "SASTRA Ramanujan Prize",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Yuna Kagesaki",
+      "object": "manga"
+    },
+    {
+      "subject": "Mikhail Leonidovich Gromov",
+      "object": "geometry"
+    },
+    {
+      "subject": "Edwin Hubble",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Alfred Weber",
+      "object": "sociology"
+    },
+    {
+      "subject": "scientific method",
+      "object": "science"
+    },
+    {
+      "subject": "Macedonio Melloni",
+      "object": "physics"
+    },
+    {
+      "subject": "Hermann Schwarz",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Isaac Newton",
+      "object": "physics"
+    },
+    {
+      "subject": "Johannes de Sacrobosco",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Q Center",
+      "object": "LGBT"
+    },
+    {
+      "subject": "Franz Boas",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Spacewatch",
+      "object": "asteroid"
+    },
+    {
+      "subject": "James Clerk Maxwell",
+      "object": "physics"
+    },
+    {
+      "subject": "Giuseppe Farinelli",
+      "object": "opera"
+    },
+    {
+      "subject": "straight photography",
+      "object": "photography"
+    },
+    {
+      "subject": "Charles Darwin",
+      "object": "biology"
+    },
+    {
+      "subject": "Herbert Robbins",
+      "object": "mathematics"
+    },
+    {
+      "subject": "Michael Faraday",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Isaac Barrow",
+      "object": "theology"
+    },
+    {
+      "subject": "Franciscus Sylvius",
+      "object": "medicine"
+    },
+    {
+      "subject": "history journal",
+      "object": "history"
+    },
+    {
+      "subject": "AKhRR",
+      "object": "art"
+    },
+    {
+      "subject": "Sima Qian",
+      "object": "history"
+    },
+    {
+      "subject": "Ibn Hisham",
+      "object": "history"
+    },
+    {
+      "subject": "Johannes Fabricius",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Abraham bar Hiyya",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Julian Schwinger",
+      "object": "physics"
+    },
+    {
+      "subject": "Allan Sandage",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Paul Broca",
+      "object": "anatomy"
+    },
+    {
+      "subject": "Paul Radin",
+      "object": "anthropology"
+    },
+    {
+      "subject": "Elias James Corey",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Joseph Campbell",
+      "object": "mythology"
+    },
+    {
+      "subject": "Johann Georg Gmelin",
+      "object": "medicine"
+    },
+    {
+      "subject": "Frank Wilczek",
+      "object": "physics"
+    },
+    {
+      "subject": "Matthias Jakob Schleiden",
+      "object": "biology"
+    },
+    {
+      "subject": "Campegius Vitringa",
+      "object": "theology"
+    },
+    {
+      "subject": "Hans Bethe",
+      "object": "physics"
+    },
+    {
+      "subject": "Edward Frankland",
+      "object": "chemistry"
+    },
+    {
+      "subject": "Tycho Brahe",
+      "object": "astronomy"
+    },
+    {
+      "subject": "Claude Bernard",
+      "object": "physiology"
+    },
+    {
+      "subject": "Christian Wilhelm Blomstrand",
+      "object": "chemistry"
+    }
+  ]
+}
