@@ -149,8 +149,10 @@ class FaithfulnessBenchmarkRelationResults(DataClassJsonMixin):
 class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
     recall_lm: list[float]
     recall_lre: list[float]
-    recall_lre_if_lm: list[float]
-    recall_lre_not_lm: list[float]
+    recall_lre_if_lm_correct: list[float]
+    recall_lre_if_lm_wrong: list[float]
+    count_lm_correct: int
+    count_lm_wrong: int
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -192,8 +194,10 @@ def faithfulness(
     results_by_relation = []
     recalls_lm = []
     recalls_lre = []
-    recalls_lre_if_lm = []
-    recalls_lre_not_lm = []
+    recalls_lre_if_lm_correct = []
+    recalls_lre_if_lm_wrong = []
+    count_lm_correct = 0
+    count_lm_wrong = 0
     for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
@@ -229,23 +233,31 @@ def faithfulness(
             recalls_lre.append(recall_lre)
 
             # Compute LRE predictions if LM is correct.
-            preds_lre_if_lm = []
-            preds_lre_not_lm = []
-            targets_if_lm = []
-            targets_not_lm = []
+            preds_lre_if_lm_correct = []
+            targets_if_lm_correct = []
+            preds_lre_if_lm_wrong = []
+            targets_if_lm_wrong = []
             for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
                 if functional.any_is_prefix(pred_lm, target):
-                    preds_lre_if_lm.append(pred_lre)
-                    targets_if_lm.append(target)
+                    preds_lre_if_lm_correct.append(pred_lre)
+                    targets_if_lm_correct.append(target)
+                    count_lm_correct += 1
                 else:
-                    preds_lre_not_lm.append(pred_lre)
-                    targets_not_lm.append(target)
+                    preds_lre_if_lm_wrong.append(pred_lre)
+                    targets_if_lm_wrong.append(target)
+                    count_lm_wrong += 1
 
-            recall_lre_if_lm = metrics.recall(preds_lre_if_lm, targets_if_lm)
-            recalls_lre_if_lm.append(recall_lre_if_lm)
+            if preds_lre_if_lm_correct:
+                assert targets_if_lm_correct
+                recall_lre_if_lm = metrics.recall(
+                    preds_lre_if_lm_correct, targets_if_lm_correct
+                )
+                recalls_lre_if_lm_correct.append(recall_lre_if_lm)
 
-            recall_lre_not_lm = metrics.recall(preds_lre_not_lm, targets_not_lm)
-            recalls_lre_not_lm.append(recall_lre_not_lm)
+            if preds_lre_if_lm_wrong:
+                assert targets_if_lm_wrong
+                recall_lre_if_lm_wrong = metrics.recall(preds_lre_if_lm_wrong, targets_if_lm_wrong)
+                recalls_lre_if_lm_wrong.append(recall_lre_if_lm_wrong)
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -273,10 +285,12 @@ def faithfulness(
             for key, values in (
                 ("recall_lm", recalls_lm),
                 ("recall_lre", recalls_lre),
-                ("recall_lre_if_lm", recalls_lre_if_lm),
-                ("recall_lre_not_lm", recalls_lre_not_lm),
+                ("recall_lre_if_lm_correct", recalls_lre_if_lm_correct),
+                ("recall_lre_if_lm_wrong", recalls_lre_if_lm_wrong),
             )
         }
+        count_lm_correct=count_lm_correct,
+        count_lm_wrong=count_lm_wrong,
     )
 
     return FaithfulnessBenchmarkResults(
