@@ -256,7 +256,9 @@ def faithfulness(
 
             if preds_lre_if_lm_wrong:
                 assert targets_if_lm_wrong
-                recall_lre_if_lm_wrong = metrics.recall(preds_lre_if_lm_wrong, targets_if_lm_wrong)
+                recall_lre_if_lm_wrong = metrics.recall(
+                    preds_lre_if_lm_wrong, targets_if_lm_wrong
+                )
                 recalls_lre_if_lm_wrong.append(recall_lre_if_lm_wrong)
 
             trials.append(
@@ -288,7 +290,7 @@ def faithfulness(
                 ("recall_lre_if_lm_correct", recalls_lre_if_lm_correct),
                 ("recall_lre_if_lm_wrong", recalls_lre_if_lm_wrong),
             )
-        }
+        },
         count_lm_correct=count_lm_correct,
         count_lm_wrong=count_lm_wrong,
     )
