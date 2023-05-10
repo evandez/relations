@@ -3,7 +3,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass
 
-from src import data, functional, metrics, operators
+from src import data, editors, functional, metrics, operators
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -32,6 +32,21 @@ def reconstruction(
     n_random_distractors: int = 3,
     desc: str | None = None,
 ) -> ReconstructionBenchmarkResults:
+    """Evaluate how much LRE looks like model's own representations.
+
+    Args:
+        estimator: LRE estimator.
+        dataset: Dataset of relations.
+        n_trials: Number of train/test splits to try.
+        n_train: Number of samples to train on per relation.
+        n_random_distractors: Number of random distractors to use in addition to the
+            two hard distractors.
+        desc: Tqdm description.
+
+    Returns:
+        Benchmark results.
+
+    """
     if desc is None:
         desc = "reconstruction"
     mt = estimator.mt
@@ -46,7 +61,7 @@ def reconstruction(
     )
 
     counts: dict[int, int] = defaultdict(int)
-    for relation in dataset.relations:
+    for relation in tqdm(dataset.relations, desc=desc):
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
             train, test = relation.set(prompt_templates=[prompt_template]).split(
@@ -336,3 +351,40 @@ def faithfulness(
     return FaithfulnessBenchmarkResults(
         relations=results_by_relation, metrics=faithfulness_metrics
     )
+
+
+@dataclass(frozen=True, kw_only=True)
+class CausalityRelationResults:
+    pass
+
+
+@dataclass(frozen=True, kw_only=True)
+class CausalityBenchmarkMetrics:
+    pass
+
+
+@dataclass(frozen=True, kw_only=True)
+class CausalityBenchmarkResults:
+    relations: list[CausalityRelationResults]
+    metrics: CausalityBenchmarkMetrics
+
+
+def causality(
+    *,
+    estimator: operators.LinearRelationEstimator,
+    editor: editors.Editor,
+    dataset: data.RelationDataset,
+    n_train: int = 3,
+) -> CausalityBenchmarkResults:
+    """_summary_
+
+    Args:
+        estimator: _description_
+        editor: _description_
+        dataset: _description_
+        n_train: _description_. Defaults to 3.
+
+    Returns:
+        _description_
+    """
+    pass
