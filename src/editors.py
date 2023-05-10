@@ -13,14 +13,26 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
-class Edit:
+class EditResult:
     """Edited LM output."""
 
     predictions: list[functional.PredictedToken]
 
 
 @dataclass(frozen=True, kw_only=True)
-class LowRankPInvEditor:
+class Editor:
+    """Abstract editor which edits one subject to look like another."""
+
+    def __call__(
+        self,
+        subject_to_edit: str,
+        subject_target: str,
+    ) -> EditResult:
+        raise NotImplementedError
+
+
+@dataclass(frozen=True, kw_only=True)
+class LowRankPInvEditor(Editor):
 
     mt: models.ModelAndTokenizer
     lre: operators.LinearRelationOperator
@@ -54,7 +66,7 @@ class LowRankPInvEditor:
         self,
         subject_to_edit: str,
         subject_target: str,
-    ) -> list[functional.PredictedToken]:
+    ) -> EditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
         z_layer = self.lre.z_layer
@@ -111,10 +123,12 @@ class LowRankPInvEditor:
 
         probs = outputs.logits[:, -1].float().softmax(dim=-1)
         topk = probs.topk(k=5, dim=-1)
-        return [
-            functional.PredictedToken(
-                token=mt.tokenizer.decode(token_id),
-                prob=prob,
-            )
-            for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
-        ]
+        return EditResult(
+            predictions=[
+                functional.PredictedToken(
+                    token=mt.tokenizer.decode(token_id),
+                    prob=prob,
+                )
+                for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
+            ]
+        )
