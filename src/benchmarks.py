@@ -30,6 +30,8 @@ def reconstruction(
     n_trials: int = 3,
     n_train: int = 3,
     n_random_distractors: int = 3,
+    n_top_lm: int = 3,
+    n_icl_lm: int = 2,
     desc: str | None = None,
 ) -> ReconstructionBenchmarkResults:
     """Evaluate how much LRE looks like model's own representations.
@@ -41,6 +43,10 @@ def reconstruction(
         n_train: Number of samples to train on per relation.
         n_random_distractors: Number of random distractors to use in addition to the
             two hard distractors.
+        n_top_lm: Consider this many top next token predictions when deciding whether
+            model knows the answer or not.
+        n_icl_lm: Number of ICL examples to use when prompting LM to see if it knows
+            a subject.
         desc: Tqdm description.
 
     Returns:
@@ -64,11 +70,36 @@ def reconstruction(
     for relation in tqdm(dataset.relations, desc=desc):
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
-            train, test = relation.set(prompt_templates=[prompt_template]).split(
-                n_train
-            )
-            operator = estimator(train)
 
+            # Filter out samples model does not know, according to the prompt.
+            # We'll use ICL to give it a fair chance.
+            prompts = [
+                functional.make_prompt(
+                    prompt_template=prompt_template,
+                    mt=mt,
+                    subject=sample.subject,
+                    examples=random.sample(
+                        set(relation.samples) - {sample}, k=n_icl_lm
+                    ),
+                )
+                for sample in relation.domain
+            ]
+            predictions = functional.predict_next_token(
+                mt=mt, prompt=prompts, k=n_top_lm
+            )
+            known_samples = {
+                sample
+                for sample, topk in zip(relation.samples, predictions)
+                if functional.any_is_nontrivial_prefix(
+                    [x.token for x in topk], sample.object
+                )
+            }
+            train, test = relation.set(
+                samples=sorted(known_samples), prompt_templates=[prompt_template]
+            ).split(n_train)
+
+            # Estimate operator and evaluate it.
+            operator = estimator(train)
             for sample in test.samples:
                 subject = sample.subject
 
