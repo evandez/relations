@@ -126,6 +126,8 @@ def reconstruction(
 @dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkOutputs(DataClassJsonMixin):
 
+    subject: str
+    target: str
     lre: list[functional.PredictedToken]
     lm: list[functional.PredictedToken]
 
@@ -239,8 +241,12 @@ def faithfulness(
                     train=train,
                     test=test,
                     outputs=[
-                        FaithfulnessBenchmarkOutputs(lre=lre, lm=lm)
-                        for lre, lm in zip(outputs_lre, outputs_lm)
+                        FaithfulnessBenchmarkOutputs(
+                            lre=lre, lm=lm, subject=sample.subject, target=sample.object
+                        )
+                        for lre, lm, sample in zip(
+                            outputs_lre, outputs_lm, test.samples
+                        )
                     ],
                 )
             )
