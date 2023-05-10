@@ -33,6 +33,7 @@ class Editor:
 
 @dataclass(frozen=True, kw_only=True)
 class LowRankPInvEditor(Editor):
+    """Edit h using a low-rank pseudo-inverse of the weight matrix."""
 
     mt: models.ModelAndTokenizer
     lre: operators.LinearRelationOperator

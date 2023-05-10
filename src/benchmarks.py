@@ -124,22 +124,30 @@ def reconstruction(
 
 
 @dataclass(frozen=True, kw_only=True)
+class FaithfulnessBenchmarkOutputs(DataClassJsonMixin):
+
+    lre: list[functional.PredictedToken]
+    lm: list[functional.PredictedToken]
+
+
+@dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
-    outputs: list[operators.RelationOutput]
-    recall: list[float]
+    outputs: list[FaithfulnessBenchmarkOutputs]
 
 
 @dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkRelationResults(DataClassJsonMixin):
-    relation: data.Relation
+    relation_name: str
     trials: list[FaithfulnessBenchmarkRelationTrial]
 
 
 @dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
-    recall: list[float]
+    recall_lm: list[float]
+    recall_lre: list[float]
+    recall_lre_if_lm: list[float]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -148,7 +156,6 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     metrics: FaithfulnessBenchmarkMetrics
 
 
-# TODO(evandez): Record predictions, save models and hiddens, etc.
 def faithfulness(
     *,
     estimator: operators.LinearRelationEstimator,
@@ -161,7 +168,8 @@ def faithfulness(
     """Measure how faithful the LREs are to the true relation.
 
     Put simply, evaluate how often LRE(subject) returns the true object in its
-    top-k predictions.
+    top-k predictions. Additionally record how often LM(prompt % subject)
+    produces correct answer.
 
     Args:
         estimator: LRE estimator.
@@ -178,7 +186,10 @@ def faithfulness(
     if desc is None:
         desc = "faithfulness"
 
-    results = []
+    results_by_relation = []
+    recalls_lm = []
+    recalls_lre = []
+    recalls_lre_if_lm = []
     for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
@@ -186,30 +197,70 @@ def faithfulness(
             train, test = relation.set(prompt_templates=[prompt_template]).split(
                 n_train
             )
+            targets = [x.object for x in test.samples]
+
             operator = estimator(train)
+            mt = operator.mt
 
-            outputs = []
-            predictions = []
+            # Compute LM predictions.
+            prompt_template_icl = functional.make_prompt(
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=train.samples,
+            )
+            prompts_lm = [prompt_template_icl.format(x.subject) for x in test.samples]
+            outputs_lm = functional.predict_next_token(mt=mt, prompt=prompts_lm, k=k)
+            preds_lm = [[x.token for x in xs] for xs in outputs_lm]
+            recall_lm = metrics.recall(preds_lm, targets)
+            recalls_lm.append(recall_lm)
+
+            # Compute LRE predictions.
+            outputs_lre = []
             for sample in test.samples:
-                output = operator(sample.subject, k=k)
-                outputs.append(output.as_relation_output())
-                predictions.append([p.token for p in output.predictions])
+                output_lre = operator(sample.subject, k=k)
+                outputs_lre.append(output_lre.predictions)
 
-            targets = [sample.object for sample in test.samples]
+            preds_lre = [[x.token for x in xs] for xs in outputs_lre]
+            recall_lre = metrics.recall(preds_lre, targets)
+            recalls_lre.append(recall_lre)
 
-            recall = metrics.recall(predictions, targets)
+            # Compute LRE predictions if LM is correct.
+            preds_lre_if_lm = []
+            targets_if_lm = []
+            for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
+                if functional.is_prefix(pred_lm[0], target):
+                    preds_lre_if_lm.append(pred_lre)
+                    targets_if_lm.append(target)
+            recall_lre_if_lm = metrics.recall(preds_lre_if_lm, targets_if_lm)
+            recalls_lre_if_lm.append(recall_lre_if_lm)
+
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
-                    train=train, test=test, outputs=outputs, recall=recall
+                    train=train,
+                    test=test,
+                    outputs=[
+                        FaithfulnessBenchmarkOutputs(lre=lre, lm=lm)
+                        for lre, lm in zip(outputs_lre, outputs_lm)
+                    ],
                 )
             )
-        results.append(
-            FaithfulnessBenchmarkRelationResults(relation=relation, trials=trials)
+        results_by_relation.append(
+            FaithfulnessBenchmarkRelationResults(
+                relation_name=relation.name, trials=trials
+            )
         )
 
-    recalls = torch.tensor([[trial.recall for trial in r.trials] for r in results])
     faithfulness_metrics = FaithfulnessBenchmarkMetrics(
-        recall=recalls.mean(dim=(0, 1)).tolist()
+        **{
+            key: torch.tensor(values).mean(dim=0).tolist()
+            for key, values in (
+                ("recall_lm", recalls_lm),
+                ("recall_lre", recalls_lre),
+                ("recall_lre_if_lm", recalls_lre_if_lm),
+            )
+        }
     )
 
-    return FaithfulnessBenchmarkResults(relations=results, metrics=faithfulness_metrics)
+    return FaithfulnessBenchmarkResults(
+        relations=results_by_relation, metrics=faithfulness_metrics
+    )
