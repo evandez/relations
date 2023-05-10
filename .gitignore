@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 scan-for-best*
+
+# weights
+*.pth
+*.npz

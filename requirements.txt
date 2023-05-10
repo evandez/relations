@@ -13,6 +13,8 @@ sentencepiece
 tqdm
 transformers
 torch
+huggingface-hub
+datasets
 
 # dev dependencies
 black

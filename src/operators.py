@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Any, Callable
+from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, Sequence
 
 from src import data, functional, models
 from src.utils import tokenizer_utils
@@ -56,6 +56,7 @@ class LinearRelationOperator(RelationOperator):
     z_layer: int
     prompt_template: str
     subject_token_offset: SubjectTokenOffsetFn | None = None
+    misc: Dict = field(default_factory=dict)
 
     def __call__(
         self,
@@ -133,10 +134,14 @@ class JacobianEstimator(LinearRelationEstimator):
     subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        # TODO(evandez): Warn if too many samples present?
-        sample = relation.samples[0]
-        subject = sample.subject
         prompt_template = relation.prompt_templates[0]
+        return self.call_on_sample(relation.samples[0], prompt_template)
+
+    def call_on_sample(
+        self, sample: data.RelationSample, prompt_template: str
+    ) -> LinearRelationOperator:
+        # TODO(evandez): Warn if too many samples present?
+        subject = sample.subject
 
         prompt = prompt_template.format(subject)
         offset = _get_offset(self.subject_token_offset, prompt, subject)
@@ -154,6 +159,8 @@ class JacobianEstimator(LinearRelationEstimator):
             inputs=inputs,
         )
 
+        # print(approx.weight.norm().item(), approx.bias.norm().item(), approx.misc)
+
         return LinearRelationOperator(
             mt=self.mt,
             weight=approx.weight,
@@ -161,6 +168,7 @@ class JacobianEstimator(LinearRelationEstimator):
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
+            misc=approx.misc,
         )
 
 
@@ -219,13 +227,10 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
         sample = samples[chosen]
         subject = sample.subject
 
-        others = [x for x in samples if x != sample]
-        prompt_icl = (
-            "\n".join(
-                prompt_template.format(x.subject) + f" {x.object}." for x in others
-            )
-            + "\n"
-            + prompt_template.format(subject)
+        prompt_icl = _make_icl_prompt(
+            prompt_template=prompt_template,
+            subject=subject,
+            examples=samples,
         )
         h_index_icl, inputs_icl = _compute_h_index(
             mt=self.mt,
@@ -263,6 +268,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: int
     z_layer: int | None = None
     subject_token_offset: SubjectTokenOffsetFn | None = None
+    bias_scale_factor: float | None = 0.5
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         samples = relation.samples
@@ -278,7 +284,12 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         # along the way.
         approxes = []
         for i, sample in enumerate(samples):
-            prompt = prompt_template.format(sample.subject)
+            prompt = _make_icl_prompt(
+                prompt_template=prompt_template,
+                subject=sample.subject,
+                examples=samples,
+            )
+
             h_index, inputs = _compute_h_index(
                 mt=self.mt,
                 prompt=prompt,
@@ -301,7 +312,8 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
 
         # TODO(evan): Scaling bias down helps tremendously, but why?
         # Find better way to determine scaling factor.
-        bias = bias / 2
+        if self.bias_scale_factor is not None:
+            bias = self.bias_scale_factor * bias
 
         operator = LinearRelationOperator(
             mt=self.mt,
@@ -344,6 +356,21 @@ def _get_offset(
         return default
     prompt = prompt_template.format(subject)  # No-op if subject is already in prompt.
     return subject_token_offset(prompt, subject)
+
+
+def _make_icl_prompt(
+    *,
+    prompt_template: str,
+    subject: str,
+    examples: Sequence[data.RelationSample],
+) -> str:
+    others = [x for x in examples if x.subject != subject]
+    prompt = (
+        "\n".join(prompt_template.format(x.subject) + f" {x.object}." for x in others)
+        + "\n"
+        + prompt_template.format(subject)
+    )
+    return prompt
 
 
 def _compute_h_index(

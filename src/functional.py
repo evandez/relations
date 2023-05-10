@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import Any, NamedTuple, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Dict, NamedTuple, Sequence
 
 from src import models
 from src.utils.typing import ModelInput, ModelOutput, StrSequence
@@ -38,6 +38,8 @@ class Order1ApproxOutput:
 
     inputs: ModelInput
     logits: torch.Tensor
+
+    misc: Dict = field(default_factory=dict)
 
 
 @torch.no_grad()
@@ -130,6 +132,9 @@ def order_1_approx(
         bias=bias,
         inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
+        misc={
+            "Jh": weight @ h,
+        },
     )
     return approx
 
