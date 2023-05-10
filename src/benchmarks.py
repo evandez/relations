@@ -112,7 +112,7 @@ def reconstruction(
                     prompt=z_hard_rel_prompt,
                 ).hiddens[0][0, -1]
 
-                # Distractor 3 and 4: chosen at random!
+                # Distractor 3+: chosen at random!
                 matches = [
                     (r, p, s)
                     for r, p, s in everything
@@ -126,7 +126,9 @@ def reconstruction(
                     continue
 
                 z_rands = []
-                for _, other_prompt_template, other_subject in random.sample(matches, k=n_random_distractors):
+                for _, other_prompt_template, other_subject in random.sample(
+                    matches, k=n_random_distractors
+                ):
                     z_rand_prompt = functional.make_prompt(
                         prompt_template=other_prompt_template,
                         subject=other_subject,
@@ -139,7 +141,9 @@ def reconstruction(
                     ).hiddens[0][0, -1]
                     z_rands.append(z_rand)
 
-                zs = torch.stack([z_true, z_hard_subj, z_hard_rel, *z_rands], dim=0).float()
+                zs = torch.stack(
+                    [z_true, z_hard_subj, z_hard_rel, *z_rands], dim=0
+                ).float()
                 z_pred = z_pred.float()
                 sims = z_pred.mul(zs).sum(dim=-1) / (
                     z_pred.norm(dim=-1) * zs.norm(dim=-1)
