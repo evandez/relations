@@ -94,6 +94,13 @@ def reconstruction(
                     [x.token for x in topk], sample.object
                 )
             }
+            if len(known_samples) <= n_train:
+                logger.debug(
+                    f"lm does not know > n_train={n_train} samples for "
+                    f'relation {relation.name}, prompt "{prompt_template}" will skip'
+                )
+                continue
+
             train, test = relation.set(
                 samples=known_samples, prompt_templates=[prompt_template]
             ).split(n_train)
