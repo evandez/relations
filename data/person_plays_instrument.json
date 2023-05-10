@@ -5,6 +5,12 @@
     "What instrument does {} play? They play the",
     "The instrument that {} plays is called the"
   ],
+  "properties": {
+    "relation_type": "factual",
+    "domain_name": "person",
+    "range_name": "instrument",
+    "symmetric": false
+  },
   "samples": [
     {
       "subject": "Toko Yasuda",

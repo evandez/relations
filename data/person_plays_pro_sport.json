@@ -5,6 +5,12 @@
     "What sport does {} play? They play",
     "{} plays professionally in the sport of"
   ],
+  "properties": {
+    "relation_type": "factual",
+    "domain_name": "person",
+    "range_name": "sport",
+    "symmetric": false
+  },
   "samples": [
     {
       "subject": "Andreas Ivanschitz",

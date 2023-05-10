@@ -6,6 +6,12 @@
     "What does {} do? They work in the field of",
     "{} works in the field of"
   ],
+  "properties": {
+    "relation_type": "factual",
+    "domain_name": "person",
+    "range_name": "field of study",
+    "symmetric": false
+  },
   "samples": [
     {
       "subject": "John James Rickard Macleod",

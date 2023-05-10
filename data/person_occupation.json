@@ -5,6 +5,12 @@
     "By profession, {} is a",
     "{} is known for their work as a"
   ],
+  "properties": {
+    "relation_type": "factual",
+    "domain_name": "person",
+    "range_name": "occupation",
+    "symmetric": false
+  },
   "samples": [
     {
       "subject": "Billy Roche",
