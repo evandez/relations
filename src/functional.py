@@ -288,7 +288,7 @@ def predict_next_token(
     """Compute the next token."""
     if isinstance(prompt, str):
         prompt = [prompt]
-    with models.set_padding_side(mt, "right"):
+    with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompt, return_tensors="pt", padding="longest", truncation=True
         )
