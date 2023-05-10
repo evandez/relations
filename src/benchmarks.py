@@ -27,91 +27,125 @@ class ReconstructionBenchmarkResults(DataClassJsonMixin):
 def reconstruction(
     estimator: operators.LinearRelationEstimator,
     dataset: data.RelationDataset,
+    n_trials: int = 3,
+    n_train: int = 3,
+    n_random_distractors: int = 3,
     desc: str | None = None,
 ) -> ReconstructionBenchmarkResults:
     if desc is None:
         desc = "reconstruction"
+    mt = estimator.mt
 
-    operators = {}
-    for relation in dataset.relations:
-        train_settings = [
-            (relation.name, prompt_template, sample)
+    everything = sorted(
+        {
+            (relation.name, prompt_template, subject)
+            for relation in dataset.relations
             for prompt_template in relation.prompt_templates
-            for sample in relation.samples
-        ]
-
-        for relation_name, prompt_template, sample in tqdm(
-            train_settings, desc=f"{desc} [compute operators]"
-        ):
-            train_relation = data.Relation(
-                name=relation.name,
-                prompt_templates=[prompt_template],
-                samples=[sample],
-                _domain=list(relation.domain),
-                _range=list(relation.range),
-            )
-            operator = estimator(train_relation)
-            operators[relation_name, prompt_template, sample.subject] = operator
+            for subject in relation.domain
+        }
+    )
 
     counts: dict[int, int] = defaultdict(int)
-    for (relation_name, prompt_template, subject), operator in tqdm(
-        operators.items(), desc=f"{desc} [compute scores]"
-    ):
-        z_true = functional.compute_hidden_states(
-            mt=estimator.mt,
-            layers=[operator.z_layer],
-            prompt=prompt_template.format(subject),
-        ).hiddens[0][0, -1]
-
-        key = random.choice(
-            [
-                (r, p, s)
-                for r, p, s in operators
-                if r == relation_name and (p != prompt_template or s != subject)
-            ]
-        )
-        operator = operators[key]
-        z_pred = operator(subject).z
-
-        # Distractor 1: same subject, different relation
-        matches = [
-            (r, p, s) for r, p, s in operators if r == relation_name and s != subject
-        ]
-        if not matches:
-            logger.debug(
-                f"skipped {relation_name}/{prompt_template}/{subject} "
-                "because no other relations have this subject"
+    for relation in dataset.relations:
+        for _ in range(n_trials):
+            prompt_template = random.choice(relation.prompt_templates)
+            train, test = relation.set(prompt_templates=[prompt_template]).split(
+                n_train
             )
-            continue
-        (_, other_prompt_template, other_subject) = random.choice(matches)
-        z_dist_subj = functional.compute_hidden_states(
-            mt=estimator.mt,
-            layers=[operator.z_layer],
-            prompt=other_prompt_template.format(other_subject),
-        ).hiddens[0][0, -1]
+            operator = estimator(train)
 
-        # Distractor 2: same relation, different subject
-        matches = [
-            (r, p, s) for r, p, s in operators if r == relation_name and s != subject
-        ]
-        if not matches:
-            logger.debug(
-                f"skipped {relation_name}/{prompt_template}/{subject} "
-                "because no other subjects have this relation"
-            )
-            continue
-        (_, other_prompt_template, other_subject) = random.choice(matches)
-        z_dist_rel = functional.compute_hidden_states(
-            mt=estimator.mt,
-            layers=[operator.z_layer],
-            prompt=other_prompt_template.format(other_subject),
-        ).hiddens[0][0, -1]
+            for sample in test.samples:
+                subject = sample.subject
 
-        zs = torch.stack([z_true, z_dist_subj, z_dist_rel], dim=0).float()
-        z_pred = z_pred.float()
-        sims = z_pred.mul(zs).sum(dim=-1) / (z_pred.norm(dim=-1) * zs.norm(dim=-1))
-        chosen = sims.argmax().item()
-        counts[chosen] += 1
+                z_true = functional.compute_hidden_states(
+                    mt=estimator.mt,
+                    layers=[operator.z_layer],
+                    prompt=prompt_template.format(subject),
+                ).hiddens[0][0, -1]
+                z_pred = operator(subject).z
+
+                # Hard distractor 1: same subject, different relation
+                matches = [
+                    (r, p, s)
+                    for r, p, s in everything
+                    if r != relation.name and s == subject
+                ]
+                if not matches:
+                    logger.debug(
+                        f'skipped "{relation.name}"/{subject} '
+                        "because no other relations have this subject"
+                    )
+                    continue
+                (_, other_prompt_template, _) = random.choice(matches)
+                z_hard_subj_prompt = functional.make_prompt(
+                    prompt_template=other_prompt_template,
+                    subject=subject,
+                    mt=mt,
+                )
+                z_hard_subj = functional.compute_hidden_states(
+                    mt=estimator.mt,
+                    layers=[operator.z_layer],
+                    prompt=z_hard_subj_prompt,
+                ).hiddens[0][0, -1]
+
+                # Distractor 2: same relation, different subject
+                matches = [
+                    (r, p, s)
+                    for r, p, s in everything
+                    if r == relation.name and p == prompt_template and s != subject
+                ]
+                if not matches:
+                    logger.debug(
+                        f'skipped "{relation.name}"/{subject} '
+                        "because no other subjects have this relation"
+                    )
+                    continue
+                (_, _, other_subject) = random.choice(matches)
+                z_hard_rel_prompt = functional.make_prompt(
+                    prompt_template=prompt_template,
+                    subject=other_subject,
+                    mt=mt,
+                )
+                z_hard_rel = functional.compute_hidden_states(
+                    mt=estimator.mt,
+                    layers=[operator.z_layer],
+                    prompt=z_hard_rel_prompt,
+                ).hiddens[0][0, -1]
+
+                # Distractor 3 and 4: chosen at random!
+                matches = [
+                    (r, p, s)
+                    for r, p, s in everything
+                    if r != relation.name and s != subject
+                ]
+                if not matches:
+                    logger.debug(
+                        f'skipped "{relation.name}"/{subject} '
+                        "because no other relations or subjects"
+                    )
+                    continue
+
+                z_rands = []
+                for _, other_prompt_template, other_subject in random.sample(matches, k=n_random_distractors):
+                    z_rand_prompt = functional.make_prompt(
+                        prompt_template=other_prompt_template,
+                        subject=other_subject,
+                        mt=mt,
+                    )
+                    z_rand = functional.compute_hidden_states(
+                        mt=estimator.mt,
+                        layers=[operator.z_layer],
+                        prompt=z_rand_prompt,
+                    ).hiddens[0][0, -1]
+                    z_rands.append(z_rand)
+
+                zs = torch.stack([z_true, z_hard_subj, z_hard_rel, *z_rands], dim=0).float()
+                z_pred = z_pred.float()
+                sims = z_pred.mul(zs).sum(dim=-1) / (
+                    z_pred.norm(dim=-1) * zs.norm(dim=-1)
+                )
+                chosen = sims.argmax().item()
+                counts[chosen] += 1
 
     total = sum(counts.values())
     return ReconstructionBenchmarkResults(
