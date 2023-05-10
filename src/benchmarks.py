@@ -13,6 +13,37 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
+class ReconstructionBenchmarkRelationTrialSample(DataClassJsonMixin):
+    subject: str
+
+    other_subj: str | None = None
+
+    other_rel_name: str | None = None
+    other_rel_prompt_template: str | None = None
+
+    sim_z_true: float | None = None
+    sim_z_hard_subj: float | None = None
+    sim_z_hard_rel: float | None = None
+    sim_z_random: list[float] | None = None
+
+    skipped: bool = False
+    skipped_reason: str | None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class ReconstructionBenchmarkRelationTrial(DataClassJsonMixin):
+    train: data.Relation
+    test: data.Relation
+    samples: list[ReconstructionBenchmarkRelationTrialSample]
+
+
+@dataclass(frozen=True, kw_only=True)
+class ReconstructionBenchmarkRelationResults(DataClassJsonMixin):
+    relation_name: str
+    trials: list[ReconstructionBenchmarkRelationTrial]
+
+
+@dataclass(frozen=True, kw_only=True)
 class ReconstructionBenchmarkMetrics(DataClassJsonMixin):
     frac_correct: float
     frac_dist_subj: float
@@ -21,6 +52,7 @@ class ReconstructionBenchmarkMetrics(DataClassJsonMixin):
 
 @dataclass(frozen=True, kw_only=True)
 class ReconstructionBenchmarkResults(DataClassJsonMixin):
+    relations: list[ReconstructionBenchmarkRelationResults]
     metrics: ReconstructionBenchmarkMetrics
 
 
@@ -67,7 +99,9 @@ def reconstruction(
     )
 
     counts: dict[int, int] = defaultdict(int)
+    relation_results = []
     for relation in tqdm(dataset.relations, desc=desc):
+        relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
 
@@ -107,6 +141,8 @@ def reconstruction(
 
             # Estimate operator and evaluate it.
             operator = estimator(train)
+
+            relation_samples = []
             for sample in test.samples:
                 subject = sample.subject
 
@@ -128,10 +164,17 @@ def reconstruction(
                         f'skipped "{relation.name}"/{subject} '
                         "because no other relations have this subject"
                     )
+                    relation_samples.append(
+                        ReconstructionBenchmarkRelationTrialSample(
+                            subject=subject,
+                            skipped=True,
+                            skipped_reason="no other relations with this subject",
+                        )
+                    )
                     continue
-                (_, other_prompt_template, _) = random.choice(matches)
+                (other_rel_name, other_rel_prompt_template, _) = random.choice(matches)
                 z_hard_subj_prompt = functional.make_prompt(
-                    prompt_template=other_prompt_template,
+                    prompt_template=other_rel_prompt_template,
                     subject=subject,
                     mt=mt,
                 )
@@ -151,6 +194,13 @@ def reconstruction(
                     logger.debug(
                         f'skipped "{relation.name}"/{subject} '
                         "because no other subjects have this relation"
+                    )
+                    relation_samples.append(
+                        ReconstructionBenchmarkRelationTrialSample(
+                            subject=subject,
+                            skipped=True,
+                            skipped_reason="no other subjects have this relation",
+                        )
                     )
                     continue
                 (_, _, other_subject) = random.choice(matches)
@@ -175,6 +225,13 @@ def reconstruction(
                     logger.debug(
                         f'skipped "{relation.name}"/{subject} '
                         "because no other relations or subjects"
+                    )
+                    relation_samples.append(
+                        ReconstructionBenchmarkRelationTrialSample(
+                            subject=subject,
+                            skipped=True,
+                            skipped_reason="no other relations or subjects",
+                        )
                     )
                     continue
 
@@ -204,8 +261,36 @@ def reconstruction(
                 chosen = sims.argmax().item()
                 counts[chosen] += 1
 
+                relation_samples.append(
+                    ReconstructionBenchmarkRelationTrialSample(
+                        subject=subject,
+                        other_subj=other_subject,
+                        other_rel_name=other_rel_name,
+                        other_rel_prompt_template=other_rel_prompt_template,
+                        sim_z_true=sims[0].item(),
+                        sim_z_hard_subj=sims[1].item(),
+                        sim_z_hard_rel=sims[2].item(),
+                        sim_z_random=sims[3:].tolist(),
+                    )
+                )
+
+            relation_trials.append(
+                ReconstructionBenchmarkRelationTrial(
+                    train=train,
+                    test=test,
+                    samples=relation_samples,
+                )
+            )
+        relation_results.append(
+            ReconstructionBenchmarkRelationResults(
+                relation_name=relation.name,
+                trials=relation_trials,
+            )
+        )
+
     total = sum(counts.values())
     return ReconstructionBenchmarkResults(
+        relations=relation_results,
         metrics=ReconstructionBenchmarkMetrics(
             frac_correct=counts[0] / total,
             frac_dist_subj=counts[1] / total,
