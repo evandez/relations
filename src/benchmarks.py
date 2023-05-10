@@ -150,6 +150,7 @@ class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
     recall_lm: list[float]
     recall_lre: list[float]
     recall_lre_if_lm: list[float]
+    recall_lre_not_lm: list[float]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -192,6 +193,7 @@ def faithfulness(
     recalls_lm = []
     recalls_lre = []
     recalls_lre_if_lm = []
+    recalls_lre_not_lm = []
     for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
@@ -228,13 +230,22 @@ def faithfulness(
 
             # Compute LRE predictions if LM is correct.
             preds_lre_if_lm = []
+            preds_lre_not_lm = []
             targets_if_lm = []
+            targets_not_lm = []
             for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
-                if functional.is_prefix(pred_lm[0], target):
+                if functional.any_is_prefix(pred_lm, target):
                     preds_lre_if_lm.append(pred_lre)
                     targets_if_lm.append(target)
+                else:
+                    preds_lre_not_lm.append(pred_lre)
+                    targets_not_lm.append(target)
+
             recall_lre_if_lm = metrics.recall(preds_lre_if_lm, targets_if_lm)
             recalls_lre_if_lm.append(recall_lre_if_lm)
+
+            recall_lre_not_lm = metrics.recall(preds_lre_not_lm, targets_not_lm)
+            recalls_lre_not_lm.append(recall_lre_not_lm)
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -263,6 +274,7 @@ def faithfulness(
                 ("recall_lm", recalls_lm),
                 ("recall_lre", recalls_lre),
                 ("recall_lre_if_lm", recalls_lre_if_lm),
+                ("recall_lre_not_lm", recalls_lre_not_lm),
             )
         }
     )
