@@ -72,11 +72,11 @@ class LowRankPInvEditor(Editor):
         z_layer = self.lre.z_layer
         prompt_template = self.lre.prompt_template
 
-        prompt_to_edit = models.normalize_prompt(
-            mt, prompt_template.format(subject_to_edit)
+        prompt_to_edit = functional.make_prompt(
+            mt=mt, prompt_template=prompt_template, subject=subject_to_edit
         )
-        prompt_target = models.normalize_prompt(
-            mt, self.lre.prompt_template.format(subject_target)
+        prompt_target = functional.make_prompt(
+            mt=mt, prompt_template=prompt_template, subject=subject_target
         )
         with models.set_padding_side(self.lre.mt, padding_side="left"):
             inputs = self.mt.tokenizer(

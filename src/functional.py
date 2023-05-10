@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, NamedTuple, Sequence
 
-from src import models
+from src import data, models
 from src.utils.typing import ModelInput, ModelOutput, StrSequence
 
 import baukit
@@ -310,3 +310,29 @@ def predict_next_token(
             ]
         )
     return predictions
+
+
+def make_prompt(
+    *,
+    prompt_template: str,
+    subject: str,
+    examples: list[data.RelationSample] | None = None,
+    mt: models.ModelAndTokenizer | None = None,
+) -> str:
+    """Build the prompt given the template and (optionally) ICL examples."""
+    prompt = prompt_template.format(subject)
+
+    if examples is not None:
+        others = [x for x in examples if x.subject != subject]
+        # TODO(evan): Should consider whether prompt wants the space at the end or not.
+        prompt = (
+            "\n".join(
+                prompt_template.format(x.subject) + f" {x.object}" for x in others
+            )
+            + "\n"
+            + prompt
+        )
+
+    prompt = models.maybe_prefix_eos(mt, prompt)
+
+    return prompt

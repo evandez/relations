@@ -203,13 +203,13 @@ def tokenize_words(
     return tokenizer(words, return_tensors="pt", padding=True)
 
 
-def normalize_prompt(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
-    """Normalize the prompt for use with the model."""
+def maybe_prefix_eos(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
+    """Prefix prompt with EOS token if model has no special start token."""
     tokenizer = unwrap_tokenizer(tokenizer)
     if is_gpt_variant(tokenizer):
         prefix = tokenizer.eos_token
         if not prompt.startswith(prefix):
-            prompt = prefix + prompt 
+            prompt = prefix + prompt
     return prompt
 
 

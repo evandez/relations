@@ -71,7 +71,7 @@ class LinearRelationOperator(RelationOperator):
             raise ValueError(f"unexpected kwargs: {kwargs}")
 
         if h is None:
-            prompt = _make_prompt(
+            prompt = functional.make_prompt(
                 mt=self.mt, prompt_template=self.prompt_template, subject=subject
             )
             h_index, inputs = _compute_h_index(
@@ -135,7 +135,7 @@ class JacobianEstimator(LinearRelationEstimator):
         subject = sample.subject
         prompt_template = relation.prompt_templates[0]
 
-        prompt = _make_prompt(
+        prompt = functional.make_prompt(
             mt=self.mt, prompt_template=prompt_template, subject=subject
         )
         h_index, inputs = _compute_h_index(mt=self.mt, prompt=prompt, subject=subject)
@@ -208,7 +208,7 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
         sample = samples[chosen]
         subject = sample.subject
 
-        prompt_icl = _make_prompt(
+        prompt_icl = functional.make_prompt(
             mt=self.mt,
             prompt_template=prompt_template,
             subject=subject,
@@ -259,7 +259,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         # along the way.
         approxes = []
         for i, sample in enumerate(samples):
-            prompt = _make_prompt(
+            prompt = functional.make_prompt(
                 mt=self.mt,
                 prompt_template=prompt_template,
                 subject=sample.subject,
@@ -317,30 +317,6 @@ class CornerGdEstimator(LinearRelationEstimator):
             z_layer=-1,
             prompt_template="{}",
         )
-
-
-def _make_prompt(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt_template: str,
-    subject: str,
-    examples: Sequence[data.RelationSample] | None = None,
-) -> str:
-    prompt = prompt_template.format(subject)
-
-    if examples is not None:
-        others = [x for x in examples if x.subject != subject]
-        prompt = (
-            "\n".join(
-                prompt_template.format(x.subject) + f" {x.object}" for x in others
-            )
-            + "\n"
-            + prompt
-        )
-
-    prompt = models.normalize_prompt(mt, prompt)
-
-    return prompt
 
 
 def _compute_h_index(
