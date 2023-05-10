@@ -82,7 +82,7 @@ def reconstruction(
                         set(relation.samples) - {sample}, k=n_icl_lm
                     ),
                 )
-                for sample in relation.subjects
+                for sample in relation.samples
             ]
             predictions = functional.predict_next_token(
                 mt=mt, prompt=prompts, k=n_top_lm
