@@ -134,13 +134,13 @@ class JacobianEstimator(LinearRelationEstimator):
     subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        # TODO(evandez): Warn if too many samples present?
         prompt_template = relation.prompt_templates[0]
         return self.call_on_sample(relation.samples[0], prompt_template)
 
     def call_on_sample(
         self, sample: data.RelationSample, prompt_template: str
     ) -> LinearRelationOperator:
-        # TODO(evandez): Warn if too many samples present?
         subject = sample.subject
 
         prompt = prompt_template.format(subject)
