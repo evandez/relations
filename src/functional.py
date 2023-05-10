@@ -6,6 +6,7 @@ from src.utils.typing import ModelInput, ModelOutput, StrSequence
 
 import baukit
 import torch
+from dataclasses_json import DataClassJsonMixin
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -264,3 +265,48 @@ def compute_hidden_states(
     hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
+
+
+@dataclass(frozen=True, kw_only=True)
+class PredictedToken(DataClassJsonMixin):
+    """A predicted token and its probability."""
+
+    token: str
+    prob: float
+
+    def __str__(self) -> str:
+        return f"{self.token} (p={self.prob:.3f})"
+
+
+@torch.inference_mode()
+def predict_next_token(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt: str | StrSequence,
+    k: int = 5,
+) -> list[list[PredictedToken]]:
+    """Compute the next token."""
+    if isinstance(prompt, str):
+        prompt = [prompt]
+    with models.set_padding_side(mt, "right"):
+        inputs = mt.tokenizer(
+            prompt, return_tensors="pt", padding="longest", truncation=True
+        )
+    with torch.inference_mode():
+        outputs = mt.model(
+            input_ids=inputs.input_ids,
+            attention_mask=inputs.attention_mask,
+        )
+
+    next_token_probs = outputs.logits[:, -1].float().softmax(dim=-1)
+    next_token_topk = next_token_probs.topk(dim=-1, k=k)
+
+    predictions = []
+    for token_ids, token_probs in zip(next_token_topk.indices, next_token_topk.values):
+        predictions.append(
+            [
+                PredictedToken(token=mt.tokenizer.decode(token_id), prob=prob.item())
+                for token_id, prob in zip(token_ids, token_probs)
+            ]
+        )
+    return predictions

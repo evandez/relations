@@ -1,5 +1,6 @@
+import logging
 from dataclasses import dataclass
-from typing import Any, Callable, Sequence
+from typing import Any, Sequence
 
 from src import data, functional, models
 from src.utils import tokenizer_utils
@@ -7,20 +8,14 @@ from src.utils.typing import ModelInput
 
 import torch
 
-
-@dataclass(frozen=True, kw_only=True)
-class PredictedObject:
-    """A predicted object token and its probability under the decoder head."""
-
-    token: str
-    prob: float
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
 class RelationOutput:
     """Predicted object tokens and their probabilities under the decoder head."""
 
-    predictions: list[PredictedObject]
+    predictions: list[functional.PredictedToken]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -42,9 +37,6 @@ class RelationOperator:
         raise NotImplementedError
 
 
-SubjectTokenOffsetFn = Callable[[str, str], int]
-
-
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationOperator(RelationOperator):
     """A linear approximation of a relation inside an LM."""
@@ -55,7 +47,6 @@ class LinearRelationOperator(RelationOperator):
     h_layer: int
     z_layer: int
     prompt_template: str
-    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(
         self,
@@ -80,10 +71,11 @@ class LinearRelationOperator(RelationOperator):
             raise ValueError(f"unexpected kwargs: {kwargs}")
 
         if h is None:
-            prompt = self.prompt_template.format(subject)
-            offset = _get_offset(self.subject_token_offset, prompt, subject)
+            prompt = _make_prompt(
+                mt=self.mt, prompt_template=self.prompt_template, subject=subject
+            )
             h_index, inputs = _compute_h_index(
-                mt=self.mt, prompt=prompt, subject=subject, offset=offset
+                mt=self.mt, prompt=prompt, subject=subject
             )
 
             [[hs], _] = functional.compute_hidden_states(
@@ -107,7 +99,7 @@ class LinearRelationOperator(RelationOperator):
 
         return LinearRelationOutput(
             predictions=[
-                PredictedObject(token=w, prob=p) for w, p in zip(words, probs)
+                functional.PredictedToken(token=w, prob=p) for w, p in zip(words, probs)
             ],
             h=h,
             z=z,
@@ -130,19 +122,23 @@ class JacobianEstimator(LinearRelationEstimator):
 
     h_layer: int
     z_layer: int | None = None
-    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        # TODO(evandez): Warn if too many samples present?
+        for key in ("samples", "prompt_templates"):
+            values = getattr(relation, key)
+            if len(values) == 0:
+                raise ValueError(f"expected at least one value for {key}")
+            if len(values) > 1:
+                logger.warning(f"relation has > 1 {key}, will use first ({values[0]})")
+
         sample = relation.samples[0]
         subject = sample.subject
         prompt_template = relation.prompt_templates[0]
 
-        prompt = prompt_template.format(subject)
-        offset = _get_offset(self.subject_token_offset, prompt, subject)
-        h_index, inputs = _compute_h_index(
-            mt=self.mt, prompt=prompt, subject=subject, offset=offset
+        prompt = _make_prompt(
+            mt=self.mt, prompt_template=prompt_template, subject=subject
         )
+        h_index, inputs = _compute_h_index(mt=self.mt, prompt=prompt, subject=subject)
 
         approx = functional.order_1_approx(
             mt=self.mt,
@@ -170,17 +166,11 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
 
     h_layer: int
     z_layer: int | None = None
-    subject_token_offset: SubjectTokenOffsetFn | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         samples = relation.samples
 
         prompt_template = relation.prompt_templates[0]
-
-        subject_token_offsets = [
-            _get_offset(self.subject_token_offset, prompt_template, sample.subject)
-            for sample in samples
-        ]
 
         # Estimate the biases, storing the confidence of the target token
         # along the way.
@@ -192,7 +182,6 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
                 mt=self.mt,
                 prompt=prompt,
                 subject=sample.subject,
-                offset=subject_token_offsets[i],
             )
             approx = functional.order_1_approx(
                 mt=self.mt,
@@ -219,7 +208,8 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
         sample = samples[chosen]
         subject = sample.subject
 
-        prompt_icl = _make_icl_prompt(
+        prompt_icl = _make_prompt(
+            mt=self.mt,
             prompt_template=prompt_template,
             subject=subject,
             examples=samples,
@@ -228,7 +218,6 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
             mt=self.mt,
             prompt=prompt_icl,
             subject=subject,
-            offset=subject_token_offsets[chosen],
         )
         approx_icl = functional.order_1_approx(
             mt=self.mt,
@@ -259,7 +248,6 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
 class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: int
     z_layer: int | None = None
-    subject_token_offset: SubjectTokenOffsetFn | None = None
     bias_scale_factor: float | None = 0.5
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
@@ -267,16 +255,12 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
 
         prompt_template = relation.prompt_templates[0]
 
-        subject_token_offsets = [
-            _get_offset(self.subject_token_offset, prompt_template, sample.subject)
-            for sample in samples
-        ]
-
         # Estimate the biases, storing the confidence of the target token
         # along the way.
         approxes = []
         for i, sample in enumerate(samples):
-            prompt = _make_icl_prompt(
+            prompt = _make_prompt(
+                mt=self.mt,
                 prompt_template=prompt_template,
                 subject=sample.subject,
                 examples=samples,
@@ -285,7 +269,6 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 mt=self.mt,
                 prompt=prompt,
                 subject=sample.subject,
-                offset=subject_token_offsets[i],
             )
             approx = functional.order_1_approx(
                 mt=self.mt,
@@ -336,31 +319,27 @@ class CornerGdEstimator(LinearRelationEstimator):
         )
 
 
-def _get_offset(
-    subject_token_offset: SubjectTokenOffsetFn | None,
-    prompt_template: str,
-    subject: str,
-    default: int = -1,
-) -> int:
-    """Determine the offset using the (maybe null) offset fn."""
-    if subject_token_offset is None:
-        return default
-    prompt = prompt_template.format(subject)  # No-op if subject is already in prompt.
-    return subject_token_offset(prompt, subject)
-
-
-def _make_icl_prompt(
+def _make_prompt(
     *,
+    mt: models.ModelAndTokenizer,
     prompt_template: str,
     subject: str,
-    examples: Sequence[data.RelationSample],
+    examples: Sequence[data.RelationSample] | None = None,
 ) -> str:
-    others = [x for x in examples if x.subject != subject]
-    prompt = (
-        "\n".join(prompt_template.format(x.subject) + f" {x.object}." for x in others)
-        + "\n"
-        + prompt_template.format(subject)
-    )
+    prompt = prompt_template.format(subject)
+
+    if examples is not None:
+        others = [x for x in examples if x.subject != subject]
+        prompt = (
+            "\n".join(
+                prompt_template.format(x.subject) + f" {x.object}" for x in others
+            )
+            + "\n"
+            + prompt
+        )
+
+    prompt = models.normalize_prompt(mt, prompt)
+
     return prompt
 
 
@@ -369,7 +348,7 @@ def _compute_h_index(
     mt: models.ModelAndTokenizer,
     prompt: str,
     subject: str,
-    offset: int,
+    offset: int = -1,
 ) -> tuple[int, ModelInput]:
     inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
         mt.model.device

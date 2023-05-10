@@ -21,6 +21,9 @@ class RelationSample(DataClassJsonMixin):
     subject: str
     object: str
 
+    def __str__(self) -> str:
+        return f"{self.subject} -> {self.object}"
+
 
 @dataclass(frozen=True)
 class Relation(DataClassJsonMixin):

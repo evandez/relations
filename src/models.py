@@ -197,13 +197,35 @@ def tokenize_words(
     if isinstance(words, str):
         words = [words]
 
-    if spaces and isinstance(
-        tokenizer,
-        transformers.GPT2TokenizerFast | transformers.GPTNeoXTokenizerFast,
-    ):
+    if spaces and is_gpt_variant(tokenizer):
         words = [f" {word}" for word in words]
 
     return tokenizer(words, return_tensors="pt", padding=True)
+
+
+def normalize_prompt(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
+    """Normalize the prompt for use with the model."""
+    tokenizer = unwrap_tokenizer(tokenizer)
+    if is_gpt_variant(tokenizer):
+        prefix = tokenizer.eos_token
+        if not prompt.startswith(prefix):
+            prompt = prompt + prefix
+    return prompt
+
+
+def is_gpt_variant(mt: Model | Tokenizer | ModelAndTokenizer) -> bool:
+    """Determine if model/tokenizer is GPT variant."""
+    if isinstance(mt, ModelAndTokenizer):
+        mt = unwrap_model(mt)
+    return isinstance(
+        mt,
+        transformers.GPT2LMHeadModel
+        | transformers.GPTJForCausalLM
+        | transformers.GPTNeoForCausalLM
+        | transformers.GPTNeoXForCausalLM
+        | transformers.GPT2TokenizerFast
+        | transformers.GPTNeoXTokenizerFast,
+    )
 
 
 @contextmanager
