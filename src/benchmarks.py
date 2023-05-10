@@ -95,7 +95,7 @@ def reconstruction(
                 )
             }
             train, test = relation.set(
-                samples=sorted(known_samples), prompt_templates=[prompt_template]
+                samples=known_samples, prompt_templates=[prompt_template]
             ).split(n_train)
 
             # Estimate operator and evaluate it.
