@@ -209,7 +209,7 @@ def normalize_prompt(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> s
     if is_gpt_variant(tokenizer):
         prefix = tokenizer.eos_token
         if not prompt.startswith(prefix):
-            prompt = prompt + prefix
+            prompt = prefix + prompt 
     return prompt
 
 
