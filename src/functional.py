@@ -338,13 +338,13 @@ def make_prompt(
     return prompt
 
 
-def any_is_prefix(predictions: StrSequence, target: str) -> bool:
+def any_is_nontrivial_prefix(predictions: StrSequence, target: str) -> bool:
     """Return true if any prediction is (case insensitive) prefix of the target."""
-    return any(is_prefix(p, target) for p in predictions)
+    return any(is_nontrivial_prefix(p, target) for p in predictions)
 
 
-def is_prefix(prediction: str, target: str) -> bool:
+def is_nontrivial_prefix(prediction: str, target: str) -> bool:
     """Return true if prediction is (case insensitive) prefix of the target."""
     target = target.lower().strip()
     prediction = prediction.lower().strip()
-    return target.startswith(prediction)
+    return len(prediction) > 0 and target.startswith(prediction)

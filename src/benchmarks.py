@@ -238,7 +238,7 @@ def faithfulness(
             preds_lre_if_lm_wrong = []
             targets_if_lm_wrong = []
             for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
-                if functional.any_is_prefix(pred_lm, target):
+                if functional.any_is_nontrivial_prefix(pred_lm, target):
                     preds_lre_if_lm_correct.append(pred_lre)
                     targets_if_lm_correct.append(target)
                     count_lm_correct += 1
