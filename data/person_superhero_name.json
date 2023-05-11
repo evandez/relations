@@ -1,9 +1,9 @@
 {
     "name": "person superhero name",
     "prompt_templates": [
-        "What is the superhero name of {subject}? It is",
-        "{subject}'s superhero name is",
-        "What is {subject}'s superhero name? It is"
+        "What is the superhero name of {}? It is",
+        "{}'s superhero name is",
+        "What is {}'s superhero name? It is"
     ],
     "properties": {
         "relation_type": "factual",

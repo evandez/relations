@@ -1,9 +1,9 @@
 {
     "name": "person arch-nemesis name",
     "prompt_templates": [
-        "Who is the arch-nemesis of {subject}? It is",
-        "{subject}'s arch-nemesis is",
-        "What is {subject}'s arch-nemesis? It is"
+        "Who is the arch-nemesis of {}? It is",
+        "{}'s arch-nemesis is",
+        "What is {}'s arch-nemesis? It is"
     ],
     "properties": {
         "relation_type": "factual",
