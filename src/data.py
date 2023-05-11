@@ -3,7 +3,7 @@ import logging
 import random
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Dict, Sequence
+from typing import Sequence
 
 from src.utils import env_utils
 from src.utils.typing import PathLike
@@ -135,12 +135,12 @@ class RelationDataset(torch.utils.data.Dataset[Relation]):
         return self.relations[index]
 
 
-def get_relation_fn_type(relation_dict: Dict) -> str:
+def get_relation_fn_type(relation_dict: dict) -> str:
     """Determine the function type of a relation."""
 
     # Check if relation is one-to-many
     one_to_many = False
-    sub2obj = {}
+    sub2obj: dict[str, set[str]] = {}
     for sample in relation_dict["samples"]:
         cur = sub2obj.get(sample["subject"], set())
         cur.add(sample["object"])
@@ -152,7 +152,7 @@ def get_relation_fn_type(relation_dict: Dict) -> str:
 
     # Check if relation is many-to-one
     many_to_one = False
-    obj2sub = {}
+    obj2sub: dict[str, set[str]] = {}
     for sample in relation_dict["samples"]:
         cur = obj2sub.get(sample["object"], set())
         cur.add(sample["subject"])
@@ -173,7 +173,7 @@ def get_relation_fn_type(relation_dict: Dict) -> str:
         return "ONE_TO_ONE"
 
 
-def load_relation_dict(file: PathLike) -> Dict:
+def load_relation_dict(file: PathLike) -> dict:
     """Load dict for a single relation from a json file."""
     file = Path(file)
     if file.suffix != ".json":
@@ -232,7 +232,7 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
     relation_dicts = [load_relation_dict(file) for file in files]
 
     # Mark all disambiguating relations
-    domain_range_pairs = {}
+    domain_range_pairs: dict[tuple[str, str], int] = {}
     for relation_dict in relation_dicts:
         d, r = (
             relation_dict["properties"]["domain_name"],

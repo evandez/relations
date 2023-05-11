@@ -1,5 +1,3 @@
-results/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -130,4 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Project-specific stuff
 scan-for-best*
+results/
+models/
