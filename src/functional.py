@@ -284,6 +284,7 @@ def predict_next_token(
     mt: models.ModelAndTokenizer,
     prompt: str | StrSequence,
     k: int = 5,
+    batch_size: int = 64,
 ) -> list[list[PredictedToken]]:
     """Compute the next token."""
     if isinstance(prompt, str):
@@ -293,12 +294,16 @@ def predict_next_token(
             prompt, return_tensors="pt", padding="longest", truncation=True
         )
     with torch.inference_mode():
-        outputs = mt.model(
-            input_ids=inputs.input_ids,
-            attention_mask=inputs.attention_mask,
-        )
+        batched_logits = []
+        for i in range(0, len(inputs.input_ids), batch_size):
+            batch_outputs = mt.model(
+                input_ids=inputs.input_ids[i : i + batch_size],
+                attention_mask=inputs.attention_mask[i : i + batch_size],
+            )
+            batched_logits.append(batch_outputs.logits)
+        logits = torch.cat(batched_logits, dim=0)
 
-    next_token_probs = outputs.logits[:, -1].float().softmax(dim=-1)
+    next_token_probs = logits[:, -1].float().softmax(dim=-1)
     next_token_topk = next_token_probs.topk(dim=-1, k=k)
 
     predictions = []
