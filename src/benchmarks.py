@@ -370,8 +370,8 @@ def faithfulness(
     results_by_relation = []
     recalls_lm = []
     recalls_lre = []
-    recalls_lre_if_lm_correct = []
-    recalls_lre_if_lm_wrong = []
+    recalls_lre_if_lm_correct: list[list[float]] = []
+    recalls_lre_if_lm_wrong: list[list[float]] = []
     count_lm_correct = 0
     count_lm_wrong = 0
     for relation in tqdm(dataset.relations, desc=desc):
@@ -409,33 +409,23 @@ def faithfulness(
             recalls_lre.append(recall_lre)
 
             # Compute LRE predictions if LM is correct.
-            preds_lre_if_lm_correct = []
-            targets_if_lm_correct = []
-            preds_lre_if_lm_wrong = []
-            targets_if_lm_wrong = []
+            preds_by_lm_correct = defaultdict(list)
+            targets_by_lm_correct = defaultdict(list)
+            counts_by_lm_correct: dict[bool, int] = defaultdict(int)
             for pred_lm, pred_lre, target in zip(preds_lm, preds_lre, targets):
-                if functional.any_is_nontrivial_prefix(pred_lm, target):
-                    preds_lre_if_lm_correct.append(pred_lre)
-                    targets_if_lm_correct.append(target)
-                    count_lm_correct += 1
-                else:
-                    preds_lre_if_lm_wrong.append(pred_lre)
-                    targets_if_lm_wrong.append(target)
-                    count_lm_wrong += 1
+                lm_correct = functional.any_is_nontrivial_prefix(pred_lm, target)
+                preds_by_lm_correct[lm_correct].append(pred_lre)
+                targets_by_lm_correct[lm_correct].append(target)
+                counts_by_lm_correct[lm_correct] += 1
 
-            if preds_lre_if_lm_correct:
-                assert targets_if_lm_correct
-                recall_lre_if_lm_correct = metrics.recall(
-                    preds_lre_if_lm_correct, targets_if_lm_correct
+            for correct, recalls in (
+                (True, recalls_lre_if_lm_correct),
+                (False, recalls_lre_if_lm_wrong),
+            ):
+                recall = metrics.recall(
+                    preds_by_lm_correct[correct], targets_by_lm_correct[correct]
                 )
-                recalls_lre_if_lm_correct.append(recall_lre_if_lm_correct)
-
-            if preds_lre_if_lm_wrong:
-                assert targets_if_lm_wrong
-                recall_lre_if_lm_wrong = metrics.recall(
-                    preds_lre_if_lm_wrong, targets_if_lm_wrong
-                )
-                recalls_lre_if_lm_wrong.append(recall_lre_if_lm_wrong)
+                recalls.append(recall)
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
