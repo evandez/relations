@@ -295,7 +295,7 @@ def reconstruction(
             frac_correct=counts[0] / total,
             frac_dist_subj=counts[1] / total,
             frac_dist_rel=counts[2] / total,
-        )
+        ),
     )
 
 
@@ -413,7 +413,7 @@ def faithfulness(
             targets_if_lm_correct = []
             preds_lre_if_lm_wrong = []
             targets_if_lm_wrong = []
-            for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
+            for pred_lm, pred_lre, target in zip(preds_lm, preds_lre, targets):
                 if functional.any_is_nontrivial_prefix(pred_lm, target):
                     preds_lre_if_lm_correct.append(pred_lre)
                     targets_if_lm_correct.append(target)
