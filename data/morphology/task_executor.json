@@ -1,0 +1,141 @@
+{
+    "name": "task executor",
+    "prompt_templates": [
+        "{},",
+        "Person who does/operates/makes/plays {} is called"
+    ],
+    "samples": [
+        {
+            "subject": "code",
+            "object": "programmer"
+        },
+        {
+            "subject": "farm",
+            "object": "farmer"
+        },
+        {
+            "subject": "software",
+            "object": "developer"
+        },
+        {
+            "subject": "piano",
+            "object": "pianist"
+        },
+        {
+            "subject": "bicycle",
+            "object": "cyclist"
+        },
+        {
+            "subject": "machine",
+            "object": "operator"
+        },
+        {
+            "subject": "car",
+            "object": "driver"
+        },
+        {
+            "subject": "website",
+            "object": "webmaster"
+        },
+        {
+            "subject": "gym",
+            "object": "trainer"
+        },
+        {
+            "subject": "game",
+            "object": "gamer"
+        },
+        {
+            "subject": "book",
+            "object": "author"
+        },
+        {
+            "subject": "engine",
+            "object": "mechanic"
+        },
+        {
+            "subject": "dish",
+            "object": "chef"
+        },
+        {
+            "subject": "medicine",
+            "object": "pharmacist"
+        },
+        {
+            "subject": "surgery",
+            "object": "surgeon"
+        },
+        {
+            "subject": "airplane",
+            "object": "pilot"
+        },
+        {
+            "subject": "box",
+            "object": "boxer"
+        },
+        {
+            "subject": "ship",
+            "object": "captain"
+        },
+        {
+            "subject": "concert",
+            "object": "musician"
+        },
+        {
+            "subject": "painting",
+            "object": "artist"
+        },
+        {
+            "subject": "film",
+            "object": "filmmaker"
+        },
+        {
+            "subject": "education",
+            "object": "teacher"
+        },
+        {
+            "subject": "dance",
+            "object": "dancer"
+        },
+        {
+            "subject": "science",
+            "object": "scientist"
+        },
+        {
+            "subject": "drama",
+            "object": "actor"
+        },
+        {
+            "subject": "battle",
+            "object": "soldier"
+        },
+        {
+            "subject": "law",
+            "object": "lawer"
+        },
+        {
+            "subject": "digging",
+            "object": "digger"
+        },
+        {
+            "subject": "administer",
+            "object": "administrator"
+        },
+        {
+            "subject": "library",
+            "object": "librarian"
+        },
+        {
+            "subject": "design",
+            "object": "designer"
+        },
+        {
+            "subject": "manufacture",
+            "object": "manufacturer"
+        },
+        {
+            "subject": "construction",
+            "object": "constructor"
+        }
+    ]
+}
