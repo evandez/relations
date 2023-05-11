@@ -5,6 +5,7 @@ from functools import cache
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
+from src.utils.typing import ModelOutput
 
 import baukit
 import torch
@@ -16,12 +17,15 @@ logger = logging.getLogger(__name__)
 class EditResult:
     """Edited LM output."""
 
-    predictions: list[functional.PredictedToken]
+    predicted_tokens: list[functional.PredictedToken]
+    model_outputs: ModelOutput
 
 
 @dataclass(frozen=True, kw_only=True)
 class Editor:
     """Abstract editor which edits one subject to look like another."""
+
+    mt: models.ModelAndTokenizer
 
     def __call__(
         self,
@@ -40,8 +44,12 @@ class LinearRelationEditResult(EditResult):
 class LinearRelationEditor(Editor):
     """Abstract editor that uses an linear relation operator to edit."""
 
-    mt: models.ModelAndTokenizer
     lre: operators.LinearRelationOperator
+
+    def __call__(
+        self, subject_original: str, subject_target: str
+    ) -> LinearRelationEditResult:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -72,7 +80,7 @@ class LowRankPInvEditor(LinearRelationEditor):
         self,
         subject_original: str,
         subject_target: str,
-    ) -> EditResult:
+    ) -> LinearRelationEditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
         z_layer = self.lre.z_layer
@@ -130,11 +138,12 @@ class LowRankPInvEditor(LinearRelationEditor):
         probs = outputs.logits[:, -1].float().softmax(dim=-1)
         topk = probs.topk(k=5, dim=-1)
         return LinearRelationEditResult(
-            predictions=[
+            predicted_tokens=[
                 functional.PredictedToken(
                     token=mt.tokenizer.decode(token_id),
                     prob=prob,
                 )
                 for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
-            ]
+            ],
+            model_outputs=outputs,
         )
