@@ -15,6 +15,7 @@ transformers
 torch
 huggingface-hub
 datasets
+plotly
 
 # dev dependencies
 black

@@ -98,18 +98,18 @@ class ModelAndTokenizer:
             )
             return
 
-        self.n_layer = None
-        self.n_embd = None
-        self.n_attn_head = None
-        self.max_seq_length = None
+        self.n_layer: int
+        self.n_embd: int
+        self.n_attn_head: int
+        self.max_seq_length: int
 
-        self.layer_name_format = None
-        self.layer_names = None
-        self.mlp_module_name_format = None
-        self.attn_module_name_format = None
-        self.ln_f_name = None
-        self.unembedder_name = None
-        self.embedder_name = None
+        self.layer_name_format: str
+        self.layer_names: Sequence[str]
+        self.mlp_module_name_format: str
+        self.attn_module_name_format: str
+        self.ln_f_name: str
+        self.unembedder_name: str
+        self.embedder_name: str
 
         self.model_type = model_type
 
