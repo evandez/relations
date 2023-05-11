@@ -7,8 +7,8 @@
     ],
     "properties": {
         "relation_type": "factual",
-        "domain_name": "person",
-        "range_name": "arch-nemesis",
+        "domain_name": "superhero",
+        "range_name": "superhero",
         "symmetric": false
     },
     "samples": [
