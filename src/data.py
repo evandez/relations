@@ -3,7 +3,7 @@ import logging
 import random
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Sequence, Dict
+from typing import Dict, Sequence
 
 from src.utils import env_utils
 from src.utils.typing import PathLike
@@ -234,12 +234,18 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
     # Mark all disambiguating relations
     domain_range_pairs = {}
     for relation_dict in relation_dicts:
-        d, r = relation_dict["properties"]["domain_name"], relation_dict["properties"]["range_name"]
+        d, r = (
+            relation_dict["properties"]["domain_name"],
+            relation_dict["properties"]["range_name"],
+        )
         cur = domain_range_pairs.get((d, r), 0)
         domain_range_pairs[(d, r)] = cur + 1
 
     for relation_dict in relation_dicts:
-        d, r = relation_dict["properties"]["domain_name"], relation_dict["properties"]["range_name"]
+        d, r = (
+            relation_dict["properties"]["domain_name"],
+            relation_dict["properties"]["range_name"],
+        )
         relation_dict["properties"]["disambiguating"] = domain_range_pairs[(d, r)] > 1
 
     # Create Relation objects
