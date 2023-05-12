@@ -125,7 +125,7 @@ class LowRankPInvEditor(LinearRelationEditor):
         def edit_output(output):  # type: ignore
             if output[0].shape[1] == 1:
                 return output
-            output[:, subject_edit_index] += delta.squeeze()
+            output[0][:, subject_edit_index] += delta.squeeze()
             return output
 
         [h_layer_name] = models.determine_layer_paths(mt, layers=[h_layer])
