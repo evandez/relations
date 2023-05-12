@@ -5,6 +5,12 @@
         "The antonym of {} is",
         "{},"
     ],
+    "properties": {
+        "relation_type": "morphological",
+        "domain_name": "word",
+        "range_name": "word",
+        "symmetric": true
+    },
     "samples": [
         {
             "subject": "love",

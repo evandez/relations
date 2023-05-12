@@ -5,6 +5,7 @@ from functools import cache
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
+from src.utils.typing import ModelOutput
 
 import baukit
 import torch
@@ -16,28 +17,46 @@ logger = logging.getLogger(__name__)
 class EditResult:
     """Edited LM output."""
 
-    predictions: list[functional.PredictedToken]
+    predicted_tokens: list[functional.PredictedToken]
+    model_outputs: ModelOutput
 
 
 @dataclass(frozen=True, kw_only=True)
 class Editor:
     """Abstract editor which edits one subject to look like another."""
 
+    mt: models.ModelAndTokenizer
+
     def __call__(
         self,
-        subject_to_edit: str,
+        subject_original: str,
         subject_target: str,
     ) -> EditResult:
         raise NotImplementedError
 
 
 @dataclass(frozen=True, kw_only=True)
-class LowRankPInvEditor(Editor):
+class LinearRelationEditResult(EditResult):
+    """Outputs of a linear relation editor."""
+
+
+@dataclass(frozen=True, kw_only=True)
+class LinearRelationEditor(Editor):
+    """Abstract editor that uses an linear relation operator to edit."""
+
+    lre: operators.LinearRelationOperator
+
+    def __call__(
+        self, subject_original: str, subject_target: str
+    ) -> LinearRelationEditResult:
+        raise NotImplementedError
+
+
+@dataclass(frozen=True, kw_only=True)
+class LowRankPInvEditor(LinearRelationEditor):
     """Edit h using a low-rank pseudo-inverse of the weight matrix."""
 
-    mt: models.ModelAndTokenizer
-    lre: operators.LinearRelationOperator
-    rank: int
+    rank: int = 25
 
     @cache
     def _low_rank_pinv(self) -> torch.Tensor:
@@ -45,43 +64,37 @@ class LowRankPInvEditor(Editor):
         logger.debug(
             f"computing low-rank pseudo-inverse (rel={self.lre.prompt_template})"
         )
-
         weight = self.lre.weight
-        assert weight is not None
-        weight = weight.float()
-
-        u, s, v = torch.svd(weight)
-
-        weight_inv = (
-            v[:, : self.rank] @ torch.diag(1 / s[: self.rank]) @ u[:, : self.rank].T
-        )
-
-        return weight_inv.to(weight.dtype)
+        if weight is None:
+            raise AssertionError("LRE weight is None, editing does not support this")
+        return functional.low_rank_pinv(matrix=weight, rank=self.rank)
 
     def _bias(self) -> torch.Tensor:
         bias = self.lre.bias
+        if bias is None:
+            raise AssertionError("LRE bias is None, editing does not support this")
         assert bias is not None
         return bias.T
 
     def __call__(
         self,
-        subject_to_edit: str,
+        subject_original: str,
         subject_target: str,
-    ) -> EditResult:
+    ) -> LinearRelationEditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
         z_layer = self.lre.z_layer
         prompt_template = self.lre.prompt_template
 
-        prompt_to_edit = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_to_edit
+        prompt_original = functional.make_prompt(
+            mt=mt, prompt_template=prompt_template, subject=subject_original
         )
         prompt_target = functional.make_prompt(
             mt=mt, prompt_template=prompt_template, subject=subject_target
         )
         with models.set_padding_side(self.lre.mt, padding_side="left"):
             inputs = self.mt.tokenizer(
-                [prompt_to_edit, prompt_target],
+                [prompt_original, prompt_target],
                 return_tensors="pt",
                 padding="longest",
                 truncation=True,
@@ -90,8 +103,8 @@ class LowRankPInvEditor(Editor):
 
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(
-            prompt_to_edit,
-            subject_to_edit,
+            prompt_original,
+            subject_original,
             offset_mapping=offset_mapping[0],
         )
         subject_edit_index -= 1
@@ -99,7 +112,7 @@ class LowRankPInvEditor(Editor):
         hiddens = functional.compute_hidden_states(
             mt=self.lre.mt,
             layers=[z_layer],
-            prompt=[prompt_to_edit, prompt_target],
+            prompt=[prompt_original, prompt_target],
         )
 
         z_original = hiddens.hiddens[0][0, -1, ..., None]
@@ -124,12 +137,13 @@ class LowRankPInvEditor(Editor):
 
         probs = outputs.logits[:, -1].float().softmax(dim=-1)
         topk = probs.topk(k=5, dim=-1)
-        return EditResult(
-            predictions=[
+        return LinearRelationEditResult(
+            predicted_tokens=[
                 functional.PredictedToken(
                     token=mt.tokenizer.decode(token_id),
                     prob=prob,
                 )
                 for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
-            ]
+            ],
+            model_outputs=outputs,
         )

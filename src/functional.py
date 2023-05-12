@@ -135,6 +135,23 @@ def order_1_approx(
     return approx
 
 
+def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+    """Compute a low-rank pseudo-inverse of a matrix.
+
+    Args:
+        matrix: The matrix to invert.
+        rank: The rank of the approximation.
+
+    Returns:
+        The pseudo-inverse.
+
+    """
+    matrix = matrix.float()
+    u, s, v = torch.svd(matrix)
+    matrix_pinv = v[:, :rank] @ torch.diag(1 / s[:rank]) @ u[:, :rank].T
+    return matrix_pinv.to(matrix.dtype)
+
+
 class CornerGdOutput(NamedTuple):
     """The output of `corner_gd`."""
 

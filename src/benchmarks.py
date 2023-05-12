@@ -2,8 +2,9 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import Any
 
-from src import data, editors, functional, metrics, operators
+from src import data, editors, functional, metrics, models, operators
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -295,7 +296,7 @@ def reconstruction(
             frac_correct=counts[0] / total,
             frac_dist_subj=counts[1] / total,
             frac_dist_rel=counts[2] / total,
-        )
+        ),
     )
 
 
@@ -370,8 +371,8 @@ def faithfulness(
     results_by_relation = []
     recalls_lm = []
     recalls_lre = []
-    recalls_lre_if_lm_correct = []
-    recalls_lre_if_lm_wrong = []
+    recalls_lre_if_lm_correct: list[list[float]] = []
+    recalls_lre_if_lm_wrong: list[list[float]] = []
     count_lm_correct = 0
     count_lm_wrong = 0
     for relation in tqdm(dataset.relations, desc=desc):
@@ -409,33 +410,23 @@ def faithfulness(
             recalls_lre.append(recall_lre)
 
             # Compute LRE predictions if LM is correct.
-            preds_lre_if_lm_correct = []
-            targets_if_lm_correct = []
-            preds_lre_if_lm_wrong = []
-            targets_if_lm_wrong = []
-            for pred_lm, pred_lre, target in zip(preds_lm, preds_lm, targets):
-                if functional.any_is_nontrivial_prefix(pred_lm, target):
-                    preds_lre_if_lm_correct.append(pred_lre)
-                    targets_if_lm_correct.append(target)
-                    count_lm_correct += 1
-                else:
-                    preds_lre_if_lm_wrong.append(pred_lre)
-                    targets_if_lm_wrong.append(target)
-                    count_lm_wrong += 1
+            preds_by_lm_correct = defaultdict(list)
+            targets_by_lm_correct = defaultdict(list)
+            counts_by_lm_correct: dict[bool, int] = defaultdict(int)
+            for pred_lm, pred_lre, target in zip(preds_lm, preds_lre, targets):
+                lm_correct = functional.any_is_nontrivial_prefix(pred_lm, target)
+                preds_by_lm_correct[lm_correct].append(pred_lre)
+                targets_by_lm_correct[lm_correct].append(target)
+                counts_by_lm_correct[lm_correct] += 1
 
-            if preds_lre_if_lm_correct:
-                assert targets_if_lm_correct
-                recall_lre_if_lm_correct = metrics.recall(
-                    preds_lre_if_lm_correct, targets_if_lm_correct
+            for correct, recalls in (
+                (True, recalls_lre_if_lm_correct),
+                (False, recalls_lre_if_lm_wrong),
+            ):
+                recall = metrics.recall(
+                    preds_by_lm_correct[correct], targets_by_lm_correct[correct]
                 )
-                recalls_lre_if_lm_correct.append(recall_lre_if_lm_correct)
-
-            if preds_lre_if_lm_wrong:
-                assert targets_if_lm_wrong
-                recall_lre_if_lm_wrong = metrics.recall(
-                    preds_lre_if_lm_wrong, targets_if_lm_wrong
-                )
-                recalls_lre_if_lm_wrong.append(recall_lre_if_lm_wrong)
+                recalls.append(recall)
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -477,17 +468,17 @@ def faithfulness(
 
 
 @dataclass(frozen=True, kw_only=True)
-class CausalityRelationResults:
+class CausalityRelationResults(DataClassJsonMixin):
     pass
 
 
 @dataclass(frozen=True, kw_only=True)
-class CausalityBenchmarkMetrics:
+class CausalityBenchmarkMetrics(DataClassJsonMixin):
     pass
 
 
 @dataclass(frozen=True, kw_only=True)
-class CausalityBenchmarkResults:
+class CausalityBenchmarkResults(DataClassJsonMixin):
     relations: list[CausalityRelationResults]
     metrics: CausalityBenchmarkMetrics
 
@@ -495,19 +486,48 @@ class CausalityBenchmarkResults:
 def causality(
     *,
     estimator: operators.LinearRelationEstimator,
-    editor: editors.Editor,
+    editor_type: type[editors.Editor],
     dataset: data.RelationDataset,
     n_train: int = 3,
+    n_trials: int = 3,
+    desc: str | None = None,
+    **kwargs: Any,
 ) -> CausalityBenchmarkResults:
-    """_summary_
+    if desc is None:
+        desc = "causality"
 
-    Args:
-        estimator: _description_
-        editor: _description_
-        dataset: _description_
-        n_train: _description_. Defaults to 3.
+    mt = estimator.mt
+    for relation in tqdm(dataset.relations):
+        for _ in range(n_trials):
+            prompt_template = random.choice(relation.prompt_templates)
+            train, test = relation.set(prompt_templates=[prompt_template]).split(
+                n_train
+            )
 
-    Returns:
-        _description_
-    """
-    pass
+            editor_kwargs = dict(kwargs)
+            if issubclass(editor_type, editors.LinearRelationEditor):
+                operator = estimator(train)
+                editor_kwargs["lre"] = operator
+            editor = editor_type(mt=mt, **editor_kwargs)
+
+            for sample in test.samples:
+                others = list(set(test.samples) - {sample})
+                target = random.choice(others)
+
+                subject_original = sample.subject
+                subject_target = target.subject
+
+                object_original = sample.object
+                object_target = target.object
+
+                result = editor(subject_original, subject_target)
+
+                [token_id_original, token_id_target] = (
+                    models.tokenize_words(mt, [object_original, object_target])
+                    .input_ids[:, 0]
+                    .tolist()
+                )
+                probs = result.model_outputs.logits[0, -1].float().softmax(dim=-1)
+                prob_original = probs[token_id_original].item()
+                prob_target = probs[token_id_target].item()
+                # TODO(evan): WIP, just need to record results and metrics.

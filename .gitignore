@@ -104,6 +104,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.vscode/
 env/
 venv/
 ENV/
@@ -129,6 +130,7 @@ dmypy.json
 .pyre/
 
 # Project-specific stuff
+notebooks/layer_sweep/
 scan-for-best*
 results/
 models/

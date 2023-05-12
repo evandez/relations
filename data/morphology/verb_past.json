@@ -4,6 +4,12 @@
         "The past tense of {} is",
         "{},"
     ],
+    "properties": {
+        "relation_type": "morphological",
+        "domain_name": "verb",
+        "range_name": "past tense of verb",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "ask",
