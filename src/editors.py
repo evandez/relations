@@ -135,7 +135,7 @@ class LowRankPInvEditor(LinearRelationEditor):
                 attention_mask=inputs.attention_mask[:1],
             )
 
-        probs = outputs.logits[:, -1].float().softmax(dim=-1)
+        probs = outputs.logits[0, -1].float().softmax(dim=-1)
         topk = probs.topk(k=5, dim=-1)
         return LinearRelationEditResult(
             predicted_tokens=[
