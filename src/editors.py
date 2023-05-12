@@ -55,7 +55,8 @@ class LinearRelationEditor(Editor):
 class LowRankPInvEditor(LinearRelationEditor):
     """Edit h using a low-rank pseudo-inverse of the weight matrix."""
 
-    rank: int = 25
+    rank: int = 100
+    n_tokens: int = 10
 
     @cache
     def _low_rank_pinv(self) -> torch.Tensor:
@@ -135,7 +136,7 @@ class LowRankPInvEditor(LinearRelationEditor):
             )
 
         probs = outputs.logits[0, -1].float().softmax(dim=-1)
-        topk = probs.topk(k=5, dim=-1)
+        topk = probs.topk(k=self.n_tokens, dim=-1)
         return LinearRelationEditResult(
             predicted_tokens=[
                 functional.PredictedToken(
