@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any
 
 from src import data, functional, models
 from src.utils import tokenizer_utils
