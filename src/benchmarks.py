@@ -407,6 +407,11 @@ def faithfulness(
                 (True, recalls_lre_if_lm_correct),
                 (False, recalls_lre_if_lm_wrong),
             ):
+                preds = preds_by_lm_correct[correct]
+                targets = targets_by_lm_correct[correct]
+                if not preds:
+                    assert not targets
+                    continue
                 recall = metrics.recall(
                     preds_by_lm_correct[correct], targets_by_lm_correct[correct]
                 )
