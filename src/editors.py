@@ -131,8 +131,8 @@ class LowRankPInvEditor(LinearRelationEditor):
         [h_layer_name] = models.determine_layer_paths(mt, layers=[h_layer])
         with baukit.Trace(mt.model, h_layer_name, edit_output=edit_output):
             outputs = mt.model(
-                input_ids=inputs.input_ids,
-                attention_mask=inputs.attention_mask,
+                input_ids=inputs.input_ids[:1],
+                attention_mask=inputs.attention_mask[:1],
             )
 
         probs = outputs.logits[:, -1].float().softmax(dim=-1)
