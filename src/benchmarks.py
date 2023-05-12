@@ -585,8 +585,8 @@ def causality(
             for sample in trial.samples
         ]
     )
-    efficacy_mean = efficacies.mean().item()
-    efficacy_std = efficacies.std().item()
+    efficacy_mean = efficacies.float().mean().item()
+    efficacy_std = efficacies.float().std().item()
 
     return CausalityBenchmarkResults(
         relations=relation_results,
