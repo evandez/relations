@@ -531,9 +531,9 @@ def causality(
                 )
                 continue
 
-            train, test = relation.set(prompt_templates=[prompt_template]).split(
-                n_train
-            )
+            train, test = relation.set(
+                samples=list(known_samples), prompt_templates=[prompt_template]
+            ).split(n_train)
 
             editor_kwargs = dict(kwargs)
             if issubclass(editor_type, editors.LinearRelationEditor):
