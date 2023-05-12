@@ -191,6 +191,7 @@ def tokenize_words(
     tokenizer: ModelAndTokenizer | Tokenizer,
     words: str | Sequence[str],
     spaces: bool = True,
+    **kwargs: Any,
 ) -> ModelInput:
     """Return first token ID for word, accounting for whether model expects spaces."""
     tokenizer = unwrap_tokenizer(tokenizer)
@@ -200,7 +201,9 @@ def tokenize_words(
     if spaces and is_gpt_variant(tokenizer):
         words = [f" {word}" for word in words]
 
-    return tokenizer(words, return_tensors="pt", padding=True)
+    kwargs.setdefault("padding", "longest")
+    kwargs.setdefault("return_tensors", "pt")
+    return tokenizer(words, **kwargs)
 
 
 def maybe_prefix_eos(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
@@ -354,4 +357,4 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         help="model to edit",
     )
     parser.add_argument("--device", help="device to train on")
-    parser.add_argument("--fp16", type=bool, help="set whether to use fp16")
+    parser.add_argument("--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16")

@@ -1,9 +1,10 @@
+import argparse
 import json
 import logging
 import random
 from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Sequence
+from typing import Literal, Sequence
 
 from src.utils import env_utils
 from src.utils.typing import PathLike
@@ -12,6 +13,8 @@ import torch.utils.data
 from dataclasses_json import DataClassJsonMixin
 
 logger = logging.getLogger(__name__)
+
+RelationFnType = Literal["ONE_TO_ONE", "ONE_TO_MANY", "MANY_TO_ONE", "MANY_TO_MANY"]
 
 
 @dataclass(frozen=True)
@@ -134,8 +137,34 @@ class RelationDataset(torch.utils.data.Dataset[Relation]):
     def __getitem__(self, index: int) -> Relation:
         return self.relations[index]
 
+    def filter(
+        self,
+        relation_names: Sequence[str] | None = None,
+        **properties: bool | Sequence[str],
+    ) -> "RelationDataset":
+        relations = list(self.relations)
+        if relation_names is not None:
+            logger.debug(f"filtering to only relations: {relation_names}")
+            relations = [r for r in relations if r.name in set(relation_names)]
 
-def get_relation_fn_type(relation_dict: dict) -> str:
+        for key, value in properties.items():
+            if value is not None:
+                if isinstance(value, bool):
+                    logger.debug(f"filtering by property {key}={value}")
+                    matches = lambda x: x == value
+                else:
+                    logger.debug(f"filtering by property {key} in {value}")
+                    value_set = set(value)
+                    matches = lambda x: (x in value_set)
+
+                relations = [
+                    r for r in relations if matches(getattr(r.properties, key))
+                ]
+
+        return RelationDataset(relations)
+
+
+def get_relation_fn_type(relation_dict: dict) -> RelationFnType:
     """Determine the function type of a relation."""
 
     # Check if relation is one-to-many
@@ -252,3 +281,46 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
     relations = [Relation.from_dict(relation_dict) for relation_dict in relation_dicts]
 
     return RelationDataset(relations)
+
+
+def load_dataset_from_args(args: argparse.Namespace) -> RelationDataset:
+    """Load a dataset based on args from `add_data_args`."""
+    dataset = load_dataset()
+    return dataset.filter(
+        relation_names=args.rel_names,
+        domain_name=args.rel_domains,
+        range_name=args.rel_ranges,
+        disambiguating=args.rel_disamb,
+        symmetric=args.rel_sym,
+        fn_type=args.rel_fn_types,
+    )
+
+
+def add_data_args(parser: argparse.ArgumentParser) -> None:
+    """Add dataset filtering args."""
+    parser.add_argument(
+        "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
+    )
+    parser.add_argument(
+        "--rel-domains", nargs="+", type=str, help="filter by relation domain"
+    )
+    parser.add_argument(
+        "--rel-ranges", nargs="+", type=str, help="filter by relation range"
+    )
+    parser.add_argument(
+        "--rel-fn-types",
+        choices=("ONE_TO_ONE", "ONE_TO_MANY", "MANY_TO_ONE", "MANY_TO_MANY"),
+        nargs="+",
+        type=str,
+        help="filter by relation function type (ONE_TO_ONE, ONE_TO_MANY, etc.)",
+    )
+    parser.add_argument(
+        "--rel-disamb",
+        action=argparse.BooleanOptionalAction,
+        help="filter by whether relation is disambiguating",
+    )
+    parser.add_argument(
+        "--rel-sym",
+        action=argparse.BooleanOptionalAction,
+        help="filter by whether relation is symmetric",
+    )
