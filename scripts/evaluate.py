@@ -26,7 +26,7 @@ def main(args: argparse.Namespace) -> None:
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     with torch.device(device):
         mt = models.load_model(args.model, fp16=args.fp16, device=device)
-        dataset = data.load_dataset()
+        dataset = data.load_dataset_from_args(args)
 
         estimator = ESTIMATORS[args.estimator](
             mt=mt,
@@ -73,6 +73,7 @@ if __name__ == "__main__":
         default=BENCHMARKS,
         help="benchmarks to run",
     )
+    data.add_data_args(parser)
     models.add_model_args(parser)
     experiment_utils.add_experiment_args(parser)
     logging_utils.add_logging_args(parser)
