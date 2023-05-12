@@ -2,14 +2,14 @@ import argparse
 import logging
 from typing import Any
 
-from src import benchmarks, data, models, operators
+from src import benchmarks, data, editors, models, operators
 from src.utils import experiment_utils, logging_utils
 
 import torch
 
 logger = logging.getLogger(__name__)
 
-BENCHMARKS = ("reconstruction", "faithfulness")
+BENCHMARKS = ("reconstruction", "faithfulness", "causality")
 ESTIMATORS = {
     "j": operators.JacobianEstimator,
     "j-icl-max": operators.JacobianIclMaxEstimator,
@@ -42,6 +42,11 @@ def main(args: argparse.Namespace) -> None:
                 )
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
+            elif bench == "causality":
+                editor_type = editors.LowRankPInvEditor
+                results = benchmarks.causality(
+                    dataset=dataset, estimator=estimator, editor_type=editor_type
+                )
 
             results_file = experiment.results_dir / f"{bench}_results.json"
             results_json = results.to_json(indent=4)
