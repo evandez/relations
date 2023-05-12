@@ -134,7 +134,7 @@ dmypy.json
 *.pth
 *.npz
 
-# experiment logs and figures
+# Project-specific stuff
 notebooks/layer_sweep/
 scan-for-best*
 results/

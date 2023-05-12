@@ -8,6 +8,12 @@
         "The inhabitants of {} use",
         "In {}, the language primarily spoken is"
     ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "country",
+        "range_name": "language",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "United States",

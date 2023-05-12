@@ -4,6 +4,12 @@
         "The comparative of {} is",
         "{},"
     ],
+    "properties": {
+        "relation_type": "morphological",
+        "domain_name": "adjective",
+        "range_name": "adjective",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "big",

@@ -6,6 +6,12 @@
         "The seat of government for {} is",
         "The government of {} is centered in"
     ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "country",
+        "range_name": "city",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "United States",

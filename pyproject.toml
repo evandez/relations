@@ -7,8 +7,6 @@ exclude = [
     ".*tests.*",
     # Will clean these up later.
     "src/corner.py",
-    "src/utils/model_utils.py",
-    "src/evaluate.py"
 ]
 
 [tool.isort]
