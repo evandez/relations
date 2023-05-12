@@ -35,6 +35,8 @@ def main(args: argparse.Namespace) -> None:
         )
 
         for bench in args.benchmarks:
+            logger.info(f"begin benchmark: {bench}")
+
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
@@ -54,6 +56,8 @@ def main(args: argparse.Namespace) -> None:
                 handle.write(results_json)
 
             metrics_json = results.metrics.to_json(indent=4)
+            logger.info(metrics_json)
+
             metrics_file = experiment.results_dir / f"{bench}_metrics.json"
             with metrics_file.open("w") as handle:
                 handle.write(metrics_json)
