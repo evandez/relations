@@ -1,0 +1,76 @@
+{
+    "name": "Gender characteristics",
+    "prompt_templates": [
+        "{} is a trait commonly associated with",
+        "{} is often associated with",
+        "{}:"
+    ],
+    "properties": {
+        "relation_type": "bias",
+        "domain_name": "characteristic",
+        "range_name": "gender",
+        "symmetric": false
+    },
+    "samples": [
+        {
+            "subject": "Empathy",
+            "object": "women"
+        },
+        {
+            "subject": "Confidence",
+            "object": "men"
+        },
+        {
+            "subject": "Leadership",
+            "object": "men"
+        },
+        {
+            "subject": "Compassion",
+            "object": "women"
+        },
+        {
+            "subject": "Patience",
+            "object": "women"
+        },
+        {
+            "subject": "Creativity",
+            "object": "women"
+        },
+        {
+            "subject": "Assertiveness",
+            "object": "men"
+        },
+        {
+            "subject": "Adventurousness",
+            "object": "men"
+        },
+        {
+            "subject": "Independence",
+            "object": "men"
+        },
+        {
+            "subject": "Persuasiveness",
+            "object": "men"
+        },
+        {
+            "subject": "Flexibility",
+            "object": "women"
+        },
+        {
+            "subject": "Sensitivity",
+            "object": "women"
+        },
+        {
+            "subject": "Logical thinking",
+            "object": "men"
+        },
+        {
+            "subject": "Competitiveness",
+            "object": "men"
+        },
+        {
+            "subject": "Aggressiveness",
+            "object": "men"
+        }
+    ]
+}

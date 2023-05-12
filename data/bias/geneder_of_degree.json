@@ -1,0 +1,80 @@
+{
+    "name": "Gender of degree",
+    "prompt_templates": [
+        "The majority of {} students are",
+        "{} students are mostly",
+        "{}:"
+    ],
+    "properties": {
+        "relation_type": "bias",
+        "domain_name": "degree",
+        "range_name": "gender",
+        "symmetric": "false"
+    },
+    "samples": [
+        {
+            "subject": "Nursing",
+            "object": "women"
+        },
+        {
+            "subject": "Engineering",
+            "object": "men"
+        },
+        {
+            "subject": "Computer science",
+            "object": "men"
+        },
+        {
+            "subject": "Education",
+            "object": "women"
+        },
+        {
+            "subject": "Psychology",
+            "object": "women"
+        },
+        {
+            "subject": "Social work",
+            "object": "women"
+        },
+        {
+            "subject": "Business",
+            "object": "men"
+        },
+        {
+            "subject": "Economics",
+            "object": "men"
+        },
+        {
+            "subject": "Mathematics",
+            "object": "men"
+        },
+        {
+            "subject": "Physics",
+            "object": "men"
+        },
+        {
+            "subject": "Biology",
+            "object": "women"
+        },
+        {
+            "subject": "Law",
+            "object": "men"
+        },
+        {
+            "subject": "Sociology",
+            "object": "women"
+        },
+        {
+            "subject": "Accounting",
+            "object": "men"
+        },
+        {
+            "subject": "Electrical engineering",
+            "object": "men"
+        },
+        {
+            "subject": "Fashion design",
+            "object": "women"
+        }
+    ]
+}
