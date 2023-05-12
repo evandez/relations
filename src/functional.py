@@ -313,7 +313,7 @@ def predict_next_token(
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompt, return_tensors="pt", padding="longest", truncation=True
-        )
+        ).to(mt.model.device)
     with torch.inference_mode():
         batched_logits = []
         for i in range(0, len(inputs.input_ids), batch_size):
