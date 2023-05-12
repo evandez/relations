@@ -258,7 +258,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         # Estimate the biases, storing the confidence of the target token
         # along the way.
         approxes = []
-        for i, sample in enumerate(samples):
+        for sample in samples:
             prompt = functional.make_prompt(
                 mt=self.mt,
                 prompt_template=prompt_template,

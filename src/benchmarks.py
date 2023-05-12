@@ -468,13 +468,35 @@ def faithfulness(
 
 
 @dataclass(frozen=True, kw_only=True)
+class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
+
+    subject_original: str
+    subject_target: str
+    prompt_template: str
+
+    prob_original: float
+    prob_target: float
+
+    predicted_tokens: list[functional.PredictedToken]
+
+
+@dataclass(frozen=True, kw_only=True)
+class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
+    train: data.RelationDataset
+    test: data.RelationDataset
+    samples: list[CausalityBenchmarkRelationTrialSample]
+
+
+@dataclass(frozen=True, kw_only=True)
 class CausalityRelationResults(DataClassJsonMixin):
-    pass
+    relation_name: str
+    trials: list[CausalityBenchmarkRelationTrial]
 
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkMetrics(DataClassJsonMixin):
-    pass
+    efficacy_mean: float
+    efficacy_std: float
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -497,7 +519,9 @@ def causality(
         desc = "causality"
 
     mt = estimator.mt
-    for relation in tqdm(dataset.relations):
+    relation_results = []
+    for relation in tqdm(dataset.relations, desc=desc):
+        relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
             train, test = relation.set(prompt_templates=[prompt_template]).split(
@@ -510,6 +534,7 @@ def causality(
                 editor_kwargs["lre"] = operator
             editor = editor_type(mt=mt, **editor_kwargs)
 
+            relation_samples = []
             for sample in test.samples:
                 others = list(set(test.samples) - {sample})
                 target = random.choice(others)
@@ -527,7 +552,45 @@ def causality(
                     .input_ids[:, 0]
                     .tolist()
                 )
-                probs = result.model_outputs.logits[0, -1].float().softmax(dim=-1)
+                probs = result.model_logits[0, -1].float().softmax(dim=-1)
                 prob_original = probs[token_id_original].item()
                 prob_target = probs[token_id_target].item()
-                # TODO(evan): WIP, just need to record results and metrics.
+
+                relation_samples.append(
+                    CausalityBenchmarkRelationTrialSample(
+                        subject_original=subject_original,
+                        subject_target=subject_target,
+                        prompt_template=prompt_template,
+                        prob_original=prob_original,
+                        prob_target=prob_target,
+                        predicted_tokens=result.predicted_tokens,
+                    )
+                )
+            relation_trials.append(
+                CausalityBenchmarkRelationTrial(
+                    train=train, test=test, samples=relation_samples
+                )
+            )
+        relation_results.append(
+            CausalityRelationResults(
+                relation_name=relation.name, trials=relation_trials
+            )
+        )
+
+    efficacies = torch.tensor(
+        [
+            sample.prob_target > sample.prob_original
+            for relation_result in relation_results
+            for trial in relation_result.trials
+            for sample in trial.samples
+        ]
+    )
+    efficacy_mean = efficacies.mean().item()
+    efficacy_std = efficacies.std().item()
+
+    return CausalityBenchmarkResults(
+        relations=relation_results,
+        metrics=CausalityBenchmarkMetrics(
+            efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
+        ),
+    )

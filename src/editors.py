@@ -5,7 +5,6 @@ from functools import cache
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
-from src.utils.typing import ModelOutput
 
 import baukit
 import torch
@@ -18,7 +17,7 @@ class EditResult:
     """Edited LM output."""
 
     predicted_tokens: list[functional.PredictedToken]
-    model_outputs: ModelOutput
+    model_logits: torch.Tensor
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -145,5 +144,5 @@ class LowRankPInvEditor(LinearRelationEditor):
                 )
                 for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
             ],
-            model_outputs=outputs,
+            model_logits=outputs.logits[:1],
         )
