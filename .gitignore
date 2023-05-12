@@ -1,3 +1,5 @@
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -128,8 +130,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-scan-for-best*
-
 # weights
 *.pth
 *.npz
+
+# experiment logs and figures
+notebooks/layer_sweep/

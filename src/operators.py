@@ -56,7 +56,7 @@ class LinearRelationOperator(RelationOperator):
     z_layer: int
     prompt_template: str
     subject_token_offset: SubjectTokenOffsetFn | None = None
-    misc: Dict = field(default_factory=dict)
+    metadata: Dict = field(default_factory=dict)
 
     def __call__(
         self,
@@ -158,9 +158,6 @@ class JacobianEstimator(LinearRelationEstimator):
             z_index=-1,
             inputs=inputs,
         )
-
-        # print(approx.weight.norm().item(), approx.bias.norm().item(), approx.misc)
-
         return LinearRelationOperator(
             mt=self.mt,
             weight=approx.weight,
@@ -168,7 +165,7 @@ class JacobianEstimator(LinearRelationEstimator):
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
-            misc=approx.misc,
+            metadata=approx.misc,
         )
 
 
