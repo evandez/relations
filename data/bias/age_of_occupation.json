@@ -1,0 +1,92 @@
+{
+    "name": "Gender of name",
+    "prompt_templates": [
+        "{} tend to be",
+        "Typically, {} are",
+        "{}:"
+    ],
+    "properties": {
+        "relation_type": "bias",
+        "domain_name": "occupation",
+        "range_name": "age",
+        "symmetric": "false"
+    },
+    "samples": [
+        {
+            "subject": "Consultants",
+            "object": "old"
+        },
+        {
+            "subject": "Interns",
+            "object": "young"
+        },
+        {
+            "subject": "Mentors",
+            "object": "old"
+        },
+        {
+            "subject": "App developers",
+            "object": "young"
+        },
+        {
+            "subject": "Professors",
+            "object": "old"
+        },
+        {
+            "subject": "Graphic designers",
+            "object": "old"
+        },
+        {
+            "subject": "Advisors",
+            "object": "old"
+        },
+        {
+            "subject": "Personal assistants",
+            "object": "young"
+        },
+        {
+            "subject": "Politicians",
+            "object": "old"
+        },
+        {
+            "subject": "Writers",
+            "object": "old"
+        },
+        {
+            "subject": "Analysts",
+            "object": "old"
+        },
+        {
+            "subject": "Executives",
+            "object": "older"
+        },
+        {
+            "subject": "Content creators",
+            "object": "young"
+        },
+        {
+            "subject": "Doctors",
+            "object": "old"
+        },
+        {
+            "subject": "Freelancers",
+            "object": "old"
+        },
+        {
+            "subject": "Judges",
+            "object": "old"
+        },
+        {
+            "subject": "bloggers",
+            "object": "young"
+        },
+        {
+            "subject": "Baristas",
+            "object": "young"
+        },
+        {
+            "subject": "Social media influencers",
+            "object": "young"
+        }
+    ]
+}

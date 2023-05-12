@@ -6,7 +6,6 @@ implementations.
 """
 import argparse
 import logging
-import warnings
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,17 +37,12 @@ DOWNLOADABLE_MODELS = frozenset(
 )
 
 
-# @dataclass(frozen=True)
+@dataclass(frozen=True)
 class ModelAndTokenizer:
     """A pretrained model and its tokenizer."""
 
-    # model: Model
-    # tokenizer: Tokenizer
-
-    def __init__(self, model: Model, tokenizer: Tokenizer) -> None:
-        self.model = model
-        self.tokenizer = tokenizer
-        self.extract_relavent_fields_from_config()
+    model: Model
+    tokenizer: Tokenizer
 
     @property
     def lm_head(self) -> torch.nn.Module:
@@ -74,89 +68,6 @@ class ModelAndTokenizer:
     def eval_(self) -> None:
         """Set model to eval mode."""
         self.model.eval()
-
-    # tested for GPT-j, galactica and LLaMa
-    def extract_relavent_fields_from_config(self) -> None:
-        """
-        extracts a bunch of highly used fields from different model configurations
-        """
-        config = self.model.config
-        self.vocab_size = config.vocab_size
-
-        model_type = None
-        if hasattr(self.model, "transformer"):
-            model_type = "gpt2"
-        elif hasattr(self.model, "gpt_neox"):
-            model_type = "gpt-neox"
-        elif "llama" in config._name_or_path:
-            model_type = "llama"
-        elif "galactica" in config._name_or_path:
-            model_type = "galactica"
-        else:
-            warnings.warn(
-                "unknown model type >> unable to extract relavent fields from config"
-            )
-            return
-
-        self.n_layer: int
-        self.n_embd: int
-        self.n_attn_head: int
-        self.max_seq_length: int
-
-        self.layer_name_format: str
-        self.layer_names: Sequence[str]
-        self.mlp_module_name_format: str
-        self.attn_module_name_format: str
-        self.ln_f_name: str
-        self.unembedder_name: str
-        self.embedder_name: str
-
-        self.model_type = model_type
-
-        if model_type in ["llama", "galactica"]:
-            self.n_layer = config.num_hidden_layers
-            self.n_embd = config.hidden_size
-            self.n_attn_head = config.num_attention_heads
-            self.max_seq_length = config.max_sequence_length
-
-            layer_name_prefix = "model"
-            if model_type == "galactica":
-                layer_name_prefix = "model.decoder"
-
-            self.layer_name_format = layer_name_prefix + ".layers.{}"
-
-            self.embedder_name = "model.embed_tokens"
-            self.ln_f_name = (
-                "model.norm"
-                if model_type == "llama"
-                else "model.decoder.final_layer_norm"
-            )
-            self.unembedder_name = "lm_head"
-
-            if model_type == "llama":
-                self.mlp_module_name_format = "model.layers.{}.mlp"
-            else:
-                self.mlp_module_name_format = "model.layers.{}.fc2"  # this is the output of mlp in galactica. the input is on model.layers.{}.fc1
-            self.attn_module_name_format = "model.layers.{}.self_attn"
-
-        elif model_type in ["gpt2", "gpt-neox"]:
-            self.n_layer = config.n_layer
-            self.n_embd = config.n_embd
-            self.n_attn_head = config.n_head
-            self.max_seq_length = config.n_positions
-
-            self.layer_name_format = "transformer.h.{}"
-            self.embedder_name = "transformer.wte"
-            self.ln_f_name = "transformer.ln_f"
-            self.unembedder_name = "lm_head"
-            self.mlp_module_name_format = "transformer.h.{}.mlp"
-            self.attn_module_name_format = "transformer.h.{}.attn"
-
-        # print("num_layers >> ", self.num_layers)
-        if model_type is not None:
-            self.layer_names = [
-                self.layer_name_format.format(i) for i in range(self.n_layer)
-            ]
 
 
 def unwrap_model(value: Model | ModelAndTokenizer) -> Model:
@@ -280,19 +191,44 @@ def tokenize_words(
     tokenizer: ModelAndTokenizer | Tokenizer,
     words: str | Sequence[str],
     spaces: bool = True,
+    **kwargs: Any,
 ) -> ModelInput:
     """Return first token ID for word, accounting for whether model expects spaces."""
     tokenizer = unwrap_tokenizer(tokenizer)
     if isinstance(words, str):
         words = [words]
 
-    if spaces and isinstance(
-        tokenizer,
-        transformers.GPT2TokenizerFast | transformers.GPTNeoXTokenizerFast,
-    ):
+    if spaces and is_gpt_variant(tokenizer):
         words = [f" {word}" for word in words]
 
-    return tokenizer(words, return_tensors="pt", padding=True)
+    kwargs.setdefault("padding", "longest")
+    kwargs.setdefault("return_tensors", "pt")
+    return tokenizer(words, **kwargs)
+
+
+def maybe_prefix_eos(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
+    """Prefix prompt with EOS token if model has no special start token."""
+    tokenizer = unwrap_tokenizer(tokenizer)
+    if is_gpt_variant(tokenizer):
+        prefix = tokenizer.eos_token
+        if not prompt.startswith(prefix):
+            prompt = prefix + prompt
+    return prompt
+
+
+def is_gpt_variant(mt: Model | Tokenizer | ModelAndTokenizer) -> bool:
+    """Determine if model/tokenizer is GPT variant."""
+    if isinstance(mt, ModelAndTokenizer):
+        mt = unwrap_model(mt)
+    return isinstance(
+        mt,
+        transformers.GPT2LMHeadModel
+        | transformers.GPTJForCausalLM
+        | transformers.GPTNeoForCausalLM
+        | transformers.GPTNeoXForCausalLM
+        | transformers.GPT2TokenizerFast
+        | transformers.GPTNeoXTokenizerFast,
+    )
 
 
 @contextmanager
@@ -421,4 +357,4 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         help="model to edit",
     )
     parser.add_argument("--device", help="device to train on")
-    parser.add_argument("--fp16", type=bool, help="set whether to use fp16")
+    parser.add_argument("--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16")

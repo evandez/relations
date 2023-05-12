@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, NamedTuple, Sequence
 
-from src import models
+from src import data, models
 from src.utils.typing import ModelInput, ModelOutput, StrSequence
 
 import baukit
 import torch
+from dataclasses_json import DataClassJsonMixin
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -39,7 +40,7 @@ class Order1ApproxOutput:
     inputs: ModelInput
     logits: torch.Tensor
 
-    misc: Dict = field(default_factory=dict)
+    metadata: Dict = field(default_factory=dict)
 
 
 @torch.no_grad()
@@ -132,11 +133,27 @@ def order_1_approx(
         bias=bias,
         inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
-        misc={
+        metadata={
             "Jh": weight @ h,
         },
     )
     return approx
+
+
+def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+    """Compute a low-rank pseudo-inverse of a matrix.
+
+    Args:
+        matrix: The matrix to invert.
+        rank: The rank of the approximation.
+
+    Returns:
+        The pseudo-inverse.
+
+    """
+    u, s, v = torch.svd(matrix.float())
+    matrix_pinv = v[:, :rank] @ torch.diag(1 / s[:rank]) @ u[:, :rank].T
+    return matrix_pinv.to(matrix.dtype)
 
 
 class CornerGdOutput(NamedTuple):
@@ -269,3 +286,91 @@ def compute_hidden_states(
     hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
+
+
+@dataclass(frozen=True, kw_only=True)
+class PredictedToken(DataClassJsonMixin):
+    """A predicted token and its probability."""
+
+    token: str
+    prob: float
+
+    def __str__(self) -> str:
+        return f"{self.token} (p={self.prob:.3f})"
+
+
+@torch.inference_mode()
+def predict_next_token(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt: str | StrSequence,
+    k: int = 5,
+    batch_size: int = 64,
+) -> list[list[PredictedToken]]:
+    """Compute the next token."""
+    if isinstance(prompt, str):
+        prompt = [prompt]
+    with models.set_padding_side(mt, padding_side="left"):
+        inputs = mt.tokenizer(
+            prompt, return_tensors="pt", padding="longest", truncation=True
+        )
+    with torch.inference_mode():
+        batched_logits = []
+        for i in range(0, len(inputs.input_ids), batch_size):
+            batch_outputs = mt.model(
+                input_ids=inputs.input_ids[i : i + batch_size],
+                attention_mask=inputs.attention_mask[i : i + batch_size],
+            )
+            batched_logits.append(batch_outputs.logits)
+        logits = torch.cat(batched_logits, dim=0)
+
+    next_token_probs = logits[:, -1].float().softmax(dim=-1)
+    next_token_topk = next_token_probs.topk(dim=-1, k=k)
+
+    predictions = []
+    for token_ids, token_probs in zip(next_token_topk.indices, next_token_topk.values):
+        predictions.append(
+            [
+                PredictedToken(token=mt.tokenizer.decode(token_id), prob=prob.item())
+                for token_id, prob in zip(token_ids, token_probs)
+            ]
+        )
+    return predictions
+
+
+def make_prompt(
+    *,
+    prompt_template: str,
+    subject: str,
+    examples: list[data.RelationSample] | None = None,
+    mt: models.ModelAndTokenizer | None = None,
+) -> str:
+    """Build the prompt given the template and (optionally) ICL examples."""
+    prompt = prompt_template.format(subject)
+
+    if examples is not None:
+        others = [x for x in examples if x.subject != subject]
+        # TODO(evan): Should consider whether prompt wants the space at the end or not.
+        prompt = (
+            "\n".join(
+                prompt_template.format(x.subject) + f" {x.object}" for x in others
+            )
+            + "\n"
+            + prompt
+        )
+
+    prompt = models.maybe_prefix_eos(mt, prompt)
+
+    return prompt
+
+
+def any_is_nontrivial_prefix(predictions: StrSequence, target: str) -> bool:
+    """Return true if any prediction is (case insensitive) prefix of the target."""
+    return any(is_nontrivial_prefix(p, target) for p in predictions)
+
+
+def is_nontrivial_prefix(prediction: str, target: str) -> bool:
+    """Return true if prediction is (case insensitive) prefix of the target."""
+    target = target.lower().strip()
+    prediction = prediction.lower().strip()
+    return len(prediction) > 0 and target.startswith(prediction)

@@ -1,0 +1,92 @@
+{
+    "name": "Gender of occupations",
+    "prompt_templates": [
+        "Most {} are",
+        "The majority of {} are",
+        "{}:"
+    ],
+    "properties": {
+        "relation_type": "bias",
+        "domain_name": "occupation",
+        "range_name": "gender",
+        "symmetric": "false"
+    },
+    "samples": [
+        {
+            "subject": "Nurses",
+            "object": "women"
+        },
+        {
+            "subject": "Pilots",
+            "object": "men"
+        },
+        {
+            "subject": "Surgeons",
+            "object": "men"
+        },
+        {
+            "subject": "Teachers",
+            "object": "women"
+        },
+        {
+            "subject": "Psychologists",
+            "object": "women"
+        },
+        {
+            "subject": "Librarians",
+            "object": "women"
+        },
+        {
+            "subject": "Chefs",
+            "object": "men"
+        },
+        {
+            "subject": "Plumbers",
+            "object": "men"
+        },
+        {
+            "subject": "Engineers",
+            "object": "men"
+        },
+        {
+            "subject": "Dietitians",
+            "object": "women"
+        },
+        {
+            "subject": "Hair stylists",
+            "object": "women"
+        },
+        {
+            "subject": "Accountants",
+            "object": "men"
+        },
+        {
+            "subject": "Entrepreneurs",
+            "object": "men"
+        },
+        {
+            "subject": "Social Workers",
+            "object": "women"
+        },
+        {
+            "subject": "Receptionists",
+            "object": "women"
+        },
+        {
+            "subject": "Software developers",
+            "object": "men"
+        },
+        {
+            "subject": "Researchers",
+            "object": "men"
+        },
+        {
+            "subject": "Presidents",
+            "object": "men"
+        },
+        {
+            "subject": "Professors",
+            "object": "men"
+        }
+    ]
+}

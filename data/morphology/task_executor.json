@@ -4,6 +4,12 @@
         "{},",
         "Person who does/operates/makes/plays {} is called"
     ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "tasks",
+        "range_name": "occupation",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "code",

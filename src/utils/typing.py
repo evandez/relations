@@ -22,7 +22,7 @@ Model = (
 )
 Tokenizer = transformers.PreTrainedTokenizerFast
 TokenizerOffsetMapping = Sequence[tuple[int, int]]
-Dataset = datasets.dataset_dict.DatasetDict  # | datasets.arrow_dataset.Dataset
+Dataset = datasets.arrow_dataset.Dataset | datasets.dataset_dict.DatasetDict
 ModelInput = transformers.BatchEncoding
 ModelOutput = transformers.modeling_outputs.CausalLMOutput
 ModelGenerateOutput = transformers.generation.utils.GenerateOutput | torch.LongTensor

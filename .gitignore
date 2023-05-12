@@ -1,3 +1,5 @@
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -104,6 +106,7 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.vscode/
 env/
 venv/
 ENV/
@@ -128,8 +131,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-scan-for-best*
-
 # weights
 *.pth
 *.npz
+
+# Project-specific stuff
+notebooks/layer_sweep/
+scan-for-best*
+results/
+models/

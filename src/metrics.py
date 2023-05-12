@@ -1,9 +1,8 @@
 """Functions for computing metrics."""
 from typing import Sequence
 
+from src import functional
 from src.utils.typing import ArrayLike, StrSequence
-
-import numpy as np
 
 
 def recall(predictions: Sequence[StrSequence], targets: StrSequence) -> list[float]:
@@ -25,11 +24,8 @@ def recall(predictions: Sequence[StrSequence], targets: StrSequence) -> list[flo
     k = max(map(len, predictions))
     recalls = [0.0] * k
     for topk, target in zip(predictions, targets):
-        target = target.lower().strip()
-        topk = [p.lower().strip() for p in topk]
-
         for i in range(k):
-            if any(target.startswith(p) for p in topk[: i + 1]):
+            if functional.any_is_nontrivial_prefix(topk[: i + 1], target):
                 recalls[i] += 1
 
     return [r / len(targets) for r in recalls]
