@@ -136,3 +136,6 @@ dmypy.json
 
 # experiment logs and figures
 notebooks/layer_sweep/
+scan-for-best*
+results/
+models/
