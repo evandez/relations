@@ -1,9 +1,15 @@
 {
-    "name": "comparative",
+    "name": "superlative",
     "prompt_templates": [
         "The superlative of {} is",
         "{},"
     ],
+    "properties": {
+        "relation_type": "superlative",
+        "domain_name": "adjective",
+        "range_name": "adjective",
+        "symmetric": false
+    },
     "samples": [
         {
             "subject": "angry",
