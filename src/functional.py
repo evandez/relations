@@ -146,8 +146,7 @@ def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
         The pseudo-inverse.
 
     """
-    matrix = matrix.float()
-    u, s, v = torch.svd(matrix)
+    u, s, v = torch.svd(matrix.float())
     matrix_pinv = v[:, :rank] @ torch.diag(1 / s[:rank]) @ u[:, :rank].T
     return matrix_pinv.to(matrix.dtype)
 

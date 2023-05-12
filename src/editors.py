@@ -118,9 +118,9 @@ class LowRankPInvEditor(LinearRelationEditor):
         z_original = hiddens.hiddens[0][0, -1, ..., None]
         z_target = hiddens.hiddens[0][1, -1, ..., None]
 
-        weight_inv = self._low_rank_pinv()
+        weight_pinv = self._low_rank_pinv()
         bias = self._bias()
-        delta = weight_inv @ (z_target - z_original - bias)
+        delta = weight_pinv @ (z_target - z_original - bias)
 
         def edit_output(output):  # type: ignore
             if output[0].shape[1] == 1:
