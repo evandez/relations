@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import attributelens.utils as lens_utils
 from src.functional import compute_hidden_states
-from src.models import ModelAndTokenizer
+from src.models import ModelAndTokenizer, determine_layer_paths
 from src.operators import LinearRelationOperator
 from src.utils import tokenizer_utils
 
@@ -21,10 +21,7 @@ class Attribute_Lens:
     ):
         self.mt = mt
         self.top_k = top_k
-
-        self.ln_f = nethook.get_module(self.mt.model, self.mt.ln_f_name)
-        self.unembedder = nethook.get_module(self.mt.model, self.mt.unembedder_name)
-        self.layers = self.mt.layer_names
+        self.layers = determine_layer_paths(mt)
         self.layer_output_tmp = layer_output_tmp
 
     def apply_attribute_lens(
@@ -59,7 +56,7 @@ class Attribute_Lens:
 
         for sub_idx in range(subject_start, subject_end):
             v_space_reprs.append(defaultdict(list))
-            for layer_idx in range(self.mt.n_layer):
+            for layer_idx in range(len(self.layers)):
                 # print(">>> ", sub_idx, layer_idx)
 
                 [[hs], _] = compute_hidden_states(

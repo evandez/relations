@@ -357,4 +357,6 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         help="model to edit",
     )
     parser.add_argument("--device", help="device to train on")
-    parser.add_argument("--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16")
+    parser.add_argument(
+        "--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16"
+    )
