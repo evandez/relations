@@ -106,29 +106,13 @@ def reconstruction(
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
 
-            # Filter out samples model does not know, according to the prompt.
-            # We'll use ICL to give it a fair chance.
-            prompts = [
-                functional.make_prompt(
-                    prompt_template=prompt_template,
-                    mt=mt,
-                    subject=sample.subject,
-                    examples=random.sample(
-                        set(relation.samples) - {sample}, k=n_icl_lm
-                    ),
-                )
-                for sample in relation.samples
-            ]
-            predictions = functional.predict_next_token(
-                mt=mt, prompt=prompts, k=n_top_lm
+            known_samples = _determine_known_samples(
+                mt=mt,
+                relation=relation,
+                prompt_template=prompt_template,
+                n_icl_lm=n_icl_lm,
+                n_top_lm=n_top_lm,
             )
-            known_samples = {
-                sample
-                for sample, topk in zip(relation.samples, predictions)
-                if functional.any_is_nontrivial_prefix(
-                    [x.token for x in topk], sample.object
-                )
-            }
             if len(known_samples) <= n_train:
                 logger.debug(
                     f"lm does not know > n_train={n_train} samples for "
@@ -512,6 +496,8 @@ def causality(
     dataset: data.RelationDataset,
     n_train: int = 3,
     n_trials: int = 3,
+    n_top_lm: int = 3,
+    n_icl_lm: int = 3,
     desc: str | None = None,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
@@ -519,11 +505,27 @@ def causality(
         desc = "causality"
 
     mt = estimator.mt
+
     relation_results = []
     for relation in tqdm(dataset.relations, desc=desc):
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
+
+            known_samples = _determine_known_samples(
+                mt=mt,
+                relation=relation,
+                prompt_template=prompt_template,
+                n_icl_lm=n_icl_lm,
+                n_top_lm=n_top_lm,
+            )
+            if len(known_samples) <= n_train:
+                logger.debug(
+                    f"lm does not know > n_train={n_train} samples for "
+                    f'relation {relation.name}, prompt "{prompt_template}" will skip'
+                )
+                continue
+
             train, test = relation.set(prompt_templates=[prompt_template]).split(
                 n_train
             )
@@ -594,3 +596,33 @@ def causality(
             efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
         ),
     )
+
+
+def _determine_known_samples(
+    *,
+    mt: models.ModelAndTokenizer,
+    relation: data.Relation,
+    prompt_template: str,
+    n_icl_lm: int,
+    n_top_lm: int,
+) -> set[data.RelationSample]:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all.
+    """
+    prompts = [
+        functional.make_prompt(
+            prompt_template=prompt_template,
+            mt=mt,
+            subject=sample.subject,
+            examples=random.sample(set(relation.samples) - {sample}, k=n_icl_lm),
+        )
+        for sample in relation.samples
+    ]
+    predictions = functional.predict_next_token(mt=mt, prompt=prompts, k=n_top_lm)
+    known_samples = {
+        sample
+        for sample, topk in zip(relation.samples, predictions)
+        if functional.any_is_nontrivial_prefix([x.token for x in topk], sample.object)
+    }
+    return known_samples
