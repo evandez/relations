@@ -5,7 +5,7 @@
         "Person who does/operates/makes/plays {} is called"
     ],
     "properties": {
-        "relation_type": "factual",
+        "relation_type": "commonsense",
         "domain_name": "tasks",
         "range_name": "occupation",
         "symmetric": false
