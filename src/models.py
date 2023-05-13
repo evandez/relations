@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
 from src.utils import env_utils, tokenizer_utils
-from src.utils.typing import Device, Model, ModelInput, Tokenizer
+from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
 
 import torch
 import transformers
@@ -84,6 +84,16 @@ def unwrap_tokenizer(tokenizer: ModelAndTokenizer | Tokenizer) -> Tokenizer:
     return tokenizer
 
 
+def determine_embedding_layer_path(model: ModelAndTokenizer | Model) -> str:
+    model = unwrap_model(model)
+    if is_gpt_variant(model):
+        return "transformer.wte"
+    elif isinstance(model, transformers.LlamaForCausalLM):
+        return "model.embed_tokens"
+    else:
+        raise ValueError(f"unknown model type: {type(model).__name__}")
+
+
 def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
     """Return all hidden layer names for the given model."""
     model = unwrap_model(model)
@@ -102,7 +112,7 @@ def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
 @overload
 def determine_layer_paths(
     model: ModelAndTokenizer | Model,
-    layers: Optional[Sequence[int]] = ...,
+    layers: Optional[Sequence[Layer]] = ...,
     *,
     return_dict: Literal[False] = ...,
 ) -> Sequence[str]:
@@ -113,25 +123,25 @@ def determine_layer_paths(
 @overload
 def determine_layer_paths(
     model: ModelAndTokenizer | Model,
-    layers: Optional[Sequence[int]] = ...,
+    layers: Optional[Sequence[Layer]] = ...,
     *,
     return_dict: Literal[True],
-) -> dict[int, str]:
+) -> dict[Layer, str]:
     """Determine mapping from layer to layer path."""
     ...
 
 
 def determine_layer_paths(
     model: ModelAndTokenizer | Model,
-    layers: Optional[Sequence[int]] = None,
+    layers: Optional[Sequence[Layer]] = None,
     *,
     return_dict: bool = False,
-) -> Sequence[str] | dict[int, str]:
+) -> Sequence[str] | dict[Layer, str]:
     """Determine the absolute paths to the given layers in the model.
 
     Args:
         model: The model.
-        layers: The specific layer (numbers) to look at. Defaults to all of them.
+        layers: The specific layer (numbers/"emb") to look at. Defaults to all of them.
             Can be a negative number.
         return_dict: If True, return mapping from layer to layer path,
             otherwise just return list of layer paths in same order as `layers`.
@@ -147,8 +157,12 @@ def determine_layer_paths(
 
     assert isinstance(model, Model), type(model)
 
-    layer_paths = {}
+    layer_paths: dict[Layer, str] = {}
     for layer in layers:
+        if layer == "emb":
+            layer_paths[layer] = determine_embedding_layer_path(model)
+            continue
+
         if layer < 0:
             layer = len(determine_layers(model)) + layer
 
@@ -357,4 +371,6 @@ def add_model_args(parser: argparse.ArgumentParser) -> None:
         help="model to edit",
     )
     parser.add_argument("--device", help="device to train on")
-    parser.add_argument("--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16")
+    parser.add_argument(
+        "--fp16", action=argparse.BooleanOptionalAction, help="set whether to use fp16"
+    )

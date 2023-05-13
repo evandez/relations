@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from src import data, functional, models
+from src.utils.typing import Layer
 
 import torch
 
@@ -42,8 +43,8 @@ class LinearRelationOperator(RelationOperator):
     mt: models.ModelAndTokenizer
     weight: torch.Tensor | None
     bias: torch.Tensor | None
-    h_layer: int
-    z_layer: int
+    h_layer: Layer
+    z_layer: Layer
     prompt_template: str
     metadata: dict = field(default_factory=dict)
 
@@ -119,8 +120,8 @@ class LinearRelationEstimator:
 class JacobianEstimator(LinearRelationEstimator):
     """Estimate a linear relation operator as a first-order approximation."""
 
-    h_layer: int
-    z_layer: int | None = None
+    h_layer: Layer
+    z_layer: Layer | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         for key in ("samples", "prompt_templates"):
@@ -168,8 +169,8 @@ class JacobianEstimator(LinearRelationEstimator):
 class JacobianIclMaxEstimator(LinearRelationEstimator):
     """Jacobian estimator that uses in-context learning."""
 
-    h_layer: int
-    z_layer: int | None = None
+    h_layer: Layer
+    z_layer: Layer | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         samples = relation.samples
@@ -250,8 +251,8 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
 
 @dataclass(frozen=True)
 class JacobianIclMeanEstimator(LinearRelationEstimator):
-    h_layer: int
-    z_layer: int | None = None
+    h_layer: Layer
+    z_layer: Layer | None = None
     bias_scale_factor: float | None = 0.5
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
@@ -309,7 +310,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
 class CornerGdEstimator(LinearRelationEstimator):
     """Estimate a "corner" of LM's rep space where range is assigned equal prob."""
 
-    h_layer: int
+    h_layer: Layer
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         result = functional.corner_gd(mt=self.mt, words=list(relation.range))

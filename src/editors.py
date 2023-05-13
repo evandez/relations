@@ -123,9 +123,12 @@ class LowRankPInvEditor(LinearRelationEditor):
         delta = weight_pinv @ (z_target - z_original - bias)
 
         def edit_output(output):  # type: ignore
-            if output[0].shape[1] == 1:
+            h = output
+            if isinstance(h, tuple):
+                h = output[0]
+            if h.shape[1] == 1:
                 return output
-            output[0][:, subject_edit_index] += delta.squeeze()
+            h[:, subject_edit_index] += delta.squeeze()
             return output
 
         [h_layer_name] = models.determine_layer_paths(mt, layers=[h_layer])

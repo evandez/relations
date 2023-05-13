@@ -70,3 +70,11 @@ ns_presubmit.add_task(presubmit_pytest, "pytest")
 ns_presubmit.add_task(presubmit, default=True)
 
 ns.add_collection(ns_presubmit)
+
+###############
+# Experiments #
+###############
+import experiments
+
+ns_x = Collection.from_module(experiments, name="x")
+ns.add_collection(ns_x)

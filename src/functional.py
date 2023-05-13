@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence
 
 from src import data, models
 from src.utils import tokenizer_utils
-from src.utils.typing import ModelInput, ModelOutput, StrSequence
+from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
 
 import baukit
 import torch
@@ -31,17 +31,17 @@ class Order1ApproxOutput:
     bias: torch.Tensor
 
     h: torch.Tensor
-    h_layer: int
+    h_layer: Layer
     h_index: int
 
     z: torch.Tensor
-    z_layer: int
+    z_layer: Layer
     z_index: int
 
     inputs: ModelInput
     logits: torch.Tensor
 
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @torch.no_grad()
@@ -50,9 +50,9 @@ def order_1_approx(
     *,
     mt: models.ModelAndTokenizer,
     prompt: str,
-    h_layer: int,
+    h_layer: Layer,
     h_index: int,
-    z_layer: int | None = None,
+    z_layer: Layer | None = None,
     z_index: int | None = None,
     inputs: ModelInput | None = None,
 ) -> Order1ApproxOutput:
@@ -268,7 +268,7 @@ class ComputeHiddenStatesOutput(NamedTuple):
 def compute_hidden_states(
     *,
     mt: models.ModelAndTokenizer,
-    layers: Sequence[int],
+    layers: Sequence[Layer],
     prompt: str | StrSequence | None = None,
     inputs: ModelInput | None = None,
     **kwargs: Any,
@@ -300,7 +300,13 @@ def compute_hidden_states(
             input_ids=inputs.input_ids, attention_mask=inputs.attention_mask, **kwargs
         )
 
-    hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
+    hiddens = []
+    for layer in layers:
+        h = ret[layer_paths[layer]].output
+        # Everything except embedding layer is returned as tuple.
+        if isinstance(h, tuple):
+            h = h[0]
+        hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
 
@@ -396,7 +402,9 @@ def find_subject_token_index(
     subject_i, subject_j = tokenizer_utils.find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0]
     )
-    subject_token_index = tokenizer_utils.offset_to_absolute_index(subject_i, subject_j, offset)
+    subject_token_index = tokenizer_utils.offset_to_absolute_index(
+        subject_i, subject_j, offset
+    )
 
     return subject_token_index, inputs
 
