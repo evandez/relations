@@ -292,7 +292,6 @@ def reconstruction(
 
 @dataclass(frozen=True, kw_only=True)
 class FaithfulnessBenchmarkOutputs(DataClassJsonMixin):
-
     subject: str
     target: str
     lre: list[functional.PredictedToken]
@@ -458,7 +457,6 @@ def faithfulness(
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
-
     subject_original: str
     subject_target: str
     prompt_template: str

@@ -1,10 +1,8 @@
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from src import data, functional, models
-from src.utils import tokenizer_utils
-from src.utils.typing import ModelInput
 
 import torch
 
@@ -47,6 +45,7 @@ class LinearRelationOperator(RelationOperator):
     h_layer: int
     z_layer: int
     prompt_template: str
+    metadata: dict = field(default_factory=dict)
 
     def __call__(
         self,
@@ -74,7 +73,7 @@ class LinearRelationOperator(RelationOperator):
             prompt = functional.make_prompt(
                 mt=self.mt, prompt_template=self.prompt_template, subject=subject
             )
-            h_index, inputs = _compute_h_index(
+            h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt, prompt=prompt, subject=subject
             )
 
@@ -131,14 +130,19 @@ class JacobianEstimator(LinearRelationEstimator):
             if len(values) > 1:
                 logger.warning(f"relation has > 1 {key}, will use first ({values[0]})")
 
-        sample = relation.samples[0]
-        subject = sample.subject
+        subject = relation.samples[0].subject
         prompt_template = relation.prompt_templates[0]
+        return self.estimate_for_subject(subject, prompt_template)
 
+    def estimate_for_subject(
+        self, subject: str, prompt_template: str
+    ) -> LinearRelationOperator:
         prompt = functional.make_prompt(
             mt=self.mt, prompt_template=prompt_template, subject=subject
         )
-        h_index, inputs = _compute_h_index(mt=self.mt, prompt=prompt, subject=subject)
+        h_index, inputs = functional.find_subject_token_index(
+            mt=self.mt, prompt=prompt, subject=subject
+        )
 
         approx = functional.order_1_approx(
             mt=self.mt,
@@ -149,7 +153,6 @@ class JacobianEstimator(LinearRelationEstimator):
             z_index=-1,
             inputs=inputs,
         )
-
         return LinearRelationOperator(
             mt=self.mt,
             weight=approx.weight,
@@ -157,6 +160,7 @@ class JacobianEstimator(LinearRelationEstimator):
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
+            metadata=approx.metadata,
         )
 
 
@@ -178,7 +182,7 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
         confidences = []
         for i, sample in enumerate(samples):
             prompt = prompt_template.format(sample.subject)
-            h_index, inputs = _compute_h_index(
+            h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt,
                 prompt=prompt,
                 subject=sample.subject,
@@ -214,7 +218,7 @@ class JacobianIclMaxEstimator(LinearRelationEstimator):
             subject=subject,
             examples=samples,
         )
-        h_index_icl, inputs_icl = _compute_h_index(
+        h_index_icl, inputs_icl = functional.find_subject_token_index(
             mt=self.mt,
             prompt=prompt_icl,
             subject=subject,
@@ -265,7 +269,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 subject=sample.subject,
                 examples=samples,
             )
-            h_index, inputs = _compute_h_index(
+            h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt,
                 prompt=prompt,
                 subject=sample.subject,
@@ -317,23 +321,3 @@ class CornerGdEstimator(LinearRelationEstimator):
             z_layer=-1,
             prompt_template="{}",
         )
-
-
-def _compute_h_index(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt: str,
-    subject: str,
-    offset: int = -1,
-) -> tuple[int, ModelInput]:
-    inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
-        mt.model.device
-    )
-    offset_mapping = inputs.pop("offset_mapping")
-
-    subject_i, subject_j = tokenizer_utils.find_token_range(
-        prompt, subject, offset_mapping=offset_mapping[0]
-    )
-    h_index = tokenizer_utils.offset_to_absolute_index(subject_i, subject_j, offset)
-
-    return h_index, inputs

@@ -1,7 +1,8 @@
-from dataclasses import dataclass
-from typing import Any, NamedTuple, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Dict, NamedTuple, Sequence
 
 from src import data, models
+from src.utils import tokenizer_utils
 from src.utils.typing import ModelInput, ModelOutput, StrSequence
 
 import baukit
@@ -39,6 +40,8 @@ class Order1ApproxOutput:
 
     inputs: ModelInput
     logits: torch.Tensor
+
+    metadata: Dict = field(default_factory=dict)
 
 
 @torch.no_grad()
@@ -131,8 +134,27 @@ def order_1_approx(
         bias=bias,
         inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
+        metadata={
+            "Jh": weight @ h,
+        },
     )
     return approx
+
+
+def low_rank_approx(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+    """Compute a low-rank approximation of a matrix.
+
+    Args:
+        matrix: The matrix to approximate.
+        rank: The rank of the approximation.
+
+    Returns:
+        The approximation.
+
+    """
+    u, s, v = torch.svd(matrix.float())
+    matrix_approx = u[:, :rank] @ torch.diag(s[:rank]) @ v[:, :rank].T
+    return matrix_approx.to(matrix.dtype)
 
 
 def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
@@ -308,7 +330,7 @@ def predict_next_token(
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompt, return_tensors="pt", padding="longest", truncation=True
-        )
+        ).to(mt.model.device)
     with torch.inference_mode():
         batched_logits = []
         for i in range(0, len(inputs.input_ids), batch_size):
@@ -357,6 +379,26 @@ def make_prompt(
     prompt = models.maybe_prefix_eos(mt, prompt)
 
     return prompt
+
+
+def find_subject_token_index(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt: str,
+    subject: str,
+    offset: int = -1,
+) -> tuple[int, ModelInput]:
+    inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
+        mt.model.device
+    )
+    offset_mapping = inputs.pop("offset_mapping")
+
+    subject_i, subject_j = tokenizer_utils.find_token_range(
+        prompt, subject, offset_mapping=offset_mapping[0]
+    )
+    subject_token_index = tokenizer_utils.offset_to_absolute_index(subject_i, subject_j, offset)
+
+    return subject_token_index, inputs
 
 
 def any_is_nontrivial_prefix(predictions: StrSequence, target: str) -> bool:
