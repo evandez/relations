@@ -2,8 +2,8 @@ import logging
 from typing import Any, Callable, Literal
 
 from src import models
+from src.functional import find_subject_token_index
 from src.models import ModelAndTokenizer
-from src.operators import _compute_h_index
 
 import baukit
 import torch
@@ -104,14 +104,14 @@ def causal_tracing(
     subject_original: str,
     subject_corruption: str,
 ) -> dict:
-    h_idx_orig, tokenized_orig = _compute_h_index(
+    h_idx_orig, tokenized_orig = find_subject_token_index(
         mt=mt,
         prompt=prompt_template.format(subject_original),
         subject=subject_original,
         offset=-1,
     )
 
-    h_idx_corr, _ = _compute_h_index(
+    h_idx_corr, _ = find_subject_token_index(
         mt=mt,
         prompt=prompt_template.format(subject_corruption),
         subject=subject_corruption,
