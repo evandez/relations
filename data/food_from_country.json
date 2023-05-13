@@ -13,124 +13,124 @@
     },
     "samples":[
        {
-          "food":"Pizza",
-          "country":"Italy"
+          "subject":"Pizza",
+          "object":"Italy"
        },
        {
-          "food":"Sushi",
-          "country":"Japan"
+          "subject":"Sushi",
+          "object":"Japan"
        },
        {
-          "food":"Tacos",
-          "country":"Mexico"
+          "subject":"Tacos",
+          "object":"Mexico"
        },
        {
-          "food":"Baguette",
-          "country":"France"
+          "subject":"Baguette",
+          "object":"France"
        },
        {
-          "food":"Poutine",
-          "country":"Canada"
+          "subject":"Poutine",
+          "object":"Canada"
        },
        {
-          "food":"Paella",
-          "country":"Spain"
+          "subject":"Paella",
+          "object":"Spain"
        },
        {
-          "food":"Chimichurri",
-          "country":"Argentina"
+          "subject":"Chimichurri",
+          "object":"Argentina"
        },
        {
-          "food":"Baklava",
-          "country":"Turkey"
+          "subject":"Baklava",
+          "object":"Turkey"
        },
        {
-          "food":"Feijoada",
-          "country":"Brazil"
+          "subject":"Feijoada",
+          "object":"Brazil"
        },
        {
-          "food":"Borscht",
-          "country":"Ukraine"
+          "subject":"Borscht",
+          "object":"Ukraine"
        },
        {
-          "food":"Fish and Chips",
-          "country":"United Kingdom"
+          "subject":"Fish and Chips",
+          "object":"United Kingdom"
        },
        {
-          "food":"Dim Sum",
-          "country":"China"
+          "subject":"Dim Sum",
+          "object":"China"
        },
        {
-          "food":"Kimchi",
-          "country":"South Korea"
+          "subject":"Kimchi",
+          "object":"South Korea"
        },
        {
-          "food":"Goulash",
-          "country":"Hungary"
+          "subject":"Goulash",
+          "object":"Hungary"
        },
        {
-          "food":"Pierogi",
-          "country":"Poland"
+          "subject":"Pierogi",
+          "object":"Poland"
        },
        {
-          "food":"Pho",
-          "country":"Vietnam"
+          "subject":"Pho",
+          "object":"Vietnam"
        },
        {
-          "food":"Hummus",
-          "country":"Lebanon"
+          "subject":"Hummus",
+          "object":"Lebanon"
        },
        {
-          "food":"Gyro",
-          "country":"Greece"
+          "subject":"Gyro",
+          "object":"Greece"
        },
        {
-          "food":"Masala Dosa",
-          "country":"India"
+          "subject":"Masala Dosa",
+          "object":"India"
        },
        {
-          "food":"Rendang",
-          "country":"Indonesia"
+          "subject":"Rendang",
+          "object":"Indonesia"
        },
        {
-          "food":"Moussaka",
-          "country":"Greece"
+          "subject":"Moussaka",
+          "object":"Greece"
        },
        {
-          "food":"Pavlova",
-          "country":"New Zealand"
+          "subject":"Pavlova",
+          "object":"New Zealand"
        },
        {
-          "food":"Shawarma",
-          "country":"Middle East"
+          "subject":"Shawarma",
+          "object":"Middle East"
        },
        {
-          "food":"Falafel",
-          "country":"Middle East"
+          "subject":"Falafel",
+          "object":"Middle East"
        },
        {
-          "food":"Ceviche",
-          "country":"Peru"
+          "subject":"Ceviche",
+          "object":"Peru"
        },
        {
-          "food":"Biryani",
-          "country":"India"
+          "subject":"Biryani",
+          "object":"India"
        },
        {
-          "food":"Wiener Schnitzel",
-          "country":"Austria"
+          "subject":"Wiener Schnitzel",
+          "object":"Austria"
        },
        {
-          "food":"Fondue",
-          "country":"Switzerland"
+          "subject":"Fondue",
+          "object":"Switzerland"
        },
        {
-          "food":"Pad Thai",
-          "country":"Thailand"
+          "subject":"Pad Thai",
+          "object":"Thailand"
        },
        {
-          "food":"Miso Soup",
-          "country":"Japan"
+          "subject":"Miso Soup",
+          "object":"Japan"
        }
     ]
 }
