@@ -130,15 +130,13 @@ class JacobianEstimator(LinearRelationEstimator):
             if len(values) > 1:
                 logger.warning(f"relation has > 1 {key}, will use first ({values[0]})")
 
-        sample = relation.samples[0]
+        subject = relation.samples[0].subject
         prompt_template = relation.prompt_templates[0]
-        return self.call_on_sample(sample, prompt_template)
+        return self.estimate_for_subject(subject, prompt_template)
 
-    def call_on_sample(
-        self, sample: data.RelationSample, prompt_template: str
+    def estimate_for_subject(
+        self, subject: str, prompt_template: str
     ) -> LinearRelationOperator:
-        subject = sample.subject
-
         prompt = functional.make_prompt(
             mt=self.mt, prompt_template=prompt_template, subject=subject
         )
