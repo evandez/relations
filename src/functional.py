@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence
 
 from src import data, models
 from src.utils import tokenizer_utils
@@ -41,7 +41,7 @@ class Order1ApproxOutput:
     inputs: ModelInput
     logits: torch.Tensor
 
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @torch.no_grad()
