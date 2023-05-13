@@ -8,6 +8,8 @@ from src.operators import _compute_h_index
 import baukit
 import torch
 
+logger = logging.getLogger(__name__)
+
 
 ######################### utils #########################
 def interpret_logits(
@@ -44,7 +46,6 @@ def layer_c_measure(
     mt: ModelAndTokenizer,
     relation_prompt: str,
     subject: str,
-    verbose: bool = False,
     measure: Literal["completeness", "contribution"] = "completeness",
 ) -> dict:
     tokenized = relation_prompt.format(subject)
@@ -61,8 +62,7 @@ def layer_c_measure(
         object_id
     ].item()
 
-    if verbose:
-        print(f"object ==> {object} [{object_id}], base = {base_score}")
+    logger.debug(f"object ==> {object} [{object_id}], base = {base_score}")
 
     layer_contributions = {}
 
@@ -76,8 +76,7 @@ def layer_c_measure(
 
         layer_contributions[layer] = cur_layer_contribution
 
-        if verbose:
-            print(f"layer: {layer}, diff: {cur_layer_contribution}")
+        logger.debug(f"layer: {layer}, diff: {cur_layer_contribution}")
 
         prev_score = layer_score
 
@@ -104,7 +103,6 @@ def causal_tracing(
     prompt_template: str,
     subject_original: str,
     subject_corruption: str,
-    verbose: bool = False,
 ) -> dict:
     h_idx_orig, tokenized_orig = _compute_h_index(
         mt=mt,
@@ -129,8 +127,7 @@ def causal_tracing(
         mt.tokenizer(answer, return_tensors="pt").to(mt.model.device).input_ids[0]
     )
 
-    if verbose:
-        print(f"answer: {answer}[{answer_t.item()}], p(answer): {p_answer:.3f}")
+    logger.debug(f"answer: {answer}[{answer_t.item()}], p(answer): {p_answer:.3f}")
 
     result = {}
     for intervention_layer in layer_names:
@@ -155,8 +152,7 @@ def causal_tracing(
         _, interested = logit_lens(mt, z, [answer_t], get_proba=True)
         layer_p = interested[answer_t][0]
 
-        if verbose:
-            print(intervention_layer, layer_p)
+        logger.debug(f"intervention_layer={intervention_layer}, layer_p={layer_p}")
         result[intervention_layer] = (layer_p - p_answer) / p_answer
 
     return result
