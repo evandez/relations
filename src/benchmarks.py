@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from src import data, editors, functional, metrics, models, operators
+from src.functional import make_prompt
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -427,26 +428,30 @@ def faithfulness(
             # Begin attribute-lens tests on the distracted case
 
             # Compute zero-shot predictions.
-            prompts_zs = [prompt_template.format(x.subject) for x in test.samples]
+            prompts_zs = [
+                    make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
+                    for x in test.samples ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
             preds_zs = [[x.token for x in xs] for xs in outputs_zs]
             recall_zs = metrics.recall(preds_zs, targets)
             recalls_zs.append(recall_zs)
             #for p, o in zip(prompts_zs, outputs_zs):
             #    print(p, o)
-            #print('ZS', recall_zs)
+            print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
             distraction_template = '{target}, {target}, {target}, {target}. '
             prompts_pd = [
-                    distraction_template.format(target=wrong) +
-                    prompt_template.format(x.subject)
-                    for x, wrong in zip(test.samples, wrong_targets)]
+                    make_prompt(prompt_template=
+                        distraction_template.format(target=wrong) + prompt_template,
+                        subject=x.subject,
+                        mt=mt)
+                    for x, wrong in zip(test.samples, wrong_targets) ]
             outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k)
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
-            #print('PD', recall_pd)
+            print('PD', recall_pd)
 
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_lens = []
@@ -457,7 +462,7 @@ def faithfulness(
             preds_lens = [[x.token for x in xs] for xs in outputs_lens]
             recall_lens = metrics.recall(preds_lens, targets)
             recalls_lens.append(recall_lens)
-            #print('LENS', recall_lens)
+            print('LENS', recall_lens)
            
             ## end attribute-lens tests
 
