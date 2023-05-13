@@ -437,7 +437,7 @@ def faithfulness(
             recalls_zs.append(recall_zs)
             #for p, o in zip(prompts_zs, outputs_zs):
             #    print(p, o)
-            print('ZS', recall_zs)
+            #print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
             distraction_template = '{target}, {target}, {target}, {target}. '
@@ -451,7 +451,7 @@ def faithfulness(
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
-            print('PD', recall_pd)
+            #print('PD', recall_pd)
 
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_lens = []
@@ -462,7 +462,7 @@ def faithfulness(
             preds_lens = [[x.token for x in xs] for xs in outputs_lens]
             recall_lens = metrics.recall(preds_lens, targets)
             recalls_lens.append(recall_lens)
-            print('LENS', recall_lens)
+            #print('LENS', recall_lens)
            
             ## end attribute-lens tests
 
