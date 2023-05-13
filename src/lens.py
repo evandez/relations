@@ -8,8 +8,6 @@ from src.operators import _compute_h_index
 import baukit
 import torch
 
-logger = logging.getLogger(__name__)
-
 
 ######################### utils #########################
 def interpret_logits(
