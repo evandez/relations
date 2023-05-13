@@ -300,7 +300,13 @@ def compute_hidden_states(
             input_ids=inputs.input_ids, attention_mask=inputs.attention_mask, **kwargs
         )
 
-    hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
+    hiddens = []
+    for layer in layers:
+        h = ret[layer_paths[layer]].output
+        # Everything except embedding layer is returned as tuple.
+        if isinstance(h, tuple):
+            h = h[0]
+        hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
 
