@@ -1,0 +1,136 @@
+{
+    "name":"food country of origin",
+    "prompt_templates":[
+       "What is the country of origin for {}? It is",
+       "{} originates from the country of",
+       "In which country did {} originate? It is"
+    ],
+    "properties":{
+       "relation_type":"factual",
+       "domain_name":"food",
+       "range_name":"country",
+       "symmetric":false
+    },
+    "samples":[
+       {
+          "food":"Pizza",
+          "country":"Italy"
+       },
+       {
+          "food":"Sushi",
+          "country":"Japan"
+       },
+       {
+          "food":"Tacos",
+          "country":"Mexico"
+       },
+       {
+          "food":"Baguette",
+          "country":"France"
+       },
+       {
+          "food":"Poutine",
+          "country":"Canada"
+       },
+       {
+          "food":"Paella",
+          "country":"Spain"
+       },
+       {
+          "food":"Chimichurri",
+          "country":"Argentina"
+       },
+       {
+          "food":"Baklava",
+          "country":"Turkey"
+       },
+       {
+          "food":"Feijoada",
+          "country":"Brazil"
+       },
+       {
+          "food":"Borscht",
+          "country":"Ukraine"
+       },
+       {
+          "food":"Fish and Chips",
+          "country":"United Kingdom"
+       },
+       {
+          "food":"Dim Sum",
+          "country":"China"
+       },
+       {
+          "food":"Kimchi",
+          "country":"South Korea"
+       },
+       {
+          "food":"Goulash",
+          "country":"Hungary"
+       },
+       {
+          "food":"Pierogi",
+          "country":"Poland"
+       },
+       {
+          "food":"Pho",
+          "country":"Vietnam"
+       },
+       {
+          "food":"Hummus",
+          "country":"Lebanon"
+       },
+       {
+          "food":"Gyro",
+          "country":"Greece"
+       },
+       {
+          "food":"Masala Dosa",
+          "country":"India"
+       },
+       {
+          "food":"Rendang",
+          "country":"Indonesia"
+       },
+       {
+          "food":"Moussaka",
+          "country":"Greece"
+       },
+       {
+          "food":"Pavlova",
+          "country":"New Zealand"
+       },
+       {
+          "food":"Shawarma",
+          "country":"Middle East"
+       },
+       {
+          "food":"Falafel",
+          "country":"Middle East"
+       },
+       {
+          "food":"Ceviche",
+          "country":"Peru"
+       },
+       {
+          "food":"Biryani",
+          "country":"India"
+       },
+       {
+          "food":"Wiener Schnitzel",
+          "country":"Austria"
+       },
+       {
+          "food":"Fondue",
+          "country":"Switzerland"
+       },
+       {
+          "food":"Pad Thai",
+          "country":"Thailand"
+       },
+       {
+          "food":"Miso Soup",
+          "country":"Japan"
+       }
+    ]
+}
