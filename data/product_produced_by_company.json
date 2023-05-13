@@ -1,0 +1,667 @@
+{
+    "prompt_templates": [
+        "{} was produced by",
+        "Which company produced {}? It was produced by",
+        "{} is a product of the company"
+    ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "product",
+        "range_name": "company",
+        "symmetric": false
+    },
+    "samples": [
+        {
+            "subject": "Platform Controller Hub",
+            "object": "Intel"
+        },
+        {
+            "subject": "Shahab-2",
+            "object": "Iran"
+        },
+        {
+            "subject": "Infiniti QX",
+            "object": "Nissan"
+        },
+        {
+            "subject": "iPhone 5",
+            "object": "Apple"
+        },
+        {
+            "subject": "Wii Balance Board",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Acura TL",
+            "object": "Honda"
+        },
+        {
+            "subject": "Lancia 037",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Windows Server 2003",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "DualShock",
+            "object": "Sony"
+        },
+        {
+            "subject": "Mac Pro",
+            "object": "Apple"
+        },
+        {
+            "subject": "Game Boy Advance SP",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Squad 51",
+            "object": "Dodge"
+        },
+        {
+            "subject": "PGM-19 Jupiter",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "Prince R380",
+            "object": "Nissan"
+        },
+        {
+            "subject": "Monomail",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Geo Metro",
+            "object": "Suzuki"
+        },
+        {
+            "subject": "Shahab-1",
+            "object": "Iran"
+        },
+        {
+            "subject": "PowerFlite",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "DC-3",
+            "object": "Douglas"
+        },
+        {
+            "subject": "Kindle Fire",
+            "object": "Amazon"
+        },
+        {
+            "subject": "AGM-86 ALCM",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Autobianchi Y10",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Mini E",
+            "object": "BMW"
+        },
+        {
+            "subject": "Isetta",
+            "object": "BMW"
+        },
+        {
+            "subject": "Datsun Sports",
+            "object": "Nissan"
+        },
+        {
+            "subject": "Acura ILX",
+            "object": "Honda"
+        },
+        {
+            "subject": "SteadyShot",
+            "object": "Sony"
+        },
+        {
+            "subject": "SNES-CD",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Ferrari 250 GTO",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Lancia Aprilia",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Windows Live Mail",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Bluesmobile",
+            "object": "Dodge"
+        },
+        {
+            "subject": "Bionz",
+            "object": "Sony"
+        },
+        {
+            "subject": "AMC 35",
+            "object": "Renault"
+        },
+        {
+            "subject": "Acura ZDX",
+            "object": "Honda"
+        },
+        {
+            "subject": "Lancia Thema",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Acura EL",
+            "object": "Honda"
+        },
+        {
+            "subject": "Alfa Romeo Montreal",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Acura MDX",
+            "object": "Honda"
+        },
+        {
+            "subject": "Toyopet Master",
+            "object": "Toyota"
+        },
+        {
+            "subject": "Xbox",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Auto Avio Costruzioni 815",
+            "object": "Ferrari"
+        },
+        {
+            "subject": "iPhone 4s",
+            "object": "Apple"
+        },
+        {
+            "subject": "Eagle Premier",
+            "object": "Renault"
+        },
+        {
+            "subject": "Dino",
+            "object": "Ferrari"
+        },
+        {
+            "subject": "iPod",
+            "object": "Apple"
+        },
+        {
+            "subject": "iPad Mini",
+            "object": "Apple"
+        },
+        {
+            "subject": "AGM-69 SRAM",
+            "object": "Boeing"
+        },
+        {
+            "subject": "LGM-30 Minuteman",
+            "object": "Boeing"
+        },
+        {
+            "subject": "iPod Mini",
+            "object": "Apple"
+        },
+        {
+            "subject": "Alfa Romeo 6C",
+            "object": "Fiat"
+        },
+        {
+            "subject": "AMR 35",
+            "object": "Renault"
+        },
+        {
+            "subject": "TorqueFlite",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "System Controller Hub",
+            "object": "Intel"
+        },
+        {
+            "subject": "Alfa Romeo MiTo",
+            "object": "Fiat"
+        },
+        {
+            "subject": "MIM-3 Nike-Ajax",
+            "object": "Douglas"
+        },
+        {
+            "subject": "Color TV-Game",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Mini Hatch",
+            "object": "BMW"
+        },
+        {
+            "subject": "MessagePad",
+            "object": "Apple"
+        },
+        {
+            "subject": "GAM-87 Skybolt",
+            "object": "Douglas"
+        },
+        {
+            "subject": "Lancia Musa",
+            "object": "Fiat"
+        },
+        {
+            "subject": "F3D Skyknight",
+            "object": "Douglas"
+        },
+        {
+            "subject": "Dacia Sandero",
+            "object": "Renault"
+        },
+        {
+            "subject": "Lancia Dedra",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Acura RDX",
+            "object": "Honda"
+        },
+        {
+            "subject": "Rolls-Royce Phantom",
+            "object": "BMW"
+        },
+        {
+            "subject": "iPod shuffle",
+            "object": "Apple"
+        },
+        {
+            "subject": "Plymouth Prowler",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "Eagle Medallion",
+            "object": "Renault"
+        },
+        {
+            "subject": "Pontiac Firebird",
+            "object": "Chevrolet"
+        },
+        {
+            "subject": "B-17 Flying Fortress",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Infiniti Q50",
+            "object": "Nissan"
+        },
+        {
+            "subject": "Dardo IFV",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Exmor",
+            "object": "Sony"
+        },
+        {
+            "subject": "Windows 2000",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Lumia series",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Alfa Romeo Brera",
+            "object": "Fiat"
+        },
+        {
+            "subject": "B-29 Superfortress",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Pratt & Miller",
+            "object": "Chevrolet"
+        },
+        {
+            "subject": "SNES-CD",
+            "object": "Sony"
+        },
+        {
+            "subject": "AMR 33",
+            "object": "Renault"
+        },
+        {
+            "subject": "CIM-10 Bomarc",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Lancia Ypsilon",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Acura Legend",
+            "object": "Honda"
+        },
+        {
+            "subject": "Lancia Gamma",
+            "object": "Fiat"
+        },
+        {
+            "subject": "PGM-17 Thor",
+            "object": "Douglas"
+        },
+        {
+            "subject": "N-Gage QD",
+            "object": "Nokia"
+        },
+        {
+            "subject": "Dino",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Alpine A106",
+            "object": "Renault"
+        },
+        {
+            "subject": "iPhone 3GS",
+            "object": "Apple"
+        },
+        {
+            "subject": "iPad",
+            "object": "Apple"
+        },
+        {
+            "subject": "Acura CL",
+            "object": "Honda"
+        },
+        {
+            "subject": "Windows Phone 8.1",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "B-47 Stratojet",
+            "object": "Boeing"
+        },
+        {
+            "subject": "C-40 Clipper",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Alfa Romeo 155",
+            "object": "Fiat"
+        },
+        {
+            "subject": "YF-22",
+            "object": "Boeing"
+        },
+        {
+            "subject": "iPhone 1",
+            "object": "Apple"
+        },
+        {
+            "subject": "CineAlta",
+            "object": "Sony"
+        },
+        {
+            "subject": "Plymouth Valiant",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "Autobianchi A112",
+            "object": "Fiat"
+        },
+        {
+            "subject": "PGM-11 Redstone",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "RC-135",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Chromecast",
+            "object": "Google"
+        },
+        {
+            "subject": "Chromebook Pixel",
+            "object": "Google"
+        },
+        {
+            "subject": "Sileighty",
+            "object": "Nissan"
+        },
+        {
+            "subject": "Kenmore Appliances",
+            "object": "Sears"
+        },
+        {
+            "subject": "LGA 775",
+            "object": "Intel"
+        },
+        {
+            "subject": "Model M keyboard",
+            "object": "IBM"
+        },
+        {
+            "subject": "Scion tC",
+            "object": "Toyota"
+        },
+        {
+            "subject": "iPad 4",
+            "object": "Apple"
+        },
+        {
+            "subject": "Shahab-4",
+            "object": "Iran"
+        },
+        {
+            "subject": "MacBook Air",
+            "object": "Apple"
+        },
+        {
+            "subject": "Hwasong-5",
+            "object": "Iran"
+        },
+        {
+            "subject": "Jeep Grand Cherokee",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "Game & Watch",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Wii U",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Lancia Flavia",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Game Boy Advance",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "DC-9",
+            "object": "Douglas"
+        },
+        {
+            "subject": "Fateh-110",
+            "object": "Iran"
+        },
+        {
+            "subject": "Windows Vista",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Lancia Lybra",
+            "object": "Fiat"
+        },
+        {
+            "subject": "C-135 Stratolifter",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Nasr-1",
+            "object": "Iran"
+        },
+        {
+            "subject": "iPhone",
+            "object": "Apple"
+        },
+        {
+            "subject": "StyleWriter",
+            "object": "Apple"
+        },
+        {
+            "subject": "Infiniti JX",
+            "object": "Nissan"
+        },
+        {
+            "subject": "DeltaWing",
+            "object": "Nissan"
+        },
+        {
+            "subject": "iPod Touch",
+            "object": "Apple"
+        },
+        {
+            "subject": "Alfa Romeo SZ",
+            "object": "Fiat"
+        },
+        {
+            "subject": "iISO flash shoe",
+            "object": "Sony"
+        },
+        {
+            "subject": "VTEC",
+            "object": "Honda"
+        },
+        {
+            "subject": "Xeon",
+            "object": "Intel"
+        },
+        {
+            "subject": "Windows 7",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "EA-18G Growler",
+            "object": "Boeing"
+        },
+        {
+            "subject": "Amiibo",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Fully Integrated Robotised Engine",
+            "object": "Fiat"
+        },
+        {
+            "subject": "MacBook Pro",
+            "object": "Apple"
+        },
+        {
+            "subject": "Alfa Romeo 75",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Jeep Wrangler",
+            "object": "Chrysler"
+        },
+        {
+            "subject": "Alpine A108",
+            "object": "Renault"
+        },
+        {
+            "subject": "Game Boy Micro",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "PlayStation Eye",
+            "object": "Sony"
+        },
+        {
+            "subject": "iPod Classic",
+            "object": "Apple"
+        },
+        {
+            "subject": "Zelzal-2",
+            "object": "Iran"
+        },
+        {
+            "subject": "SEAT 133",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Cyber-shot",
+            "object": "Sony"
+        },
+        {
+            "subject": "Windows Phone 7",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Family Computer Disk System",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Alfa Romeo 164",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Dacia Duster",
+            "object": "Renault"
+        },
+        {
+            "subject": "Windows Phone 8",
+            "object": "Microsoft"
+        },
+        {
+            "subject": "Alfa Romeo Alfasud",
+            "object": "Fiat"
+        },
+        {
+            "subject": "Super Game Boy",
+            "object": "Nintendo"
+        },
+        {
+            "subject": "Acura RL",
+            "object": "Honda"
+        },
+        {
+            "subject": "Acura TSX",
+            "object": "Honda"
+        },
+        {
+            "subject": "Mini Countryman",
+            "object": "BMW"
+        },
+        {
+            "subject": "M6 Gun Motor Carriage",
+            "object": "Dodge"
+        },
+        {
+            "subject": "Scion xD",
+            "object": "Toyota"
+        },
+        {
+            "subject": "iTunes Remote",
+            "object": "Apple"
+        },
+        {
+            "subject": "Multi Interface Shoe",
+            "object": "Sony"
+        },
+        {
+            "subject": "Infiniti Q45",
+            "object": "Nissan"
+        }
+    ]
+}
