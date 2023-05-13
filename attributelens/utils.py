@@ -90,6 +90,7 @@ def get_info_for_plotting(
         distribution_matrix_top_k.append(distribution_arr_top_k)
 
     return {
+        "title": att_info["prompt_template"],
         "y_layer_names": y_layer_names,
         "x_tokens": x_tokens,
         "confidence_matrix": confidence_matrix,
@@ -216,16 +217,13 @@ def plot_attribute_lens(
         )
     )
 
-    # fig.update_layout(
-    #     title = dict(
-    #         text=f"{original_prompt}" + "<b><i>{}</i></b>".format("".join([token[0] for token in generated_tokens][generation_start_position - 1:start_idx])) + " ___",
-    #         font = dict(
-    #             size=20,
-    #             color='rgb(0,0,0)'
-    #         ),
-    #         y = 0.05
-    #     )
-    # )
+    fig.update_layout(
+        title=dict(
+            text=f"<b><i>{plotting_info['title']}</i></b>",
+            font=dict(family="Courier New, Monospace", size=20, color="rgb(0,0,0)"),
+            y=0.95,
+        )
+    )
 
     fig.update_layout(plot_bgcolor="white")
 

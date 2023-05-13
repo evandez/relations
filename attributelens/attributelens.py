@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Any
 
 import attributelens.utils as lens_utils
 from src.functional import compute_hidden_states
@@ -28,9 +29,9 @@ class Attribute_Lens:
         self,
         subject: str,
         relation_operator: LinearRelationOperator,
-    ) -> dict:
+    ) -> dict[str, Any]:
         print("subject  : ", subject)
-        print("relation : ", relation_operator.prompt_template)
+        print("prompt_template : ", relation_operator.prompt_template)
 
         prompt = relation_operator.prompt_template.format(subject)
         inputs = self.mt.tokenizer(
@@ -73,8 +74,9 @@ class Attribute_Lens:
                     self.layer_output_tmp.format(layer_idx)
                 ] = [(p.token, p.prob) for p in predictions]
 
-        ret_dict = {}
+        ret_dict = dict()
         ret_dict["prompt_tokenized"] = prompt_tokenized
+        ret_dict["prompt_template"] = relation_operator.prompt_template
         ret_dict["v_space_reprs"] = v_space_reprs
         ret_dict["subject_range"] = (subject_start, subject_end)
 
