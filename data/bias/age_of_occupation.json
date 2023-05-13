@@ -1,5 +1,5 @@
 {
-    "name": "gender of name",
+    "name": "age of occupation",
     "prompt_templates": [
         "{} tend to be",
         "Typically, {} are",
