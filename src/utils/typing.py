@@ -2,7 +2,6 @@
 import pathlib
 from typing import Sequence
 
-import datasets
 import numpy
 import torch
 import transformers
@@ -22,7 +21,6 @@ Model = (
 )
 Tokenizer = transformers.PreTrainedTokenizerFast
 TokenizerOffsetMapping = Sequence[tuple[int, int]]
-Dataset = datasets.arrow_dataset.Dataset | datasets.dataset_dict.DatasetDict
 ModelInput = transformers.BatchEncoding
 ModelOutput = transformers.modeling_outputs.CausalLMOutput
 ModelGenerateOutput = transformers.generation.utils.GenerateOutput | torch.LongTensor
