@@ -273,6 +273,12 @@ def reconstruction(
             )
         )
 
+    if not counts:
+        raise ValueError(
+            "no trials were run, probably because "
+            "none of the provided relations share a domain!"
+        )
+
     total = sum(counts.values())
     return ReconstructionBenchmarkResults(
         relations=relation_results,
