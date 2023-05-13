@@ -1,5 +1,5 @@
 {
-    "name": "gender characteristics",
+    "name": "birthplace of name",
     "prompt_templates": [
         "{} was born in",
         "{}'s birthplace is",
