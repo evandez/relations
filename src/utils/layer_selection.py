@@ -1,4 +1,4 @@
-from typing import Callable, List, Literal, Tuple
+from typing import Callable, Literal
 
 from src import models
 from src.models import ModelAndTokenizer
@@ -15,7 +15,7 @@ def interpret_logits(
     logits: torch.Tensor,
     top_k: int = 10,
     get_proba: bool = False,
-) -> List[Tuple[str, float]]:
+) -> list[tuple[str, float]]:
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     token_ids = logits.topk(dim=-1, k=top_k).indices.squeeze().tolist()
     logit_values = logits.topk(dim=-1, k=top_k).values.squeeze().tolist()
@@ -27,9 +27,9 @@ def interpret_logits(
 def logit_lens(
     mt: ModelAndTokenizer,
     h: torch.Tensor,
-    interested_tokens: List[int] = [],
+    interested_tokens: list[int] = [],
     get_proba: bool = False,
-) -> Tuple[List[Tuple[str, float]], dict]:
+) -> tuple[list[tuple[str, float]], dict]:
     logits = mt.lm_head(h)
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     candidates = interpret_logits(mt, logits)
@@ -89,8 +89,8 @@ def get_replace_intervention(
     intervention_layer: str, intervention_tok_idx: int, h_intervention: torch.Tensor
 ) -> Callable:
     def intervention(
-        output: Tuple[torch.Tensor, torch.Tensor] | torch.Tensor, layer: str
-    ) -> Tuple[torch.Tensor, torch.Tensor] | torch.Tensor:
+        output: tuple[torch.Tensor, torch.Tensor] | torch.Tensor, layer: str
+    ) -> tuple[torch.Tensor, torch.Tensor] | torch.Tensor:
         if layer != intervention_layer:
             return output
         output[0][0][intervention_tok_idx] = h_intervention
