@@ -355,10 +355,8 @@ def faithfulness(
     results_by_relation = []
     recalls_lm = []
     recalls_lre = []
-    recalls_lre_if_lm_correct: list[list[float]] = []
-    recalls_lre_if_lm_wrong: list[list[float]] = []
-    count_lm_correct = 0
-    count_lm_wrong = 0
+    recalls_by_lm_correct = defaultdict(list)
+    counts_by_lm_correct: dict[bool, int] = defaultdict(int)
     for relation in tqdm(dataset.relations, desc=desc):
         trials = []
         for _ in range(n_trials):
@@ -396,17 +394,13 @@ def faithfulness(
             # Compute LRE predictions if LM is correct.
             preds_by_lm_correct = defaultdict(list)
             targets_by_lm_correct = defaultdict(list)
-            counts_by_lm_correct: dict[bool, int] = defaultdict(int)
             for pred_lm, pred_lre, target in zip(preds_lm, preds_lre, targets):
                 lm_correct = functional.any_is_nontrivial_prefix(pred_lm, target)
                 preds_by_lm_correct[lm_correct].append(pred_lre)
                 targets_by_lm_correct[lm_correct].append(target)
                 counts_by_lm_correct[lm_correct] += 1
 
-            for correct, recalls in (
-                (True, recalls_lre_if_lm_correct),
-                (False, recalls_lre_if_lm_wrong),
-            ):
+            for correct in (True, False):
                 preds = preds_by_lm_correct[correct]
                 targets = targets_by_lm_correct[correct]
                 if not preds:
@@ -415,7 +409,7 @@ def faithfulness(
                 recall = metrics.recall(
                     preds_by_lm_correct[correct], targets_by_lm_correct[correct]
                 )
-                recalls.append(recall)
+                recalls_by_lm_correct[correct].append(recall)
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -443,12 +437,12 @@ def faithfulness(
             for key, values in (
                 ("recall_lm", recalls_lm),
                 ("recall_lre", recalls_lre),
-                ("recall_lre_if_lm_correct", recalls_lre_if_lm_correct),
-                ("recall_lre_if_lm_wrong", recalls_lre_if_lm_wrong),
+                ("recall_lre_if_lm_correct", recalls_by_lm_correct[True]),
+                ("recall_lre_if_lm_wrong", recalls_by_lm_correct[False]),
             )
         },
-        count_lm_correct=count_lm_correct,
-        count_lm_wrong=count_lm_wrong,
+        count_lm_correct=counts_by_lm_correct[True],
+        count_lm_wrong=counts_by_lm_correct[False],
     )
 
     return FaithfulnessBenchmarkResults(
