@@ -1,5 +1,5 @@
 {
-    "name": "capital city",
+    "name": "country capital city",
     "prompt_templates": [
         "The capital city of {} is",
         "The political capital of {} is",

@@ -1,5 +1,5 @@
 {
-    "name": "Lead singer",
+    "name": "lead singer",
     "prompt_templates": [
         "{} is the lead singer of",
         "{}:"

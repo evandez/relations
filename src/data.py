@@ -286,7 +286,7 @@ def load_dataset(*paths: PathLike) -> RelationDataset:
 def load_dataset_from_args(args: argparse.Namespace) -> RelationDataset:
     """Load a dataset based on args from `add_data_args`."""
     dataset = load_dataset()
-    return dataset.filter(
+    dataset = dataset.filter(
         relation_names=args.rel_names,
         domain_name=args.rel_domains,
         range_name=args.rel_ranges,
@@ -294,6 +294,9 @@ def load_dataset_from_args(args: argparse.Namespace) -> RelationDataset:
         symmetric=args.rel_sym,
         fn_type=args.rel_fn_types,
     )
+    if len(dataset.relations) == 0:
+        raise ValueError("no relations found matching all criteria")
+    return dataset
 
 
 def add_data_args(parser: argparse.ArgumentParser) -> None:
