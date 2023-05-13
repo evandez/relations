@@ -70,3 +70,45 @@ ns_presubmit.add_task(presubmit_pytest, "pytest")
 ns_presubmit.add_task(presubmit, default=True)
 
 ns.add_collection(ns_presubmit)
+
+###############
+# Experiments #
+###############
+
+
+def _maybe_add_device(cmd, device=None):
+    if device is not None:
+        cmd = cmd.rstrip() + f"--device {device}"
+    return cmd
+
+
+@task
+def faithfulness(c, device=None):
+    """Run faithfulness experiment."""
+    cmd = f"python -m scripts.evaluate -b faithfulness -n faithfulness"
+    cmd = _maybe_add_device(cmd, device=device)
+    c.run(cmd)
+
+
+@task
+def reconstruction(c, device=None):
+    """Run reconstruction experiment."""
+    cmd = f"python -m scripts.evaluate -b reconstruction -n reconstruction"
+    cmd = _maybe_add_device(cmd, device=device)
+    c.run(cmd)
+
+
+@task
+def causality(c, device=None):
+    """Run causality experiment."""
+    cmd = f"python -m scripts.evaluate -b causality -n causality"
+    cmd = _maybe_add_device(cmd, device=device)
+    c.run(cmd)
+
+
+ns_x = Collection("x")
+ns_x.add_task(faithfulness)
+ns_x.add_task(reconstruction)
+ns_x.add_task(causality)
+
+ns.add_collection(ns_x)
