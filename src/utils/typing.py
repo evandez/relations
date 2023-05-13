@@ -11,8 +11,7 @@ ArrayLike = list | tuple | numpy.ndarray | torch.Tensor
 PathLike = str | pathlib.Path
 Device = str | torch.device
 
-# Throughout this codebase, we use HuggingFace model implementations
-# as well as HuggingFace datasets.
+# Throughout this codebase, we use HuggingFace model implementations.
 Model = (
     transformers.GPT2LMHeadModel
     | transformers.GPTJForCausalLM
