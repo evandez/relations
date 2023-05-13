@@ -5,7 +5,7 @@
         "{},"
     ],
     "properties": {
-        "relation_type": "superlative",
+        "relation_type": "morphological",
         "domain_name": "adjective",
         "range_name": "adjective",
         "symmetric": false
