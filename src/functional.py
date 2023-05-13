@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence
 
 from src import data, models
-from src.utils.typing import ModelInput, ModelOutput, StrSequence
+from src.utils import tokenizer_utils
+from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
 
 import baukit
 import torch
@@ -30,17 +31,17 @@ class Order1ApproxOutput:
     bias: torch.Tensor
 
     h: torch.Tensor
-    h_layer: int
+    h_layer: Layer
     h_index: int
 
     z: torch.Tensor
-    z_layer: int
+    z_layer: Layer
     z_index: int
 
     inputs: ModelInput
     logits: torch.Tensor
 
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict = field(default_factory=dict)
 
 
 @torch.no_grad()
@@ -49,9 +50,9 @@ def order_1_approx(
     *,
     mt: models.ModelAndTokenizer,
     prompt: str,
-    h_layer: int,
+    h_layer: Layer,
     h_index: int,
-    z_layer: int | None = None,
+    z_layer: Layer | None = None,
     z_index: int | None = None,
     inputs: ModelInput | None = None,
 ) -> Order1ApproxOutput:
@@ -138,6 +139,22 @@ def order_1_approx(
         },
     )
     return approx
+
+
+def low_rank_approx(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+    """Compute a low-rank approximation of a matrix.
+
+    Args:
+        matrix: The matrix to approximate.
+        rank: The rank of the approximation.
+
+    Returns:
+        The approximation.
+
+    """
+    u, s, v = torch.svd(matrix.float())
+    matrix_approx = u[:, :rank] @ torch.diag(s[:rank]) @ v[:, :rank].T
+    return matrix_approx.to(matrix.dtype)
 
 
 def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
@@ -251,7 +268,7 @@ class ComputeHiddenStatesOutput(NamedTuple):
 def compute_hidden_states(
     *,
     mt: models.ModelAndTokenizer,
-    layers: Sequence[int],
+    layers: Sequence[Layer],
     prompt: str | StrSequence | None = None,
     inputs: ModelInput | None = None,
     **kwargs: Any,
@@ -283,7 +300,13 @@ def compute_hidden_states(
             input_ids=inputs.input_ids, attention_mask=inputs.attention_mask, **kwargs
         )
 
-    hiddens = [ret[layer_paths[layer]].output[0] for layer in layers]
+    hiddens = []
+    for layer in layers:
+        h = ret[layer_paths[layer]].output
+        # Everything except embedding layer is returned as tuple.
+        if isinstance(h, tuple):
+            h = h[0]
+        hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
 
@@ -313,7 +336,7 @@ def predict_next_token(
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompt, return_tensors="pt", padding="longest", truncation=True
-        )
+        ).to(mt.model.device)
     with torch.inference_mode():
         batched_logits = []
         for i in range(0, len(inputs.input_ids), batch_size):
@@ -362,6 +385,28 @@ def make_prompt(
     prompt = models.maybe_prefix_eos(mt, prompt)
 
     return prompt
+
+
+def find_subject_token_index(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt: str,
+    subject: str,
+    offset: int = -1,
+) -> tuple[int, ModelInput]:
+    inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
+        mt.model.device
+    )
+    offset_mapping = inputs.pop("offset_mapping")
+
+    subject_i, subject_j = tokenizer_utils.find_token_range(
+        prompt, subject, offset_mapping=offset_mapping[0]
+    )
+    subject_token_index = tokenizer_utils.offset_to_absolute_index(
+        subject_i, subject_j, offset
+    )
+
+    return subject_token_index, inputs
 
 
 def any_is_nontrivial_prefix(predictions: StrSequence, target: str) -> bool:

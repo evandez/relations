@@ -1,0 +1,125 @@
+{
+    "name":"city timezone difference to UTC",
+    "prompt_templates":[
+       "How many hours is {} ahead of GMT? It is",
+       "In hours, {}'s time difference from GMT is",
+       "What is the time difference in hours between {} and GMT? It is",
+       "{},"
+    ],
+    "properties":{
+       "relation_type":"factual",
+       "domain_name":"city",
+       "range_name":"timezone difference",
+       "symmetric":false
+    },
+    "samples":[
+       {
+          "subject":"London",
+          "object":"0"
+       },
+       {
+          "subject":"Tokyo",
+          "object":"9"
+       },
+       {
+          "subject":"Sydney",
+          "object":"10"
+       },
+       {
+          "subject":"Hong Kong",
+          "object":"8"
+       },
+       {
+          "subject":"Dubai",
+          "object":"4"
+       },
+       {
+          "subject":"Paris",
+          "object":"1"
+       },
+       {
+          "subject":"Mumbai",
+          "object":"5.5"
+       },
+       {
+          "subject":"Mexico City",
+          "object":"-5"
+       },
+       {
+          "subject":"São Paulo",
+          "object":"-3"
+       },
+       {
+          "subject":"Singapore",
+          "object":"8"
+       },
+       {
+          "subject":"Johannesburg",
+          "object":"2"
+       },
+       {
+          "subject":"Cairo",
+          "object":"2"
+       },
+       {
+          "subject":"Rio de Janeiro",
+          "object":"-3"
+       },
+       {
+          "subject":"Istanbul",
+          "object":"3"
+       },
+       {
+          "subject":"Buenos Aires",
+          "object":"-3"
+       },
+       {
+          "subject":"Jakarta",
+          "object":"7"
+       },
+       {
+          "subject":"Lima",
+          "object":"-5"
+       },
+       {
+          "subject":"Bangkok",
+          "object":"7"
+       },
+       {
+          "subject":"Seoul",
+          "object":"9"
+       },
+       {
+          "subject":"Beijing",
+          "object":"8"
+       },
+       {
+          "subject":"Moscow",
+          "object":"3"
+       },
+       {
+          "subject":"Berlin",
+          "object":"1"
+       },
+       {
+          "subject":"Madrid",
+          "object":"1"
+       },
+       {
+          "subject":"Rome",
+          "object":"1"
+       },
+       {
+          "subject":"Athens",
+          "object":"2"
+       },
+       {
+          "subject":"New Delhi",
+          "object":"5.5"
+       },
+       {
+          "subject":"Auckland",
+          "object":"12"
+       }
+    ]
+ }
