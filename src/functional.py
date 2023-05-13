@@ -419,3 +419,26 @@ def is_nontrivial_prefix(prediction: str, target: str) -> bool:
     target = target.lower().strip()
     prediction = prediction.lower().strip()
     return len(prediction) > 0 and target.startswith(prediction)
+
+def random_incorrect_targets(true_targets):
+    """Returns an array of the same size as true_targets where each entry is
+    changed to a random (but guaranteed different) value, drawn at random from
+    true_targets."""
+    result = []
+    for t in true_targets:
+        bad = t
+        while bad == t:
+            bad = random.choice(true_targets)
+        result.append(bad)
+    return result
+
+def get_hidden_state_at_subject(mt, prompt, subject, h_layer):
+    """"Runs a single prompt in inference and reads out the hidden state at the
+    last subject token for the given subject, at the specified layer."""
+    h_index, inputs = find_subject_token_index(
+        mt=mt, prompt=prompt, subject=subject
+    )
+    [[hs], _] = compute_hidden_states(
+        mt=mt, layers=[h_layer], inputs=inputs
+    )
+    return hs[:, h_index]
