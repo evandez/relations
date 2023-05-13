@@ -100,15 +100,16 @@ def order_1_approx(
             use_cache=use_cache,
             past_key_values=past_key_values,
         )
-    h = ret[h_layer_name].output[0][0, _h_index]
-    z = ret[z_layer_name].output[0][0, z_index]
+    h = untuple(ret[h_layer_name].output)[0, _h_index]
+    z = untuple(ret[z_layer_name].output)[0, z_index]
 
     # Now compute J and b.
     def compute_z_from_h(h: torch.Tensor) -> torch.Tensor:
         def insert_h(output: tuple, layer: str) -> tuple:
+            hs = untuple(output)
             if layer != h_layer_name:
                 return output
-            output[0][0, _h_index] = h
+            hs[0, _h_index] = h
             return output
 
         with baukit.TraceDict(
@@ -119,7 +120,7 @@ def order_1_approx(
                 past_key_values=past_key_values,
                 use_cache=use_cache,
             )
-        return ret[z_layer_name].output[0][0, -1]
+        return untuple(ret[z_layer_name].output)[0, -1]
 
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
@@ -302,10 +303,7 @@ def compute_hidden_states(
 
     hiddens = []
     for layer in layers:
-        h = ret[layer_paths[layer]].output
-        # Everything except embedding layer is returned as tuple.
-        if isinstance(h, tuple):
-            h = h[0]
+        h = untuple(ret[layer_paths[layer]].output)
         hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
@@ -442,3 +440,9 @@ def get_hidden_state_at_subject(mt, prompt, subject, h_layer):
         mt=mt, layers=[h_layer], inputs=inputs
     )
     return hs[:, h_index]
+
+def untuple(x: Any) -> Any:
+    """If `x` is a tuple, return the first element."""
+    if isinstance(x, tuple):
+        return x[0]
+    return x
