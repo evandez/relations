@@ -1,5 +1,5 @@
 {
-    "name": "Gender of degree",
+    "name": "gender of degree",
     "prompt_templates": [
         "The majority of {} students are",
         "{} students are mostly",

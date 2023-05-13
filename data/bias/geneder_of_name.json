@@ -1,5 +1,5 @@
 {
-    "name": "Gender of name",
+    "name": "gender of name",
     "prompt_templates": [
         "{} is a name of a",
         "{}:"
