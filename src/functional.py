@@ -140,6 +140,22 @@ def order_1_approx(
     return approx
 
 
+def low_rank_approx(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+    """Compute a low-rank approximation of a matrix.
+
+    Args:
+        matrix: The matrix to approximate.
+        rank: The rank of the approximation.
+
+    Returns:
+        The approximation.
+
+    """
+    u, s, v = torch.svd(matrix.float())
+    matrix_approx = u[:, :rank] @ torch.diag(s[:rank]) @ v[:, :rank].T
+    return matrix_approx.to(matrix.dtype)
+
+
 def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
     """Compute a low-rank pseudo-inverse of a matrix.
 

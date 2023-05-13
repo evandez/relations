@@ -1,12 +1,14 @@
-from typing import Callable, Literal
+import logging
+from typing import Any, Callable, Literal
 
 from src import models
 from src.models import ModelAndTokenizer
 from src.operators import _compute_h_index
-from src.utils.supplimentary import untuple
 
 import baukit
 import torch
+
+logger = logging.getLogger(__name__)
 
 
 ######################### utils #########################
@@ -68,8 +70,8 @@ def layer_c_measure(
 
     prev_score = 0
     for layer in models.determine_layer_paths(mt):
-        h = untuple(traces[layer].output)[0][-1]
-        candidates, interested_logits = logit_lens(mt, h, [object_id], get_proba=True)
+        h = _untuple(traces[layer].output)[0][-1]
+        _, interested_logits = logit_lens(mt, h, [object_id], get_proba=True)
         layer_score = interested_logits[object_id][0]
         sub_score = base_score if measure == "completeness" else prev_score
         cur_layer_contribution = (layer_score - sub_score) / base_score
@@ -113,7 +115,7 @@ def causal_tracing(
         offset=-1,
     )
 
-    h_idx_corr, tokenized_corr = _compute_h_index(
+    h_idx_corr, _ = _compute_h_index(
         mt=mt,
         prompt=prompt_template.format(subject_corruption),
         subject=subject_corruption,
@@ -140,19 +142,19 @@ def causal_tracing(
             edit_output=get_replace_intervention(
                 intervention_layer=intervention_layer,
                 intervention_tok_idx=h_idx_corr,
-                h_intervention=untuple(traces_o[intervention_layer].output)[0][
+                h_intervention=_untuple(traces_o[intervention_layer].output)[0][
                     h_idx_orig
                 ],
             ),
         ) as traces_i:
-            output_i = mt.model(
+            mt.model(
                 **mt.tokenizer(
                     prompt_template.format(subject_corruption), return_tensors="pt"
                 ).to(mt.model.device)
             )
 
-        z = untuple(traces_i[layer_names[-1]].output)[0][-1]
-        candidates, interested = logit_lens(mt, z, [answer_t], get_proba=True)
+        z = _untuple(traces_i[layer_names[-1]].output)[0][-1]
+        _, interested = logit_lens(mt, z, [answer_t], get_proba=True)
         layer_p = interested[answer_t][0]
 
         if verbose:
@@ -160,3 +162,9 @@ def causal_tracing(
         result[intervention_layer] = (layer_p - p_answer) / p_answer
 
     return result
+
+
+def _untuple(x: tuple) -> Any:
+    if isinstance(x, tuple):
+        return x[0]
+    return x
