@@ -1,5 +1,5 @@
 {
-    "name": "Gender characteristics",
+    "name": "gender characteristics",
     "prompt_templates": [
         "{} is a trait commonly associated with",
         "{} is often associated with",

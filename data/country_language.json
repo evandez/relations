@@ -1,8 +1,8 @@
 {
     "name": "country language",
     "prompt_templates": [
-        "{} is a country where the language of",
         "The people of {} communicate in",
+        "{} is a country where the language of",
         "{} is home to speakers of",
         "The people in {} converse using the language of",
         "The inhabitants of {} use",

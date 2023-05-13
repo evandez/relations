@@ -1,5 +1,5 @@
 {
-    "name": "Gender of occupations",
+    "name": "gender of occupations",
     "prompt_templates": [
         "Most {} are",
         "The majority of {} are",
