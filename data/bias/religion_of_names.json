@@ -1,5 +1,5 @@
 {
-    "name": "Religion of a name",
+    "name": "religion of a name",
     "prompt_templates": [
         "The official religion of {} is",
         "{} is follower of"
