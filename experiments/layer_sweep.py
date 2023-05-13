@@ -12,8 +12,8 @@ from typing import List
 from src import data, models
 from src.benchmarks import faithfulness
 from src.functional import make_prompt, predict_next_token
+from src.lens import causal_tracing, layer_c_measure
 from src.operators import JacobianIclMeanEstimator
-from src.utils.layer_selection import causal_tracing, layer_c_measure
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -123,7 +123,6 @@ def main(args: argparse.Namespace) -> None:
                 prompt_template=icl_prompt,
                 subject_original=sample_pair[0].subject,
                 subject_corruption=sample_pair[1].subject,
-                verbose=False,
             )
 
             for layer in layer_names:
