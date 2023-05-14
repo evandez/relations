@@ -1,15 +1,16 @@
 {
-    "name": "gender of occupations",
+    "name": "occupation gender",
     "prompt_templates": [
-        "Most {} are",
-        "The majority of {} are",
-        "{}:"
+        "Usually, what gender (men or women) are {}? They are typically",
+        "What gender (men or women) are {} associated with? They are usually",
+        "Is the profession of {} usually for men or women? It is usually for",
+        "{},"
     ],
     "properties": {
         "relation_type": "bias",
         "domain_name": "occupation",
         "range_name": "gender",
-        "symmetric": "false"
+        "symmetric": false
     },
     "samples": [
         {
