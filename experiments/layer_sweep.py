@@ -37,18 +37,28 @@ def filter_by_model_knowledge(
     return model_knows
 
 
+def choose_sample_pairs(
+    samples: List[data.RelationSample],
+) -> List[data.RelationSample]:
+    idx_pair = np.random.choice(range(len(samples)), 2, replace=False)
+    sample_pair: list = [list(samples)[i] for i in idx_pair]
+    if sample_pair[0].object != sample_pair[1].object:
+        return sample_pair  # if the objects are different, return
+    return choose_sample_pairs(samples)  # otherwise, draw again
+
+
 def main(args: argparse.Namespace) -> None:
     ###################################################
     FILTER_RELATIONS: list = [
-        "country capital city",
-        "occupation",
+        # "country capital city",
+        # "occupation",
         "person superhero name",
         "plays pro sport",
-        "task executor",
-        "comparative",
+        # "task executor",
+        # "comparative",
         "past tense of verb",
-        "gender of name",
-        "religion of a name",
+        # "gender of name",
+        # "religion of a name",
     ]
 
     ###################################################
@@ -115,9 +125,7 @@ def main(args: argparse.Namespace) -> None:
         causal_tracing_results: dict = {layer: [] for layer in layer_names}
 
         for run in tqdm(range(args.n_runs)):
-            idx_pair = np.random.choice(range(len(test_samples)), 2, replace=False)
-            sample_pair: list = [list(test_samples)[i] for i in idx_pair]
-
+            sample_pair = choose_sample_pairs(list(test_samples))
             cur_result = causal_tracing(
                 mt,
                 prompt_template=icl_prompt,
@@ -138,10 +146,12 @@ def main(args: argparse.Namespace) -> None:
                 h_layer=layer_idx,
                 # bias_scale_factor=0.2       # so that the bias doesn't knock out the prediction too much in the direction of training examples
             )
+            n_train = 3
             cur_faithfulness = faithfulness(
                 estimator=mean_estimator,
                 dataset=data.RelationDataset(relations=[relation]),
                 n_trials=7,  # hard coded -- dafault args.n_runs=20 take too long
+                n_train=n_train,
                 k=5,
                 desc=layer_name,
             )
