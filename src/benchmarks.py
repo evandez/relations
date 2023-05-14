@@ -443,7 +443,7 @@ def faithfulness(
             #print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            distraction_template = '{target}, {target}, {target}, {target}. '
+            distraction_template = ' {target}, {target}, {target}, {target}. '
             prompts_pd = [
                     make_prompt(prompt_template=
                         distraction_template.format(target=wrong) + prompt_template,
