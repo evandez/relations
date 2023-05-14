@@ -10,7 +10,7 @@
         "relation_type": "morphological",
         "domain_name": "word",
         "range_name": "last char",
-        "symmetric": true
+        "symmetric": false
     },
     "samples": [
         {
