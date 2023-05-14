@@ -171,7 +171,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="/home/local_arnab/Codes/relations/results/layer_sweep",
+        default="../results/layer_sweep",
         help="results dir",
     )
     args = parser.parse_args()

@@ -120,7 +120,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="/home/local_arnab/Codes/relations/results/bias_scale_sweep",
+        default="../results/bias_scale_sweep",
         help="results dir",
     )
     args = parser.parse_args()
