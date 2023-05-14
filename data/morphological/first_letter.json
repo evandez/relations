@@ -14,967 +14,967 @@
     },
     "samples": [
         {
-            "subject": "bend",
+            "subject": "BEND",
             "object": "B"
         },
         {
-            "subject": "heavy",
+            "subject": "HEAVY",
             "object": "H"
         },
         {
-            "subject": "beautiful",
+            "subject": "BEAUTIFUL",
             "object": "B"
         },
         {
-            "subject": "ask",
+            "subject": "ASK",
             "object": "A"
         },
         {
-            "subject": "expand",
+            "subject": "EXPAND",
             "object": "E"
         },
         {
-            "subject": "front",
+            "subject": "FRONT",
             "object": "F"
         },
         {
-            "subject": "tough",
+            "subject": "TOUGH",
             "object": "T"
         },
         {
-            "subject": "kind",
+            "subject": "KIND",
             "object": "K"
         },
         {
-            "subject": "go",
+            "subject": "GO",
             "object": "G"
         },
         {
-            "subject": "surgery",
+            "subject": "SURGERY",
             "object": "S"
         },
         {
-            "subject": "past",
+            "subject": "PAST",
             "object": "P"
         },
         {
-            "subject": "inside",
+            "subject": "INSIDE",
             "object": "I"
         },
         {
-            "subject": "enter",
+            "subject": "ENTER",
             "object": "E"
         },
         {
-            "subject": "begin",
+            "subject": "BEGIN",
             "object": "B"
         },
         {
-            "subject": "vanish",
+            "subject": "VANISH",
             "object": "V"
         },
         {
-            "subject": "fall",
+            "subject": "FALL",
             "object": "F"
         },
         {
-            "subject": "crazy",
+            "subject": "CRAZY",
             "object": "C"
         },
         {
-            "subject": "forget",
+            "subject": "FORGET",
             "object": "F"
         },
         {
-            "subject": "frown",
+            "subject": "FROWN",
             "object": "F"
         },
         {
-            "subject": "great",
+            "subject": "GREAT",
             "object": "G"
         },
         {
-            "subject": "learn",
+            "subject": "LEARN",
             "object": "L"
         },
         {
-            "subject": "smooth",
+            "subject": "SMOOTH",
             "object": "S"
         },
         {
-            "subject": "wide",
+            "subject": "WIDE",
             "object": "W"
         },
         {
-            "subject": "airplane",
+            "subject": "AIRPLANE",
             "object": "A"
         },
         {
-            "subject": "wrong",
+            "subject": "WRONG",
             "object": "W"
         },
         {
-            "subject": "dance",
+            "subject": "DANCE",
             "object": "D"
         },
         {
-            "subject": "win",
+            "subject": "WIN",
             "object": "W"
         },
         {
-            "subject": "believe",
+            "subject": "BELIEVE",
             "object": "B"
         },
         {
-            "subject": "concert",
+            "subject": "CONCERT",
             "object": "C"
         },
         {
-            "subject": "bicycle",
+            "subject": "BICYCLE",
             "object": "B"
         },
         {
-            "subject": "stale",
+            "subject": "STALE",
             "object": "S"
         },
         {
-            "subject": "library",
+            "subject": "LIBRARY",
             "object": "L"
         },
         {
-            "subject": "call",
+            "subject": "CALL",
             "object": "C"
         },
         {
-            "subject": "give",
+            "subject": "GIVE",
             "object": "G"
         },
         {
-            "subject": "know",
+            "subject": "KNOW",
             "object": "K"
         },
         {
-            "subject": "climb",
+            "subject": "CLIMB",
             "object": "C"
         },
         {
-            "subject": "fresh",
+            "subject": "FRESH",
             "object": "F"
         },
         {
-            "subject": "look",
+            "subject": "LOOK",
             "object": "L"
         },
         {
-            "subject": "old",
+            "subject": "OLD",
             "object": "O"
         },
         {
-            "subject": "gym",
+            "subject": "GYM",
             "object": "G"
         },
         {
-            "subject": "high",
+            "subject": "HIGH",
             "object": "H"
         },
         {
-            "subject": "decide",
+            "subject": "DECIDE",
             "object": "D"
         },
         {
-            "subject": "choose",
+            "subject": "CHOOSE",
             "object": "C"
         },
         {
-            "subject": "want",
+            "subject": "WANT",
             "object": "W"
         },
         {
-            "subject": "loud",
+            "subject": "LOUD",
             "object": "L"
         },
         {
-            "subject": "walk",
+            "subject": "WALK",
             "object": "W"
         },
         {
-            "subject": "box",
+            "subject": "BOX",
             "object": "B"
         },
         {
-            "subject": "rude",
+            "subject": "RUDE",
             "object": "R"
         },
         {
-            "subject": "machine",
+            "subject": "MACHINE",
             "object": "M"
         },
         {
-            "subject": "calm",
+            "subject": "CALM",
             "object": "C"
         },
         {
-            "subject": "right",
+            "subject": "RIGHT",
             "object": "R"
         },
         {
-            "subject": "include",
+            "subject": "INCLUDE",
             "object": "I"
         },
         {
-            "subject": "false",
+            "subject": "FALSE",
             "object": "F"
         },
         {
-            "subject": "whisper",
+            "subject": "WHISPER",
             "object": "W"
         },
         {
-            "subject": "deep",
+            "subject": "DEEP",
             "object": "D"
         },
         {
-            "subject": "film",
+            "subject": "FILM",
             "object": "F"
         },
         {
-            "subject": "laugh",
+            "subject": "LAUGH",
             "object": "L"
         },
         {
-            "subject": "sour",
+            "subject": "SOUR",
             "object": "S"
         },
         {
-            "subject": "bless",
+            "subject": "BLESS",
             "object": "B"
         },
         {
-            "subject": "dirty",
+            "subject": "DIRTY",
             "object": "D"
         },
         {
-            "subject": "little",
+            "subject": "LITTLE",
             "object": "L"
         },
         {
-            "subject": "build",
+            "subject": "BUILD",
             "object": "B"
         },
         {
-            "subject": "education",
+            "subject": "EDUCATION",
             "object": "E"
         },
         {
-            "subject": "like",
+            "subject": "LIKE",
             "object": "L"
         },
         {
-            "subject": "need",
+            "subject": "NEED",
             "object": "N"
         },
         {
-            "subject": "hard",
+            "subject": "HARD",
             "object": "H"
         },
         {
-            "subject": "finish",
+            "subject": "FINISH",
             "object": "F"
         },
         {
-            "subject": "bring",
+            "subject": "BRING",
             "object": "B"
         },
         {
-            "subject": "sad",
+            "subject": "SAD",
             "object": "S"
         },
         {
-            "subject": "bad",
+            "subject": "BAD",
             "object": "B"
         },
         {
-            "subject": "lazy",
+            "subject": "LAZY",
             "object": "L"
         },
         {
-            "subject": "together",
+            "subject": "TOGETHER",
             "object": "T"
         },
         {
-            "subject": "short",
+            "subject": "SHORT",
             "object": "S"
         },
         {
-            "subject": "jump",
+            "subject": "JUMP",
             "object": "J"
         },
         {
-            "subject": "software",
+            "subject": "SOFTWARE",
             "object": "S"
         },
         {
-            "subject": "wet",
+            "subject": "WET",
             "object": "W"
         },
         {
-            "subject": "true",
+            "subject": "TRUE",
             "object": "T"
         },
         {
-            "subject": "battle",
+            "subject": "BATTLE",
             "object": "B"
         },
         {
-            "subject": "cheer",
+            "subject": "CHEER",
             "object": "C"
         },
         {
-            "subject": "simple",
+            "subject": "SIMPLE",
             "object": "S"
         },
         {
-            "subject": "slow",
+            "subject": "SLOW",
             "object": "S"
         },
         {
-            "subject": "full",
+            "subject": "FULL",
             "object": "F"
         },
         {
-            "subject": "light",
+            "subject": "LIGHT",
             "object": "L"
         },
         {
-            "subject": "piano",
+            "subject": "PIANO",
             "object": "P"
         },
         {
-            "subject": "write",
+            "subject": "WRITE",
             "object": "W"
         },
         {
-            "subject": "eat",
+            "subject": "EAT",
             "object": "E"
         },
         {
-            "subject": "follow",
+            "subject": "FOLLOW",
             "object": "F"
         },
         {
-            "subject": "gentle",
+            "subject": "GENTLE",
             "object": "G"
         },
         {
-            "subject": "think",
+            "subject": "THINK",
             "object": "T"
         },
         {
-            "subject": "drama",
+            "subject": "DRAMA",
             "object": "D"
         },
         {
-            "subject": "understand",
+            "subject": "UNDERSTAND",
             "object": "U"
         },
         {
-            "subject": "buy",
+            "subject": "BUY",
             "object": "B"
         },
         {
-            "subject": "push",
+            "subject": "PUSH",
             "object": "P"
         },
         {
-            "subject": "cold",
+            "subject": "COLD",
             "object": "C"
         },
         {
-            "subject": "yes",
+            "subject": "YES",
             "object": "Y"
         },
         {
-            "subject": "dry",
+            "subject": "DRY",
             "object": "D"
         },
         {
-            "subject": "friendly",
+            "subject": "FRIENDLY",
             "object": "F"
         },
         {
-            "subject": "shake",
+            "subject": "SHAKE",
             "object": "S"
         },
         {
-            "subject": "happy",
+            "subject": "HAPPY",
             "object": "H"
         },
         {
-            "subject": "remember",
+            "subject": "REMEMBER",
             "object": "R"
         },
         {
-            "subject": "drink",
+            "subject": "DRINK",
             "object": "D"
         },
         {
-            "subject": "take",
+            "subject": "TAKE",
             "object": "T"
         },
         {
-            "subject": "sick",
+            "subject": "SICK",
             "object": "S"
         },
         {
-            "subject": "pull",
+            "subject": "PULL",
             "object": "P"
         },
         {
-            "subject": "swim",
+            "subject": "SWIM",
             "object": "S"
         },
         {
-            "subject": "fast",
+            "subject": "FAST",
             "object": "F"
         },
         {
-            "subject": "love",
+            "subject": "LOVE",
             "object": "L"
         },
         {
-            "subject": "polite",
+            "subject": "POLITE",
             "object": "P"
         },
         {
-            "subject": "come",
+            "subject": "COME",
             "object": "C"
         },
         {
-            "subject": "ugly",
+            "subject": "UGLY",
             "object": "U"
         },
         {
-            "subject": "praise",
+            "subject": "PRAISE",
             "object": "P"
         },
         {
-            "subject": "strong",
+            "subject": "STRONG",
             "object": "S"
         },
         {
-            "subject": "cruel",
+            "subject": "CRUEL",
             "object": "C"
         },
         {
-            "subject": "attract",
+            "subject": "ATTRACT",
             "object": "A"
         },
         {
-            "subject": "positive",
+            "subject": "POSITIVE",
             "object": "P"
         },
         {
-            "subject": "long",
+            "subject": "LONG",
             "object": "L"
         },
         {
-            "subject": "borrow",
+            "subject": "BORROW",
             "object": "B"
         },
         {
-            "subject": "save",
+            "subject": "SAVE",
             "object": "S"
         },
         {
-            "subject": "mad",
+            "subject": "MAD",
             "object": "M"
         },
         {
-            "subject": "medicine",
+            "subject": "MEDICINE",
             "object": "M"
         },
         {
-            "subject": "meet",
+            "subject": "MEET",
             "object": "M"
         },
         {
-            "subject": "work",
+            "subject": "WORK",
             "object": "W"
         },
         {
-            "subject": "up",
+            "subject": "UP",
             "object": "U"
         },
         {
-            "subject": "sweet",
+            "subject": "SWEET",
             "object": "S"
         },
         {
-            "subject": "speak",
+            "subject": "SPEAK",
             "object": "S"
         },
         {
-            "subject": "manufacture",
+            "subject": "MANUFACTURE",
             "object": "M"
         },
         {
-            "subject": "attack",
+            "subject": "ATTACK",
             "object": "A"
         },
         {
-            "subject": "tall",
+            "subject": "TALL",
             "object": "T"
         },
         {
-            "subject": "inhale",
+            "subject": "INHALE",
             "object": "I"
         },
         {
-            "subject": "safe",
+            "subject": "SAFE",
             "object": "S"
         },
         {
-            "subject": "open",
+            "subject": "OPEN",
             "object": "O"
         },
         {
-            "subject": "increase",
+            "subject": "INCREASE",
             "object": "I"
         },
         {
-            "subject": "scatter",
+            "subject": "SCATTER",
             "object": "S"
         },
         {
-            "subject": "arrive",
+            "subject": "ARRIVE",
             "object": "A"
         },
         {
-            "subject": "help",
+            "subject": "HELP",
             "object": "H"
         },
         {
-            "subject": "leave",
+            "subject": "LEAVE",
             "object": "L"
         },
         {
-            "subject": "sit",
+            "subject": "SIT",
             "object": "S"
         },
         {
-            "subject": "cheap",
+            "subject": "CHEAP",
             "object": "C"
         },
         {
-            "subject": "question",
+            "subject": "QUESTION",
             "object": "Q"
         },
         {
-            "subject": "separate",
+            "subject": "SEPARATE",
             "object": "S"
         },
         {
-            "subject": "easy",
+            "subject": "EASY",
             "object": "E"
         },
         {
-            "subject": "quick",
+            "subject": "QUICK",
             "object": "Q"
         },
         {
-            "subject": "cut",
+            "subject": "CUT",
             "object": "C"
         },
         {
-            "subject": "game",
+            "subject": "GAME",
             "object": "G"
         },
         {
-            "subject": "quiet",
+            "subject": "QUIET",
             "object": "Q"
         },
         {
-            "subject": "friend",
+            "subject": "FRIEND",
             "object": "F"
         },
         {
-            "subject": "poor",
+            "subject": "POOR",
             "object": "P"
         },
         {
-            "subject": "have",
+            "subject": "HAVE",
             "object": "H"
         },
         {
-            "subject": "talk",
+            "subject": "TALK",
             "object": "T"
         },
         {
-            "subject": "young",
+            "subject": "YOUNG",
             "object": "Y"
         },
         {
-            "subject": "play",
+            "subject": "PLAY",
             "object": "P"
         },
         {
-            "subject": "bright",
+            "subject": "BRIGHT",
             "object": "B"
         },
         {
-            "subject": "lose",
+            "subject": "LOSE",
             "object": "L"
         },
         {
-            "subject": "start",
+            "subject": "START",
             "object": "S"
         },
         {
-            "subject": "break",
+            "subject": "BREAK",
             "object": "B"
         },
         {
-            "subject": "law",
+            "subject": "LAW",
             "object": "L"
         },
         {
-            "subject": "good",
+            "subject": "GOOD",
             "object": "G"
         },
         {
-            "subject": "honest",
+            "subject": "HONEST",
             "object": "H"
         },
         {
-            "subject": "stupid",
+            "subject": "STUPID",
             "object": "S"
         },
         {
-            "subject": "smart",
+            "subject": "SMART",
             "object": "S"
         },
         {
-            "subject": "wise",
+            "subject": "WISE",
             "object": "W"
         },
         {
-            "subject": "close",
+            "subject": "CLOSE",
             "object": "C"
         },
         {
-            "subject": "read",
+            "subject": "READ",
             "object": "R"
         },
         {
-            "subject": "dull",
+            "subject": "DULL",
             "object": "D"
         },
         {
-            "subject": "shy",
+            "subject": "SHY",
             "object": "S"
         },
         {
-            "subject": "dark",
+            "subject": "DARK",
             "object": "D"
         },
         {
-            "subject": "thin",
+            "subject": "THIN",
             "object": "T"
         },
         {
-            "subject": "zesty",
+            "subject": "ZESTY",
             "object": "Z"
         },
         {
-            "subject": "new",
+            "subject": "NEW",
             "object": "N"
         },
         {
-            "subject": "catch",
+            "subject": "CATCH",
             "object": "C"
         },
         {
-            "subject": "hate",
+            "subject": "HATE",
             "object": "H"
         },
         {
-            "subject": "create",
+            "subject": "CREATE",
             "object": "C"
         },
         {
-            "subject": "try",
+            "subject": "TRY",
             "object": "T"
         },
         {
-            "subject": "farm",
+            "subject": "FARM",
             "object": "F"
         },
         {
-            "subject": "large",
+            "subject": "LARGE",
             "object": "L"
         },
         {
-            "subject": "small",
+            "subject": "SMALL",
             "object": "S"
         },
         {
-            "subject": "float",
+            "subject": "FLOAT",
             "object": "F"
         },
         {
-            "subject": "stand",
+            "subject": "STAND",
             "object": "S"
         },
         {
-            "subject": "big",
+            "subject": "BIG",
             "object": "B"
         },
         {
-            "subject": "tiny",
+            "subject": "TINY",
             "object": "T"
         },
         {
-            "subject": "website",
+            "subject": "WEBSITE",
             "object": "W"
         },
         {
-            "subject": "succeed",
+            "subject": "SUCCEED",
             "object": "S"
         },
         {
-            "subject": "thick",
+            "subject": "THICK",
             "object": "T"
         },
         {
-            "subject": "angry",
+            "subject": "ANGRY",
             "object": "A"
         },
         {
-            "subject": "clockwise",
+            "subject": "CLOCKWISE",
             "object": "C"
         },
         {
-            "subject": "change",
+            "subject": "CHANGE",
             "object": "C"
         },
         {
-            "subject": "rise",
+            "subject": "RISE",
             "object": "R"
         },
         {
-            "subject": "make",
+            "subject": "MAKE",
             "object": "M"
         },
         {
-            "subject": "low",
+            "subject": "LOW",
             "object": "L"
         },
         {
-            "subject": "wear",
+            "subject": "WEAR",
             "object": "W"
         },
         {
-            "subject": "do",
+            "subject": "DO",
             "object": "D"
         },
         {
-            "subject": "code",
+            "subject": "CODE",
             "object": "C"
         },
         {
-            "subject": "fierce",
+            "subject": "FIERCE",
             "object": "F"
         },
         {
-            "subject": "clean",
+            "subject": "CLEAN",
             "object": "C"
         },
         {
-            "subject": "digging",
+            "subject": "DIGGING",
             "object": "D"
         },
         {
-            "subject": "study",
+            "subject": "STUDY",
             "object": "S"
         },
         {
-            "subject": "drive",
+            "subject": "DRIVE",
             "object": "D"
         },
         {
-            "subject": "hit",
+            "subject": "HIT",
             "object": "H"
         },
         {
-            "subject": "cry",
+            "subject": "CRY",
             "object": "C"
         },
         {
-            "subject": "lend",
+            "subject": "LEND",
             "object": "L"
         },
         {
-            "subject": "run",
+            "subject": "RUN",
             "object": "R"
         },
         {
-            "subject": "hungry",
+            "subject": "HUNGRY",
             "object": "H"
         },
         {
-            "subject": "straight",
+            "subject": "STRAIGHT",
             "object": "S"
         },
         {
-            "subject": "book",
+            "subject": "BOOK",
             "object": "B"
         },
         {
-            "subject": "ship",
+            "subject": "SHIP",
             "object": "S"
         },
         {
-            "subject": "get",
+            "subject": "GET",
             "object": "G"
         },
         {
-            "subject": "live",
+            "subject": "LIVE",
             "object": "L"
         },
         {
-            "subject": "messy",
+            "subject": "MESSY",
             "object": "M"
         },
         {
-            "subject": "wild",
+            "subject": "WILD",
             "object": "W"
         },
         {
-            "subject": "administer",
+            "subject": "ADMINISTER",
             "object": "A"
         },
         {
-            "subject": "accept",
+            "subject": "ACCEPT",
             "object": "A"
         },
         {
-            "subject": "healthy",
+            "subject": "HEALTHY",
             "object": "H"
         },
         {
-            "subject": "hear",
+            "subject": "HEAR",
             "object": "H"
         },
         {
-            "subject": "find",
+            "subject": "FIND",
             "object": "F"
         },
         {
-            "subject": "fly",
+            "subject": "FLY",
             "object": "F"
         },
         {
-            "subject": "narrow",
+            "subject": "NARROW",
             "object": "N"
         },
         {
-            "subject": "shallow",
+            "subject": "SHALLOW",
             "object": "S"
         },
         {
-            "subject": "engine",
+            "subject": "ENGINE",
             "object": "E"
         },
         {
-            "subject": "science",
+            "subject": "SCIENCE",
             "object": "S"
         },
         {
-            "subject": "connect",
+            "subject": "CONNECT",
             "object": "C"
         },
         {
-            "subject": "dish",
+            "subject": "DISH",
             "object": "D"
         },
         {
-            "subject": "put",
+            "subject": "PUT",
             "object": "P"
         },
         {
-            "subject": "car",
+            "subject": "CAR",
             "object": "C"
         },
         {
-            "subject": "day",
+            "subject": "DAY",
             "object": "D"
         },
         {
-            "subject": "construction",
+            "subject": "CONSTRUCTION",
             "object": "C"
         },
         {
-            "subject": "see",
+            "subject": "SEE",
             "object": "S"
         },
         {
-            "subject": "design",
+            "subject": "DESIGN",
             "object": "D"
         },
         {
-            "subject": "funny",
+            "subject": "FUNNY",
             "object": "F"
         },
         {
-            "subject": "soft",
+            "subject": "SOFT",
             "object": "S"
         },
         {
-            "subject": "smile",
+            "subject": "SMILE",
             "object": "S"
         },
         {
-            "subject": "rich",
+            "subject": "RICH",
             "object": "R"
         },
         {
-            "subject": "say",
+            "subject": "SAY",
             "object": "S"
         },
         {
-            "subject": "hot",
+            "subject": "HOT",
             "object": "H"
         },
         {
-            "subject": "near",
+            "subject": "NEAR",
             "object": "N"
         },
         {
-            "subject": "witty",
+            "subject": "WITTY",
             "object": "W"
         },
         {
-            "subject": "sleep",
+            "subject": "SLEEP",
             "object": "S"
         },
         {
-            "subject": "painting",
+            "subject": "PAINTING",
             "object": "P"
         },
         {
-            "subject": "weak",
+            "subject": "WEAK",
             "object": "W"
         },
         {
-            "subject": "forgive",
+            "subject": "FORGIVE",
             "object": "F"
         },
         {
-            "subject": "mean",
+            "subject": "MEAN",
             "object": "M"
         },
         {
-            "subject": "brave",
+            "subject": "BRAVE",
             "object": "B"
         }
     ]
