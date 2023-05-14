@@ -1,14 +1,14 @@
 {
-    "name": "material_state",
+    "name": "object phase of matter NEEDS REVISION",
     "prompt_templates": [
-        "Natural state of {} is",
-        "liquid | solid | gas >> material state of {} is",
+        "What phase of matter (liquid, solid, gas) is {} usually in? It is a",
+        "Is {} usually a liquid, solid, or gas? It is a",
         "{},"
     ],
     "properties": {
         "relation_type": "commonsense",
-        "domain_name": "material",
-        "range_name": "state",
+        "domain_name": "object",
+        "range_name": "phase of matter",
         "symmetric": false
     },
     "samples": [

@@ -1,16 +1,15 @@
 {
-    "name": "first char",
+    "name": "word first letter",
     "prompt_templates": [
-        "{} starts with",
+        "{} starts with the letter",
         "The first character of the word {} is",
-        "The first letter of the word {} is",
         "{},"
     ],
     "properties": {
         "relation_type": "morphological",
         "domain_name": "word",
-        "range_name": "first char",
-        "symmetric": true
+        "range_name": "letter",
+        "symmetric": false
     },
     "samples": [
         {

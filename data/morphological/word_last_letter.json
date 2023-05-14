@@ -1,16 +1,15 @@
 {
-    "name": "last char",
+    "name": "word last letter",
     "prompt_templates": [
-        "{} ends with",
+        "{} ends with the letter",
         "The last character of the word {} is",
-        "The last letter of the word {} is",
         "{},"
     ],
     "properties": {
         "relation_type": "morphological",
         "domain_name": "word",
-        "range_name": "last char",
-        "symmetric": true
+        "range_name": "letter",
+        "symmetric": false
     },
     "samples": [
         {
