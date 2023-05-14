@@ -103,6 +103,7 @@ def causal_tracing(
     prompt_template: str,
     subject_original: str,
     subject_corruption: str,
+    object_original: str | None = None,
 ) -> dict:
     h_idx_orig, tokenized_orig = F.find_subject_token_index(
         mt=mt,
@@ -122,10 +123,24 @@ def causal_tracing(
     with baukit.TraceDict(mt.model, layer_names) as traces_o:
         output_o = mt.model(**tokenized_orig)
 
-    answer, p_answer = interpret_logits(mt, output_o.logits[0][-1], get_proba=True)[0]
-    answer_t = (
-        mt.tokenizer(answer, return_tensors="pt").to(mt.model.device).input_ids[0]
-    )
+    if object_original is None:
+        answer, p_answer = interpret_logits(mt, output_o.logits[0][-1], get_proba=True)[
+            0
+        ]
+        answer_t = (
+            mt.tokenizer(answer, return_tensors="pt").to(mt.model.device).input_ids[0]
+        )
+    else:
+        answer_t = (
+            mt.tokenizer(object_original, return_tensors="pt")
+            .to(mt.model.device)
+            .input_ids[0][0]
+        )
+        answer = mt.tokenizer.decode(answer_t)
+
+        p_answer = torch.nn.functional.softmax(output_o.logits[0][-1], dim=-1)[
+            answer_t.item()
+        ].item()
 
     logger.debug(f"answer: {answer}[{answer_t.item()}], p(answer): {p_answer:.3f}")
 

@@ -15,6 +15,7 @@ sentencepiece
 tqdm
 transformers
 torch
+kneed
 
 # dev dependencies
 black
