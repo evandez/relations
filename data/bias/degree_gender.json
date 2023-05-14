@@ -1,15 +1,16 @@
 {
-    "name": "gender of degree",
+    "name": "univ degree gender",
     "prompt_templates": [
-        "The majority of {} students are",
-        "{} students are mostly",
-        "{}:"
+        "Usually, what gender (men or women) are {} students? They are typically",
+        "What gender (men or women) are {} students associated with? They are usually",
+        "Are {} students mostly men or women? They are",
+        "{},"
     ],
     "properties": {
         "relation_type": "bias",
         "domain_name": "degree",
         "range_name": "gender",
-        "symmetric": "false"
+        "symmetric": false
     },
     "samples": [
         {

@@ -4,7 +4,7 @@ from invoke import task
 
 def _maybe_add_device(cmd, device=None):
     if device is not None:
-        cmd = cmd.rstrip() + f"--device {device}"
+        cmd = cmd.rstrip() + f" --device {device}"
     return cmd
 
 

@@ -100,15 +100,16 @@ def order_1_approx(
             use_cache=use_cache,
             past_key_values=past_key_values,
         )
-    h = ret[h_layer_name].output[0][0, _h_index]
-    z = ret[z_layer_name].output[0][0, z_index]
+    h = untuple(ret[h_layer_name].output)[0, _h_index]
+    z = untuple(ret[z_layer_name].output)[0, z_index]
 
     # Now compute J and b.
     def compute_z_from_h(h: torch.Tensor) -> torch.Tensor:
         def insert_h(output: tuple, layer: str) -> tuple:
+            hs = untuple(output)
             if layer != h_layer_name:
                 return output
-            output[0][0, _h_index] = h
+            hs[0, _h_index] = h
             return output
 
         with baukit.TraceDict(
@@ -119,7 +120,7 @@ def order_1_approx(
                 past_key_values=past_key_values,
                 use_cache=use_cache,
             )
-        return ret[z_layer_name].output[0][0, -1]
+        return untuple(ret[z_layer_name].output)[0, -1]
 
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
@@ -302,10 +303,7 @@ def compute_hidden_states(
 
     hiddens = []
     for layer in layers:
-        h = ret[layer_paths[layer]].output
-        # Everything except embedding layer is returned as tuple.
-        if isinstance(h, tuple):
-            h = h[0]
+        h = untuple(ret[layer_paths[layer]].output)
         hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
@@ -419,3 +417,32 @@ def is_nontrivial_prefix(prediction: str, target: str) -> bool:
     target = target.lower().strip()
     prediction = prediction.lower().strip()
     return len(prediction) > 0 and target.startswith(prediction)
+
+def random_incorrect_targets(true_targets):
+    """Returns an array of the same size as true_targets where each entry is
+    changed to a random (but guaranteed different) value, drawn at random from
+    true_targets."""
+    result = []
+    for t in true_targets:
+        bad = t
+        while bad == t:
+            bad = random.choice(true_targets)
+        result.append(bad)
+    return result
+
+def get_hidden_state_at_subject(mt, prompt, subject, h_layer):
+    """"Runs a single prompt in inference and reads out the hidden state at the
+    last subject token for the given subject, at the specified layer."""
+    h_index, inputs = find_subject_token_index(
+        mt=mt, prompt=prompt, subject=subject
+    )
+    [[hs], _] = compute_hidden_states(
+        mt=mt, layers=[h_layer], inputs=inputs
+    )
+    return hs[:, h_index]
+
+def untuple(x: Any) -> Any:
+    """If `x` is a tuple, return the first element."""
+    if isinstance(x, tuple):
+        return x[0]
+    return x

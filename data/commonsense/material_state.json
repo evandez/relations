@@ -1,0 +1,464 @@
+{
+    "name": "material_state",
+    "prompt_templates": [
+        "Natural state of {} is",
+        "liquid | solid | gas >> material state of {} is",
+        "{},"
+    ],
+    "properties": {
+        "relation_type": "commonsense",
+        "domain_name": "material",
+        "range_name": "state",
+        "symmetric": false
+    },
+    "samples": [
+        {
+            "subject": "nitrogen monoxide",
+            "object": "gas"
+        },
+        {
+            "subject": "granite",
+            "object": "solid"
+        },
+        {
+            "subject": "iodine",
+            "object": "gas"
+        },
+        {
+            "subject": "benzene",
+            "object": "gas"
+        },
+        {
+            "subject": "tears",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitric oxide",
+            "object": "gas"
+        },
+        {
+            "subject": "chlorine",
+            "object": "gas"
+        },
+        {
+            "subject": "mustard",
+            "object": "liquid"
+        },
+        {
+            "subject": "lava",
+            "object": "liquid"
+        },
+        {
+            "subject": "water",
+            "object": "liquid"
+        },
+        {
+            "subject": "kerosene",
+            "object": "liquid"
+        },
+        {
+            "subject": "asteroids",
+            "object": "solid"
+        },
+        {
+            "subject": "lake water",
+            "object": "liquid"
+        },
+        {
+            "subject": "comets",
+            "object": "solid"
+        },
+        {
+            "subject": "mayonnaise",
+            "object": "liquid"
+        },
+        {
+            "subject": "neon",
+            "object": "gas"
+        },
+        {
+            "subject": "ozone",
+            "object": "gas"
+        },
+        {
+            "subject": "marble",
+            "object": "solid"
+        },
+        {
+            "subject": "iron",
+            "object": "solid"
+        },
+        {
+            "subject": "ketchup",
+            "object": "liquid"
+        },
+        {
+            "subject": "amber",
+            "object": "solid"
+        },
+        {
+            "subject": "sap",
+            "object": "liquid"
+        },
+        {
+            "subject": "ore",
+            "object": "solid"
+        },
+        {
+            "subject": "dirt",
+            "object": "solid"
+        },
+        {
+            "subject": "tequila",
+            "object": "liquid"
+        },
+        {
+            "subject": "helium",
+            "object": "gas"
+        },
+        {
+            "subject": "soil",
+            "object": "solid"
+        },
+        {
+            "subject": "oxygen",
+            "object": "gas"
+        },
+        {
+            "subject": "xylene",
+            "object": "gas"
+        },
+        {
+            "subject": "zinc",
+            "object": "solid"
+        },
+        {
+            "subject": "rocks",
+            "object": "solid"
+        },
+        {
+            "subject": "methane",
+            "object": "gas"
+        },
+        {
+            "subject": "olive oil",
+            "object": "liquid"
+        },
+        {
+            "subject": "seawater",
+            "object": "liquid"
+        },
+        {
+            "subject": "hydrogen",
+            "object": "gas"
+        },
+        {
+            "subject": "radon",
+            "object": "gas"
+        },
+        {
+            "subject": "worcestershire sauce",
+            "object": "liquid"
+        },
+        {
+            "subject": "beer",
+            "object": "liquid"
+        },
+        {
+            "subject": "toluene",
+            "object": "gas"
+        },
+        {
+            "subject": "semen",
+            "object": "liquid"
+        },
+        {
+            "subject": "krypton",
+            "object": "gas"
+        },
+        {
+            "subject": "milk",
+            "object": "liquid"
+        },
+        {
+            "subject": "meteorites",
+            "object": "solid"
+        },
+        {
+            "subject": "gravel",
+            "object": "solid"
+        },
+        {
+            "subject": "honey",
+            "object": "liquid"
+        },
+        {
+            "subject": "wood",
+            "object": "solid"
+        },
+        {
+            "subject": "moon rocks",
+            "object": "solid"
+        },
+        {
+            "subject": "soy sauce",
+            "object": "liquid"
+        },
+        {
+            "subject": "fossils",
+            "object": "solid"
+        },
+        {
+            "subject": "mercury",
+            "object": "liquid"
+        },
+        {
+            "subject": "diesel fuel",
+            "object": "liquid"
+        },
+        {
+            "subject": "sweat",
+            "object": "liquid"
+        },
+        {
+            "subject": "grease",
+            "object": "liquid"
+        },
+        {
+            "subject": "butane",
+            "object": "gas"
+        },
+        {
+            "subject": "bromine",
+            "object": "gas"
+        },
+        {
+            "subject": "sulfur dioxide",
+            "object": "gas"
+        },
+        {
+            "subject": "balsamic vinegar",
+            "object": "liquid"
+        },
+        {
+            "subject": "diamonds",
+            "object": "solid"
+        },
+        {
+            "subject": "vinegar",
+            "object": "liquid"
+        },
+        {
+            "subject": "gold",
+            "object": "solid"
+        },
+        {
+            "subject": "silver",
+            "object": "solid"
+        },
+        {
+            "subject": "salt",
+            "object": "solid"
+        },
+        {
+            "subject": "saliva",
+            "object": "liquid"
+        },
+        {
+            "subject": "blood",
+            "object": "liquid"
+        },
+        {
+            "subject": "oil",
+            "object": "liquid"
+        },
+        {
+            "subject": "sand",
+            "object": "solid"
+        },
+        {
+            "subject": "methanol",
+            "object": "gas"
+        },
+        {
+            "subject": "quartz",
+            "object": "solid"
+        },
+        {
+            "subject": "xenon",
+            "object": "gas"
+        },
+        {
+            "subject": "rum",
+            "object": "liquid"
+        },
+        {
+            "subject": "wine",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrous oxide",
+            "object": "gas"
+        },
+        {
+            "subject": "copper",
+            "object": "solid"
+        },
+        {
+            "subject": "lead",
+            "object": "solid"
+        },
+        {
+            "subject": "glass",
+            "object": "solid"
+        },
+        {
+            "subject": "acetylene",
+            "object": "gas"
+        },
+        {
+            "subject": "urine",
+            "object": "liquid"
+        },
+        {
+            "subject": "snow",
+            "object": "solid"
+        },
+        {
+            "subject": "river water",
+            "object": "liquid"
+        },
+        {
+            "subject": "clay",
+            "object": "solid"
+        },
+        {
+            "subject": "coal",
+            "object": "solid"
+        },
+        {
+            "subject": "fluorine",
+            "object": "gas"
+        },
+        {
+            "subject": "oil",
+            "object": "liquid"
+        },
+        {
+            "subject": "whiskey",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrogen",
+            "object": "gas"
+        },
+        {
+            "subject": "ice",
+            "object": "solid"
+        },
+        {
+            "subject": "metals",
+            "object": "solid"
+        },
+        {
+            "subject": "gasoline",
+            "object": "liquid"
+        },
+        {
+            "subject": "sandstone",
+            "object": "solid"
+        },
+        {
+            "subject": "vodka",
+            "object": "liquid"
+        },
+        {
+            "subject": "propane",
+            "object": "gas"
+        },
+        {
+            "subject": "carbon monoxide",
+            "object": "gas"
+        },
+        {
+            "subject": "minerals",
+            "object": "solid"
+        },
+        {
+            "subject": "sugar",
+            "object": "solid"
+        },
+        {
+            "subject": "dew",
+            "object": "liquid"
+        },
+        {
+            "subject": "pearls",
+            "object": "solid"
+        },
+        {
+            "subject": "ethanol",
+            "object": "gas"
+        },
+        {
+            "subject": "argon",
+            "object": "gas"
+        },
+        {
+            "subject": "magma",
+            "object": "liquid"
+        },
+        {
+            "subject": "air",
+            "object": "gas"
+        },
+        {
+            "subject": "ammonia",
+            "object": "gas"
+        },
+        {
+            "subject": "ethylene",
+            "object": "gas"
+        },
+        {
+            "subject": "gin",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrogen dioxide",
+            "object": "gas"
+        },
+        {
+            "subject": "brine",
+            "object": "liquid"
+        },
+        {
+            "subject": "ocean water",
+            "object": "liquid"
+        },
+        {
+            "subject": "carbon dioxide",
+            "object": "gas"
+        },
+        {
+            "subject": "rain",
+            "object": "liquid"
+        },
+        {
+            "subject": "hydrogen sulfide",
+            "object": "gas"
+        },
+        {
+            "subject": "limestone",
+            "object": "solid"
+        },
+        {
+            "subject": "bauxite",
+            "object": "solid"
+        },
+        {
+            "subject": "brandy",
+            "object": "liquid"
+        }
+    ]
+}

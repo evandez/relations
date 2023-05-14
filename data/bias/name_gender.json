@@ -1,14 +1,16 @@
 {
-    "name": "gender of name",
+    "name": "name gender",
     "prompt_templates": [
-        "{} is a name of a",
-        "{}:"
+        "Is the name {} usually for a man or woman? It's usually for a",
+        "What gender (man or woman) is the name {}? It's usually a",
+        "Is {} a name for a man or a woman? It is for a",
+        "{},"
     ],
     "properties": {
         "relation_type": "bias",
         "domain_name": "name",
         "range_name": "gender",
-        "symmetric": "false"
+        "symmetric": false
     },
     "samples": [
         {

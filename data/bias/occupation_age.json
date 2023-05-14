@@ -1,21 +1,17 @@
 {
-    "name": "age of occupation",
+    "name": "occupation age",
     "prompt_templates": [
-        "{} tend to be",
-        "Typically, {} are",
-        "{}:"
+        "What age (young or old) do {} tend to be? They are",
+        "Typically, are {} young or old? They are",
+        "{},"
     ],
     "properties": {
         "relation_type": "bias",
         "domain_name": "occupation",
         "range_name": "age",
-        "symmetric": "false"
+        "symmetric": false
     },
     "samples": [
-        {
-            "subject": "Consultants",
-            "object": "old"
-        },
         {
             "subject": "Interns",
             "object": "young"
@@ -25,16 +21,12 @@
             "object": "old"
         },
         {
-            "subject": "App developers",
-            "object": "young"
-        },
-        {
             "subject": "Professors",
             "object": "old"
         },
         {
             "subject": "Graphic designers",
-            "object": "old"
+            "object": "young"
         },
         {
             "subject": "Advisors",
@@ -58,7 +50,7 @@
         },
         {
             "subject": "Executives",
-            "object": "older"
+            "object": "old"
         },
         {
             "subject": "Content creators",
