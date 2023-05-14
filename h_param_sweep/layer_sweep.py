@@ -3,9 +3,7 @@ import sys
 sys.path.append("..")
 
 import argparse
-import copy
 import json
-import logging
 import os
 from typing import List
 
@@ -15,7 +13,6 @@ from src.functional import make_prompt, predict_next_token
 from src.lens import causal_tracing, layer_c_measure
 from src.operators import JacobianIclMeanEstimator
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from tqdm.auto import tqdm
@@ -50,17 +47,16 @@ def choose_sample_pairs(
 def main(args: argparse.Namespace) -> None:
     ###################################################
     FILTER_RELATIONS: list = [
-        # "country capital city",
+        "country capital city",
         # "occupation",
         "person superhero name",
         "plays pro sport",
-        # "task executor",
-        # "comparative",
+        "task executor",
+        "comparative",
         "past tense of verb",
-        # "gender of name",
-        # "religion of a name",
+        "gender of name",
+        "religion of a name",
     ]
-
     ###################################################
 
     results_path = f"{args.results_dir}/{args.model}"
@@ -173,7 +169,10 @@ if __name__ == "__main__":
         "--n_runs", type=int, default=20, help="Number of runs to average over"
     )
     parser.add_argument(
-        "--results_dir", type=str, default="layer_sweep", help="results dir"
+        "--results_dir",
+        type=str,
+        default="/home/local_arnab/Codes/relations/results/layer_sweep",
+        help="results dir",
     )
     args = parser.parse_args()
     main(args)

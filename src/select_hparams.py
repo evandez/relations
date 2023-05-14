@@ -9,7 +9,7 @@ from src.lens import causal_tracing
 import matplotlib.pyplot as plt
 import numpy as np
 from kneed import KneeLocator
-from tqdm.auto import tqdm
+from tqdm import tqdm
 
 H_PARAMS = {
     "gpt-j-6B": {
@@ -60,7 +60,8 @@ def select_layer(
         layer: [] for layer in models.determine_layer_paths(mt)
     }
     for sample_pair, prompt_template in tqdm(
-        trace_config[: min(len(trace_config), n_run)]
+        trace_config[: min(len(trace_config), n_run)],
+        desc="searching for optimal layer",
     ):
         icl_examples = list(set(training_data.samples) - set(sample_pair))
         random.shuffle(icl_examples)
@@ -109,7 +110,7 @@ def select_layer(
         print(f"Knee: {kneedle.knee}, Elbow: {kneedle.elbow}")
 
     if kneedle.knee is not None:
-        return min(kneedle.knee + 1, 15)
+        return int(min(kneedle.knee + 1, 15))
     else:
         # can't find knee, fallback to default layer for the model
         return H_PARAMS[model_name]["layer"]["default"]

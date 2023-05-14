@@ -136,7 +136,7 @@ dmypy.json
 *.npz
 
 # Project-specific stuff
-*/layer_sweep/
+notebooks/layer_sweep/
 scan-for-best*
 results/
 models/
