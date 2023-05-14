@@ -13,244 +13,452 @@
     },
     "samples": [
         {
-            "subject": "happy",
-            "object": "positive"
+            "subject": "nitrogen monoxide",
+            "object": "gas"
         },
         {
-            "subject": "joy",
-            "object": "positive"
+            "subject": "granite",
+            "object": "solid"
         },
         {
-            "subject": "love",
-            "object": "positive"
+            "subject": "iodine",
+            "object": "gas"
         },
         {
-            "subject": "peace",
-            "object": "positive"
+            "subject": "benzene",
+            "object": "gas"
         },
         {
-            "subject": "hope",
-            "object": "positive"
+            "subject": "tears",
+            "object": "liquid"
         },
         {
-            "subject": "excited",
-            "object": "positive"
+            "subject": "nitric oxide",
+            "object": "gas"
         },
         {
-            "subject": "grateful",
-            "object": "positive"
+            "subject": "chlorine",
+            "object": "gas"
         },
         {
-            "subject": "proud",
-            "object": "positive"
+            "subject": "mustard",
+            "object": "liquid"
         },
         {
-            "subject": "blessed",
-            "object": "positive"
+            "subject": "lava",
+            "object": "liquid"
         },
         {
-            "subject": "confident",
-            "object": "positive"
+            "subject": "water",
+            "object": "liquid"
         },
         {
-            "subject": "content",
-            "object": "positive"
+            "subject": "kerosene",
+            "object": "liquid"
         },
         {
-            "subject": "satisfied",
-            "object": "positive"
+            "subject": "asteroids",
+            "object": "solid"
         },
         {
-            "subject": "optimistic",
-            "object": "positive"
+            "subject": "lake water",
+            "object": "liquid"
         },
         {
-            "subject": "cheerful",
-            "object": "positive"
+            "subject": "comets",
+            "object": "solid"
         },
         {
-            "subject": "ecstatic",
-            "object": "positive"
+            "subject": "mayonnaise",
+            "object": "liquid"
         },
         {
-            "subject": "delighted",
-            "object": "positive"
+            "subject": "neon",
+            "object": "gas"
         },
         {
-            "subject": "thrilled",
-            "object": "positive"
+            "subject": "ozone",
+            "object": "gas"
         },
         {
-            "subject": "overjoyed",
-            "object": "positive"
+            "subject": "marble",
+            "object": "solid"
         },
         {
-            "subject": "elated",
-            "object": "positive"
+            "subject": "iron",
+            "object": "solid"
         },
         {
-            "subject": "blissful",
-            "object": "positive"
+            "subject": "ketchup",
+            "object": "liquid"
         },
         {
-            "subject": "sad",
-            "object": "negative"
+            "subject": "amber",
+            "object": "solid"
         },
         {
-            "subject": "unhappy",
-            "object": "negative"
+            "subject": "sap",
+            "object": "liquid"
         },
         {
-            "subject": "depressed",
-            "object": "negative"
+            "subject": "ore",
+            "object": "solid"
         },
         {
-            "subject": "lonely",
-            "object": "negative"
+            "subject": "dirt",
+            "object": "solid"
         },
         {
-            "subject": "heartbroken",
-            "object": "negative"
+            "subject": "tequila",
+            "object": "liquid"
         },
         {
-            "subject": "anxious",
-            "object": "negative"
+            "subject": "helium",
+            "object": "gas"
         },
         {
-            "subject": "frustrated",
-            "object": "negative"
+            "subject": "soil",
+            "object": "solid"
         },
         {
-            "subject": "angry",
-            "object": "negative"
+            "subject": "oxygen",
+            "object": "gas"
         },
         {
-            "subject": "jealous",
-            "object": "negative"
+            "subject": "xylene",
+            "object": "gas"
         },
         {
-            "subject": "hateful",
-            "object": "negative"
+            "subject": "zinc",
+            "object": "solid"
         },
         {
-            "subject": "disappointed",
-            "object": "negative"
+            "subject": "rocks",
+            "object": "solid"
         },
         {
-            "subject": "gloomy",
-            "object": "negative"
+            "subject": "methane",
+            "object": "gas"
         },
         {
-            "subject": "dejected",
-            "object": "negative"
+            "subject": "olive oil",
+            "object": "liquid"
         },
         {
-            "subject": "hopeless",
-            "object": "negative"
+            "subject": "seawater",
+            "object": "liquid"
         },
         {
-            "subject": "despairing",
-            "object": "negative"
+            "subject": "hydrogen",
+            "object": "gas"
         },
         {
-            "subject": "frightened",
-            "object": "negative"
+            "subject": "radon",
+            "object": "gas"
         },
         {
-            "subject": "terrified",
-            "object": "negative"
+            "subject": "worcestershire sauce",
+            "object": "liquid"
         },
         {
-            "subject": "scared",
-            "object": "negative"
+            "subject": "beer",
+            "object": "liquid"
         },
         {
-            "subject": "worried",
-            "object": "negative"
+            "subject": "toluene",
+            "object": "gas"
         },
         {
-            "subject": "apprehensive",
-            "object": "negative"
+            "subject": "semen",
+            "object": "liquid"
         },
         {
-            "subject": "nervous",
-            "object": "negative"
+            "subject": "krypton",
+            "object": "gas"
         },
         {
-            "subject": "neutral",
-            "object": "neutral"
+            "subject": "milk",
+            "object": "liquid"
         },
         {
-            "subject": "computer",
-            "object": "neutral"
+            "subject": "meteorites",
+            "object": "solid"
         },
         {
-            "subject": "car",
-            "object": "neutral"
+            "subject": "gravel",
+            "object": "solid"
         },
         {
-            "subject": "house",
-            "object": "neutral"
+            "subject": "honey",
+            "object": "liquid"
         },
         {
-            "subject": "tree",
-            "object": "neutral"
+            "subject": "wood",
+            "object": "solid"
         },
         {
-            "subject": "book",
-            "object": "neutral"
+            "subject": "moon rocks",
+            "object": "solid"
         },
         {
-            "subject": "money",
-            "object": "neutral"
+            "subject": "soy sauce",
+            "object": "liquid"
         },
         {
-            "subject": "time",
-            "object": "neutral"
+            "subject": "fossils",
+            "object": "solid"
         },
         {
-            "subject": "day",
-            "object": "neutral"
+            "subject": "mercury",
+            "object": "liquid"
         },
         {
-            "subject": "week",
-            "object": "neutral"
+            "subject": "diesel fuel",
+            "object": "liquid"
         },
         {
-            "subject": "ordinary",
-            "object": "neutral"
+            "subject": "sweat",
+            "object": "liquid"
         },
         {
-            "subject": "common",
-            "object": "neutral"
+            "subject": "grease",
+            "object": "liquid"
         },
         {
-            "subject": "typical",
-            "object": "neutral"
+            "subject": "butane",
+            "object": "gas"
         },
         {
-            "subject": "average",
-            "object": "neutral"
+            "subject": "bromine",
+            "object": "gas"
         },
         {
-            "subject": "indifferent",
-            "object": "neutral"
+            "subject": "sulfur dioxide",
+            "object": "gas"
         },
         {
-            "subject": "unbiased",
-            "object": "neutral"
+            "subject": "balsamic vinegar",
+            "object": "liquid"
         },
         {
-            "subject": "impartial",
-            "object": "neutral"
+            "subject": "diamonds",
+            "object": "solid"
         },
         {
-            "subject": "objective",
-            "object": "neutral"
+            "subject": "vinegar",
+            "object": "liquid"
         },
         {
-            "subject": "neutral",
-            "object": "neutral"
+            "subject": "gold",
+            "object": "solid"
+        },
+        {
+            "subject": "silver",
+            "object": "solid"
+        },
+        {
+            "subject": "salt",
+            "object": "solid"
+        },
+        {
+            "subject": "saliva",
+            "object": "liquid"
+        },
+        {
+            "subject": "blood",
+            "object": "liquid"
+        },
+        {
+            "subject": "oil",
+            "object": "liquid"
+        },
+        {
+            "subject": "sand",
+            "object": "solid"
+        },
+        {
+            "subject": "methanol",
+            "object": "gas"
+        },
+        {
+            "subject": "quartz",
+            "object": "solid"
+        },
+        {
+            "subject": "xenon",
+            "object": "gas"
+        },
+        {
+            "subject": "rum",
+            "object": "liquid"
+        },
+        {
+            "subject": "wine",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrous oxide",
+            "object": "gas"
+        },
+        {
+            "subject": "copper",
+            "object": "solid"
+        },
+        {
+            "subject": "lead",
+            "object": "solid"
+        },
+        {
+            "subject": "glass",
+            "object": "solid"
+        },
+        {
+            "subject": "acetylene",
+            "object": "gas"
+        },
+        {
+            "subject": "urine",
+            "object": "liquid"
+        },
+        {
+            "subject": "snow",
+            "object": "solid"
+        },
+        {
+            "subject": "river water",
+            "object": "liquid"
+        },
+        {
+            "subject": "clay",
+            "object": "solid"
+        },
+        {
+            "subject": "coal",
+            "object": "solid"
+        },
+        {
+            "subject": "fluorine",
+            "object": "gas"
+        },
+        {
+            "subject": "oil",
+            "object": "liquid"
+        },
+        {
+            "subject": "whiskey",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrogen",
+            "object": "gas"
+        },
+        {
+            "subject": "ice",
+            "object": "solid"
+        },
+        {
+            "subject": "metals",
+            "object": "solid"
+        },
+        {
+            "subject": "gasoline",
+            "object": "liquid"
+        },
+        {
+            "subject": "sandstone",
+            "object": "solid"
+        },
+        {
+            "subject": "vodka",
+            "object": "liquid"
+        },
+        {
+            "subject": "propane",
+            "object": "gas"
+        },
+        {
+            "subject": "carbon monoxide",
+            "object": "gas"
+        },
+        {
+            "subject": "minerals",
+            "object": "solid"
+        },
+        {
+            "subject": "sugar",
+            "object": "solid"
+        },
+        {
+            "subject": "dew",
+            "object": "liquid"
+        },
+        {
+            "subject": "pearls",
+            "object": "solid"
+        },
+        {
+            "subject": "ethanol",
+            "object": "gas"
+        },
+        {
+            "subject": "argon",
+            "object": "gas"
+        },
+        {
+            "subject": "magma",
+            "object": "liquid"
+        },
+        {
+            "subject": "air",
+            "object": "gas"
+        },
+        {
+            "subject": "ammonia",
+            "object": "gas"
+        },
+        {
+            "subject": "ethylene",
+            "object": "gas"
+        },
+        {
+            "subject": "gin",
+            "object": "liquid"
+        },
+        {
+            "subject": "nitrogen dioxide",
+            "object": "gas"
+        },
+        {
+            "subject": "brine",
+            "object": "liquid"
+        },
+        {
+            "subject": "ocean water",
+            "object": "liquid"
+        },
+        {
+            "subject": "carbon dioxide",
+            "object": "gas"
+        },
+        {
+            "subject": "rain",
+            "object": "liquid"
+        },
+        {
+            "subject": "hydrogen sulfide",
+            "object": "gas"
+        },
+        {
+            "subject": "limestone",
+            "object": "solid"
+        },
+        {
+            "subject": "bauxite",
+            "object": "solid"
+        },
+        {
+            "subject": "brandy",
+            "object": "liquid"
         }
     ]
 }

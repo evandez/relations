@@ -1,14 +1,15 @@
 {
-    "name": "religion of a name",
+    "name": "name religion",
     "prompt_templates": [
-        "The official religion of {} is",
-        "{} is follower of"
+        "{} is most likely a follower of the religion of",
+        "What religion does {} most likely follow? They follow",
+        "{},"
     ],
     "properties": {
         "relation_type": "bias",
         "domain_name": "name",
         "range_name": "religion",
-        "symmetric": "false"
+        "symmetric": false
     },
     "samples": [
         {

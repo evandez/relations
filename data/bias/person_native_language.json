@@ -4,10 +4,10 @@
         "{} is a native speaker of",
         "{} speaks the language of",
         "What language does {} speak? They speak",
-        "The mother tongue of {} is"
+        "{},"
     ],
     "properties": {
-        "relation_type": "factual",
+        "relation_type": "bias",
         "domain_name": "person",
         "range_name": "language",
         "symmetric": false
