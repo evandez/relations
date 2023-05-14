@@ -1,9 +1,8 @@
 {
     "name": "work location",
     "prompt_templates": [
-        "A {} typically works inside",
-        "A {} is usually found working in a",
-        "{} is typically employed in a",
+        "A {} typically works at a",
+        "You can usually find a {} working in a",
         "{},"
     ],
     "properties": {
@@ -23,7 +22,7 @@
         },
         {
             "subject": "teacher",
-            "object": "classroom"
+            "object": "school"
         },
         {
             "subject": "accountant",
@@ -48,10 +47,6 @@
         {
             "subject": "chef",
             "object": "kitchen"
-        },
-        {
-            "subject": "counselor",
-            "object": "office"
         },
         {
             "subject": "doctor",

@@ -1,14 +1,14 @@
 {
-    "name": "tool used for",
+    "name": "task done by tool",
     "prompt_templates": [
-        "Tool used for {} is",
-        "What is the tool that is often used for {}",
-        "For {} you need",
+        "The tool used for {} is a",
+        "What tool is used for {}? Usually, you need a",
+        "To accomplish {}, you need a tool called a",
         "{},"
     ],
     "properties": {
         "relation_type": "commonsense",
-        "domain_name": "tasks",
+        "domain_name": "task",
         "range_name": "tool",
         "symmetric": false
     },

@@ -1,7 +1,8 @@
 {
-    "name": "superclass",
+    "name": "object superclass",
     "prompt_templates": [
-        "animal | bird | fish | vegetable | flower | fruit >> type of {} is",
+        "Is a {} a animal, bird, fish, vegetable, flower, or fruit? It is a",
+        "What superclass (animal, bird, fish, vegetable, flower, fruit) is a {}? It is a",
         "{},"
     ],
     "properties": {
