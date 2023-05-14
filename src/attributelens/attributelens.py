@@ -27,9 +27,20 @@ class Attribute_Lens:
     def apply_attribute_lens(
         self,
         prompt: str,
-        relation_operator: LinearRelationOperator
+        relation_operator: LinearRelationOperator | None
     ) -> dict:
         print("prompt: ", prompt)
+
+        if relation_operator is None:
+            # Use the identity operator if none is supplied.
+            relation_operator = LinearRelationOperator(
+                mt=self.mt,
+                weight=None,
+                bias=None,
+                h_layer=0,
+                z_layer=-1,
+                prompt_template="{}",
+            )
 
         inputs = self.mt.tokenizer(
             prompt, return_tensors="pt"
