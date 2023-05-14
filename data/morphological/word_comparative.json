@@ -1,13 +1,14 @@
 {
-    "name": "comparative",
+    "name": "word comparative",
     "prompt_templates": [
-        "The comparative of {} is",
+        "The comparative form of {} is",
+        "What is the comparative form of {}? It is",
         "{},"
     ],
     "properties": {
         "relation_type": "morphological",
-        "domain_name": "adjective",
-        "range_name": "adjective",
+        "domain_name": "word",
+        "range_name": "word",
         "symmetric": false
     },
     "samples": [

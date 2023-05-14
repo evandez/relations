@@ -1,13 +1,14 @@
 {
-    "name": "past tense of verb",
+    "name": "word past tense",
     "prompt_templates": [
         "The past tense of {} is",
+        "What is the past tense of {}? It is",
         "{},"
     ],
     "properties": {
         "relation_type": "morphological",
-        "domain_name": "verb",
-        "range_name": "past tense of verb",
+        "domain_name": "word",
+        "range_name": "word",
         "symmetric": false
     },
     "samples": [
