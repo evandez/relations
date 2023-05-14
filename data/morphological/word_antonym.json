@@ -1,5 +1,5 @@
 {
-    "name": "antonym",
+    "name": "word antonym",
     "prompt_templates": [
         "The opposite of {} is",
         "The antonym of {} is",

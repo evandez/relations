@@ -71,7 +71,7 @@ def get_info_for_plotting(
         token_arr = []
         distribution_arr_top_k = []
 
-        for token_order in range(len(v_space_reprs)):
+        for token_order in range(start_idx, end_idx):
             cur_tok = v_space_reprs[token_order][layer][0]
             confidence_arr.append(round(cur_tok[1], 4))
 
@@ -192,7 +192,7 @@ def plot_attribute_lens(
     fig.update_layout(yaxis_range=[-0.5, len(y) - 0.5])
     fig.update_layout(xaxis_range=[-0.5, len(x) - 0.5])
 
-    fig.update_layout(autosize=False, width=90 * len(x) + 200, height=35 * len(y) + 200)
+    fig.update_layout(autosize=False, width=80 * len(x) + 200, height=25 * len(y) + 200)
 
     fig.update_layout(
         xaxis=dict(
@@ -200,7 +200,7 @@ def plot_attribute_lens(
             side="bottom",
             tickvals=x,
             ticktext=x_tokens,
-            tickfont=dict(family="Courier New, Monospace", color="darkblue", size=17),
+            tickfont=dict(family="Courier New, Monospace", color="darkblue", size=15),
         ),
     )
 
@@ -209,7 +209,7 @@ def plot_attribute_lens(
             tickmode="array",
             tickvals=y,
             ticktext=[ny + " " for ny in y_layer_names],
-            tickfont=dict(family="verdana", color="firebrick", size=14),
+            tickfont=dict(family="verdana", color="firebrick", size=12),
         )
     )
 

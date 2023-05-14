@@ -135,7 +135,10 @@ def reconstruction(
                 z_true = functional.compute_hidden_states(
                     mt=estimator.mt,
                     layers=[operator.z_layer],
-                    prompt=prompt_template.format(subject),
+                    prompt=make_prompt(
+                        prompt_template=prompt_template,
+                        subject=subject,
+                        mt=mt),
                 ).hiddens[0][0, -1]
                 z_pred = operator(subject).z
 
@@ -440,7 +443,7 @@ def faithfulness(
             #print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            distraction_template = '{target}, {target}, {target}, {target}. '
+            distraction_template = ' {target}, {target}, {target}, {target}. '
             prompts_pd = [
                     make_prompt(prompt_template=
                         distraction_template.format(target=wrong) + prompt_template,

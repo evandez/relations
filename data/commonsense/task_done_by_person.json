@@ -1,8 +1,8 @@
 {
-    "name": "task executor",
+    "name": "task done by person NEEDS REVISION",
     "prompt_templates": [
-        "{},",
-        "Person who does/operates/makes/plays {} is called"
+        "Person who does/operates/makes/plays {} is called",
+        "{},"
     ],
     "properties": {
         "relation_type": "commonsense",

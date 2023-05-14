@@ -1,8 +1,8 @@
 {
-    "name": "word_sentiment",
+    "name": "word sentiment",
     "prompt_templates": [
-        "positive | negative | neutral >> type of {} is",
-        "sentiment of word {} is",
+        "Is the sentiment of the word '{}' positive, negative, or neutral? It is",
+        "What is the sentiment (positive, negative, neutral) of '{}'? It is",
         "{},"
     ],
     "properties": {

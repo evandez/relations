@@ -1,14 +1,14 @@
 {
-    "name": "word_length",
+    "name": "word length",
     "prompt_templates": [
-        "The number of characters in the word {} is",
-        "The length of word {} is",
+        "The number of characters in the word '{}' is",
+        "The length of the word '{}' is",
         "{},"
     ],
     "properties": {
         "relation_type": "morphological",
         "domain_name": "word",
-        "range_name": "len(word)",
+        "range_name": "number",
         "symmetric": false
     },
     "samples": [
