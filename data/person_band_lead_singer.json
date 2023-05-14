@@ -1,12 +1,13 @@
 {
-    "name": "lead singer",
+    "name": "person lead singer of band",
     "prompt_templates": [
         "{} is the lead singer of",
+        "Who is the lead singer of {}? It is",
         "{}:"
     ],
     "properties": {
         "relation_type": "factual",
-        "domain_name": "name",
+        "domain_name": "person",
         "range_name": "band",
         "symmetric": false
     },
