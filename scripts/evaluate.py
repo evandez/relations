@@ -17,7 +17,8 @@ ESTIMATORS = {
     "corner-gd": operators.CornerGdEstimator,
 }
 EDITORS = {
-    "bl": editors.BaseLineEditor,
+    "bl-h": editors.HiddenBaselineEditor,
+    "bl-e": editors.EmbedBaselineEditor,
     "lr": editors.LowRankPInvEditor,
     "lr-e": editors.LowRankPInvEmbedEditor,
 }
@@ -41,28 +42,30 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
+            bench_results_dir = experiment.results_dir / bench
 
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
-                    dataset=dataset, estimator=estimator
+                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
                 )
             elif bench == "faithfulness":
-                results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
-            elif bench == "causality":
-                if args.editor == "bl": 
-                    editor_type = editors.BaseLineEditor
-                elif args.editor == "lr-e":
-                    editor_type = editors.LowRankPInvEmbedEditor
-                else:
-                    editor_type = editors.LowRankPInvEditor
-            
-                logger.info(f"begin editing algorithm : {editor_type}")
-                results = benchmarks.causality(
-                    dataset=dataset, estimator=estimator, editor_type=editor_type
+                results = benchmarks.faithfulness(
+                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
                 )
+            elif bench == "causality":
+                editor_type: type[editors.Editor] = EDITORS[args.editor]
+                logger.info(f"begin editing algorithm: {editor_type.__name__}")
+                results = benchmarks.causality(
+                    dataset=dataset,
+                    estimator=estimator,
+                    editor_type=editor_type,
+                    results_dir=bench_results_dir,
+                )
+            else:
+                raise ValueError(f"unknown benchmark: {bench}")
 
-            results_file = experiment.results_dir / f"{bench}_results.json"
+            results_file = bench_results_dir / "all.json"
             results_json = results.to_json(indent=4)
             with results_file.open("w") as handle:
                 handle.write(results_json)
@@ -70,14 +73,14 @@ def main(args: argparse.Namespace) -> None:
             metrics_json = results.metrics.to_json(indent=4)
             logger.info(metrics_json)
 
-            metrics_file = experiment.results_dir / f"{bench}_metrics.json"
+            metrics_file = bench_results_dir / "metrics.json"
             with metrics_file.open("w") as handle:
                 handle.write(metrics_json)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--h-layer", type=int, default=15, help="layer to get h from")
+    parser.add_argument("--h-layer", type=int, default=13, help="layer to get h from")
     parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
@@ -96,7 +99,6 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--editor",
-        "-ed",
         choices=EDITORS,
         help="editor to use",
     )

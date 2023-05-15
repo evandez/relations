@@ -2,10 +2,12 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any
+from pathlib import Path
+from typing import Any, TypeVar
 
 from src import data, editors, functional, metrics, models, operators
 from src.functional import make_prompt
+from src.utils.typing import PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -67,6 +69,7 @@ def reconstruction(
     n_top_lm: int = 3,
     n_icl_lm: int = 2,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
 ) -> ReconstructionBenchmarkResults:
     """Evaluate how much LRE looks like model's own representations.
 
@@ -82,6 +85,7 @@ def reconstruction(
         n_icl_lm: Number of ICL examples to use when prompting LM to see if it knows
             a subject.
         desc: Tqdm description.
+        results_dir: If provided, save intermediate results to this directory.
 
     Returns:
         Benchmark results.
@@ -103,6 +107,15 @@ def reconstruction(
     counts: dict[int, int] = defaultdict(int)
     relation_results = []
     for relation in tqdm(dataset.relations, desc=desc):
+        relation_result = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=ReconstructionBenchmarkRelationResults,
+        )
+        if relation_result is not None:
+            relation_results.append(relation_result)
+            continue
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -136,9 +149,8 @@ def reconstruction(
                     mt=estimator.mt,
                     layers=[operator.z_layer],
                     prompt=make_prompt(
-                        prompt_template=prompt_template,
-                        subject=subject,
-                        mt=mt),
+                        prompt_template=prompt_template, subject=subject, mt=mt
+                    ),
                 ).hiddens[0][0, -1]
                 z_pred = operator(subject).z
 
@@ -270,11 +282,16 @@ def reconstruction(
                     samples=relation_samples,
                 )
             )
-        relation_results.append(
-            ReconstructionBenchmarkRelationResults(
-                relation_name=relation.name,
-                trials=relation_trials,
-            )
+
+        relation_result = ReconstructionBenchmarkRelationResults(
+            relation_name=relation.name,
+            trials=relation_trials,
+        )
+        relation_results.append(relation_result)
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_result,
         )
 
     if not counts:
@@ -354,15 +371,6 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     metrics: FaithfulnessBenchmarkMetrics
 
 
-def random_incorrect_targets(true_targets):
-    result = []
-    for t in true_targets:
-        bad = t
-        while bad == t:
-            bad = random.choice(true_targets)
-        result.append(bad)
-    return result
-
 def faithfulness(
     *,
     estimator: operators.LinearRelationEstimator,
@@ -371,6 +379,7 @@ def faithfulness(
     n_trials: int = 3,
     k: int = 3,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -385,6 +394,7 @@ def faithfulness(
         n_trials: Number of times to repeat the experiment for each relation.
         k: Number of top predictions to take from LRE.
         desc: Progress bar description.
+        results_dir: Save and read intermediate results from this directory.
 
     Returns:
         Benchmark results.
@@ -407,6 +417,16 @@ def faithfulness(
     progress = tqdm(dataset.relations, desc=desc)
     for relation in progress:
         progress.set_description(relation.name)
+
+        relation_results = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=FaithfulnessBenchmarkRelationResults,
+        )
+        if relation_results is not None:
+            results_by_relation.append(relation_results)
+            continue
+
         trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -414,7 +434,7 @@ def faithfulness(
                 n_train
             )
             targets = [x.object for x in test.samples]
-            wrong_targets = random_incorrect_targets(targets)
+            wrong_targets = functional.random_incorrect_targets(targets)
 
             operator = estimator(train)
             mt = operator.mt
@@ -454,46 +474,54 @@ def faithfulness(
 
             # Compute zero-shot predictions.
             prompts_zs = [
-                    make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
-                    for x in test.samples ]
+                make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
+                for x in test.samples
+            ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
             preds_zs = [[x.token for x in xs] for xs in outputs_zs]
             recall_zs = metrics.recall(preds_zs, targets)
             recalls_zs.append(recall_zs)
-            #for p, o in zip(prompts_zs, outputs_zs):
+            # for p, o in zip(prompts_zs, outputs_zs):
             #    print(p, o)
-            #print('ZS', recall_zs)
+            # print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            distraction_template = ' {target}, {target}, {target}, {target}. '
+            distraction_template = " {target}, {target}, {target}, {target}. "
             prompts_pd = [
-                    make_prompt(prompt_template=
-                        distraction_template.format(target=wrong) + prompt_template,
-                        subject=x.subject,
-                        mt=mt)
-                    for x, wrong in zip(test.samples, wrong_targets) ]
+                make_prompt(
+                    prompt_template=distraction_template.format(target=wrong)
+                    + prompt_template,
+                    subject=x.subject,
+                    mt=mt,
+                )
+                for x, wrong in zip(test.samples, wrong_targets)
+            ]
             outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k)
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
-            #print('PD', recall_pd)
+            # print('PD', recall_pd)
 
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_lens = []
             for x, p in zip(test.samples, prompts_pd):
-                h = functional.get_hidden_state_at_subject(mt, p, x.subject, operator.h_layer)
-                output_lens = operator('', k=k, h=h)
+                h = functional.get_hidden_state_at_subject(
+                    mt, p, x.subject, operator.h_layer
+                )
+                output_lens = operator("", k=k, h=h)
                 outputs_lens.append(output_lens.predictions)
             preds_lens = [[x.token for x in xs] for xs in outputs_lens]
             recall_lens = metrics.recall(preds_lens, targets)
             recalls_lens.append(recall_lens)
-            #print('LENS', recall_lens)
-           
+            # print('LENS', recall_lens)
+
             # Compute PD, LRE predictions if ZS is correct.
             preds_pd_by_zs_correct = defaultdict(list)
             preds_lens_by_zs_correct = defaultdict(list)
             targets_by_zs_correct = defaultdict(list)
-            for pred_zs, pred_pd, pred_lens, target in zip(preds_zs, preds_pd, preds_lens, targets):
+            for pred_zs, pred_pd, pred_lens, target in zip(
+                preds_zs, preds_pd, preds_lens, targets
+            ):
                 zs_correct = functional.any_is_nontrivial_prefix(pred_zs, target)
                 preds_pd_by_zs_correct[zs_correct].append(pred_pd)
                 preds_lens_by_zs_correct[zs_correct].append(pred_lens)
@@ -507,17 +535,24 @@ def faithfulness(
             recall_lens_by_zs_correct = {}
             for correct in (True, False):
                 recall_by_lm_correct[correct] = metrics.recall(
-                    preds_by_lm_correct[correct], targets_by_lm_correct[correct])
+                    preds_by_lm_correct[correct], targets_by_lm_correct[correct]
+                )
                 if recall_by_lm_correct[correct] is not None:
                     recalls_by_lm_correct[correct].append(recall_by_lm_correct[correct])
                 recall_pd_by_zs_correct[correct] = metrics.recall(
-                    preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct])
+                    preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct]
+                )
                 if recall_pd_by_zs_correct[correct] is not None:
-                    recalls_pd_by_zs_correct[correct].append(recall_pd_by_zs_correct[correct])
+                    recalls_pd_by_zs_correct[correct].append(
+                        recall_pd_by_zs_correct[correct]
+                    )
                 recall_lens_by_zs_correct[correct] = metrics.recall(
-                    preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct])
+                    preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct]
+                )
                 if recall_lens_by_zs_correct[correct] is not None:
-                    recalls_lens_by_zs_correct[correct].append(recall_lens_by_zs_correct[correct])
+                    recalls_lens_by_zs_correct[correct].append(
+                        recall_lens_by_zs_correct[correct]
+                    )
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -525,14 +560,21 @@ def faithfulness(
                     test=test,
                     outputs=[
                         FaithfulnessBenchmarkOutputs(
-                            lre=lre, lm=lm,
-                            zs=zs, pd=pd, lens=lens,
-                            subject=sample.subject, target=sample.object
+                            lre=lre,
+                            lm=lm,
+                            zs=zs,
+                            pd=pd,
+                            lens=lens,
+                            subject=sample.subject,
+                            target=sample.object,
                         )
                         for lre, lm, zs, pd, lens, sample in zip(
-                            outputs_lre, outputs_lm,
-                            outputs_zs, outputs_pd, outputs_lens,
-                            test.samples
+                            outputs_lre,
+                            outputs_lm,
+                            outputs_zs,
+                            outputs_pd,
+                            outputs_lens,
+                            test.samples,
                         )
                     ],
                     # Record recall of individual trials for debugging
@@ -549,11 +591,16 @@ def faithfulness(
                     recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
                 )
             )
-        results_by_relation.append(
-            FaithfulnessBenchmarkRelationResults(
-                relation_name=relation.name, trials=trials
-            )
+
+        relation_results = FaithfulnessBenchmarkRelationResults(
+            relation_name=relation.name, trials=trials
         )
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_results,
+        )
+        results_by_relation.append(relation_results)
 
     faithfulness_metrics = FaithfulnessBenchmarkMetrics(
         **{
@@ -581,7 +628,6 @@ def faithfulness(
     return FaithfulnessBenchmarkResults(
         relations=results_by_relation, metrics=faithfulness_metrics
     )
-
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -631,6 +677,7 @@ def causality(
     n_top_lm: int = 3,
     n_icl_lm: int = 3,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
     if desc is None:
@@ -638,8 +685,17 @@ def causality(
 
     mt = estimator.mt
 
-    relation_results = []
+    results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
+        relation_results = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=CausalityRelationResults,
+        )
+        if relation_results is not None:
+            results_by_relation.append(relation_results)
+            continue
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -678,12 +734,11 @@ def causality(
 
                 object_original = sample.object
                 object_target = target.object
-                
+
                 if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
                     result = editor(subject_original, object_target)
                 else:
                     result = editor(subject_original, subject_target)
-
 
                 [token_id_original, token_id_target] = (
                     models.tokenize_words(mt, [object_original, object_target])
@@ -709,16 +764,21 @@ def causality(
                     train=train, test=test, samples=relation_samples
                 )
             )
-        relation_results.append(
-            CausalityRelationResults(
-                relation_name=relation.name, trials=relation_trials
-            )
+
+        relation_results = CausalityRelationResults(
+            relation_name=relation.name, trials=relation_trials
         )
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_results,
+        )
+        results_by_relation.append(relation_results)
 
     efficacies = torch.tensor(
         [
             sample.prob_target > sample.prob_original
-            for relation_result in relation_results
+            for relation_result in results_by_relation
             for trial in relation_result.trials
             for sample in trial.samples
         ]
@@ -727,7 +787,7 @@ def causality(
     efficacy_std = efficacies.float().std().item()
 
     return CausalityBenchmarkResults(
-        relations=relation_results,
+        relations=results_by_relation,
         metrics=CausalityBenchmarkMetrics(
             efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
         ),
@@ -763,3 +823,61 @@ def _determine_known_samples(
     }
     return known_samples
 
+
+T = TypeVar("T", bound=DataClassJsonMixin)
+
+
+def _load_relation_results(
+    *,
+    results_dir: PathLike | None,
+    relation_name: str,
+    results_type: type[T],
+) -> T | None:
+    """Read a relation result, if present."""
+    if results_dir is None:
+        logger.debug("results_dir not set, so not reading intermediate results")
+        return None
+
+    relation_results_file = _relation_results_file(
+        results_dir=results_dir,
+        relation_name=relation_name,
+    )
+    if not relation_results_file.exists():
+        logger.debug(f'no intermediate results for "{relation_name}"')
+        return None
+
+    logger.debug(f"reading intermediate results from {relation_results_file}")
+    with relation_results_file.open("r") as handle:
+        return results_type.from_json(handle.read())
+
+
+def _save_relation_results(
+    *,
+    results_dir: PathLike | None,
+    relation_name: str,
+    results: T,
+) -> None:
+    """Save relation result."""
+    if results_dir is None:
+        logger.debug(
+            "results_dir not set, so not saving intermediate results for "
+            f'"{relation_name}"'
+        )
+        return None
+    relation_results_file = _relation_results_file(
+        results_dir=results_dir,
+        relation_name=relation_name,
+    )
+    logger.debug(f"saving intermediate results to {relation_results_file}")
+    relation_results_file.parent.mkdir(exist_ok=True, parents=True)
+    with relation_results_file.open("w") as handle:
+        handle.write(results.to_json())
+
+
+def _relation_results_file(
+    *,
+    results_dir: PathLike,
+    relation_name: str,
+) -> Path:
+    relation_name_slug = relation_name.replace(" ", "_").replace("'", "")
+    return Path(results_dir) / f"{relation_name_slug}.json"
