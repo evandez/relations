@@ -327,7 +327,7 @@ def predict_next_token(
     mt: models.ModelAndTokenizer,
     prompt: str | StrSequence,
     k: int = 5,
-    batch_size: int = 64,
+    batch_size: int = 48, # Reduced to 48 to fit in A6000
 ) -> list[list[PredictedToken]]:
     """Compute the next token."""
     if isinstance(prompt, str):
