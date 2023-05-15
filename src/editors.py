@@ -315,7 +315,6 @@ class HiddenBaselineEditor(LinearRelationEditor):
 class EmbedBaselineEditor(LowRankPInvEditor):
     """Edit the model by replacing h for the object embedding."""
 
-
     def __call__(
         self,
         subject: str,
