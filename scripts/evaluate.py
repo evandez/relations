@@ -18,8 +18,8 @@ ESTIMATORS = {
 }
 EDITORS = {
     "bl": editors.BaseLineEditor,
-    "pinv": editors.LowRankPInvEditor,
-    "pinv-e": editors.LowRankPInvEmbedEditor,
+    "lr": editors.LowRankPInvEditor,
+    "lr-e": editors.LowRankPInvEmbedEditor,
 }
 
 
@@ -50,7 +50,14 @@ def main(args: argparse.Namespace) -> None:
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
             elif bench == "causality":
-                editor_type = editors.LowRankPInvEditor
+                if args.editor == "bl": 
+                    editor_type = editors.BaseLineEditor
+                elif args.editor == "lr-e":
+                    editor_type = editors.LowRankPInvEmbedEditor
+                else:
+                    editor_type = editors.LowRankPInvEditor
+            
+                logger.info(f"begin editing algorithm : {editor_type}")
                 results = benchmarks.causality(
                     dataset=dataset, estimator=estimator, editor_type=editor_type
                 )
