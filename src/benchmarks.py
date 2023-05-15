@@ -678,8 +678,12 @@ def causality(
 
                 object_original = sample.object
                 object_target = target.object
+                
+                if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
+                    result = editor(subject_original, object_target)
+                else:
+                    result = editor(subject_original, subject_target)
 
-                result = editor(subject_original, subject_target)
 
                 [token_id_original, token_id_target] = (
                     models.tokenize_words(mt, [object_original, object_target])

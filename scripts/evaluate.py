@@ -16,6 +16,11 @@ ESTIMATORS = {
     "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
+EDITORS = {
+    "bl": editors.BaselineEditor,
+    "lr": editors.LowRankPInvEditor,
+    "lr-e": editors.LowRankPInvEmbedEditor,
+}
 
 
 def main(args: argparse.Namespace) -> None:
@@ -45,10 +50,13 @@ def main(args: argparse.Namespace) -> None:
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
             elif bench == "causality":
-                editor_type = editors.LowRankPInvEditor
+                editor_type: type[editors.Editor] = EDITORS[args.editor]
+                logger.info(f"begin editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
                     dataset=dataset, estimator=estimator, editor_type=editor_type
                 )
+            else:
+                raise ValueError(f"unknown benchmark: {bench}")
 
             results_file = experiment.results_dir / f"{bench}_results.json"
             results_json = results.to_json(indent=4)
@@ -65,7 +73,7 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--h-layer", type=int, default=15, help="layer to get h from")
+    parser.add_argument("--h-layer", type=int, default=13, help="layer to get h from")
     parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
@@ -81,6 +89,11 @@ if __name__ == "__main__":
         choices=BENCHMARKS,
         default=BENCHMARKS,
         help="benchmarks to run",
+    )
+    parser.add_argument(
+        "--editor",
+        choices=EDITORS,
+        help="editor to use",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)
