@@ -17,7 +17,8 @@ ESTIMATORS = {
     "corner-gd": operators.CornerGdEstimator,
 }
 EDITORS = {
-    "bl": editors.BaselineEditor,
+    "bl-h": editors.HiddenBaselineEditor,
+    "bl-e": editors.EmbedBaselineEditor,
     "lr": editors.LowRankPInvEditor,
     "lr-e": editors.LowRankPInvEmbedEditor,
 }

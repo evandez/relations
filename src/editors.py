@@ -236,7 +236,7 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class BaselineEditor(LinearRelationEditor):
+class HiddenBaselineEditor(LinearRelationEditor):
     """Edit the model by replacing h for the subject with the h of the target."""
 
     n_tokens: int = 10
@@ -288,6 +288,89 @@ class BaselineEditor(LinearRelationEditor):
             if h.shape[1] == 1:
                 return output
             h[:, subject_edit_index] = h_target.squeeze()
+            return output
+
+        [h_layer_name] = models.determine_layer_paths(mt, layers=[h_layer])
+        with baukit.Trace(mt.model, h_layer_name, edit_output=edit_output):
+            outputs = mt.model(
+                input_ids=inputs.input_ids[:1],
+                attention_mask=inputs.attention_mask[:1],
+            )
+
+        probs = outputs.logits[0, -1].float().softmax(dim=-1)
+        topk = probs.topk(k=self.n_tokens, dim=-1)
+        return LinearRelationEditResult(
+            predicted_tokens=[
+                functional.PredictedToken(
+                    token=mt.tokenizer.decode(token_id),
+                    prob=prob,
+                )
+                for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
+            ],
+            model_logits=outputs.logits[:1],
+        )
+
+
+@dataclass(frozen=True, kw_only=True)
+class EmbedBaselineEditor(LowRankPInvEditor):
+    """Edit the model by replacing h for the object embedding."""
+
+
+    def __call__(
+        self,
+        subject: str,
+        object_target: str,
+    ) -> LinearRelationEditResult:
+        mt = self.lre.mt
+        h_layer = self.lre.h_layer
+        z_layer = self.lre.z_layer
+        prompt_template = self.lre.prompt_template
+
+        prompt_original = functional.make_prompt(
+            mt=mt, prompt_template=prompt_template, subject=subject
+        )
+        with models.set_padding_side(self.lre.mt, padding_side="left"):
+            inputs = self.mt.tokenizer(
+                [prompt_original],
+                return_tensors="pt",
+                padding="longest",
+                truncation=True,
+                return_offsets_mapping=True,
+            ).to(self.mt.model.device)
+
+        offset_mapping = inputs.pop("offset_mapping")
+        _, subject_edit_index = tokenizer_utils.find_token_range(
+            prompt_original,
+            subject,
+            offset_mapping=offset_mapping[0],
+        )
+        subject_edit_index -= 1
+
+        hiddens = functional.compute_hidden_states(
+            mt=self.lre.mt,
+            layers=[h_layer],
+            prompt=[prompt_original],
+        )
+
+        h_original = hiddens.hiddens[0][0, -1, ..., None]
+
+        if not object_target.startswith(" "):
+            object_target = " " + object_target
+
+        target_token_id = self.lre.mt.tokenizer.encode(
+            object_target, add_special_tokens=False
+        )[-1]
+        embed_target = self.lre.mt.model.lm_head.weight[target_token_id, :]
+
+        embed_target = embed_target * (h_original.norm() / embed_target.norm())
+
+        def edit_output(output):  # type: ignore
+            h = output
+            if isinstance(h, tuple):
+                h = output[0]
+            if h.shape[1] == 1:
+                return output
+            h[:, subject_edit_index] = embed_target
             return output
 
         [h_layer_name] = models.determine_layer_paths(mt, layers=[h_layer])
