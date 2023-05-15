@@ -310,6 +310,17 @@ class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
     outputs: list[FaithfulnessBenchmarkOutputs]
+    recall_lm: list[float]
+    recall_lre: list[float]
+    recall_zs: list[float]
+    recall_pd: list[float]
+    recall_lens: list[float]
+    recall_lre_if_lm_correct: list[float]
+    recall_lre_if_lm_wrong: list[float]
+    recall_pd_if_zs_correct: list[float]
+    recall_pd_if_zs_wrong: list[float]
+    recall_lens_if_zs_correct: list[float]
+    recall_lens_if_zs_wrong: list[float]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -327,8 +338,14 @@ class FaithfulnessBenchmarkMetrics(DataClassJsonMixin):
     recall_lens: list[float]
     recall_lre_if_lm_correct: list[float]
     recall_lre_if_lm_wrong: list[float]
+    recall_pd_if_zs_correct: list[float]
+    recall_pd_if_zs_wrong: list[float]
+    recall_lens_if_zs_correct: list[float]
+    recall_lens_if_zs_wrong: list[float]
     count_lm_correct: int
     count_lm_wrong: int
+    count_zs_correct: int
+    count_zs_wrong: int
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -384,7 +401,12 @@ def faithfulness(
     recalls_lens = []
     recalls_by_lm_correct = defaultdict(list)
     counts_by_lm_correct: dict[bool, int] = defaultdict(int)
-    for relation in tqdm(dataset.relations, desc=desc):
+    recalls_pd_by_zs_correct = defaultdict(list)
+    recalls_lens_by_zs_correct = defaultdict(list)
+    counts_by_zs_correct: dict[bool, int] = defaultdict(int)
+    progress = tqdm(dataset.relations, desc=desc)
+    for relation in progress:
+        progress.set_description(relation.name)
         trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -467,18 +489,35 @@ def faithfulness(
             recalls_lens.append(recall_lens)
             #print('LENS', recall_lens)
            
+            # Compute PD, LRE predictions if ZS is correct.
+            preds_pd_by_zs_correct = defaultdict(list)
+            preds_lens_by_zs_correct = defaultdict(list)
+            targets_by_zs_correct = defaultdict(list)
+            for pred_zs, pred_pd, pred_lens, target in zip(preds_zs, preds_pd, preds_lens, targets):
+                zs_correct = functional.any_is_nontrivial_prefix(pred_zs, target)
+                preds_pd_by_zs_correct[zs_correct].append(pred_pd)
+                preds_lens_by_zs_correct[zs_correct].append(pred_lens)
+                targets_by_zs_correct[zs_correct].append(target)
+                counts_by_zs_correct[zs_correct] += 1
+
             ## end attribute-lens tests
 
+            recall_by_lm_correct = {}
+            recall_pd_by_zs_correct = {}
+            recall_lens_by_zs_correct = {}
             for correct in (True, False):
-                preds = preds_by_lm_correct[correct]
-                targets = targets_by_lm_correct[correct]
-                if not preds:
-                    assert not targets
-                    continue
-                recall = metrics.recall(
-                    preds_by_lm_correct[correct], targets_by_lm_correct[correct]
-                )
-                recalls_by_lm_correct[correct].append(recall)
+                recall_by_lm_correct[correct] = metrics.recall(
+                    preds_by_lm_correct[correct], targets_by_lm_correct[correct])
+                if recall_by_lm_correct[correct] is not None:
+                    recalls_by_lm_correct[correct].append(recall_by_lm_correct[correct])
+                recall_pd_by_zs_correct[correct] = metrics.recall(
+                    preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct])
+                if recall_pd_by_zs_correct[correct] is not None:
+                    recalls_pd_by_zs_correct[correct].append(recall_pd_by_zs_correct[correct])
+                recall_lens_by_zs_correct[correct] = metrics.recall(
+                    preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct])
+                if recall_lens_by_zs_correct[correct] is not None:
+                    recalls_lens_by_zs_correct[correct].append(recall_lens_by_zs_correct[correct])
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -496,6 +535,18 @@ def faithfulness(
                             test.samples
                         )
                     ],
+                    # Record recall of individual trials for debugging
+                    recall_lm=recall_lm,
+                    recall_lre=recall_lre,
+                    recall_zs=recall_zs,
+                    recall_pd=recall_pd,
+                    recall_lens=recall_lens,
+                    recall_lre_if_lm_correct=recall_by_lm_correct[True],
+                    recall_lre_if_lm_wrong=recall_by_lm_correct[False],
+                    recall_pd_if_zs_correct=recall_pd_by_zs_correct[True],
+                    recall_pd_if_zs_wrong=recall_pd_by_zs_correct[False],
+                    recall_lens_if_zs_correct=recall_lens_by_zs_correct[True],
+                    recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
                 )
             )
         results_by_relation.append(
@@ -515,10 +566,16 @@ def faithfulness(
                 ("recall_lens", recalls_lens),
                 ("recall_lre_if_lm_correct", recalls_by_lm_correct[True]),
                 ("recall_lre_if_lm_wrong", recalls_by_lm_correct[False]),
+                ("recall_pd_if_zs_correct", recalls_pd_by_zs_correct[True]),
+                ("recall_pd_if_zs_wrong", recalls_pd_by_zs_correct[False]),
+                ("recall_lens_if_zs_correct", recalls_lens_by_zs_correct[True]),
+                ("recall_lens_if_zs_wrong", recalls_lens_by_zs_correct[False]),
             )
         },
         count_lm_correct=counts_by_lm_correct[True],
         count_lm_wrong=counts_by_lm_correct[False],
+        count_zs_correct=counts_by_zs_correct[True],
+        count_zs_wrong=counts_by_zs_correct[False],
     )
 
     return FaithfulnessBenchmarkResults(
