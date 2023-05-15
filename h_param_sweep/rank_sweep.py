@@ -11,7 +11,12 @@ from typing import List
 from h_param_sweep.utils import select_subset_from_relation
 from src import data, models
 from src.benchmarks import causality, faithfulness
-from src.editors import BaseLineEditor, LowRankPInvEditor, LowRankPInvEmbedEditor
+from src.editors import (
+    EmbedBaselineEditor,
+    HiddenBaselineEditor,
+    LowRankPInvEditor,
+    LowRankPInvEmbedEditor,
+)
 from src.functional import make_prompt, predict_next_token
 from src.lens import causal_tracing, layer_c_measure
 from src.operators import JacobianIclMeanEstimator
@@ -24,8 +29,7 @@ from tqdm.auto import tqdm
 
 def main(args: argparse.Namespace) -> None:
     ###################################################
-    # ranks = [8, 16, 32, 64, 128, 256, 512, 1024, 2048, None]
-    ranks = [8]
+    ranks = [32, 64, 128, 256, 512, 1024, 2048, None]
     FILTER_RELATIONS: list = [
         # "country capital city",
         # "occupation",
@@ -42,7 +46,8 @@ def main(args: argparse.Namespace) -> None:
     ]
 
     editor_types = {
-        BaseLineEditor: "baseline",
+        EmbedBaselineEditor: "embed_baseline",
+        HiddenBaselineEditor: "hidden_baseline",
         LowRankPInvEditor: "low_rank_pinv",
         LowRankPInvEmbedEditor: "low_rank_pinv_embed",
     }
@@ -106,7 +111,7 @@ def main(args: argparse.Namespace) -> None:
             for type_editor in editor_types:
                 editor_kwargs = (
                     {"rank": low_rank, "n_tokens": 10}
-                    if type_editor != BaseLineEditor
+                    if type_editor not in [EmbedBaselineEditor, HiddenBaselineEditor]
                     else {"n_tokens": 10}
                 )
                 causality_results = causality(
