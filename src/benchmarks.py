@@ -310,6 +310,17 @@ class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
     outputs: list[FaithfulnessBenchmarkOutputs]
+    recall_lm: list[float]
+    recall_lre: list[float]
+    recall_zs: list[float]
+    recall_pd: list[float]
+    recall_lens: list[float]
+    recall_lre_if_lm_correct: list[float]
+    recall_lre_if_lm_wrong: list[float]
+    recall_pd_if_zs_correct: list[float]
+    recall_pd_if_zs_wrong: list[float]
+    recall_lens_if_zs_correct: list[float]
+    recall_lens_if_zs_wrong: list[float]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -491,19 +502,22 @@ def faithfulness(
 
             ## end attribute-lens tests
 
+            recall_by_lm_correct = {}
+            recall_pd_by_zs_correct = {}
+            recall_lens_by_zs_correct = {}
             for correct in (True, False):
-                recall = metrics.recall(
+                recall_by_lm_correct[correct] = metrics.recall(
                     preds_by_lm_correct[correct], targets_by_lm_correct[correct])
-                if recall is not None:
-                    recalls_by_lm_correct[correct].append(recall)
-                recall = metrics.recall(
+                if recall_by_lm_correct[correct] is not None:
+                    recalls_by_lm_correct[correct].append(recall_by_lm_correct[correct])
+                recall_pd_by_zs_correct[correct] = metrics.recall(
                     preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct])
-                if recall is not None:
-                    recalls_pd_by_zs_correct[correct].append(recall)
-                recall = metrics.recall(
+                if recall_pd_by_zs_correct[correct] is not None:
+                    recalls_pd_by_zs_correct[correct].append(recall_pd_by_zs_correct[correct])
+                recall_lens_by_zs_correct[correct] = metrics.recall(
                     preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct])
-                if recall is not None:
-                    recalls_lens_by_zs_correct[correct].append(recall)
+                if recall_lens_by_zs_correct[correct] is not None:
+                    recalls_lens_by_zs_correct[correct].append(recall_lens_by_zs_correct[correct])
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -521,6 +535,18 @@ def faithfulness(
                             test.samples
                         )
                     ],
+                    # Record recall of individual trials for debugging
+                    recall_lm=recall_lm,
+                    recall_lre=recall_lre,
+                    recall_zs=recall_zs,
+                    recall_pd=recall_pd,
+                    recall_lens=recall_lens,
+                    recall_lre_if_lm_correct=recall_by_lm_correct[True],
+                    recall_lre_if_lm_wrong=recall_by_lm_correct[False],
+                    recall_pd_if_zs_correct=recall_pd_by_zs_correct[True],
+                    recall_pd_if_zs_wrong=recall_pd_by_zs_correct[False],
+                    recall_lens_if_zs_correct=recall_lens_by_zs_correct[True],
+                    recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
                 )
             )
         results_by_relation.append(
