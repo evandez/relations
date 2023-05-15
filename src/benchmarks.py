@@ -869,6 +869,7 @@ def _save_relation_results(
         relation_name=relation_name,
     )
     logger.debug(f"saving intermediate results to {relation_results_file}")
+    relation_results_file.parent.mkdir(exist_ok=True, parents=True)
     with relation_results_file.open("w") as handle:
         handle.write(results.to_json())
 
@@ -878,4 +879,5 @@ def _relation_results_file(
     results_dir: PathLike,
     relation_name: str,
 ) -> Path:
-    return Path(results_dir) / f"{relation_name}.json"
+    relation_name_slug = relation_name.replace(" ", "_").replace("'", "")
+    return Path(results_dir) / f"{relation_name_slug}.json"
