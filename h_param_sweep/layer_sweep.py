@@ -56,6 +56,8 @@ def main(args: argparse.Namespace) -> None:
         "past tense of verb",
         "gender of name",
         "religion of a name",
+        "landmark in country",
+        "outside color of fruits and vegetables",
     ]
     ###################################################
 
@@ -79,8 +81,9 @@ def main(args: argparse.Namespace) -> None:
     )
 
     for relation in tqdm(dataset.relations):
+        torch.cuda.empty_cache()
         print("\n####################################################################")
-        print(f"{relation.name}")
+        print(f"relation name: {relation.name}")
         icl_indices = np.random.choice(range(len(relation.samples)), 3, replace=False)
         icl_samples = [relation.samples[i] for i in icl_indices]
 
@@ -152,6 +155,10 @@ def main(args: argparse.Namespace) -> None:
                 desc=layer_name,
             )
             faithfulness_results[layer_name] = cur_faithfulness.metrics.__dict__
+
+            # clear memory
+            del mean_estimator
+            torch.cuda.empty_cache()
 
         log_dict["faithfulness"] = faithfulness_results
         with open(f"{results_path}/{relation.name}.json", "w") as f:

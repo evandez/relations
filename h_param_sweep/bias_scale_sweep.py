@@ -20,18 +20,31 @@ import torch
 from tqdm.auto import tqdm
 
 
+def select_subset_from_relation(relation: data.Relation, n: int) -> data.Relation:
+    indices = np.random.choice(
+        range(len(relation.samples)), min(len(relation.samples), n), replace=False
+    )
+    samples = [relation.samples[i] for i in indices]
+    subset_relation = copy.deepcopy(relation.__dict__)
+    subset_relation["samples"] = samples
+    return data.Relation(**subset_relation)
+
+
 def main(args: argparse.Namespace) -> None:
     ###################################################
     FILTER_RELATIONS: list = [
-        "country capital city",
-        "occupation",
+        # "country capital city",
+        # "occupation",
         "person superhero name",
         "plays pro sport",
-        "task done by person NEEDS REVISION",
-        "word comparative",
-        "word past tense",
-        "name gender",
-        "name religion",
+        "landmark in country",
+        "outside color of fruits and vegetables",
+        # "work location",
+        # "task done by person NEEDS REVISION",
+        # "word comparative",
+        # "word past tense",
+        # "name gender",
+        # "name religion",
     ]
     ###################################################
     results_path = f"{args.results_dir}/{args.model}"
@@ -58,24 +71,24 @@ def main(args: argparse.Namespace) -> None:
 
         log_dict: dict = {}
 
-        indices = np.random.choice(
-            range(len(relation.samples)),
-            min(len(relation.samples), args.n_layer_select),
-            replace=False,
+        layer_selection_samples = select_subset_from_relation(
+            relation=relation, n=min(len(relation.samples), args.n_layer_select)
         )
-        samples = [relation.samples[i] for i in indices]
-
-        training_samples = copy.deepcopy(relation.__dict__)
-        training_samples["samples"] = samples
-        training_samples = data.Relation(**training_samples)
 
         optimal_layer = select_layer(
-            mt=mt, training_data=training_samples, n_run=args.n_layer_select
+            mt=mt, training_data=layer_selection_samples, n_run=args.n_layer_select
         )
         print(f"optimal layer: {optimal_layer}")
 
         log_dict["optimal_layer"] = int(optimal_layer)
         log_dict["results"] = {}
+
+        eval_relation = (
+            relation
+            if (args.max_samples == -1 or len(relation.samples) <= args.max_samples)
+            else select_subset_from_relation(relation, args.max_samples)
+        )
+
         for bias_scale_factor in np.linspace(0.1, 1.0, args.n_bias_steps):
             mean_estimator = JacobianIclMeanEstimator(
                 mt=mt,
@@ -84,7 +97,7 @@ def main(args: argparse.Namespace) -> None:
             )
             cur_faithfulness = faithfulness(
                 estimator=mean_estimator,
-                dataset=data.RelationDataset(relations=[relation]),
+                dataset=data.RelationDataset(relations=[eval_relation]),
                 n_trials=7,
                 n_train=3,
                 k=5,
@@ -93,6 +106,10 @@ def main(args: argparse.Namespace) -> None:
             log_dict["results"][
                 float(np.round(bias_scale_factor, 3))
             ] = cur_faithfulness.metrics.__dict__
+
+            # clear memory
+            del mean_estimator
+            torch.cuda.empty_cache()
 
         with open(f"{results_path}/{relation.name}.json", "w") as f:
             json.dump(log_dict, f, indent=4)
@@ -116,6 +133,12 @@ if __name__ == "__main__":
         type=int,
         default=10,
         help="number of bias scale steps to take between 0.1 and 1.0",
+    )
+    parser.add_argument(
+        "--max_samples",
+        type=int,
+        default=200,
+        help="maximum number of samples to use from each relation (-1 for all)",
     )
     parser.add_argument(
         "--results_dir",
