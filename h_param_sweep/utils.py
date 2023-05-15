@@ -53,19 +53,3 @@ def select_subset_from_relation(relation: data.Relation, n: int) -> data.Relatio
     subset_relation = copy.deepcopy(relation.__dict__)
     subset_relation["samples"] = samples
     return data.Relation(**subset_relation)
-
-def low_rank_approximation(
-        weight: torch.Tensor, 
-        rank:int = 10
-    ) -> torch.Tensor:
-    typecache = weight.dtype
-    weight = weight.to(torch.float32)
-    svd = weight.svd()
-    wgt_est = torch.zeros(weight.shape).to(weight.device)
-    for i in range(rank):
-        wgt_est += svd.S[i] * (svd.U[:, i][None].T @ svd.V[:, i][None])
-    # print(f"approximation error ==> {torch.dist(weight, wgt_est)}")
-    approx_err = torch.dist(weight, wgt_est)
-    print(f"rank {rank} >> ", approx_err)
-    weight = weight.to(typecache)
-    return wgt_est.to(typecache)

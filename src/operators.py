@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from src import data, functional, models
+from src.functional import low_rank_approx
 from src.utils.typing import Layer
 
 import torch
@@ -254,6 +255,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     bias_scale_factor: float | None = 0.5
+    rank: int | None = None  # If None, don't do low rank approximation.
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         samples = relation.samples
@@ -293,6 +295,9 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         # Find better way to determine scaling factor.
         if self.bias_scale_factor is not None:
             bias = self.bias_scale_factor * bias
+
+        if self.rank is not None:
+            weight = low_rank_approx(matrix=weight, rank=self.rank)
 
         operator = LinearRelationOperator(
             mt=self.mt,
