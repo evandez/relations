@@ -298,6 +298,7 @@ def reconstruction(
 class FaithfulnessBenchmarkOutputs(DataClassJsonMixin):
     subject: str
     target: str
+    wrong: str
     lre: list[functional.PredictedToken]
     lm: list[functional.PredictedToken]
     zs: list[functional.PredictedToken]
@@ -309,6 +310,7 @@ class FaithfulnessBenchmarkOutputs(DataClassJsonMixin):
 class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
+    template: str
     outputs: list[FaithfulnessBenchmarkOutputs]
     recall_lm: list[float]
     recall_lre: list[float]
@@ -465,10 +467,11 @@ def faithfulness(
             #print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            distraction_template = ' {target}, {target}, {target}, {target}. '
+            def poetry_prefix(subject, wrong):
+                return ''.join([prompt_template.format(subject) + ' ' + wrong +'. '] * 2)
             prompts_pd = [
-                    make_prompt(prompt_template=
-                        distraction_template.format(target=wrong) + prompt_template,
+                    make_prompt(
+                        prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
                         subject=x.subject,
                         mt=mt)
                     for x, wrong in zip(test.samples, wrong_targets) ]
@@ -523,16 +526,18 @@ def faithfulness(
                 FaithfulnessBenchmarkRelationTrial(
                     train=train,
                     test=test,
+                    template=prompt_template,
                     outputs=[
                         FaithfulnessBenchmarkOutputs(
                             lre=lre, lm=lm,
                             zs=zs, pd=pd, lens=lens,
-                            subject=sample.subject, target=sample.object
+                            subject=sample.subject, target=sample.object,
+                            wrong=wrong,
                         )
-                        for lre, lm, zs, pd, lens, sample in zip(
+                        for lre, lm, zs, pd, lens, sample, wrong in zip(
                             outputs_lre, outputs_lm,
                             outputs_zs, outputs_pd, outputs_lens,
-                            test.samples
+                            test.samples, wrong_targets
                         )
                     ],
                     # Record recall of individual trials for debugging
