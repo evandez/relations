@@ -2,7 +2,7 @@ import itertools
 import random
 
 from src import models
-from src.data import Relation
+from src.data import Relation, RelationSample
 from src.functional import make_prompt
 from src.lens import causal_tracing
 
@@ -20,13 +20,52 @@ H_PARAMS = {
     }
 }
 
+def plot_layer_wise_causal_tracing(causal_tracing_results, title):
+    for layer in causal_tracing_results.keys():
+        causal_tracing_results[layer] = np.array(causal_tracing_results[layer])
+    mean = [causal_tracing_results[layer].mean() for layer in causal_tracing_results.keys()]
+    # low = [causal_tracing_results[layer].min() for layer in mt.layer_names]
+    # high = [causal_tracing_results[layer].max() for layer in mt.layer_names]
+
+    plt.plot(mean, color="blue", linewidth=3)
+    # plt.fill_between(range(len(mean)), low, high, alpha=0.2)
+    plt.axhline(0, color="red", linestyle="--")
+
+    plt.xlabel("Layer")
+    plt.ylabel("causal_score")
+    plt.xticks(range(len(causal_tracing_results.keys()))[::2])
+    plt.title(title)
+
+    nrun = causal_tracing_results[list(causal_tracing_results.keys())[0]].shape[0]
+    for run in range(nrun):
+        arr = []
+        for layer in causal_tracing_results.keys():
+            arr.append(causal_tracing_results[layer][run])
+        plt.plot(arr, alpha=0.2)
+    return plt
+
+def sample_from_each_range(
+        samples: list[RelationSample], 
+        n_sample: int = -1 # -1 means sample from all
+    ) -> list[RelationSample]:
+    traverse_order = np.random.permutation(range(len(samples)))
+    drawn_samples = []
+    drawn_range = set()
+    for idx in traverse_order:
+        if samples[idx].object not in drawn_range:
+            drawn_samples.append(samples[idx])
+            drawn_range.add(samples[idx].object)
+            if len(drawn_range) == n_sample:
+                break
+    return drawn_samples
+
 
 def select_layer(
     mt: models.ModelAndTokenizer,
     training_data: Relation,
     n_run: int = 20,
     n_icl: int = 3,
-    knee_smooth_factor: int = 5,
+    knee_smooth_factor: int = 3,
     verbose: bool = False,
 ) -> int:
     if len(training_data.range) == 1:
@@ -63,9 +102,11 @@ def select_layer(
         trace_config[: min(len(trace_config), n_run)],
         desc="searching for optimal layer",
     ):
-        icl_examples = list(set(training_data.samples) - set(sample_pair))
-        random.shuffle(icl_examples)
-        icl_examples = icl_examples[: min(len(icl_examples), n_icl)]
+        # print(sample_pair)
+        icl_examples = sample_from_each_range(
+            samples = list(set(training_data.samples) - set(sample_pair)),
+            n_sample = n_icl
+        )
         _prompt = (
             make_prompt(
                 prompt_template=prompt_template,
@@ -75,7 +116,7 @@ def select_layer(
             if len(icl_examples) > 0
             else prompt_template
         )
-
+        # print(_prompt)
         cur_result = causal_tracing(
             mt,
             prompt_template=_prompt,
@@ -90,6 +131,16 @@ def select_layer(
         np.array(causal_tracing_results[layer]).mean()
         for layer in models.determine_layer_paths(mt)
     ]
+
+    # if(verbose):
+    #     plot_layer_wise_causal_tracing(causal_tracing_results, title=f"causal tracing on {training_data.name}")
+    #     plt.show()
+    #     plt.plot([
+    #         np.array(layer_causal_score[i - knee_smooth_factor : i]).mean()
+    #         for i in range(len(layer_causal_score))
+    #     ])
+    #     plt.show()
+
     smoothed_causal_score = np.array(
         [
             np.array(layer_causal_score[i - knee_smooth_factor : i]).mean()
