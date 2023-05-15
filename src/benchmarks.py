@@ -136,9 +136,8 @@ def reconstruction(
                     mt=estimator.mt,
                     layers=[operator.z_layer],
                     prompt=make_prompt(
-                        prompt_template=prompt_template,
-                        subject=subject,
-                        mt=mt),
+                        prompt_template=prompt_template, subject=subject, mt=mt
+                    ),
                 ).hiddens[0][0, -1]
                 z_pred = operator(subject).z
 
@@ -354,15 +353,6 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     metrics: FaithfulnessBenchmarkMetrics
 
 
-def random_incorrect_targets(true_targets):
-    result = []
-    for t in true_targets:
-        bad = t
-        while bad == t:
-            bad = random.choice(true_targets)
-        result.append(bad)
-    return result
-
 def faithfulness(
     *,
     estimator: operators.LinearRelationEstimator,
@@ -414,7 +404,7 @@ def faithfulness(
                 n_train
             )
             targets = [x.object for x in test.samples]
-            wrong_targets = random_incorrect_targets(targets)
+            wrong_targets = functional.random_incorrect_targets(targets)
 
             operator = estimator(train)
             mt = operator.mt
@@ -454,46 +444,54 @@ def faithfulness(
 
             # Compute zero-shot predictions.
             prompts_zs = [
-                    make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
-                    for x in test.samples ]
+                make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
+                for x in test.samples
+            ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
             preds_zs = [[x.token for x in xs] for xs in outputs_zs]
             recall_zs = metrics.recall(preds_zs, targets)
             recalls_zs.append(recall_zs)
-            #for p, o in zip(prompts_zs, outputs_zs):
+            # for p, o in zip(prompts_zs, outputs_zs):
             #    print(p, o)
-            #print('ZS', recall_zs)
+            # print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            distraction_template = ' {target}, {target}, {target}, {target}. '
+            distraction_template = " {target}, {target}, {target}, {target}. "
             prompts_pd = [
-                    make_prompt(prompt_template=
-                        distraction_template.format(target=wrong) + prompt_template,
-                        subject=x.subject,
-                        mt=mt)
-                    for x, wrong in zip(test.samples, wrong_targets) ]
+                make_prompt(
+                    prompt_template=distraction_template.format(target=wrong)
+                    + prompt_template,
+                    subject=x.subject,
+                    mt=mt,
+                )
+                for x, wrong in zip(test.samples, wrong_targets)
+            ]
             outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k)
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
-            #print('PD', recall_pd)
+            # print('PD', recall_pd)
 
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_lens = []
             for x, p in zip(test.samples, prompts_pd):
-                h = functional.get_hidden_state_at_subject(mt, p, x.subject, operator.h_layer)
-                output_lens = operator('', k=k, h=h)
+                h = functional.get_hidden_state_at_subject(
+                    mt, p, x.subject, operator.h_layer
+                )
+                output_lens = operator("", k=k, h=h)
                 outputs_lens.append(output_lens.predictions)
             preds_lens = [[x.token for x in xs] for xs in outputs_lens]
             recall_lens = metrics.recall(preds_lens, targets)
             recalls_lens.append(recall_lens)
-            #print('LENS', recall_lens)
-           
+            # print('LENS', recall_lens)
+
             # Compute PD, LRE predictions if ZS is correct.
             preds_pd_by_zs_correct = defaultdict(list)
             preds_lens_by_zs_correct = defaultdict(list)
             targets_by_zs_correct = defaultdict(list)
-            for pred_zs, pred_pd, pred_lens, target in zip(preds_zs, preds_pd, preds_lens, targets):
+            for pred_zs, pred_pd, pred_lens, target in zip(
+                preds_zs, preds_pd, preds_lens, targets
+            ):
                 zs_correct = functional.any_is_nontrivial_prefix(pred_zs, target)
                 preds_pd_by_zs_correct[zs_correct].append(pred_pd)
                 preds_lens_by_zs_correct[zs_correct].append(pred_lens)
@@ -507,17 +505,24 @@ def faithfulness(
             recall_lens_by_zs_correct = {}
             for correct in (True, False):
                 recall_by_lm_correct[correct] = metrics.recall(
-                    preds_by_lm_correct[correct], targets_by_lm_correct[correct])
+                    preds_by_lm_correct[correct], targets_by_lm_correct[correct]
+                )
                 if recall_by_lm_correct[correct] is not None:
                     recalls_by_lm_correct[correct].append(recall_by_lm_correct[correct])
                 recall_pd_by_zs_correct[correct] = metrics.recall(
-                    preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct])
+                    preds_pd_by_zs_correct[correct], targets_by_zs_correct[correct]
+                )
                 if recall_pd_by_zs_correct[correct] is not None:
-                    recalls_pd_by_zs_correct[correct].append(recall_pd_by_zs_correct[correct])
+                    recalls_pd_by_zs_correct[correct].append(
+                        recall_pd_by_zs_correct[correct]
+                    )
                 recall_lens_by_zs_correct[correct] = metrics.recall(
-                    preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct])
+                    preds_lens_by_zs_correct[correct], targets_by_zs_correct[correct]
+                )
                 if recall_lens_by_zs_correct[correct] is not None:
-                    recalls_lens_by_zs_correct[correct].append(recall_lens_by_zs_correct[correct])
+                    recalls_lens_by_zs_correct[correct].append(
+                        recall_lens_by_zs_correct[correct]
+                    )
 
             trials.append(
                 FaithfulnessBenchmarkRelationTrial(
@@ -525,14 +530,21 @@ def faithfulness(
                     test=test,
                     outputs=[
                         FaithfulnessBenchmarkOutputs(
-                            lre=lre, lm=lm,
-                            zs=zs, pd=pd, lens=lens,
-                            subject=sample.subject, target=sample.object
+                            lre=lre,
+                            lm=lm,
+                            zs=zs,
+                            pd=pd,
+                            lens=lens,
+                            subject=sample.subject,
+                            target=sample.object,
                         )
                         for lre, lm, zs, pd, lens, sample in zip(
-                            outputs_lre, outputs_lm,
-                            outputs_zs, outputs_pd, outputs_lens,
-                            test.samples
+                            outputs_lre,
+                            outputs_lm,
+                            outputs_zs,
+                            outputs_pd,
+                            outputs_lens,
+                            test.samples,
                         )
                     ],
                     # Record recall of individual trials for debugging
@@ -581,7 +593,6 @@ def faithfulness(
     return FaithfulnessBenchmarkResults(
         relations=results_by_relation, metrics=faithfulness_metrics
     )
-
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -678,12 +689,11 @@ def causality(
 
                 object_original = sample.object
                 object_target = target.object
-                
+
                 if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
                     result = editor(subject_original, object_target)
                 else:
                     result = editor(subject_original, subject_target)
-
 
                 [token_id_original, token_id_target] = (
                     models.tokenize_words(mt, [object_original, object_target])
@@ -762,4 +772,3 @@ def _determine_known_samples(
         if functional.any_is_nontrivial_prefix([x.token for x in topk], sample.object)
     }
     return known_samples
-
