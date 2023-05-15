@@ -16,6 +16,11 @@ ESTIMATORS = {
     "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
+EDITORS = {
+    "bl": editors.BaseLineEditor,
+    "lr": editors.LowRankPInvEditor,
+    "lr-e": editors.LowRankPInvEmbedEditor,
+}
 
 
 def main(args: argparse.Namespace) -> None:
@@ -45,7 +50,14 @@ def main(args: argparse.Namespace) -> None:
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
             elif bench == "causality":
-                editor_type = editors.LowRankPInvEditor
+                if args.editor == "bl": 
+                    editor_type = editors.BaseLineEditor
+                elif args.editor == "lr-e":
+                    editor_type = editors.LowRankPInvEmbedEditor
+                else:
+                    editor_type = editors.LowRankPInvEditor
+            
+                logger.info(f"begin editing algorithm : {editor_type}")
                 results = benchmarks.causality(
                     dataset=dataset, estimator=estimator, editor_type=editor_type
                 )
@@ -81,6 +93,12 @@ if __name__ == "__main__":
         choices=BENCHMARKS,
         default=BENCHMARKS,
         help="benchmarks to run",
+    )
+    parser.add_argument(
+        "--editor",
+        "-ed",
+        choices=EDITORS,
+        help="editor to use",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)

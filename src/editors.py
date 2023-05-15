@@ -69,15 +69,9 @@ class LowRankPInvEditor(LinearRelationEditor):
             raise AssertionError("LRE weight is None, editing does not support this")
         return functional.low_rank_pinv(matrix=weight, rank=self.rank)
 
+    
     def __hash__(self):
         return hash(self.lre.weight)
-
-    def _bias(self) -> torch.Tensor:
-        bias = self.lre.bias
-        if bias is None:
-            raise AssertionError("LRE bias is None, editing does not support this")
-        assert bias is not None
-        return bias.T
 
     def __call__(
         self,
@@ -121,6 +115,7 @@ class LowRankPInvEditor(LinearRelationEditor):
         z_original = hiddens.hiddens[0][0, -1, ..., None]
         z_target = hiddens.hiddens[0][1, -1, ..., None]
 
+
         weight_pinv = self._low_rank_pinv()
         bias = self._bias()
         delta = weight_pinv @ (z_target - z_original - bias)
@@ -152,4 +147,5 @@ class LowRankPInvEditor(LinearRelationEditor):
                 for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
             ],
             model_logits=outputs.logits[:1],
+        )
         )
