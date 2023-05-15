@@ -439,7 +439,7 @@ def random_incorrect_targets(true_targets: list[str]) -> list[str]:
 
 
 def get_hidden_state_at_subject(
-    mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: int
+    mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: Layer
 ) -> torch.Tensor:
     """ "Runs a single prompt in inference and reads out the hidden state at the
     last subject token for the given subject, at the specified layer."""

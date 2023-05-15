@@ -41,24 +41,30 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
+            bench_results_dir = experiment.results_dir / bench
 
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
-                    dataset=dataset, estimator=estimator
+                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
                 )
             elif bench == "faithfulness":
-                results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
+                results = benchmarks.faithfulness(
+                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
+                )
             elif bench == "causality":
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
                 logger.info(f"begin editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
-                    dataset=dataset, estimator=estimator, editor_type=editor_type
+                    dataset=dataset,
+                    estimator=estimator,
+                    editor_type=editor_type,
+                    results_dir=bench_results_dir,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
 
-            results_file = experiment.results_dir / f"{bench}_results.json"
+            results_file = bench_results_dir / "all.json"
             results_json = results.to_json(indent=4)
             with results_file.open("w") as handle:
                 handle.write(results_json)
@@ -66,7 +72,7 @@ def main(args: argparse.Namespace) -> None:
             metrics_json = results.metrics.to_json(indent=4)
             logger.info(metrics_json)
 
-            metrics_file = experiment.results_dir / f"{bench}_metrics.json"
+            metrics_file = bench_results_dir / "metrics.json"
             with metrics_file.open("w") as handle:
                 handle.write(metrics_json)
 
