@@ -140,6 +140,11 @@ def order_1_approx(
             "Jh": weight @ h,
         },
     )
+
+    # NB(evan): Something about the jacobian computation causes a lot of memory
+    # fragmentation, or some kind of memory leak. This seems to help.
+    torch.cuda.empty_cache()
+
     return approx
 
 
