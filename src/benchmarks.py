@@ -475,7 +475,8 @@ def faithfulness(
                         subject=x.subject,
                         mt=mt)
                     for x, wrong in zip(test.samples, wrong_targets) ]
-            outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k)
+            outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k,
+                    batch_size=4) # Shrink the batch size to fit long prompts.
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
