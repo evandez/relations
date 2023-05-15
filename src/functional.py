@@ -398,8 +398,9 @@ def find_subject_token_index(
     )
     offset_mapping = inputs.pop("offset_mapping")
 
+    # Find the last occurrence of the subject
     subject_i, subject_j = tokenizer_utils.find_token_range(
-        prompt, subject, offset_mapping=offset_mapping[0]
+        prompt, subject, offset_mapping=offset_mapping[0], occurrence=-1
     )
     subject_token_index = tokenizer_utils.offset_to_absolute_index(
         subject_i, subject_j, offset
