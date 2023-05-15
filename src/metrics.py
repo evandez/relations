@@ -20,6 +20,8 @@ def recall(predictions: Sequence[StrSequence], targets: StrSequence) -> list[flo
 
     """
     _validate_same_length(predictions=predictions, targets=targets)
+    if len(predictions) == 0:
+        return None
 
     k = max(map(len, predictions))
     recalls = [0.0] * k
