@@ -328,7 +328,7 @@ def predict_next_token(
     mt: models.ModelAndTokenizer,
     prompt: str | StrSequence,
     k: int = 5,
-    batch_size: int = 48, # Reduced to 48 to fit in A6000
+    batch_size: int = 48,  # Reduced to 48 to fit in A6000
 ) -> list[list[PredictedToken]]:
     """Compute the next token."""
     if isinstance(prompt, str):
@@ -421,7 +421,7 @@ def is_nontrivial_prefix(prediction: str, target: str) -> bool:
     return len(prediction) > 0 and target.startswith(prediction)
 
 
-def random_incorrect_targets(true_targets):
+def random_incorrect_targets(true_targets: list[str]) -> list[str]:
     """Returns an array of the same size as true_targets where each entry is
     changed to a random (but guaranteed different) value, drawn at random from
     true_targets."""
@@ -434,7 +434,9 @@ def random_incorrect_targets(true_targets):
     return result
 
 
-def get_hidden_state_at_subject(mt, prompt, subject, h_layer):
+def get_hidden_state_at_subject(
+    mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: int
+) -> torch.Tensor:
     """ "Runs a single prompt in inference and reads out the hidden state at the
     last subject token for the given subject, at the specified layer."""
     h_index, inputs = find_subject_token_index(mt=mt, prompt=prompt, subject=subject)
