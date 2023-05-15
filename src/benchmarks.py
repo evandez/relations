@@ -110,7 +110,7 @@ def reconstruction(
         relation_result = _load_relation_results(
             results_dir=results_dir,
             relation_name=relation.name,
-            cls=ReconstructionBenchmarkRelationResults,
+            results_type=ReconstructionBenchmarkRelationResults,
         )
         if relation_result is not None:
             relation_results.append(relation_result)
@@ -421,7 +421,7 @@ def faithfulness(
         relation_results = _load_relation_results(
             results_dir=results_dir,
             relation_name=relation.name,
-            cls=FaithfulnessBenchmarkRelationResults,
+            results_type=FaithfulnessBenchmarkRelationResults,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -690,7 +690,7 @@ def causality(
         relation_results = _load_relation_results(
             results_dir=results_dir,
             relation_name=relation.name,
-            cls=CausalityRelationResults,
+            results_type=CausalityRelationResults,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -831,7 +831,7 @@ def _load_relation_results(
     *,
     results_dir: PathLike | None,
     relation_name: str,
-    cls: type[T],
+    results_type: type[T],
 ) -> T | None:
     """Read a relation result, if present."""
     if results_dir is None:
@@ -848,7 +848,7 @@ def _load_relation_results(
 
     logger.debug(f"reading intermediate results from {relation_results_file}")
     with relation_results_file.open("r") as handle:
-        return cls.from_json(handle.read())
+        return results_type.from_json(handle.read())
 
 
 def _save_relation_results(
