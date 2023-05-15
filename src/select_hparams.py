@@ -14,7 +14,7 @@ from tqdm import tqdm
 H_PARAMS = {
     "gpt-j-6B": {
         "layer": {
-            "default": 12,
+            "default": 13,
             "good_range": (6, 16),
         }
     }

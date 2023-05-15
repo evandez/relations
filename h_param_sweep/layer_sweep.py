@@ -8,6 +8,11 @@ import json
 import os
 from typing import List
 
+from h_param_sweep.utils import (
+    choose_sample_pairs,
+    filter_by_model_knowledge,
+    select_subset_from_relation,
+)
 from src import data, models
 from src.benchmarks import faithfulness
 from src.functional import make_prompt, predict_next_token
@@ -19,56 +24,21 @@ import torch
 from tqdm.auto import tqdm
 
 
-def filter_by_model_knowledge(
-    mt: models.ModelAndTokenizer,
-    relation_prompt: str,
-    relation_samples: List[data.RelationSample],
-) -> List[data.RelationSample]:
-    model_knows = []
-    for sample in relation_samples:
-        top_prediction = predict_next_token(
-            mt=mt, prompt=relation_prompt.format(sample.subject)
-        )[0][0].token
-        tick = sample.object.strip().startswith(top_prediction.strip())
-        if tick:
-            model_knows.append(sample)
-    return model_knows
-
-
-def choose_sample_pairs(
-    samples: List[data.RelationSample],
-) -> List[data.RelationSample]:
-    idx_pair = np.random.choice(range(len(samples)), 2, replace=False)
-    sample_pair: list = [list(samples)[i] for i in idx_pair]
-    if sample_pair[0].object != sample_pair[1].object:
-        return sample_pair  # if the objects are different, return
-    return choose_sample_pairs(samples)  # otherwise, draw again
-
-
-def select_subset_from_relation(relation: data.Relation, n: int) -> data.Relation:
-    indices = np.random.choice(
-        range(len(relation.samples)), min(len(relation.samples), n), replace=False
-    )
-    samples = [relation.samples[i] for i in indices]
-    subset_relation = copy.deepcopy(relation.__dict__)
-    subset_relation["samples"] = samples
-    return data.Relation(**subset_relation)
-
-
 def main(args: argparse.Namespace) -> None:
     ###################################################
     FILTER_RELATIONS: list = [
-        "country capital city",
+        # "country capital city",
         # "occupation",
         "person superhero name",
         "plays pro sport",
-        "task executor",
-        "comparative",
-        "past tense of verb",
-        "gender of name",
-        "religion of a name",
         "landmark in country",
         "outside color of fruits and vegetables",
+        # "work location",
+        # "task done by person NEEDS REVISION",
+        # "word comparative",
+        # "word past tense",
+        # "name gender",
+        # "name religion",
     ]
     ###################################################
 

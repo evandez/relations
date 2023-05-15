@@ -69,6 +69,9 @@ class LowRankPInvEditor(LinearRelationEditor):
             raise AssertionError("LRE weight is None, editing does not support this")
         return functional.low_rank_pinv(matrix=weight, rank=self.rank)
 
+    def __hash__(self):
+        return hash(self.lre.weight)
+
     def _bias(self) -> torch.Tensor:
         bias = self.lre.bias
         if bias is None:
@@ -99,7 +102,7 @@ class LowRankPInvEditor(LinearRelationEditor):
                 padding="longest",
                 truncation=True,
                 return_offsets_mapping=True,
-            )
+            ).to(self.mt.model.device)
 
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(

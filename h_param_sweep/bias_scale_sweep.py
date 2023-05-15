@@ -8,6 +8,7 @@ import json
 import os
 from typing import List
 
+from h_param_sweep.utils import select_subset_from_relation
 from src import data, models
 from src.benchmarks import faithfulness
 from src.functional import make_prompt, predict_next_token
@@ -18,16 +19,6 @@ from src.select_hparams import select_layer
 import numpy as np
 import torch
 from tqdm.auto import tqdm
-
-
-def select_subset_from_relation(relation: data.Relation, n: int) -> data.Relation:
-    indices = np.random.choice(
-        range(len(relation.samples)), min(len(relation.samples), n), replace=False
-    )
-    samples = [relation.samples[i] for i in indices]
-    subset_relation = copy.deepcopy(relation.__dict__)
-    subset_relation["samples"] = samples
-    return data.Relation(**subset_relation)
 
 
 def main(args: argparse.Namespace) -> None:
