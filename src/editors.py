@@ -1,7 +1,7 @@
 """Methods for using LRE to edit representations."""
 import logging
 from dataclasses import dataclass
-from functools import cache
+from functools import cached_property
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
@@ -28,8 +28,8 @@ class Editor:
 
     def __call__(
         self,
-        subject_original: str,
-        subject_target: str,
+        subject: str,
+        target: str,
     ) -> EditResult:
         raise NotImplementedError
 
@@ -45,20 +45,21 @@ class LinearRelationEditor(Editor):
 
     lre: operators.LinearRelationOperator
 
-    def __call__(
-        self, subject_original: str, subject_target: str
-    ) -> LinearRelationEditResult:
+    def __call__(self, subject: str, target: str) -> LinearRelationEditResult:
         raise NotImplementedError
 
 
 @dataclass(frozen=True, kw_only=True)
 class LowRankPInvEditor(LinearRelationEditor):
-    """Edit h using a low-rank pseudo-inverse of the weight matrix."""
+    """Edit h using a low-rank pseudo-inverse of the weight matrix.
+
+    Assumes the target is a *subject* whose object is the target value.
+    """
 
     rank: int = 100
     n_tokens: int = 10
 
-    @cache
+    @cached_property
     def _low_rank_pinv(self) -> torch.Tensor:
         """Compute the pseudo-inverse of the weight matrix."""
         logger.debug(
@@ -69,14 +70,10 @@ class LowRankPInvEditor(LinearRelationEditor):
             raise AssertionError("LRE weight is None, editing does not support this")
         return functional.low_rank_pinv(matrix=weight, rank=self.rank)
 
-    
-    def __hash__(self):
-        return hash(self.lre.weight)
-
     def __call__(
         self,
-        subject_original: str,
-        subject_target: str,
+        subject: str,
+        target: str,
     ) -> LinearRelationEditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
@@ -84,10 +81,10 @@ class LowRankPInvEditor(LinearRelationEditor):
         prompt_template = self.lre.prompt_template
 
         prompt_original = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_original
+            mt=mt, prompt_template=prompt_template, subject=subject
         )
         prompt_target = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_target
+            mt=mt, prompt_template=prompt_template, subject=target
         )
         with models.set_padding_side(self.lre.mt, padding_side="left"):
             inputs = self.mt.tokenizer(
@@ -101,7 +98,7 @@ class LowRankPInvEditor(LinearRelationEditor):
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(
             prompt_original,
-            subject_original,
+            subject,
             offset_mapping=offset_mapping[0],
         )
         subject_edit_index -= 1
@@ -115,11 +112,9 @@ class LowRankPInvEditor(LinearRelationEditor):
         z_original = hiddens.hiddens[0][0, -1, ..., None]
         z_target = hiddens.hiddens[0][1, -1, ..., None]
 
-    
-        weight_pinv = self._low_rank_pinv()
+        weight_pinv = self._low_rank_pinv
         delta = weight_pinv @ (z_target - z_original)
-        
-        
+
         def edit_output(output):  # type: ignore
             h = output
             if isinstance(h, tuple):
@@ -148,29 +143,27 @@ class LowRankPInvEditor(LinearRelationEditor):
             ],
             model_logits=outputs.logits[:1],
         )
-        
 
 
 @dataclass(frozen=True, kw_only=True)
 class LowRankPInvEmbedEditor(LowRankPInvEditor):
-    """Edit h using a low-rank pseudo-inverse of the weight matrix."""
+    """Edit h using a low-rank pseudo-inverse of the weight matrix.
 
-        
-    def __hash__(self):
-        return hash(self.lre.weight)
+    Assumes that `target` is the object of the relation, not another subject.
+    """
 
     def __call__(
         self,
-        subject_original: str,
+        subject: str,
         object_target: str,
     ) -> LinearRelationEditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
         z_layer = self.lre.z_layer
         prompt_template = self.lre.prompt_template
-                
+
         prompt_original = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_original
+            mt=mt, prompt_template=prompt_template, subject=subject
         )
         with models.set_padding_side(self.lre.mt, padding_side="left"):
             inputs = self.mt.tokenizer(
@@ -184,7 +177,7 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(
             prompt_original,
-            subject_original,
+            subject,
             offset_mapping=offset_mapping[0],
         )
         subject_edit_index -= 1
@@ -199,17 +192,19 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
 
         if not object_target.startswith(" "):
             object_target = " " + object_target
-            
-        target_token_id = self.lre.mt.tokenizer.encode(object_target, add_special_tokens=False)[-1]
-        embed_target = self.lre.mt.model.lm_head.weight[target_token_id,:].unsqueeze(-1)
-        
+
+        target_token_id = self.lre.mt.tokenizer.encode(
+            object_target, add_special_tokens=False
+        )[-1]
+        embed_target = self.lre.mt.model.lm_head.weight[target_token_id, :].unsqueeze(
+            -1
+        )
+
         embed_target = embed_target * (z_original.norm() / embed_target.norm())
-    
-        
-        weight_pinv = self._low_rank_pinv()
+
+        weight_pinv = self._low_rank_pinv
         delta = weight_pinv @ (embed_target - z_original)
-        
-        
+
         def edit_output(output):  # type: ignore
             h = output
             if isinstance(h, tuple):
@@ -238,29 +233,28 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
             ],
             model_logits=outputs.logits[:1],
         )
-        
-        
+
+
 @dataclass(frozen=True, kw_only=True)
-class BaseLineEditor(LinearRelationEditor):
-    """Base Line Editor. Editing the model by replacing h with a new h_target from the run of subject_target. """
-    
+class BaselineEditor(LinearRelationEditor):
+    """Edit the model by replacing h for the subject with the h of the target."""
+
     n_tokens: int = 10
 
     def __call__(
         self,
-        subject_original: str,
-        subject_target: str,
+        subject: str,
+        target: str,
     ) -> LinearRelationEditResult:
         mt = self.lre.mt
         h_layer = self.lre.h_layer
-        z_layer = self.lre.z_layer
         prompt_template = self.lre.prompt_template
 
         prompt_original = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_original
+            mt=mt, prompt_template=prompt_template, subject=subject
         )
         prompt_target = functional.make_prompt(
-            mt=mt, prompt_template=prompt_template, subject=subject_target
+            mt=mt, prompt_template=prompt_template, subject=target
         )
         with models.set_padding_side(self.lre.mt, padding_side="left"):
             inputs = self.mt.tokenizer(
@@ -274,7 +268,7 @@ class BaseLineEditor(LinearRelationEditor):
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(
             prompt_original,
-            subject_original,
+            subject,
             offset_mapping=offset_mapping[0],
         )
         subject_edit_index -= 1
@@ -287,8 +281,7 @@ class BaseLineEditor(LinearRelationEditor):
 
         h_target = hiddens.hiddens[0][0, -1, ..., None]
 
-        
-        def edit_output(output): 
+        def edit_output(output):  # type: ignore
             h = output
             if isinstance(h, tuple):
                 h = output[0]

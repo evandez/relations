@@ -17,7 +17,7 @@ ESTIMATORS = {
     "corner-gd": operators.CornerGdEstimator,
 }
 EDITORS = {
-    "bl": editors.BaseLineEditor,
+    "bl": editors.BaselineEditor,
     "lr": editors.LowRankPInvEditor,
     "lr-e": editors.LowRankPInvEmbedEditor,
 }
@@ -50,13 +50,14 @@ def main(args: argparse.Namespace) -> None:
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
             elif bench == "causality":
-                if args.editor == "bl": 
+                editor_type: type[editors.Editor]
+                if args.editor == "bl":
                     editor_type = editors.BaseLineEditor
                 elif args.editor == "lr-e":
                     editor_type = editors.LowRankPInvEmbedEditor
                 else:
                     editor_type = editors.LowRankPInvEditor
-            
+
                 logger.info(f"begin editing algorithm : {editor_type}")
                 results = benchmarks.causality(
                     dataset=dataset, estimator=estimator, editor_type=editor_type
@@ -77,7 +78,7 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--h-layer", type=int, default=15, help="layer to get h from")
+    parser.add_argument("--h-layer", type=int, default=13, help="layer to get h from")
     parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
@@ -96,7 +97,6 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--editor",
-        "-ed",
         choices=EDITORS,
         help="editor to use",
     )
