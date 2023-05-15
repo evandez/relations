@@ -3,6 +3,7 @@ import sys
 sys.path.append("..")
 
 import argparse
+import copy
 import json
 import os
 from typing import List
@@ -42,6 +43,16 @@ def choose_sample_pairs(
     if sample_pair[0].object != sample_pair[1].object:
         return sample_pair  # if the objects are different, return
     return choose_sample_pairs(samples)  # otherwise, draw again
+
+
+def select_subset_from_relation(relation: data.Relation, n: int) -> data.Relation:
+    indices = np.random.choice(
+        range(len(relation.samples)), min(len(relation.samples), n), replace=False
+    )
+    samples = [relation.samples[i] for i in indices]
+    subset_relation = copy.deepcopy(relation.__dict__)
+    subset_relation["samples"] = samples
+    return data.Relation(**subset_relation)
 
 
 def main(args: argparse.Namespace) -> None:
@@ -139,6 +150,14 @@ def main(args: argparse.Namespace) -> None:
         print("recording faithfuless on each layer")
 
         faithfulness_results: dict = {layer: [] for layer in layer_names}
+        eval_relation = (
+            relation
+            if (
+                args.max_eval_samples == -1
+                or len(relation.samples) <= args.max_eval_samples
+            )
+            else select_subset_from_relation(relation, args.max_eval_samples)
+        )
         for layer_idx, layer_name in enumerate(layer_names):
             mean_estimator = JacobianIclMeanEstimator(
                 mt=mt,
@@ -148,7 +167,7 @@ def main(args: argparse.Namespace) -> None:
             n_train = 3
             cur_faithfulness = faithfulness(
                 estimator=mean_estimator,
-                dataset=data.RelationDataset(relations=[relation]),
+                dataset=data.RelationDataset(relations=[eval_relation]),
                 n_trials=7,  # hard coded -- dafault args.n_runs=20 take too long
                 n_train=n_train,
                 k=5,
@@ -174,6 +193,12 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default=None, help="device to use")
     parser.add_argument(
         "--n_runs", type=int, default=20, help="Number of runs to average over"
+    )
+    parser.add_argument(
+        "--max_eval_samples",
+        type=int,
+        default=200,
+        help="maximum number of samples to use from each relation (-1 for all)",
     )
     parser.add_argument(
         "--results_dir",

@@ -85,8 +85,11 @@ def main(args: argparse.Namespace) -> None:
 
         eval_relation = (
             relation
-            if (args.max_samples == -1 or len(relation.samples) <= args.max_samples)
-            else select_subset_from_relation(relation, args.max_samples)
+            if (
+                args.max_eval_samples == -1
+                or len(relation.samples) <= args.max_eval_samples
+            )
+            else select_subset_from_relation(relation, args.max_eval_samples)
         )
 
         for bias_scale_factor in np.linspace(0.1, 1.0, args.n_bias_steps):
@@ -135,7 +138,7 @@ if __name__ == "__main__":
         help="number of bias scale steps to take between 0.1 and 1.0",
     )
     parser.add_argument(
-        "--max_samples",
+        "--max_eval_samples",
         type=int,
         default=200,
         help="maximum number of samples to use from each relation (-1 for all)",
