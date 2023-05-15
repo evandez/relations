@@ -16,6 +16,11 @@ ESTIMATORS = {
     "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
+EDITORS = {
+    "bl": editors.BaseLineEditor,
+    "pinv": editors.LowRankPInvEditor,
+    "pinv-e": editors.LowRankPInvEmbedEditor,
+}
 
 
 def main(args: argparse.Namespace) -> None:
@@ -81,6 +86,12 @@ if __name__ == "__main__":
         choices=BENCHMARKS,
         default=BENCHMARKS,
         help="benchmarks to run",
+    )
+    parser.add_argument(
+        "--editor",
+        "-ed",
+        choices=EDITORS,
+        help="editor to use",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)
