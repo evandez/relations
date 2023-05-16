@@ -328,6 +328,7 @@ def _apply_edit(
             max_new_tokens=n_new_tokens,
             return_dict_in_generate=True,
             output_scores=True,
+            do_sample=True,
             **generate_kwargs,
         )
 
