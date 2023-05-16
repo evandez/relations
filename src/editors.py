@@ -229,7 +229,7 @@ class HiddenBaselineEditor(LinearRelationEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class EmbedBaselineEditor(LowRankPInvEditor):
+class EmbedBaselineEditor(LowRankPInvEmbedEditor):
     """Edit the model by replacing h for the object embedding."""
 
     def __call__(

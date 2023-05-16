@@ -689,6 +689,7 @@ def causality(
     desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
+    rank: int | None = None,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
     if desc is None:
@@ -734,6 +735,8 @@ def causality(
             if issubclass(editor_type, editors.LinearRelationEditor):
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
+            if issubclass(editor_type, editors.LowRankPInvEditor):
+                editor_kwargs["rank"] = rank
             editor = editor_type(**editor_kwargs)
 
             relation_samples = []

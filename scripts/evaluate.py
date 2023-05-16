@@ -113,6 +113,11 @@ if __name__ == "__main__":
         help="editor to use",
     )
     parser.add_argument(
+        "--rank",
+        help="rank to use",
+        type=int
+    )
+    parser.add_argument(
         "--resume",
         action="store_true",
         help="do not recompute results already in the results dir",
