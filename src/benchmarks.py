@@ -737,7 +737,19 @@ def causality(
 
             relation_samples = []
             for sample in test.samples:
-                others = list(set(test.samples) - {sample})
+                others = list(
+                    {
+                        x
+                        for x in test.samples
+                        if x.subject != sample.subject and x.object != sample.object
+                    }
+                )
+                if not others:
+                    logger.debug(
+                        "no sample with different subject and different object "
+                        f"than {sample}, skipping"
+                    )
+                    continue
                 target = random.choice(others)
 
                 subject_original = sample.subject
