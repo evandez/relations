@@ -54,7 +54,8 @@ def layer_c_measure(
         tokenized = mt.tokenizer(prompt, return_tensors="pt", padding=True).to(
             mt.model.device
         )
-        tokenized.pop("token_type_ids")
+        if "token_type_ids" in tokenized:
+            tokenized.pop("token_type_ids")
         output = mt.model(**tokenized)
 
     object_id = output.logits[0][-1].argmax().item()
@@ -120,8 +121,10 @@ def causal_tracing(
         offset=-1,
     )
 
-    tokenized_original.pop("token_type_ids")
-    tokenized_corrupted.pop("token_type_ids")
+    if "token_type_ids" in tokenized_original:
+        tokenized_original.pop("token_type_ids")
+    if "token_type_ids" in tokenized_corrupted:
+        tokenized_corrupted.pop("token_type_ids")
 
     layer_names = models.determine_layer_paths(mt)
 
