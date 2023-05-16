@@ -70,6 +70,7 @@ def reconstruction(
     n_icl_lm: int = 2,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> ReconstructionBenchmarkResults:
     """Evaluate how much LRE looks like model's own representations.
 
@@ -111,6 +112,7 @@ def reconstruction(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=ReconstructionBenchmarkRelationResults,
+            resume=resume,
         )
         if relation_result is not None:
             relation_results.append(relation_result)
@@ -382,6 +384,7 @@ def faithfulness(
     k: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -424,6 +427,7 @@ def faithfulness(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=FaithfulnessBenchmarkRelationResults,
+            resume=resume,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -644,6 +648,7 @@ class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     prob_target: float
 
     predicted_tokens: list[functional.PredictedToken]
+    model_generations: list[str]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -682,6 +687,7 @@ def causality(
     n_icl_lm: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
     if desc is None:
@@ -695,6 +701,7 @@ def causality(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=CausalityRelationResults,
+            resume=resume,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -726,7 +733,7 @@ def causality(
             if issubclass(editor_type, editors.LinearRelationEditor):
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
-            editor = editor_type(mt=mt, **editor_kwargs)
+            editor = editor_type(**editor_kwargs)
 
             relation_samples = []
             for sample in test.samples:
@@ -749,7 +756,7 @@ def causality(
                     .input_ids[:, 0]
                     .tolist()
                 )
-                probs = result.model_logits[0, -1].float().softmax(dim=-1)
+                probs = result.model_logits.float().softmax(dim=-1)
                 prob_original = probs[token_id_original].item()
                 prob_target = probs[token_id_target].item()
 
@@ -761,6 +768,7 @@ def causality(
                         prob_original=prob_original,
                         prob_target=prob_target,
                         predicted_tokens=result.predicted_tokens,
+                        model_generations=result.model_generations,
                     )
                 )
             relation_trials.append(
@@ -836,9 +844,10 @@ def _load_relation_results(
     results_dir: PathLike | None,
     relation_name: str,
     results_type: type[T],
+    resume: bool,
 ) -> T | None:
     """Read a relation result, if present."""
-    if results_dir is None:
+    if results_dir is None or not resume:
         logger.debug("results_dir not set, so not reading intermediate results")
         return None
 
