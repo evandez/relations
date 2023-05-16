@@ -169,7 +169,6 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
         z_original = hiddens.hiddens[0][0, -1, ..., None]
 
         target_token_id = models.tokenize_words(self.mt, target).input_ids[:, 0].item()
-
         embed_target = self.mt.lm_head[-1].weight[target_token_id, ..., None]
         embed_target = embed_target * (z_original.norm() / embed_target.norm())
 
