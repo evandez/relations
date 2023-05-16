@@ -24,6 +24,7 @@ from src.editors import (
 from src.functional import make_prompt, predict_next_token
 from src.lens import causal_tracing, layer_c_measure
 from src.operators import JacobianIclMeanEstimator
+from src.select_hparams import sample_from_each_range
 
 import numpy as np
 import torch
@@ -81,8 +82,7 @@ def main(args: argparse.Namespace) -> None:
     for relation in tqdm(dataset.relations):
         print("\n####################################################################")
         print(f"relation name: {relation.name}")
-        icl_indices = np.random.choice(range(len(relation.samples)), 3, replace=False)
-        icl_samples = [relation.samples[i] for i in icl_indices]
+        icl_samples = sample_from_each_range(samples=relation.samples, n_sample=3)
 
         log_dict: dict = {}
 
@@ -155,6 +155,7 @@ def main(args: argparse.Namespace) -> None:
                 desc=layer_name,
             )
             faithfulness_results[layer_name] = cur_faithfulness.metrics.__dict__
+            print("faithfulness: ", cur_faithfulness.metrics.__dict__)
             for type_editor in editor_types:
                 causality_results = causality(
                     estimator=mean_estimator,
@@ -165,6 +166,7 @@ def main(args: argparse.Namespace) -> None:
                 different_causality_results[layer_name][
                     editor_types[type_editor]
                 ] = causality_results.metrics.__dict__
+                print(editor_types[type_editor], causality_results.metrics.__dict__)
 
             # clear memory
             del mean_estimator
@@ -200,7 +202,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--l_step",
-        type=float,
+        type=int,
         default=1,
         help="incremental step size for layer sweep",
     )
