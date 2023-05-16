@@ -334,7 +334,7 @@ def _apply_edit(
 
     model_logits = outputs.scores[0]
     model_generations = mt.tokenizer.batch_decode(
-        outputs.sequence, skip_special_tokens=True
+        outputs.sequences, skip_special_tokens=True
     )
 
     probs = model_logits[0, -1].float().softmax(dim=-1)
