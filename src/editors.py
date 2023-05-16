@@ -327,6 +327,8 @@ def _apply_edit(
             input_ids=inputs.input_ids.expand(n_samples, -1),
             attention_mask=inputs.attention_mask.expand(n_samples, -1),
             max_new_tokens=n_new_tokens,
+            return_dict_in_generate=True,
+            output_scores=True,
             **generate_kwargs,
         )
 
