@@ -47,20 +47,28 @@ def main(args: argparse.Namespace) -> None:
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
-                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(
-                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             elif bench == "causality":
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
-                logger.info(f"begin editing algorithm: {editor_type.__name__}")
+                logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
                     dataset=dataset,
                     estimator=estimator,
                     editor_type=editor_type,
-                    results_dir=bench_results_dir,
+                    # NB(evan): Results dir also needs to index on the editor type.
+                    results_dir=bench_results_dir / args.editor,
+                    resume=args.resume,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
@@ -100,7 +108,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--editor",
         choices=EDITORS,
+        default="lr-e",
         help="editor to use",
+    )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="do not recompute results already in the results dir",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)

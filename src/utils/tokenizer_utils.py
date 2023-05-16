@@ -47,15 +47,27 @@ def find_token_range(
         raise ValueError("cannot set return_offsets_mapping")
     if substring not in string:
         raise ValueError(f'"{substring}" not found in "{string}"')
-    char_start = string.index(substring)
-    for _ in range(occurrence):
-        try:
-            char_start = string.index(substring, char_start + 1)
-        except ValueError as error:
-            raise ValueError(
-                f"could not find {occurrence + 1} occurrences "
-                f'of "{substring} in "{string}"'
-            ) from error
+    if occurrence < 0:
+        # If occurrence is negative, count from the right.
+        char_start = string.rindex(substring)
+        for _ in range(-1 - occurrence):
+            try:
+                char_start = string.rindex(substring, 0, char_start)
+            except ValueError as error:
+                raise ValueError(
+                    f"could not find {-occurrence} occurrences "
+                    f'of "{substring} in "{string}"'
+                ) from error
+    else:
+        char_start = string.index(substring)
+        for _ in range(occurrence):
+            try:
+                char_start = string.index(substring, char_start + 1)
+            except ValueError as error:
+                raise ValueError(
+                    f"could not find {occurrence + 1} occurrences "
+                    f'of "{substring} in "{string}"'
+                ) from error
     char_end = char_start + len(substring)
 
     if offset_mapping is None:
