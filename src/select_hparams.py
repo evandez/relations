@@ -27,6 +27,13 @@ H_PARAMS = {
             "good_range": (12, 32),
         }
     },
+    "llama-13b": {
+        "layer": {
+            "default": 20,
+            "max": 22,
+            "good_range": (16, 24),
+        }
+    },
 }
 
 
