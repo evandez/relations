@@ -29,12 +29,7 @@ LLAMA_13B_NAME = "llama-13b"
 LLAMA_30B_NAME = "llama-30b"
 LLAMA_NAME_SHORT = "llama"
 
-DOWNLOADABLE_MODELS = frozenset(
-    {
-        GPT_J_NAME,
-        GPT_NEO_X_NAME,
-    }
-)
+DOWNLOADABLE_MODELS = frozenset({GPT_J_NAME, GPT_NEO_X_NAME, "gpt2-xl"})
 
 
 @dataclass(frozen=True)
@@ -357,9 +352,11 @@ def load_model(
 
     if is_llama_variant:
         tokenizer = transformers.LlamaTokenizerFast.from_pretrained(name)
+        tokenizer.pad_token = tokenizer.eos_token = "</s>"
+        tokenizer.pad_token_id = tokenizer.eos_token_id = 2
     else:
         tokenizer = transformers.AutoTokenizer.from_pretrained(name)
-    tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token = tokenizer.eos_token
 
     return ModelAndTokenizer(model, tokenizer)
 
