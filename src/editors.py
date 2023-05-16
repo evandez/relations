@@ -337,7 +337,7 @@ def _apply_edit(
         outputs.sequences, skip_special_tokens=True
     )
 
-    probs = model_logits[0, -1].float().softmax(dim=-1)
+    probs = model_logits[0].float().softmax(dim=-1)
     topk = probs.topk(k=n_top_tokens, dim=-1)
     predicted_tokens = [
         functional.PredictedToken(
