@@ -41,7 +41,7 @@ def create_results_dir(
     root: PathLike | None = None,
     args: argparse.Namespace | None = None,
     args_file_name: str | None = None,
-    clear_if_exists: bool = False,
+    clear_if_exists: bool = True,
 ) -> Path:
     """Create a directory for storing experiment results.
 
@@ -88,7 +88,7 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     The args include:
         --experiment-name (-n): Requied, unique identifier for this experiment.
         --results-dir: Root directory containing all experiment folders.
-        --clear-results-dir: If set, experiment-specific results directory is cleared.
+        --resume: If set, experiment-specific results directory is not cleared.
         --args-file-name: Dump all args to this file; defaults to generated name.
         --seed: Random seed.
 
@@ -103,10 +103,10 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
         "--results-dir", type=Path, help="root directory containing experiment results"
     )
     parser.add_argument(
-        "--clear-results-dir",
+        "--resume",
         action="store_true",
         default=False,
-        help="clear any old results and start anew",
+        help="do not clear old results and resume previous run",
     )
     parser.add_argument("--args-file-name", help="file name for args dump")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="random seed")
@@ -126,7 +126,7 @@ def setup_experiment(args: argparse.Namespace) -> Experiment:
         root=args.results_dir,
         args=args,
         args_file_name=args.args_file_name,
-        clear_if_exists=args.clear_results_dir,
+        clear_if_exists=not args.resume,
     )
 
     return Experiment(
