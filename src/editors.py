@@ -279,7 +279,7 @@ def _compute_inputs(
         return_tensors="pt",
         return_offsets_mapping=True,
     ).to(mt.model.device)
-    assert len(inputs.inputs_ids) == 1, inputs.input_ids.shape
+    assert len(inputs.input_ids) == 1, inputs.input_ids.shape
 
     offset_mapping = inputs.pop("offset_mapping")
     _, subject_index = tokenizer_utils.find_token_range(
