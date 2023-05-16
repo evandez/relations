@@ -45,7 +45,7 @@ class ModelAndTokenizer:
     tokenizer: Tokenizer
 
     @property
-    def lm_head(self) -> torch.nn.Module:
+    def lm_head(self) -> torch.nn.Sequential:
         """Return the LM head."""
         if isinstance(
             self.model, transformers.GPT2LMHeadModel | transformers.GPTJForCausalLM
