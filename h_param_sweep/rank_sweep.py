@@ -111,9 +111,9 @@ def main(args: argparse.Namespace) -> None:
             log_dict[low_rank]["causality"] = {}
             for type_editor in editor_types:
                 editor_kwargs = (
-                    {"rank": low_rank, "n_tokens": 10}
+                    {"rank": low_rank}
                     if type_editor not in [EmbedBaselineEditor, HiddenBaselineEditor]
-                    else {"n_tokens": 10}
+                    else {}
                 )
                 causality_results = causality(
                     estimator=mean_estimator,
