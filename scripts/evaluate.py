@@ -57,12 +57,13 @@ def main(args: argparse.Namespace) -> None:
         estimator_args = {
             "mt": mt,
             "h_layer": args.h_layer,
-            "z_layer": args.z_layer,
         }
         if args.estimator in ["j-icl-mean"]:
             estimator_args.update(
                 {"bias_scale_factor": args.bias_scale, "rank": args.low_rank}
             )
+        if args.estimator != "corner-gd":
+            estimator_args.update({"z_layer": args.z_layer})
         estimator = ESTIMATORS[args.estimator](
             **estimator_args,
         )
