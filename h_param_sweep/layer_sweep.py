@@ -137,7 +137,7 @@ def main(args: argparse.Namespace) -> None:
 
         faithfulness_results: dict = {}
         different_causality_results: dict = {layer: {} for layer in layer_names}
-        for layer_idx, layer_name in enumerate(layer_names):
+        for layer_idx, layer_name in list(enumerate(layer_names))[:: args.l_step]:
             print(f"{layer_idx} >> {layer_name}")
             print("--------------------------------------------------")
             mean_estimator = JacobianIclMeanEstimator(
@@ -197,6 +197,12 @@ if __name__ == "__main__":
         type=float,
         default=0.4,
         help="bias_scale_factor. should be between 0.1 and 1.0",
+    )
+    parser.add_argument(
+        "--l_step",
+        type=float,
+        default=1,
+        help="incremental step size for layer sweep",
     )
     parser.add_argument(
         "--results_dir",
