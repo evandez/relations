@@ -1,9 +1,12 @@
 import argparse
+import json
 import logging
-from typing import Any
+from typing import Any, Union
 
+from h_param_sweep.utils import select_subset_from_relation
 from src import benchmarks, data, editors, models, operators
 from src.utils import experiment_utils, logging_utils
+from src.utils.typing import Layer
 
 import torch
 
@@ -32,12 +35,36 @@ def main(args: argparse.Namespace) -> None:
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     with torch.device(device):
         mt = models.load_model(args.model, fp16=args.fp16, device=device)
-        dataset = data.load_dataset_from_args(args)
+        logger.info(
+            f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
+        )
+        if args.low_rank == -1:
+            args.low_rank = models.determine_hidden_size(mt)
+        if args.h_layer == -1:
+            args.h_layer = "emb"
+        logger.info(args)
 
+        dataset = data.load_dataset_from_args(args)
+        dataset = data.RelationDataset(
+            relations=[
+                select_subset_from_relation(relation=r, n=args.max_eval_samples)
+                for r in dataset.relations
+            ]
+        )
+        for d in dataset.relations:
+            logger.info(f"{d.name} : {len(d.samples)}")
+
+        estimator_args = {
+            "mt": mt,
+            "h_layer": args.h_layer,
+            "z_layer": args.z_layer,
+        }
+        if args.estimator in ["j-icl-mean"]:
+            estimator_args.update(
+                {"bias_scale_factor": args.bias_scale, "rank": args.low_rank}
+            )
         estimator = ESTIMATORS[args.estimator](
-            mt=mt,
-            h_layer=args.h_layer,
-            z_layer=args.z_layer,
+            **estimator_args,
         )
 
         for bench in args.benchmarks:
@@ -63,6 +90,12 @@ def main(args: argparse.Namespace) -> None:
                 bench_results_dir /= args.editor
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
                 logger.info(f"using editing algorithm: {editor_type.__name__}")
+                editor_kwargs = (
+                    {"rank": args.low_rank}
+                    if editor_type
+                    not in [editors.EmbedBaselineEditor, editors.HiddenBaselineEditor]
+                    else {}
+                )
                 results = benchmarks.causality(
                     dataset=dataset,
                     estimator=estimator,
@@ -70,6 +103,7 @@ def main(args: argparse.Namespace) -> None:
                     # NB(evan): Results dir also needs to index on the editor type.
                     results_dir=bench_results_dir,
                     resume=args.resume,
+                    **editor_kwargs,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
@@ -89,7 +123,12 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--h-layer", type=int, default=13, help="layer to get h from")
+    parser.add_argument(
+        "--h-layer",
+        type=int,
+        default=13,
+        help="layer to get h from, set to -1 for the embedding layer",
+    )
     parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
@@ -111,6 +150,24 @@ if __name__ == "__main__":
         choices=EDITORS,
         default="lr-e",
         help="editor to use",
+    )
+    parser.add_argument(
+        "--max_eval_samples",
+        type=int,
+        default=300,
+        help="maximum number of samples to use from each relation (-1 for all)",
+    )
+    parser.add_argument(
+        "--bias_scale",
+        type=float,
+        default=0.4,
+        help="bias_scale_factor. should be between 0.1 and 1.0",
+    )
+    parser.add_argument(
+        "--low_rank",
+        type=int,
+        default=-1,
+        help="rank of low rank approximation (will be used for estimator type `j-icl-mean` only), -1 for full rank",
     )
     parser.add_argument(
         "--resume",
