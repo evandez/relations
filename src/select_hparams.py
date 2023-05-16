@@ -15,13 +15,15 @@ H_PARAMS = {
     "gpt-j-6B": {
         "layer": {
             "default": 13,
+            "max": 16,
             "good_range": (6, 16),
         }
     },
     "gpt2-xl": {
         "layer": {
-            "default": 13,
-            "good_range": (6, 16),
+            "default": 26,
+            "max": 32,
+            "good_range": (12, 32),
         }
     },
 }
@@ -142,7 +144,7 @@ def select_layer(
         print(f"Knee: {kneedle.knee}, Elbow: {kneedle.elbow}")
 
     if kneedle.knee is not None:
-        return int(min(kneedle.knee, 15))
+        return int(min(kneedle.knee, H_PARAMS[model_name]["layer"]["max"]))
     else:
         # can't find knee, fallback to default layer for the model
         return H_PARAMS[model_name]["layer"]["default"]

@@ -111,7 +111,7 @@ def main(args: argparse.Namespace) -> None:
                 desc=f"layer {layer_n}, bias scale: {bias_scale_factor}",
             )
             log_dict[key_bias_scale]["faithfulness"] = cur_faithfulness.metrics.__dict__
-
+            print("faithfulness: ", cur_faithfulness.metrics.__dict__)
             log_dict[key_bias_scale]["causality"] = {}
             for type_editor in editor_types:
                 causality_results = causality(
@@ -119,6 +119,9 @@ def main(args: argparse.Namespace) -> None:
                     editor_type=type_editor,
                     dataset=data.RelationDataset(relations=[relation]),
                     desc=f"{editor_types[type_editor]}",
+                )
+                print(
+                    f"{editor_types[type_editor]}: ", causality_results.metrics.__dict__
                 )
                 log_dict[key_bias_scale]["causality"][
                     editor_types[type_editor]
