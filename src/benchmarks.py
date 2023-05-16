@@ -735,7 +735,7 @@ def causality(
             if issubclass(editor_type, editors.LinearRelationEditor):
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
-            if issubclass(editor_type, editors.LowRankPInvEditor):
+            if issubclass(editor_type, editors.LowRankPInvEditor) and rank is not None:
                 editor_kwargs["rank"] = rank
             editor = editor_type(**editor_kwargs)
 
