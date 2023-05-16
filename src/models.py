@@ -215,6 +215,7 @@ def tokenize_words(
     if spaces and is_gpt_variant(tokenizer):
         words = [f" {word}" for word in words]
 
+    kwargs.setdefault("add_special_tokens", False)
     kwargs.setdefault("padding", "longest")
     kwargs.setdefault("return_tensors", "pt")
     return tokenizer(words, **kwargs)
@@ -243,6 +244,15 @@ def is_gpt_variant(mt: Model | Tokenizer | ModelAndTokenizer) -> bool:
         | transformers.GPT2TokenizerFast
         | transformers.GPTNeoXTokenizerFast,
     )
+
+
+def determine_generate_kwargs(mt: ModelAndTokenizer) -> dict:
+    """Determine default generate kwargs."""
+    kwargs = {}
+    if is_gpt_variant(mt):
+        tokenizer = unwrap_tokenizer(mt)
+        kwargs["pad_token_id"] = tokenizer.eos_token_id
+    return kwargs
 
 
 @contextmanager

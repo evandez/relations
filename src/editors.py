@@ -13,6 +13,8 @@ import torch
 logger = logging.getLogger(__name__)
 
 DEFAULT_N_TOP_TOKENS = 10
+DEFAULT_N_SAMPLES = 5
+DEFAULT_N_NEW_TOKENS = 10
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -21,6 +23,7 @@ class EditResult:
 
     predicted_tokens: list[functional.PredictedToken]
     model_logits: torch.Tensor
+    model_generations: list[str]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -46,6 +49,8 @@ class LinearRelationEditor(Editor):
 
     lre: operators.LinearRelationOperator
     n_top_tokens: int = DEFAULT_N_TOP_TOKENS
+    n_samples: int = DEFAULT_N_SAMPLES
+    n_new_tokens: int = DEFAULT_N_NEW_TOKENS
 
     @property
     def mt(self) -> models.ModelAndTokenizer:
@@ -132,6 +137,8 @@ class LowRankPInvEditor(LinearRelationEditor):
             inputs=inputs,
             delta=delta,
             n_top_tokens=self.n_top_tokens,
+            n_new_tokens=self.n_new_tokens,
+            n_samples=self.n_samples,
         )
 
 
@@ -176,6 +183,8 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
             inputs=inputs,
             delta=delta,
             n_top_tokens=self.n_top_tokens,
+            n_new_tokens=self.n_new_tokens,
+            n_samples=self.n_samples,
         )
 
 
@@ -215,6 +224,8 @@ class HiddenBaselineEditor(LinearRelationEditor):
             delta=h_target,
             assign=True,
             n_top_tokens=self.n_top_tokens,
+            n_new_tokens=self.n_new_tokens,
+            n_samples=self.n_samples,
         )
 
 
@@ -248,6 +259,8 @@ class EmbedBaselineEditor(LowRankPInvEditor):
             delta=embed_target,
             assign=True,
             n_top_tokens=self.n_top_tokens,
+            n_new_tokens=self.n_new_tokens,
+            n_samples=self.n_samples,
         )
 
 
@@ -287,9 +300,9 @@ def _apply_edit(
     inputs: ModelInput,
     delta: torch.Tensor,
     assign: bool = False,
-    n_top_tokens: int = 10,
-    # n_new_tokens: int = 20,
-    # n_samples: int = 5,
+    n_top_tokens: int = DEFAULT_N_TOP_TOKENS,
+    n_new_tokens: int = DEFAULT_N_NEW_TOKENS,
+    n_samples: int = DEFAULT_N_SAMPLES,
 ) -> LinearRelationEditResult:
     def edit_output(output):  # type: ignore
         h = output
@@ -306,22 +319,34 @@ def _apply_edit(
 
         return output
 
+    generate_kwargs = models.determine_generate_kwargs(mt)
+
     [layer_name] = models.determine_layer_paths(mt, layers=[layer])
     with baukit.Trace(mt.model, layer_name, edit_output=edit_output):
-        outputs = mt.model(
-            input_ids=inputs.input_ids,
-            attention_mask=inputs.attention_mask,
+        outputs = mt.model.generate(
+            input_ids=inputs.input_ids.expand(n_samples, -1),
+            attention_mask=inputs.attention_mask.expand(n_samples, -1),
+            max_new_tokens=n_new_tokens,
+            **generate_kwargs,
         )
 
-    probs = outputs.logits[0, -1].float().softmax(dim=-1)
+    model_logits = outputs.scores[0]
+    model_generations = mt.tokenizer.batch_decode(
+        outputs.sequence, skip_special_tokens=True
+    )
+
+    probs = model_logits[0, -1].float().softmax(dim=-1)
     topk = probs.topk(k=n_top_tokens, dim=-1)
+    predicted_tokens = [
+        functional.PredictedToken(
+            token=mt.tokenizer.decode(token_id),
+            prob=prob,
+        )
+        for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
+    ]
+
     return LinearRelationEditResult(
-        predicted_tokens=[
-            functional.PredictedToken(
-                token=mt.tokenizer.decode(token_id),
-                prob=prob,
-            )
-            for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
-        ],
-        model_logits=outputs.logits,
+        predicted_tokens=predicted_tokens,
+        model_logits=model_logits,
+        model_generations=model_generations,
     )
