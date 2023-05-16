@@ -42,16 +42,22 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
-            bench_results_dir = experiment.results_dir / bench /
+            bench_results_dir = experiment.results_dir / bench
 
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
-                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir, resume=args.resume
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             elif bench == "faithfulness":
                 results = benchmarks.faithfulness(
-                    dataset=dataset, estimator=estimator, results_dir=bench_results_dir, resume=args.resume,
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             elif bench == "causality":
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
@@ -104,7 +110,11 @@ if __name__ == "__main__":
         choices=EDITORS,
         help="editor to use",
     )
-    parser.add_argument("--resume", action="store_true", help="do not recompute results already in the results dir")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="do not recompute results already in the results dir",
+    )
     data.add_data_args(parser)
     models.add_model_args(parser)
     experiment_utils.add_experiment_args(parser)
