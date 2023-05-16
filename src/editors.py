@@ -332,12 +332,12 @@ def _apply_edit(
             **generate_kwargs,
         )
 
-    model_logits = outputs.scores[0]
+    model_logits = outputs.scores[0][0]
     model_generations = mt.tokenizer.batch_decode(
         outputs.sequences, skip_special_tokens=True
     )
 
-    probs = model_logits[0].float().softmax(dim=-1)
+    probs = model_logits.float().softmax(dim=-1)
     topk = probs.topk(k=n_top_tokens, dim=-1)
     predicted_tokens = [
         functional.PredictedToken(
