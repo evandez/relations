@@ -141,3 +141,4 @@ scan-for-best*
 results/
 results_updated/
 models/
+eval_results/
