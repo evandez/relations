@@ -642,6 +642,7 @@ def faithfulness(
 class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     subject_original: str
     subject_target: str
+    object_target: str
     prompt_template: str
 
     prob_original: float
@@ -737,7 +738,19 @@ def causality(
 
             relation_samples = []
             for sample in test.samples:
-                others = list(set(test.samples) - {sample})
+                others = list(
+                    {
+                        x
+                        for x in test.samples
+                        if x.subject != sample.subject and x.object != sample.object
+                    }
+                )
+                if not others:
+                    logger.debug(
+                        "no sample with different subject and different object "
+                        f"than {sample}, skipping"
+                    )
+                    continue
                 target = random.choice(others)
 
                 subject_original = sample.subject
@@ -764,6 +777,7 @@ def causality(
                     CausalityBenchmarkRelationTrialSample(
                         subject_original=subject_original,
                         subject_target=subject_target,
+                        object_target=object_target,
                         prompt_template=prompt_template,
                         prob_original=prob_original,
                         prob_target=prob_target,

@@ -60,6 +60,7 @@ def main(args: argparse.Namespace) -> None:
                     resume=args.resume,
                 )
             elif bench == "causality":
+                bench_results_dir /= args.editor
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
                 logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
@@ -67,7 +68,7 @@ def main(args: argparse.Namespace) -> None:
                     estimator=estimator,
                     editor_type=editor_type,
                     # NB(evan): Results dir also needs to index on the editor type.
-                    results_dir=bench_results_dir / args.editor,
+                    results_dir=bench_results_dir,
                     resume=args.resume,
                 )
             else:
