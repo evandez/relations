@@ -169,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="../results/rank_sweep",
+        default="../results_updated/rank_sweep",
         help="results dir",
     )
     args = parser.parse_args()

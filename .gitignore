@@ -139,4 +139,5 @@ dmypy.json
 notebooks/layer_sweep/
 scan-for-best*
 results/
+results_updated/
 models/

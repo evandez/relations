@@ -209,7 +209,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="../results/layer_sweep",
+        default="../results_updated/layer_sweep",
         help="results dir",
     )
     args = parser.parse_args()

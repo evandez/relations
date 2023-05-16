@@ -163,7 +163,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--results_dir",
         type=str,
-        default="../results/bias_scale_sweep",
+        default="../results_updated/bias_scale_sweep",
         help="results dir",
     )
     parser.add_argument(
