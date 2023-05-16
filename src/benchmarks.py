@@ -70,6 +70,7 @@ def reconstruction(
     n_icl_lm: int = 2,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> ReconstructionBenchmarkResults:
     """Evaluate how much LRE looks like model's own representations.
 
@@ -111,6 +112,7 @@ def reconstruction(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=ReconstructionBenchmarkRelationResults,
+            resume=resume,
         )
         if relation_result is not None:
             relation_results.append(relation_result)
@@ -380,6 +382,7 @@ def faithfulness(
     k: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -422,6 +425,7 @@ def faithfulness(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=FaithfulnessBenchmarkRelationResults,
+            resume=resume,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -679,6 +683,7 @@ def causality(
     n_icl_lm: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
+    resume: bool = False,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
     if desc is None:
@@ -692,6 +697,7 @@ def causality(
             results_dir=results_dir,
             relation_name=relation.name,
             results_type=CausalityRelationResults,
+            resume=resume,
         )
         if relation_results is not None:
             results_by_relation.append(relation_results)
@@ -834,9 +840,10 @@ def _load_relation_results(
     results_dir: PathLike | None,
     relation_name: str,
     results_type: type[T],
+    resume: bool,
 ) -> T | None:
     """Read a relation result, if present."""
-    if results_dir is None:
+    if results_dir is None or not resume:
         logger.debug("results_dir not set, so not reading intermediate results")
         return None
 
