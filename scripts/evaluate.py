@@ -70,6 +70,7 @@ def main(args: argparse.Namespace) -> None:
                     # NB(evan): Results dir also needs to index on the editor type.
                     results_dir=bench_results_dir,
                     resume=args.resume,
+                    rank=args.rank
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
