@@ -42,7 +42,7 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
-            bench_results_dir = experiment.results_dir / bench
+            bench_results_dir = experiment.results_dir / bench /
 
             results: Any
             if bench == "reconstruction":
@@ -60,7 +60,8 @@ def main(args: argparse.Namespace) -> None:
                     dataset=dataset,
                     estimator=estimator,
                     editor_type=editor_type,
-                    results_dir=bench_results_dir,
+                    # NB(evan): Results dir also needs to index on the editor type.
+                    results_dir=bench_results_dir / args.editor,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")

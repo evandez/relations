@@ -640,6 +640,7 @@ class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     prob_target: float
 
     predicted_tokens: list[functional.PredictedToken]
+    model_generations: list[str]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -722,7 +723,7 @@ def causality(
             if issubclass(editor_type, editors.LinearRelationEditor):
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
-            editor = editor_type(mt=mt, **editor_kwargs)
+            editor = editor_type(**editor_kwargs)
 
             relation_samples = []
             for sample in test.samples:
@@ -757,6 +758,7 @@ def causality(
                         prob_original=prob_original,
                         prob_target=prob_target,
                         predicted_tokens=result.predicted_tokens,
+                        model_generations=result.model_generations,
                     )
                 )
             relation_trials.append(
