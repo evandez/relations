@@ -108,6 +108,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--editor",
         choices=EDITORS,
+        default="lr-e",
         help="editor to use",
     )
     parser.add_argument(
