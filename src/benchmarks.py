@@ -762,7 +762,7 @@ def causality(
                 object_original = sample.object
                 object_target = target.object
 
-                if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
+                if issubclass(editor_type, editors.LowRankPInvEmbedEditor) or issubclass(editor_type, editors.EmbedBaselineEditor):
                     result = editor(subject_original, object_target)
                 else:
                     result = editor(subject_original, subject_target)
