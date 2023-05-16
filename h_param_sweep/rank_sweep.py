@@ -29,7 +29,7 @@ from tqdm.auto import tqdm
 
 def main(args: argparse.Namespace) -> None:
     ###################################################
-    ranks = [32, 64, 128, 256, 512, 1024, 2048, None]
+    low_limit = 32
     FILTER_RELATIONS: list = [
         "country capital city",
         "occupation",
@@ -73,6 +73,15 @@ def main(args: argparse.Namespace) -> None:
     print(
         f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
     )
+
+    hidden_size = models.determine_hidden_size(mt)
+    ranks = [hidden_size]
+    while hidden_size > low_limit:
+        hidden_size //= 2
+        ranks.append(hidden_size)
+    ranks = ranks[::-1]
+
+    print(f"sweeping over ranks >> {ranks}")
 
     for relation in tqdm(dataset.relations):
         print("\n####################################################################")
