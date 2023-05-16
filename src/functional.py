@@ -76,7 +76,7 @@ def order_1_approx(
 
     """
     if z_layer is None:
-        z_layer = mt.model.config.n_layer - 1
+        z_layer = len(models.determine_layers(mt)) - 1
     if z_index is None:
         z_index = -1
     if inputs is None:

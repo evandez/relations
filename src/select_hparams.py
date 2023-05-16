@@ -1,6 +1,7 @@
 import itertools
 import random
 
+from h_param_sweep.plotting import plot_layer_wise_causal_tracing
 from src import models
 from src.data import Relation, RelationSample
 from src.functional import make_prompt
@@ -22,7 +23,7 @@ H_PARAMS = {
     "gpt2-xl": {
         "layer": {
             "default": 26,
-            "max": 32,
+            "max": 30,
             "good_range": (12, 32),
         }
     },
@@ -86,7 +87,7 @@ def select_layer(
         trace_config[: min(len(trace_config), n_run)],
         desc="searching for optimal layer",
     ):
-        # print(sample_pair)
+        print(sample_pair)
         icl_examples = sample_from_each_range(
             samples=list(set(training_data.samples) - set(sample_pair)), n_sample=n_icl
         )
@@ -99,13 +100,13 @@ def select_layer(
             if len(icl_examples) > 0
             else prompt_template
         )
-        # print(_prompt)
+        print(_prompt)
         cur_result = causal_tracing(
             mt,
             prompt_template=_prompt,
             subject_original=sample_pair[0].subject,
             subject_corruption=sample_pair[1].subject,
-            object_original=sample_pair[0].object,
+            # object_original=sample_pair[0].object,
         )
         for layer in models.determine_layer_paths(mt):
             causal_tracing_results[layer].append(cur_result[layer])
@@ -115,14 +116,18 @@ def select_layer(
         for layer in models.determine_layer_paths(mt)
     ]
 
-    # if(verbose):
-    #     plot_layer_wise_causal_tracing(causal_tracing_results, title=f"causal tracing on {training_data.name}")
-    #     plt.show()
-    #     plt.plot([
-    #         np.array(layer_causal_score[i - knee_smooth_factor : i]).mean()
-    #         for i in range(len(layer_causal_score))
-    #     ])
-    #     plt.show()
+    if verbose:
+        plot_layer_wise_causal_tracing(
+            causal_tracing_results, title=f"causal tracing on {training_data.name}"
+        )
+        plt.show()
+        plt.plot(
+            [
+                np.array(layer_causal_score[i - knee_smooth_factor : i]).mean()
+                for i in range(len(layer_causal_score))
+            ]
+        )
+        plt.show()
 
     smoothed_causal_score = np.array(
         [

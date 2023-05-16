@@ -17,12 +17,13 @@ def interpret_logits(
     logits: torch.Tensor,
     top_k: int = 10,
     get_proba: bool = False,
-) -> list[tuple[str, float]]:
+) -> list[tuple[str, int | torch.Tensor, float]]:
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     token_ids = logits.topk(dim=-1, k=top_k).indices.squeeze().tolist()
     logit_values = logits.topk(dim=-1, k=top_k).values.squeeze().tolist()
     return [
-        (mt.tokenizer.decode(t), round(v, 3)) for t, v in zip(token_ids, logit_values)
+        (mt.tokenizer.decode(t), t, round(v, 3))
+        for t, v in zip(token_ids, logit_values)
     ]
 
 
@@ -48,13 +49,13 @@ def layer_c_measure(
     subject: str,
     measure: Literal["completeness", "contribution"] = "completeness",
 ) -> dict:
-    tokenized = relation_prompt.format(subject)
+    prompt = relation_prompt.format(subject)
     with baukit.TraceDict(mt.model, layers=models.determine_layer_paths(mt)) as traces:
-        output = mt.model(
-            **mt.tokenizer(tokenized, return_tensors="pt", padding=True).to(
-                mt.model.device
-            )
+        tokenized = mt.tokenizer(prompt, return_tensors="pt", padding=True).to(
+            mt.model.device
         )
+        tokenized.pop("token_type_ids")
+        output = mt.model(**tokenized)
 
     object_id = output.logits[0][-1].argmax().item()
     object = mt.tokenizer.decode(object_id)
@@ -105,31 +106,32 @@ def causal_tracing(
     subject_corruption: str,
     object_original: str | None = None,
 ) -> dict:
-    h_idx_orig, tokenized_orig = F.find_subject_token_index(
+    h_idx_orig, tokenized_original = F.find_subject_token_index(
         mt=mt,
         prompt=prompt_template.format(subject_original),
         subject=subject_original,
         offset=-1,
     )
 
-    h_idx_corr, _ = F.find_subject_token_index(
+    h_idx_corr, tokenized_corrupted = F.find_subject_token_index(
         mt=mt,
         prompt=prompt_template.format(subject_corruption),
         subject=subject_corruption,
         offset=-1,
     )
 
+    tokenized_original.pop("token_type_ids")
+    tokenized_corrupted.pop("token_type_ids")
+
     layer_names = models.determine_layer_paths(mt)
+
     with baukit.TraceDict(mt.model, layer_names) as traces_o:
-        output_o = mt.model(**tokenized_orig)
+        output_o = mt.model(**tokenized_original)
 
     if object_original is None:
-        answer, p_answer = interpret_logits(mt, output_o.logits[0][-1], get_proba=True)[
-            0
-        ]
-        answer_t = (
-            mt.tokenizer(answer, return_tensors="pt").to(mt.model.device).input_ids[0]
-        )
+        answer, answer_t, p_answer = interpret_logits(
+            mt, output_o.logits[0][-1], get_proba=True
+        )[0]
     else:
         answer_t = (
             mt.tokenizer(object_original, return_tensors="pt")
@@ -139,10 +141,11 @@ def causal_tracing(
         answer = mt.tokenizer.decode(answer_t)
 
         p_answer = torch.nn.functional.softmax(output_o.logits[0][-1], dim=-1)[
-            answer_t.item()
+            answer_t
         ].item()
 
-    logger.debug(f"answer: {answer}[{answer_t.item()}], p(answer): {p_answer:.3f}")
+    # print(answer, answer_t, p_answer)
+    logger.debug(f"answer: {answer}[{answer_t}], p(answer): {p_answer:.3f}")
 
     result = {}
     for intervention_layer in layer_names:
@@ -158,9 +161,7 @@ def causal_tracing(
             ),
         ) as traces_i:
             mt.model(
-                **mt.tokenizer(
-                    prompt_template.format(subject_corruption), return_tensors="pt"
-                ).to(mt.model.device)
+                **tokenized_corrupted,
             )
 
         z = F.untuple(traces_i[layer_names[-1]].output)[0][-1]
