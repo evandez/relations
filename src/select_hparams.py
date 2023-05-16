@@ -17,7 +17,13 @@ H_PARAMS = {
             "default": 13,
             "good_range": (6, 16),
         }
-    }
+    },
+    "gpt2-xl": {
+        "layer": {
+            "default": 13,
+            "good_range": (6, 16),
+        }
+    },
 }
 
 
