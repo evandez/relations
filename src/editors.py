@@ -195,7 +195,7 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
 
         target_token_id = self.lre.mt.tokenizer.encode(
             object_target, add_special_tokens=False
-        )[-1]
+        )[0]
         embed_target = self.lre.mt.model.lm_head.weight[target_token_id, :].unsqueeze(
             -1
         )
@@ -358,7 +358,7 @@ class EmbedBaselineEditor(LowRankPInvEditor):
 
         target_token_id = self.lre.mt.tokenizer.encode(
             object_target, add_special_tokens=False
-        )[-1]
+        )[0]
         embed_target = self.lre.mt.model.lm_head.weight[target_token_id, :]
 
         embed_target = embed_target * (h_original.norm() / embed_target.norm())
