@@ -90,12 +90,6 @@ class LowRankPInvEditor(LinearRelationEditor):
         subject: str,
         target: str,
     ) -> LinearRelationEditResult:
-        inputs, subject_edit_index = _compute_inputs(
-            mt=self.mt,
-            prompt_template=self.prompt_template,
-            subject=subject,
-        )
-
         prompt_original = functional.make_prompt(
             mt=self.mt, prompt_template=self.prompt_template, subject=subject
         )
@@ -240,7 +234,7 @@ class EmbedBaselineEditor(LowRankPInvEditor):
         hiddens = functional.compute_hidden_states(
             mt=self.mt, layers=[self.h_layer], inputs=inputs
         )
-        h_original = hiddens.hiddens[0][0, -1, ..., None]
+        h_original = hiddens.hiddens[0][0, subject_edit_index, ..., None]
 
         target_token_id = models.tokenize_words(self.mt, target).inputs_ids[:, 0].item()
         embed_target = self.mt.lm_head[-1].weight[target_token_id, :]
@@ -264,23 +258,21 @@ def _compute_inputs(
     subject: str,
 ) -> tuple[ModelInput, int]:
     """Compute model inputs and the subject token index."""
-    prompt = functional.make_prompt(
+    prompt_subject = functional.make_prompt(
         mt=mt, prompt_template=prompt_template, subject=subject
     )
     inputs = mt.tokenizer(
-        prompt,
+        prompt_subject,
         return_tensors="pt",
-        padding="longest",
-        truncation=True,
         return_offsets_mapping=True,
     ).to(mt.model.device)
     assert len(inputs.inputs_ids) == 1, inputs.input_ids.shape
 
     offset_mapping = inputs.pop("offset_mapping")
     _, subject_index = tokenizer_utils.find_token_range(
-        prompt,
+        prompt_subject,
         subject,
-        offset_mapping=offset_mapping,
+        offset_mapping=offset_mapping[0],
     )
     subject_index -= 1
 
