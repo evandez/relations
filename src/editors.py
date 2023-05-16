@@ -323,10 +323,8 @@ def _apply_edit(
     [layer_name] = models.determine_layer_paths(mt, layers=[layer])
     with baukit.Trace(mt.model, layer_name, edit_output=edit_output):
         outputs = mt.model.generate(
-            input_ids=inputs.input_ids.expand(inputs.input_ids.shape[0], -1),
-            attention_mask=inputs.attention_mask.expand(
-                inputs.attention_mask.shape[0], -1
-            ),
+            input_ids=inputs.input_ids.expand(n_samples, -1),
+            attention_mask=inputs.attention_mask.expand(n_samples, -1),
             max_new_tokens=n_new_tokens,
             return_dict_in_generate=True,
             output_scores=True,
