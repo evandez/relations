@@ -61,7 +61,7 @@ def main(args: argparse.Namespace) -> None:
                 )
             elif bench == "causality":
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
-                logger.info(f"begin editing algorithm: {editor_type.__name__}")
+                logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
                     dataset=dataset,
                     estimator=estimator,

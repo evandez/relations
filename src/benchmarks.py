@@ -752,7 +752,7 @@ def causality(
                     .input_ids[:, 0]
                     .tolist()
                 )
-                probs = result.model_logits[0, -1].float().softmax(dim=-1)
+                probs = result.model_logits.float().softmax(dim=-1)
                 prob_original = probs[token_id_original].item()
                 prob_target = probs[token_id_target].item()
 
