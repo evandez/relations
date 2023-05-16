@@ -31,18 +31,18 @@ def main(args: argparse.Namespace) -> None:
     ###################################################
     ranks = [32, 64, 128, 256, 512, 1024, 2048, None]
     FILTER_RELATIONS: list = [
-        # "country capital city",
-        # "occupation",
+        "country capital city",
+        "occupation",
         "person superhero name",
         "plays pro sport",
         "landmark in country",
         "outside color of fruits and vegetables",
-        # "work location",
-        # "task done by person NEEDS REVISION",
-        # "word comparative",
-        # "word past tense",
-        # "name gender",
-        # "name religion",
+        "work location",
+        "task done by person NEEDS REVISION",
+        "word comparative",
+        "word past tense",
+        "name gender",
+        "name religion",
     ]
 
     editor_types = {
@@ -90,6 +90,7 @@ def main(args: argparse.Namespace) -> None:
         else:
             layer_n = args.layer_n
 
+        log_dict["layer_n"] = int(layer_n)
         for low_rank in tqdm(ranks):
             log_dict[low_rank] = {}
             mean_estimator = JacobianIclMeanEstimator(
@@ -162,7 +163,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--n_layer_select",
         type=int,
-        default=20,
+        default=200,
         help="number of examples to use to select the layer. will only be used if layer_n is set to -1",
     )
     parser.add_argument(
