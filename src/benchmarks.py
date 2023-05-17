@@ -342,6 +342,10 @@ class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     recall_pd_if_zs_wrong: list[float]
     recall_lens_if_zs_correct: list[float]
     recall_lens_if_zs_wrong: list[float]
+    count_lm_correct: int
+    count_lm_wrong: int
+    count_zs_correct: int
+    count_zs_wrong: int
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -603,6 +607,10 @@ def faithfulness(
                     recall_pd_if_zs_wrong=recall_pd_by_zs_correct[False],
                     recall_lens_if_zs_correct=recall_lens_by_zs_correct[True],
                     recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
+                    count_lm_correct: len(targets_by_lm_correct[True]),
+                    count_lm_wrong: len(targets_by_lm_correct[False]),
+                    count_zs_correct: int(targets_by_zs_correct[True]),
+                    count_zs_wrong: int(targets_by_zs_correct[False]),
                 )
             )
 
