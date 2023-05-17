@@ -142,3 +142,4 @@ results/
 results_updated/
 models/
 eval_results/
+*.pdf
