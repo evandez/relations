@@ -492,16 +492,22 @@ def faithfulness(
             # print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            def poetry_prefix(subject, wrong):
-                return ''.join([prompt_template.format(subject) + ' ' + wrong +'. '] * 2)
+            def poetry_prefix(subject, wrong):  # type: ignore
+                return "".join(
+                    [prompt_template.format(subject) + " " + wrong + ". "] * 2
+                )
+
             prompts_pd = [
-                    make_prompt(
-                        prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
-                        subject=x.subject,
-                        mt=mt)
-                    for x, wrong in zip(test.samples, wrong_targets) ]
-            outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k,
-                    batch_size=1) # Shrink the batch size to fit long prompts.
+                make_prompt(
+                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
+                    subject=x.subject,
+                    mt=mt,
+                )
+                for x, wrong in zip(test.samples, wrong_targets)
+            ]
+            outputs_pd = functional.predict_next_token(
+                mt=mt, prompt=prompts_pd, k=k, batch_size=1
+            )  # Shrink the batch size to fit long prompts.
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
@@ -727,7 +733,7 @@ def causality(
                 continue
 
             train, test = relation.set(
-                samples=list(known_samples), prompt_templates=[prompt_template]
+                samples=known_samples, prompt_templates=[prompt_template]
             ).split(n_train)
 
             editor_kwargs = dict(kwargs)
@@ -738,13 +744,11 @@ def causality(
 
             relation_samples = []
             for sample in test.samples:
-                others = list(
-                    {
-                        x
-                        for x in test.samples
-                        if x.subject != sample.subject and x.object != sample.object
-                    }
-                )
+                others = [
+                    x
+                    for x in test.samples
+                    if x.subject != sample.subject and x.object != sample.object
+                ]
                 if not others:
                     logger.debug(
                         "no sample with different subject and different object "
@@ -827,7 +831,7 @@ def _determine_known_samples(
     prompt_template: str,
     n_icl_lm: int,
     n_top_lm: int,
-) -> set[data.RelationSample]:
+) -> list[data.RelationSample]:
     """Filter samples down to only those that model knows.
 
     Most benchmarks rely on model knowing the relation at all.
@@ -847,7 +851,9 @@ def _determine_known_samples(
         for sample, topk in zip(relation.samples, predictions)
         if functional.any_is_nontrivial_prefix([x.token for x in topk], sample.object)
     }
-    return known_samples
+
+    # NB(evan): Need to sort to keep deterministic.
+    return sorted(known_samples, key=lambda x: x.subject)
 
 
 T = TypeVar("T", bound=DataClassJsonMixin)
