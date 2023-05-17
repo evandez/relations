@@ -2,10 +2,12 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any
+from pathlib import Path
+from typing import Any, TypeVar
 
 from src import data, editors, functional, metrics, models, operators
 from src.functional import make_prompt
+from src.utils.typing import PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -67,6 +69,8 @@ def reconstruction(
     n_top_lm: int = 3,
     n_icl_lm: int = 2,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> ReconstructionBenchmarkResults:
     """Evaluate how much LRE looks like model's own representations.
 
@@ -82,6 +86,7 @@ def reconstruction(
         n_icl_lm: Number of ICL examples to use when prompting LM to see if it knows
             a subject.
         desc: Tqdm description.
+        results_dir: If provided, save intermediate results to this directory.
 
     Returns:
         Benchmark results.
@@ -103,6 +108,16 @@ def reconstruction(
     counts: dict[int, int] = defaultdict(int)
     relation_results = []
     for relation in tqdm(dataset.relations, desc=desc):
+        relation_result = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=ReconstructionBenchmarkRelationResults,
+            resume=resume,
+        )
+        if relation_result is not None:
+            relation_results.append(relation_result)
+            continue
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -269,11 +284,16 @@ def reconstruction(
                     samples=relation_samples,
                 )
             )
-        relation_results.append(
-            ReconstructionBenchmarkRelationResults(
-                relation_name=relation.name,
-                trials=relation_trials,
-            )
+
+        relation_result = ReconstructionBenchmarkRelationResults(
+            relation_name=relation.name,
+            trials=relation_trials,
+        )
+        relation_results.append(relation_result)
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_result,
         )
 
     if not counts:
@@ -363,6 +383,8 @@ def faithfulness(
     n_trials: int = 3,
     k: int = 3,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
+    resume: bool = False,
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -377,6 +399,7 @@ def faithfulness(
         n_trials: Number of times to repeat the experiment for each relation.
         k: Number of top predictions to take from LRE.
         desc: Progress bar description.
+        results_dir: Save and read intermediate results from this directory.
 
     Returns:
         Benchmark results.
@@ -399,6 +422,17 @@ def faithfulness(
     progress = tqdm(dataset.relations, desc=desc)
     for relation in progress:
         progress.set_description(relation.name)
+
+        relation_results = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=FaithfulnessBenchmarkRelationResults,
+            resume=resume,
+        )
+        if relation_results is not None:
+            results_by_relation.append(relation_results)
+            continue
+
         trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -458,16 +492,22 @@ def faithfulness(
             # print('ZS', recall_zs)
 
             # Compute poetry-distracted predictions.
-            def poetry_prefix(subject, wrong):
-                return ''.join([prompt_template.format(subject) + ' ' + wrong +'. '] * 2)
+            def poetry_prefix(subject, wrong):  # type: ignore
+                return "".join(
+                    [prompt_template.format(subject) + " " + wrong + ". "] * 2
+                )
+
             prompts_pd = [
-                    make_prompt(
-                        prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
-                        subject=x.subject,
-                        mt=mt)
-                    for x, wrong in zip(test.samples, wrong_targets) ]
-            outputs_pd = functional.predict_next_token(mt=mt, prompt=prompts_pd, k=k,
-                    batch_size=1) # Shrink the batch size to fit long prompts.
+                make_prompt(
+                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
+                    subject=x.subject,
+                    mt=mt,
+                )
+                for x, wrong in zip(test.samples, wrong_targets)
+            ]
+            outputs_pd = functional.predict_next_token(
+                mt=mt, prompt=prompts_pd, k=k, batch_size=1
+            )  # Shrink the batch size to fit long prompts.
             preds_pd = [[x.token for x in xs] for xs in outputs_pd]
             recall_pd = metrics.recall(preds_pd, targets)
             recalls_pd.append(recall_pd)
@@ -565,11 +605,16 @@ def faithfulness(
                     recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
                 )
             )
-        results_by_relation.append(
-            FaithfulnessBenchmarkRelationResults(
-                relation_name=relation.name, trials=trials
-            )
+
+        relation_results = FaithfulnessBenchmarkRelationResults(
+            relation_name=relation.name, trials=trials
         )
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_results,
+        )
+        results_by_relation.append(relation_results)
 
     faithfulness_metrics = FaithfulnessBenchmarkMetrics(
         **{
@@ -603,12 +648,14 @@ def faithfulness(
 class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     subject_original: str
     subject_target: str
+    object_target: str
     prompt_template: str
 
     prob_original: float
     prob_target: float
 
     predicted_tokens: list[functional.PredictedToken]
+    model_generations: list[str]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -646,6 +693,8 @@ def causality(
     n_top_lm: int = 3,
     n_icl_lm: int = 3,
     desc: str | None = None,
+    results_dir: PathLike | None = None,
+    resume: bool = False,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
     if desc is None:
@@ -653,8 +702,18 @@ def causality(
 
     mt = estimator.mt
 
-    relation_results = []
+    results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
+        relation_results = _load_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results_type=CausalityRelationResults,
+            resume=resume,
+        )
+        if relation_results is not None:
+            results_by_relation.append(relation_results)
+            continue
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = random.choice(relation.prompt_templates)
@@ -674,18 +733,28 @@ def causality(
                 continue
 
             train, test = relation.set(
-                samples=list(known_samples), prompt_templates=[prompt_template]
+                samples=known_samples, prompt_templates=[prompt_template]
             ).split(n_train)
 
             editor_kwargs = dict(kwargs)
             if issubclass(editor_type, editors.LinearRelationEditor):
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
-            editor = editor_type(mt=mt, **editor_kwargs)
+            editor = editor_type(**editor_kwargs)
 
             relation_samples = []
             for sample in test.samples:
-                others = list(set(test.samples) - {sample})
+                others = [
+                    x
+                    for x in test.samples
+                    if x.subject != sample.subject and x.object != sample.object
+                ]
+                if not others:
+                    logger.debug(
+                        "no sample with different subject and different object "
+                        f"than {sample}, skipping"
+                    )
+                    continue
                 target = random.choice(others)
 
                 subject_original = sample.subject
@@ -704,7 +773,7 @@ def causality(
                     .input_ids[:, 0]
                     .tolist()
                 )
-                probs = result.model_logits[0, -1].float().softmax(dim=-1)
+                probs = result.model_logits.float().softmax(dim=-1)
                 prob_original = probs[token_id_original].item()
                 prob_target = probs[token_id_target].item()
 
@@ -712,10 +781,12 @@ def causality(
                     CausalityBenchmarkRelationTrialSample(
                         subject_original=subject_original,
                         subject_target=subject_target,
+                        object_target=object_target,
                         prompt_template=prompt_template,
                         prob_original=prob_original,
                         prob_target=prob_target,
                         predicted_tokens=result.predicted_tokens,
+                        model_generations=result.model_generations,
                     )
                 )
             relation_trials.append(
@@ -723,16 +794,21 @@ def causality(
                     train=train, test=test, samples=relation_samples
                 )
             )
-        relation_results.append(
-            CausalityRelationResults(
-                relation_name=relation.name, trials=relation_trials
-            )
+
+        relation_results = CausalityRelationResults(
+            relation_name=relation.name, trials=relation_trials
         )
+        _save_relation_results(
+            results_dir=results_dir,
+            relation_name=relation.name,
+            results=relation_results,
+        )
+        results_by_relation.append(relation_results)
 
     efficacies = torch.tensor(
         [
             sample.prob_target > sample.prob_original
-            for relation_result in relation_results
+            for relation_result in results_by_relation
             for trial in relation_result.trials
             for sample in trial.samples
         ]
@@ -741,7 +817,7 @@ def causality(
     efficacy_std = efficacies.float().std().item()
 
     return CausalityBenchmarkResults(
-        relations=relation_results,
+        relations=results_by_relation,
         metrics=CausalityBenchmarkMetrics(
             efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
         ),
@@ -755,7 +831,7 @@ def _determine_known_samples(
     prompt_template: str,
     n_icl_lm: int,
     n_top_lm: int,
-) -> set[data.RelationSample]:
+) -> list[data.RelationSample]:
     """Filter samples down to only those that model knows.
 
     Most benchmarks rely on model knowing the relation at all.
@@ -775,4 +851,66 @@ def _determine_known_samples(
         for sample, topk in zip(relation.samples, predictions)
         if functional.any_is_nontrivial_prefix([x.token for x in topk], sample.object)
     }
-    return known_samples
+
+    # NB(evan): Need to sort to keep deterministic.
+    return sorted(known_samples, key=lambda x: x.subject)
+
+
+T = TypeVar("T", bound=DataClassJsonMixin)
+
+
+def _load_relation_results(
+    *,
+    results_dir: PathLike | None,
+    relation_name: str,
+    results_type: type[T],
+    resume: bool,
+) -> T | None:
+    """Read a relation result, if present."""
+    if results_dir is None or not resume:
+        logger.debug("results_dir not set, so not reading intermediate results")
+        return None
+
+    relation_results_file = _relation_results_file(
+        results_dir=results_dir,
+        relation_name=relation_name,
+    )
+    if not relation_results_file.exists():
+        logger.debug(f'no intermediate results for "{relation_name}"')
+        return None
+
+    logger.debug(f"reading intermediate results from {relation_results_file}")
+    with relation_results_file.open("r") as handle:
+        return results_type.from_json(handle.read())
+
+
+def _save_relation_results(
+    *,
+    results_dir: PathLike | None,
+    relation_name: str,
+    results: T,
+) -> None:
+    """Save relation result."""
+    if results_dir is None:
+        logger.debug(
+            "results_dir not set, so not saving intermediate results for "
+            f'"{relation_name}"'
+        )
+        return None
+    relation_results_file = _relation_results_file(
+        results_dir=results_dir,
+        relation_name=relation_name,
+    )
+    logger.debug(f"saving intermediate results to {relation_results_file}")
+    relation_results_file.parent.mkdir(exist_ok=True, parents=True)
+    with relation_results_file.open("w") as handle:
+        handle.write(results.to_json())
+
+
+def _relation_results_file(
+    *,
+    results_dir: PathLike,
+    relation_name: str,
+) -> Path:
+    relation_name_slug = relation_name.replace(" ", "_").replace("'", "")
+    return Path(results_dir) / f"{relation_name_slug}.json"

@@ -17,7 +17,8 @@ ESTIMATORS = {
     "corner-gd": operators.CornerGdEstimator,
 }
 EDITORS = {
-    "bl": editors.BaselineEditor,
+    "bl-h": editors.HiddenBaselineEditor,
+    "bl-e": editors.EmbedBaselineEditor,
     "lr": editors.LowRankPInvEditor,
     "lr-e": editors.LowRankPInvEmbedEditor,
 }
@@ -41,24 +42,39 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
+            bench_results_dir = experiment.results_dir / bench
 
             results: Any
             if bench == "reconstruction":
                 results = benchmarks.reconstruction(
-                    dataset=dataset, estimator=estimator
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             elif bench == "faithfulness":
-                results = benchmarks.faithfulness(dataset=dataset, estimator=estimator)
+                results = benchmarks.faithfulness(
+                    dataset=dataset,
+                    estimator=estimator,
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
+                )
             elif bench == "causality":
+                bench_results_dir /= args.editor
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
-                logger.info(f"begin editing algorithm: {editor_type.__name__}")
+                logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
-                    dataset=dataset, estimator=estimator, editor_type=editor_type
+                    dataset=dataset,
+                    estimator=estimator,
+                    editor_type=editor_type,
+                    # NB(evan): Results dir also needs to index on the editor type.
+                    results_dir=bench_results_dir,
+                    resume=args.resume,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
 
-            results_file = experiment.results_dir / f"{bench}_results.json"
+            results_file = bench_results_dir / "all.json"
             results_json = results.to_json(indent=4)
             with results_file.open("w") as handle:
                 handle.write(results_json)
@@ -66,7 +82,7 @@ def main(args: argparse.Namespace) -> None:
             metrics_json = results.metrics.to_json(indent=4)
             logger.info(metrics_json)
 
-            metrics_file = experiment.results_dir / f"{bench}_metrics.json"
+            metrics_file = bench_results_dir / "metrics.json"
             with metrics_file.open("w") as handle:
                 handle.write(metrics_json)
 
@@ -93,7 +109,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--editor",
         choices=EDITORS,
+        default="lr-e",
         help="editor to use",
+    )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="do not recompute results already in the results dir",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)
