@@ -607,10 +607,10 @@ def faithfulness(
                     recall_pd_if_zs_wrong=recall_pd_by_zs_correct[False],
                     recall_lens_if_zs_correct=recall_lens_by_zs_correct[True],
                     recall_lens_if_zs_wrong=recall_lens_by_zs_correct[False],
-                    count_lm_correct: len(targets_by_lm_correct[True]),
-                    count_lm_wrong: len(targets_by_lm_correct[False]),
-                    count_zs_correct: int(targets_by_zs_correct[True]),
-                    count_zs_wrong: int(targets_by_zs_correct[False]),
+                    count_lm_correct=len(targets_by_lm_correct[True]),
+                    count_lm_wrong=len(targets_by_lm_correct[False]),
+                    count_zs_correct=int(targets_by_zs_correct[True]),
+                    count_zs_wrong=int(targets_by_zs_correct[False]),
                 )
             )
 
