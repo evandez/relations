@@ -76,7 +76,7 @@ def order_1_approx(
 
     """
     if z_layer is None:
-        z_layer = len(models.determine_layers(mt)) - 1
+        z_layer = models.determine_layers(mt)[-1]
     if z_index is None:
         z_index = -1
     if inputs is None:
@@ -297,9 +297,9 @@ def compute_hidden_states(
 
     if inputs is None:
         assert prompt is not None
-        inputs = mt.tokenizer(
-            prompt, return_tensors="pt", padding="longest", truncation=True
-        ).to(mt.model.device)
+        inputs = mt.tokenizer(prompt, return_tensors="pt", padding="longest").to(
+            mt.model.device
+        )
 
     layer_paths = models.determine_layer_paths(mt, layers=layers, return_dict=True)
     with baukit.TraceDict(mt.model, layer_paths.values()) as ret:
@@ -338,9 +338,9 @@ def predict_next_token(
     if isinstance(prompt, str):
         prompt = [prompt]
     with models.set_padding_side(mt, padding_side="left"):
-        inputs = mt.tokenizer(
-            prompt, return_tensors="pt", padding="longest", truncation=True
-        ).to(mt.model.device)
+        inputs = mt.tokenizer(prompt, return_tensors="pt", padding="longest").to(
+            mt.model.device
+        )
     with torch.inference_mode():
         batched_logits = []
         for i in range(0, len(inputs.input_ids), batch_size):
