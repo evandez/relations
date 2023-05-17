@@ -142,4 +142,5 @@ results/
 results_updated/
 models/
 eval_results/
-*.pdf
+notebooks/faithfulness
+*.pdf*
