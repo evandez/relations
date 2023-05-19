@@ -138,5 +138,5 @@ dmypy.json
 # Project-specific stuff
 */layer_sweep/
 scan-for-best*
-results/
-models/
+*results*/
+*models*/
