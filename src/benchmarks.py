@@ -7,6 +7,7 @@ from typing import Any, TypeVar
 
 from src import data, editors, functional, metrics, models, operators
 from src.functional import make_prompt
+from src.utils import experiment_utils
 from src.utils.typing import PathLike
 
 import torch
@@ -108,9 +109,9 @@ def reconstruction(
     counts: dict[int, int] = defaultdict(int)
     relation_results = []
     for relation in tqdm(dataset.relations, desc=desc):
-        relation_result = _load_relation_results(
+        relation_result = experiment_utils.load_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results_type=ReconstructionBenchmarkRelationResults,
             resume=resume,
         )
@@ -290,9 +291,9 @@ def reconstruction(
             trials=relation_trials,
         )
         relation_results.append(relation_result)
-        _save_relation_results(
+        experiment_utils.save_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results=relation_result,
         )
 
@@ -427,9 +428,9 @@ def faithfulness(
     for relation in progress:
         progress.set_description(relation.name)
 
-        relation_results = _load_relation_results(
+        relation_results = experiment_utils.load_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results_type=FaithfulnessBenchmarkRelationResults,
             resume=resume,
         )
@@ -617,9 +618,9 @@ def faithfulness(
         relation_results = FaithfulnessBenchmarkRelationResults(
             relation_name=relation.name, trials=trials
         )
-        _save_relation_results(
+        experiment_utils.save_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results=relation_results,
         )
         results_by_relation.append(relation_results)
@@ -712,9 +713,9 @@ def causality(
 
     results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
-        relation_results = _load_relation_results(
+        relation_results = experiment_utils.load_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results_type=CausalityRelationResults,
             resume=resume,
         )
@@ -806,9 +807,9 @@ def causality(
         relation_results = CausalityRelationResults(
             relation_name=relation.name, trials=relation_trials
         )
-        _save_relation_results(
+        experiment_utils.save_results_file(
             results_dir=results_dir,
-            relation_name=relation.name,
+            name=relation.name,
             results=relation_results,
         )
         results_by_relation.append(relation_results)
@@ -862,63 +863,3 @@ def _determine_known_samples(
 
     # NB(evan): Need to sort to keep deterministic.
     return sorted(known_samples, key=lambda x: x.subject)
-
-
-T = TypeVar("T", bound=DataClassJsonMixin)
-
-
-def _load_relation_results(
-    *,
-    results_dir: PathLike | None,
-    relation_name: str,
-    results_type: type[T],
-    resume: bool,
-) -> T | None:
-    """Read a relation result, if present."""
-    if results_dir is None or not resume:
-        logger.debug("results_dir not set, so not reading intermediate results")
-        return None
-
-    relation_results_file = _relation_results_file(
-        results_dir=results_dir,
-        relation_name=relation_name,
-    )
-    if not relation_results_file.exists():
-        logger.debug(f'no intermediate results for "{relation_name}"')
-        return None
-
-    logger.debug(f"reading intermediate results from {relation_results_file}")
-    with relation_results_file.open("r") as handle:
-        return results_type.from_json(handle.read())
-
-
-def _save_relation_results(
-    *,
-    results_dir: PathLike | None,
-    relation_name: str,
-    results: T,
-) -> None:
-    """Save relation result."""
-    if results_dir is None:
-        logger.debug(
-            "results_dir not set, so not saving intermediate results for "
-            f'"{relation_name}"'
-        )
-        return None
-    relation_results_file = _relation_results_file(
-        results_dir=results_dir,
-        relation_name=relation_name,
-    )
-    logger.debug(f"saving intermediate results to {relation_results_file}")
-    relation_results_file.parent.mkdir(exist_ok=True, parents=True)
-    with relation_results_file.open("w") as handle:
-        handle.write(results.to_json())
-
-
-def _relation_results_file(
-    *,
-    results_dir: PathLike,
-    relation_name: str,
-) -> Path:
-    relation_name_slug = relation_name.replace(" ", "_").replace("'", "")
-    return Path(results_dir) / f"{relation_name_slug}.json"

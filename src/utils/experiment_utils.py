@@ -7,12 +7,14 @@ import shutil
 import time
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TypeVar
 
 from src.utils import env_utils
 from src.utils.typing import PathLike
 
 import numpy
 import torch
+from dataclasses_json import DataClassJsonMixin
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +85,63 @@ def create_results_dir(
     return results_dir
 
 
+ResultsT = TypeVar("ResultsT", bound=DataClassJsonMixin)
+
+
+def load_results_file(
+    *,
+    results_dir: PathLike | None,
+    results_type: type[ResultsT],
+    name: str,
+    resume: bool,
+) -> ResultsT | None:
+    """Read an intermediate result, if present."""
+    if results_dir is None or not resume:
+        logger.debug("results_dir not set, so not reading intermediate results")
+        return None
+
+    relation_results_file = name_results_file(
+        results_dir=results_dir,
+        name=name,
+    )
+    if not relation_results_file.exists():
+        logger.debug(f'no intermediate results for "{name}"')
+        return None
+
+    logger.debug(f"reading intermediate results from {relation_results_file}")
+    with relation_results_file.open("r") as handle:
+        return results_type.from_json(handle.read())
+
+
+def save_results_file(
+    *,
+    results_dir: PathLike | None,
+    name: str,
+    results: ResultsT,
+) -> None:
+    """Save an intermediate result."""
+    if results_dir is None:
+        logger.debug(
+            "results_dir not set, so not saving intermediate results for " f'"{name}"'
+        )
+        return None
+    relation_results_file = name_results_file(results_dir=results_dir, name=name)
+    logger.debug(f"saving intermediate results to {relation_results_file}")
+    relation_results_file.parent.mkdir(exist_ok=True, parents=True)
+    with relation_results_file.open("w") as handle:
+        handle.write(results.to_json())
+
+
+def name_results_file(
+    *,
+    results_dir: PathLike,
+    name: str,
+) -> Path:
+    """Create file name for an intermediate result."""
+    name_slug = name.replace(" ", "_").replace("'", "")
+    return Path(results_dir) / f"{name_slug}.json"
+
+
 def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     """Add args common to all experiments.
 
@@ -102,6 +161,9 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         "--results-dir", type=Path, help="root directory containing experiment results"
+    )
+    parser.add_argument(
+        "--resume", action="store_true", default=False, help="resume previous run"
     )
     parser.add_argument(
         "--clear-results-dir",
