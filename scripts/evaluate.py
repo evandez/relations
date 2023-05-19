@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 BENCHMARKS = ("reconstruction", "faithfulness", "causality")
 ESTIMATORS = {
     "j": operators.JacobianEstimator,
-    "j-icl-max": operators.JacobianIclMaxEstimator,
+    "j-icl": operators.JacobianIclEstimator,
     "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
@@ -111,11 +111,6 @@ if __name__ == "__main__":
         choices=EDITORS,
         default="lr-e",
         help="editor to use",
-    )
-    parser.add_argument(
-        "--resume",
-        action="store_true",
-        help="do not recompute results already in the results dir",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)

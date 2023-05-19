@@ -49,6 +49,7 @@ class Relation(DataClassJsonMixin):
         prompt_templates: Prompts representing the relation, where the subject is
             represented by {}.
         samples: A list of (subject, object) pairs satisfying the relation.
+        properties: Relation metadata.
         _domain: Explicit list of all possible subjects. Accessed via the @property
             `domain`, which guesses the domain from the samples if not provided.
         _range: Equivalent to `_domain`, but for objects.

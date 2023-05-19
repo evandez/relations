@@ -46,6 +46,7 @@ class LinearRelationOperator(RelationOperator):
     h_layer: Layer
     z_layer: Layer
     prompt_template: str
+    beta: float | None = None
     metadata: dict = field(default_factory=dict)
 
     def __call__(
@@ -87,7 +88,10 @@ class LinearRelationOperator(RelationOperator):
         if self.weight is not None:
             z = z.mm(self.weight.t())
         if self.bias is not None:
-            z = z + self.bias
+            bias = self.bias
+            if self.beta is not None:
+                bias = self.beta * bias
+            z = z + bias
 
         logits = self.mt.lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
@@ -122,14 +126,13 @@ class JacobianEstimator(LinearRelationEstimator):
 
     h_layer: Layer
     z_layer: Layer | None = None
+    beta: float | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        for key in ("samples", "prompt_templates"):
-            values = getattr(relation, key)
-            if len(values) == 0:
-                raise ValueError(f"expected at least one value for {key}")
-            if len(values) > 1:
-                logger.warning(f"relation has > 1 {key}, will use first ({values[0]})")
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(samples=relation.samples, prompt_templates=relation.prompt_templates)
 
         subject = relation.samples[0].subject
         prompt_template = relation.prompt_templates[0]
@@ -141,9 +144,12 @@ class JacobianEstimator(LinearRelationEstimator):
         prompt = functional.make_prompt(
             mt=self.mt, prompt_template=prompt_template, subject=subject
         )
+        logger.debug("estimating J for prompt:\n" + prompt)
+
         h_index, inputs = functional.find_subject_token_index(
             mt=self.mt, prompt=prompt, subject=subject
         )
+        logger.debug(f"note that subject={subject}, h_index={h_index}")
 
         approx = functional.order_1_approx(
             mt=self.mt,
@@ -161,107 +167,53 @@ class JacobianEstimator(LinearRelationEstimator):
             h_layer=approx.h_layer,
             z_layer=approx.z_layer,
             prompt_template=prompt_template,
+            beta=self.beta,
             metadata=approx.metadata,
         )
 
 
-@dataclass(frozen=True, kw_only=True)
-class JacobianIclMaxEstimator(LinearRelationEstimator):
-    """Jacobian estimator that uses in-context learning."""
-
+@dataclass(frozen=True)
+class JacobianIclEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
+    beta: float | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        samples = relation.samples
-
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
+        train = relation.samples[0]
+        examples = relation.samples[1:]
         prompt_template = relation.prompt_templates[0]
-
-        # Estimate the biases, storing the confidence of the target token
-        # along the way.
-        approxes = []
-        confidences = []
-        for i, sample in enumerate(samples):
-            prompt = prompt_template.format(sample.subject)
-            h_index, inputs = functional.find_subject_token_index(
-                mt=self.mt,
-                prompt=prompt,
-                subject=sample.subject,
-            )
-            approx = functional.order_1_approx(
-                mt=self.mt,
-                prompt=prompt,
-                h_layer=self.h_layer,
-                h_index=h_index,
-                z_layer=self.z_layer,
-                z_index=-1,
-                inputs=inputs,
-            )
-            approxes.append(approx)
-
-            # TODO(evan): Is this space needed? Seems so, but it makes things worse!
-            object_token_id = self.mt.tokenizer(" " + sample.object).input_ids[0]
-            logits = approx.logits[0, -1]
-            logps = torch.log_softmax(logits, dim=-1)
-            confidences.append(logps[object_token_id])
-
-        # Now estimate J, using an ICL prompt with the model's most-confident subject
-        # used as the training example.
-        chosen = torch.stack(confidences).argmax().item()
-        assert isinstance(chosen, int)
-
-        sample = samples[chosen]
-        subject = sample.subject
-
-        prompt_icl = functional.make_prompt(
-            mt=self.mt,
-            prompt_template=prompt_template,
-            subject=subject,
-            examples=samples,
+        prompt_template_icl = functional.make_prompt(
+            mt=self.mt, prompt_template=prompt_template, examples=examples, subject="{}"
         )
-        h_index_icl, inputs_icl = functional.find_subject_token_index(
+
+        # NB(evan): Composition, not inheritance.
+        return JacobianEstimator(
             mt=self.mt,
-            prompt=prompt_icl,
-            subject=subject,
-        )
-        approx_icl = functional.order_1_approx(
-            mt=self.mt,
-            prompt=prompt_icl,
             h_layer=self.h_layer,
-            h_index=h_index_icl,
             z_layer=self.z_layer,
-            z_index=-1,
-            inputs=inputs_icl,
-        )
-
-        # Package it all up.
-        weight = approx_icl.weight
-        bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
-        operator = LinearRelationOperator(
-            mt=self.mt,
-            weight=weight,
-            bias=bias,
-            h_layer=self.h_layer,
-            z_layer=approx_icl.z_layer,
-            prompt_template=prompt_template,
-        )
-
-        return operator
+            beta=self.beta,
+        ).estimate_for_subject(train.subject, prompt_template_icl)
 
 
 @dataclass(frozen=True)
 class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
-    bias_scale_factor: float | None = 0.5
+    beta: float | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        samples = relation.samples
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
 
+        samples = relation.samples
         prompt_template = relation.prompt_templates[0]
 
-        # Estimate the biases, storing the confidence of the target token
-        # along the way.
         approxes = []
         for sample in samples:
             prompt = functional.make_prompt(
@@ -270,11 +222,15 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 subject=sample.subject,
                 examples=samples,
             )
+            logger.debug("estimating J for prompt:\n" + prompt)
+
             h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt,
                 prompt=prompt,
                 subject=sample.subject,
             )
+            logger.debug(f"note that subject={sample.subject}, h_index={h_index}")
+
             approx = functional.order_1_approx(
                 mt=self.mt,
                 prompt=prompt,
@@ -289,10 +245,14 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
 
-        # TODO(evan): Scaling bias down helps tremendously, but why?
-        # Find better way to determine scaling factor.
-        if self.bias_scale_factor is not None:
-            bias = self.bias_scale_factor * bias
+        # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
+        # problem that the final prompt has N? Probably not, but should test.
+        prompt_template_icl = functional.make_prompt(
+            mt=self.mt,
+            prompt_template=prompt_template,
+            examples=samples,
+            subject="{}",
+        )
 
         operator = LinearRelationOperator(
             mt=self.mt,
@@ -300,7 +260,8 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             bias=bias,
             h_layer=self.h_layer,
             z_layer=approxes[0].z_layer,
-            prompt_template=prompt_template,
+            prompt_template=prompt_template_icl,
+            beta=self.beta,
         )
 
         return operator
@@ -322,3 +283,15 @@ class CornerGdEstimator(LinearRelationEstimator):
             z_layer=-1,
             prompt_template="{}",
         )
+
+
+def _check_nonempty(**values: list) -> None:
+    for key, value in values.items():
+        if len(value) == 0:
+            raise ValueError(f"expected at least one value for {key}")
+
+
+def _warn_gt_1(**values: list) -> None:
+    for key, value in values.items():
+        if len(value) > 1:
+            logger.warning(f"relation has > 1 {key}, will use first ({value[0]})")
