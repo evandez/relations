@@ -369,7 +369,7 @@ def make_prompt(
     *,
     prompt_template: str,
     subject: str,
-    examples: list[data.RelationSample] | None = None,
+    examples: Sequence[data.RelationSample] | None = None,
     mt: models.ModelAndTokenizer | None = None,
 ) -> str:
     """Build the prompt given the template and (optionally) ICL examples."""
@@ -442,7 +442,7 @@ def random_incorrect_targets(true_targets: list[str]) -> list[str]:
 def get_hidden_state_at_subject(
     mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: Layer
 ) -> torch.Tensor:
-    """ "Runs a single prompt in inference and reads out the hidden state at the
+    """Runs a single prompt in inference and reads out the hidden state at the
     last subject token for the given subject, at the specified layer."""
     h_index, inputs = find_subject_token_index(mt=mt, prompt=prompt, subject=subject)
     [[hs], _] = compute_hidden_states(mt=mt, layers=[h_layer], inputs=inputs)

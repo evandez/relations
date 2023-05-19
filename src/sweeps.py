@@ -15,7 +15,8 @@ from tqdm.auto import tqdm
 logger = logging.getLogger(__name__)
 
 DEFAULT_RECALL_K = 3
-DEFAULT_N_SAMPLES = 5
+DEFAULT_N_TRY_SAMPLES = 3
+DEFAULT_N_ICL_SAMPLES = 3
 DEFAULT_BATCH_SIZE = 64
 
 
@@ -82,7 +83,8 @@ def sweep_h_layer_and_beta(
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
-    n_samples: int = DEFAULT_N_SAMPLES,
+    n_try_samples: int = DEFAULT_N_TRY_SAMPLES,
+    n_icl_samples: int = DEFAULT_N_ICL_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
     batch_size: int = DEFAULT_BATCH_SIZE,
     desc: str | None = None,
@@ -99,52 +101,70 @@ def sweep_h_layer_and_beta(
     for relation in dataset.relations:
         logger.info(f"begin relation: {relation.name}")
 
-        # Determine best prompt template for ZS performance.
-        prompt_template = sweep_zs_prompt_template(mt=mt, relation=relation).best()
-        logger.info(f"chose prompt template: {prompt_template}")
+        for prompt_template in relation.prompt_templates:
+            logger.info(f"begin prompt template: {prompt_template}")
 
-        # Precompute all the hs to speed things up.
-        hs_by_subj = _precompute_hs(
-            mt=mt,
-            prompt_template=prompt_template,
-            subjects=[x.subject for x in relation.samples],
-            batch_size=batch_size,
-        )
+            # Decide which will be the train samples we will try.
+            train_samples = random.sample(
+                relation.samples, k=n_icl_samples + n_try_samples
+            )
+            train_icl_samples = train_samples[:n_icl_samples]
+            train_try_samples = train_samples[
+                n_icl_samples : n_icl_samples + n_try_samples
+            ]
 
-        # Decide which will be the train samples we will try.
-        train_samples = random.sample(relation.samples, k=n_samples)
-        logger.info(f"sweeping for train_samples={train_samples}")
+            logger.info(f"will do icl using: {[str(x) for x in train_icl_samples]}")
+            logger.info(f"will try: {[x.subject for x in train_try_samples]}")
 
-        progress = tqdm(h_layers, desc=desc)
-        for h_layer in progress:
-            progress.set_description(f"{desc}, h_layer={h_layer}")
+            # Precompute all the hs to speed things up.
+            hs_by_subj = _precompute_hs(
+                mt=mt,
+                prompt_template=prompt_template,
+                subjects=[x.subject for x in relation.samples],
+                batch_size=batch_size,
+                examples=train_icl_samples,
+            )
 
-            estimator = operators.JacobianEstimator(mt=mt, h_layer=h_layer, **kwargs)
-            for train_sample in train_samples:
-                operator = estimator(relation.set(samples=[train_sample]))
-                assert operator.bias is not None
-                bias = operator.bias.clone()
+            progress = tqdm(h_layers, desc=desc)
+            for h_layer in progress:
+                progress.set_description(f"{desc}, h_layer={h_layer}")
 
-                test_samples = [x for x in relation.samples if x != train_sample]
-                test_subjects = [x.subject for x in test_samples]
-                test_hs = [hs_by_subj[x.subject][h_layer] for x in test_samples]
-                test_objects = [x.object for x in test_samples]
+                estimator = operators.JacobianIclEstimator(
+                    mt=mt, h_layer=h_layer, **kwargs
+                )
+                for train_sample in train_try_samples:
+                    operator = estimator(
+                        relation.set(samples=[train_sample, *train_icl_samples])
+                    )
+                    assert operator.bias is not None
+                    bias = operator.bias.clone()
 
-                recalls_by_beta = []
-                for beta in betas:
-                    operator.bias[:] = bias * beta
+                    test_samples = [
+                        x
+                        for x in relation.samples
+                        if x != train_sample and x not in train_icl_samples
+                    ]
+                    test_subjects = [x.subject for x in test_samples]
+                    test_hs = [hs_by_subj[x.subject][h_layer] for x in test_samples]
+                    test_objects = [x.object for x in test_samples]
 
-                    pred_objects = []
-                    for subj, h in zip(test_subjects, test_hs):
-                        preds = operator(subj, h=h, k=recall_k)
-                        pred_objects.append([p.token for p in preds.predictions])
+                    recalls_by_beta = []
+                    for beta in betas:
+                        operator.bias[:] = bias * beta
 
-                    recall = metrics.recall(pred_objects, test_objects)
-                    recalls_by_beta.append(recall)
+                        pred_objects = []
+                        for subj, h in zip(test_subjects, test_hs):
+                            preds = operator(subj, h=h, k=recall_k)
+                            pred_objects.append([p.token for p in preds.predictions])
 
-                best_i = max(range(len(recalls_by_beta)), key=lambda i: recalls_by_beta[i])
-                best_beta = betas[best_i]
-                best_recall = recalls_by_beta[best_i]
+                        recall = metrics.recall(pred_objects, test_objects)
+                        recalls_by_beta.append(recall)
+
+                    best_i = max(
+                        range(len(recalls_by_beta)), key=lambda i: recalls_by_beta[i]
+                    )
+                    best_beta = betas[best_i]
+                    best_recall = recalls_by_beta[best_i]
 
     return SweepHLayerBetaResuts()
 
@@ -154,6 +174,7 @@ def _precompute_hs(
     mt: models.ModelAndTokenizer,
     prompt_template: str,
     subjects: StrSequence,
+    examples: Sequence[data.RelationSample] | None = None,
     batch_size: int = DEFAULT_BATCH_SIZE,
 ) -> dict[str, torch.Tensor]:
     """Precompute h for every subject at every layer."""
@@ -162,6 +183,7 @@ def _precompute_hs(
             mt=mt,
             prompt_template=prompt_template,
             subject=subject,
+            examples=examples,
         )
         for subject in subjects
     ]
