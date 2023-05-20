@@ -130,7 +130,7 @@ def save_results_file(
     logger.debug(f"saving intermediate results to {relation_results_file}")
     relation_results_file.parent.mkdir(exist_ok=True, parents=True)
     with relation_results_file.open("w") as handle:
-        handle.write(results.to_json())
+        handle.write(results.to_json(indent=4))
 
 
 def name_results_file(

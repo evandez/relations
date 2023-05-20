@@ -35,6 +35,13 @@ class SweepTrainSampleResults(DataClassJsonMixin):
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
+    def summarize(self) -> None:
+        """Sumarize results in debug logs."""
+        best = self.best()
+        logger.debug(
+            f"sample={self.sample} | beta={best.beta:.2f} | recall@1={best.recall[0]:.2f}"
+        )
+
 
 @dataclass(frozen=True)
 class SweepLayerResults(DataClassJsonMixin):
@@ -79,10 +86,11 @@ class SweepRelationResults(DataClassJsonMixin):
             layer: np.mean([x[1] for x in results])
             for layer, results in results_by_layer.items()
         }
-        for layer in scores_by_layer:
-            score = scores_by_layer[layer]
-            beta = betas_by_layer[layer]
-            logger.debug(f"layer={layer} | beta={beta:.2f} | recall@1={score:.2f}")
+        logger.debug(f'summarizing results for "{self.relation_name}"')
+        for la in scores_by_layer:
+            score = scores_by_layer[la]
+            beta = betas_by_layer[la]
+            logger.debug(f"layer={la} | beta={beta:.2f} | recall@1={score:.2f}")
 
 
 @dataclass(frozen=True)
@@ -213,11 +221,7 @@ def sweep(
                     train_sample_result = SweepTrainSampleResults(
                         sample=train_sample, betas=results_by_beta
                     )
-                    best = train_sample_result.best()
-                    logger.debug(
-                        f"sample={train_sample} | h_layer={h_layer} | "
-                        f"beta={best.beta:.2f} | recall@1={best.recall[0]:.2f}"
-                    )
+                    train_sample_result.summarize()
                     train_sample_results.append(train_sample_result)
                 layer_results.append(
                     SweepLayerResults(layer=h_layer, samples=train_sample_results)
@@ -233,8 +237,7 @@ def sweep(
         relation_result = SweepRelationResults(
             relation_name=relation.name, prompts=prompt_results
         )
-        # TODO(evan): test later
-        # relation_result.summarize()
+        relation_result.summarize()
         experiment_utils.save_results_file(
             results_dir=results_dir,
             results=relation_result,
