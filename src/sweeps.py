@@ -59,13 +59,19 @@ class SweepTrialResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
+class SweepLayerSummary(DataClassJsonMixin):
+    layer: int
+    beta: metrics.AggregateMetric
+    recall: metrics.AggregateMetric
+
+
+@dataclass(frozen=True)
 class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
     trials: list[SweepTrialResults]
 
-    # TODO(evan): Generalize this a bit, just debugging for now.
-    def summarize(self) -> None:
-        """Print a summary of what happened."""
+    def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
+        """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
@@ -75,23 +81,41 @@ class SweepRelationResults(DataClassJsonMixin):
                         (
                             layer.layer,
                             best.beta,
-                            best.recall[0],
+                            best.recall[k - 1],
                         )
                     )
 
-        scores_by_layer = {
-            layer: np.mean([x[-1] for x in results])
+        recalls_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[-1] for x in results])
             for layer, results in results_by_layer.items()
         }
         betas_by_layer = {
-            layer: np.mean([x[1] for x in results])
+            layer: metrics.AggregateMetric.aggregate([x[1] for x in results])
             for layer, results in results_by_layer.items()
         }
+        return {
+            layer: SweepLayerSummary(
+                layer=layer,
+                beta=betas_by_layer[layer],
+                recall=recalls_by_layer[layer],
+            )
+            for layer in recalls_by_layer
+        }
+
+    def best(self, k: int = 1) -> SweepLayerSummary:
+        """Return the best layer and average beta for that layer."""
+        results_by_layer = self.by_layer()
+        best_layer = max(
+            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+        )
+        return results_by_layer[best_layer]
+
+    def summarize(self, k: int = 1) -> None:
+        """Print a summary of what happened."""
+        results_by_layer = self.by_layer(k=k)
         logger.debug(f'summarizing results for "{self.relation_name}"')
-        for la in scores_by_layer:
-            score = scores_by_layer[la]
-            beta = betas_by_layer[la]
-            logger.debug(f"layer={la} | beta={beta:.2f} | recall@1={score:.2f}")
+        for la, summ in results_by_layer.items():
+            logger.debug(f"layer={la} | beta={summ.beta} | recall@{k}={summ.recall}")
 
 
 @dataclass(frozen=True)
