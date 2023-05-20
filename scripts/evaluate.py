@@ -2,7 +2,7 @@ import argparse
 import logging
 from typing import Any
 
-from src import benchmarks, data, editors, models, operators
+from src import benchmarks, data, editors, functional, models, operators
 from src.utils import experiment_utils, logging_utils
 
 import torch
@@ -33,6 +33,8 @@ def main(args: argparse.Namespace) -> None:
     with torch.device(device):
         mt = models.load_model(args.model, fp16=args.fp16, device=device)
         dataset = data.load_dataset_from_args(args)
+
+        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
 
         estimator = ESTIMATORS[args.estimator](
             mt=mt,

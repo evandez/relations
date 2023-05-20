@@ -21,63 +21,43 @@ DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class ZsPromptTemplateResults(DataClassJsonMixin):
+class SweepBetaResults(DataClassJsonMixin):
+    beta: float
+    recall: list[float]
+
+
+@dataclass(frozen=True)
+class SweepTrainSampleResults(DataClassJsonMixin):
+    sample: data.RelationSample
+    betas: list[SweepBetaResults]
+
+
+@dataclass(frozen=True)
+class SweepLayerResults(DataClassJsonMixin):
+    layer: int
+    samples: list[SweepTrainSampleResults]
+
+
+@dataclass(frozen=True)
+class SweepPromptResults(DataClassJsonMixin):
     prompt_template: str
-    recall: float
+    icl_samples: list[data.RelationSample]
+    train_samples: list[data.RelationSample]
+    layers: list[SweepLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepZsPromptTemplateResults(DataClassJsonMixin):
-
-    results: list[ZsPromptTemplateResults]
-
-    def best(self) -> str:
-        """Return the best prompt template."""
-        best = max(self.results, key=lambda x: x.recall)
-        return best.prompt_template
-
-
-def sweep_zs_prompt_template(
-    *,
-    mt: models.ModelAndTokenizer,
-    relation: data.Relation,
-    batch_size: int = DEFAULT_BATCH_SIZE,
-    desc: str | None = None,
-) -> SweepZsPromptTemplateResults:
-    """Choose the best prompt template according to the LM's ZS performance."""
-    if desc is None:
-        desc = f"sweep prompt templates ({relation.name})"
-
-    results = []
-    progress = tqdm(relation.prompt_templates)
-    for prompt_template in progress:
-        progress.set_description(f"{desc} ({prompt_template})")
-
-        prompts = [
-            functional.make_prompt(
-                mt=mt, prompt_template=prompt_template, subject=x.subject
-            )
-            for x in relation.samples
-        ]
-        predictions = functional.predict_next_token(
-            mt=mt, prompt=prompts, k=1, batch_size=batch_size
-        )
-        [recall] = metrics.recall(
-            [[x.token] for [x] in predictions], [x.object for x in relation.samples]
-        )
-        results.append(
-            ZsPromptTemplateResults(prompt_template=prompt_template, recall=recall)
-        )
-
-    return SweepZsPromptTemplateResults(results=results)
+class SweepRelationResults(DataClassJsonMixin):
+    relation_name: str
+    prompts: list[SweepPromptResults]
 
 
 @dataclass(frozen=True)
-class SweepHLayerBetaResuts(DataClassJsonMixin):
-    pass
+class SweepResuts(DataClassJsonMixin):
+    relations: list[SweepRelationResults]
 
 
-def sweep_h_layer_and_beta(
+def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
@@ -89,25 +69,36 @@ def sweep_h_layer_and_beta(
     batch_size: int = DEFAULT_BATCH_SIZE,
     desc: str | None = None,
     **kwargs: Any,
-) -> SweepHLayerBetaResuts:
-    """Sweep over h_layer and beta together, choosing best beta for each layer."""
+) -> SweepResuts:
+    """Sweep over hyperparameters for faithfulness."""
     if desc is None:
-        desc = f"sweep h_layer/beta"
+        desc = f"sweep"
     if h_layers is None:
         h_layers = models.determine_layers(mt)
     if betas is None:
         betas = torch.linspace(0, 1, steps=11).tolist()
 
+    relation_results = []
     for relation in dataset.relations:
         logger.info(f"begin relation: {relation.name}")
 
+        prompt_results = []
         for prompt_template in relation.prompt_templates:
             logger.info(f"begin prompt template: {prompt_template}")
 
-            # Decide which will be the train samples we will try.
-            train_samples = random.sample(
-                relation.samples, k=n_icl_samples + n_try_samples
-            )
+            if len(relation.samples) <= n_try_samples + n_icl_samples:
+                logger.warning(
+                    f"Not enough samples ({len(relation.samples)}) to "
+                    f'test for "{relation.name} since n_try_samples={n_try_samples} and '
+                    f"n_icl_samples={n_icl_samples}. You should fix this by adding more "
+                    "known samples for the relation."
+                )
+                continue
+
+            # Decide which will be the train samples we will try, and which will be the
+            # ICL prompt examples.
+            train_relation, _ = relation.split(n_try_samples + n_icl_samples)
+            train_samples = train_relation.samples
             train_icl_samples = train_samples[:n_icl_samples]
             train_try_samples = train_samples[
                 n_icl_samples : n_icl_samples + n_try_samples
@@ -125,6 +116,7 @@ def sweep_h_layer_and_beta(
                 examples=train_icl_samples,
             )
 
+            layer_results = []
             progress = tqdm(h_layers, desc=desc)
             for h_layer in progress:
                 progress.set_description(f"{desc}, h_layer={h_layer}")
@@ -132,6 +124,8 @@ def sweep_h_layer_and_beta(
                 estimator = operators.JacobianIclEstimator(
                     mt=mt, h_layer=h_layer, **kwargs
                 )
+
+                train_sample_results = []
                 for train_sample in train_try_samples:
                     operator = estimator(
                         relation.set(samples=[train_sample, *train_icl_samples])
@@ -148,6 +142,7 @@ def sweep_h_layer_and_beta(
                     test_hs = [hs_by_subj[x.subject][h_layer] for x in test_samples]
                     test_objects = [x.object for x in test_samples]
 
+                    results_by_beta = []
                     recalls_by_beta = []
                     for beta in betas:
                         operator.bias[:] = bias * beta
@@ -159,14 +154,30 @@ def sweep_h_layer_and_beta(
 
                         recall = metrics.recall(pred_objects, test_objects)
                         recalls_by_beta.append(recall)
+                        results_by_beta.append(
+                            SweepBetaResults(beta=beta, recall=recall)
+                        )
 
-                    best_i = max(
-                        range(len(recalls_by_beta)), key=lambda i: recalls_by_beta[i]
+                    train_sample_results.append(
+                        SweepTrainSampleResults(
+                            sample=train_sample, betas=results_by_beta
+                        )
                     )
-                    best_beta = betas[best_i]
-                    best_recall = recalls_by_beta[best_i]
-
-    return SweepHLayerBetaResuts()
+                layer_results.append(
+                    SweepLayerResults(layer=h_layer, samples=train_sample_results)
+                )
+            prompt_results.append(
+                SweepPromptResults(
+                    prompt_template=prompt_template,
+                    icl_samples=train_icl_samples,
+                    train_samples=train_try_samples,
+                    layers=layer_results,
+                )
+            )
+        relation_results.append(
+            SweepRelationResults(relation_name=relation.name, prompts=prompt_results)
+        )
+    return SweepResuts(relation_results)
 
 
 def _precompute_hs(

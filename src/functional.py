@@ -16,7 +16,7 @@ from tqdm.auto import tqdm
 logger = logging.getLogger(__name__)
 
 DEFAULT_BATCH_SIZE = 48  # Reduced to 48 to fit in A6000
-DEFAULT_N_ICL_LM = 2
+DEFAULT_N_ICL_LM = 5
 DEFAULT_N_TOP_LM = 1
 
 

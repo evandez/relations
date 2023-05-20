@@ -2,8 +2,8 @@
 import argparse
 import logging
 
-from src import data, models, sweeps
-from src.utils import experiment_utils, logging_utils, tokenizer_utils
+from src import data, functional, models, sweeps
+from src.utils import experiment_utils, logging_utils
 
 import torch
 from tqdm.auto import tqdm
@@ -21,16 +21,16 @@ def main(args: argparse.Namespace) -> None:
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
 
     with torch.device(device):
+        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
         results = sweeps.sweep_h_layer_and_beta(
             mt=mt,
             dataset=dataset,
             h_layers=args.h_layers,
-            n_samples=args.n_samples,
             recall_k=args.recall_k,
             batch_size=args.batch_size,
         )
 
-    results_file = experiment.results_dir / "h_layer_and_beta.json"
+    results_file = experiment.results_dir / "results.json"
     results_file.parent.mkdir(exist_ok=True, parents=True)
     with results_file.open("w") as handle:
         handle.write(results.to_json(indent=4))
@@ -46,16 +46,16 @@ if __name__ == "__main__":
         "--h-layers", type=int, nargs="+", help="h layers to try, defaults to all"
     )
     parser.add_argument(
-        "--n-samples",
+        "--recall-k",
         type=int,
-        default=sweeps.DEFAULT_N_SAMPLES,
-        help="number of samples to try per relation",
+        default=sweeps.DEFAULT_RECALL_K,
+        help="compute up to recall@k",
     )
     parser.add_argument(
-        "--recall-k", type=int, default=sweeps.DEFAULT_RECALL_K, help="compute up to recall@k"
-    )
-    parser.add_argument(
-        "--batch-size", type=int, default=sweeps.DEFAULT_BATCH_SIZE, help="max batch size for lm"
+        "--batch-size",
+        type=int,
+        default=sweeps.DEFAULT_BATCH_SIZE,
+        help="max batch size for lm",
     )
     args = parser.parse_args()
     main(args)
