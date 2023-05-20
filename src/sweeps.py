@@ -128,7 +128,10 @@ def sweep(
                 train_sample_results = []
                 for train_sample in train_try_samples:
                     operator = estimator(
-                        relation.set(samples=[train_sample, *train_icl_samples])
+                        relation.set(
+                            samples=[train_sample, *train_icl_samples],
+                            prompt_templates=[prompt_template],
+                        )
                     )
                     assert operator.bias is not None
                     bias = operator.bias.clone()
