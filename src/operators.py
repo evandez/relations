@@ -391,12 +391,11 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         _warn_gt_1(prompt_templates=relation.prompt_templates)
         samples = relation.samples
         prompt_template = relation.prompt_templates[0]
-        device = models.determine_device(self.mt)
-        range_tokenized = self.mt.tokenizer(
-            [" " + obj for obj in relation.range], return_tensors="pt", padding=True
-        ).to(device)
-
+        range_tokenized = models.tokenize_words(
+            tokenizer=self.mt.tokenizer, words=list(relation.range)
+        )
         range_tokenized = [t[0].item() for t in range_tokenized.input_ids]
+
         unembedding_rows = self.mt.lm_head[1].weight[range_tokenized]
         unembedding_rows = torch.stack([row / row.norm() for row in unembedding_rows])
         offset = unembedding_rows.mean(dim=0)[None]

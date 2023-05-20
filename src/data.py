@@ -10,6 +10,7 @@ from typing import Literal, Sequence
 from src.utils import env_utils
 from src.utils.typing import PathLike
 
+import numpy as np
 import torch.utils.data
 from dataclasses_json import DataClassJsonMixin
 
@@ -149,6 +150,17 @@ class Relation(DataClassJsonMixin):
             _domain=list(domain) if domain is not None else self._domain,
             _range=list(range) if range is not None else self._range,
         )
+
+    def sample_pair_with_different_answers(
+        self,
+    ) -> tuple[RelationSample, RelationSample]:
+        """Return a pair of samples with different answers. [Necessary for causal tracing experiments]"""
+        assert len(self.samples) > 1, "relation have less than 2 samples"
+        idx_pair = np.random.choice(range(len(self.samples)), 2, replace=False)
+        sample_pair = (self.samples[idx_pair[0]], self.samples[idx_pair[1]])
+        if sample_pair[0].object != sample_pair[1].object:
+            return sample_pair  # if the objects are different, return
+        return self.sample_pair_with_different_answers()  # otherwise, draw again
 
 
 class RelationDataset(torch.utils.data.Dataset[Relation]):
