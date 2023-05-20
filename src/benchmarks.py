@@ -564,7 +564,7 @@ def faithfulness(
 
             # Compute repeat-distracted predictions.
             def repeat_prefix(subject, wrong):  # type: ignore
-                prompt_template.format(subject) + " " + wrong + ". Repeat exactly: "
+                return prompt_template.format(subject) + " " + wrong + ". Repeat exactly: "
 
             prompts_rd = [
                 make_prompt(
@@ -591,8 +591,8 @@ def faithfulness(
                 output_rdlens = operator("", k=k, h=h)
                 outputs_rdlens.append(output_rdlens.predictions)
             preds_rdlens = [[x.token for x in xs] for xs in outputs_rdlens]
-            recall_pdlens = metrics.recall(preds_rdlens, targets)
-            recalls_pdlens.append(recall_pdlens)
+            recall_rdlens = metrics.recall(preds_rdlens, targets)
+            recalls_rdlens.append(recall_rdlens)
             # print('LENS', recall_rdlens)
 
             # Compute RD, LRE predictions if ZS is correct.
@@ -662,18 +662,20 @@ def faithfulness(
                             zs=zs,
                             pd=pd,
                             rd=rd,
-                            lens=lens,
+                            pdlens=pdlens,
+                            rdlens=rdlens,
                             subject=sample.subject,
                             target=sample.object,
                             wrong=wrong,
                         )
-                        for lre, lm, zs, pd, rd, lens, sample, wrong in zip(
+                        for lre, lm, zs, pd, rd, pdlens, rdlens, sample, wrong in zip(
                             outputs_lre,
                             outputs_lm,
                             outputs_zs,
                             outputs_pd,
                             outputs_rd,
-                            outputs_lens,
+                            outputs_pdlens,
+                            outputs_rdlens,
                             test.samples,
                             wrong_targets,
                         )
