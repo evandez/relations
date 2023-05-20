@@ -7,10 +7,12 @@ from src.utils.typing import PathLike
 ENV_DATA_DIR = "RELATIONS_DATA_DIR"
 ENV_MODELS_DIR = "RELATIONS_MODELS_DIR"
 ENV_RESULTS_DIR = "RELATIONS_RESULTS_DIR"
+ENV_HPARAMS_DIR = "RELATIONS_HPARAMS_DIR"
 
 DEFAULT_DATA_DIR = "data"
 DEFAULT_MODELS_DIR = "models"
 DEFAULT_RESULTS_DIR = "results"
+DEFAULT_HPARAMS_DIR = "hparams"
 
 
 def maybe_relative_to_repo(path: PathLike) -> pathlib.Path:
@@ -88,3 +90,17 @@ def determine_results_dir(default: PathLike = DEFAULT_RESULTS_DIR) -> pathlib.Pa
 
     """
     return read_path(ENV_RESULTS_DIR, default)
+
+
+def determine_hparams_dir(default: PathLike = DEFAULT_HPARAMS_DIR) -> pathlib.Path:
+    """Return directory containing hyperparameters.
+
+    Args:
+        default: Default to use if RELATIONS_HPARAMS_DIR env
+            variable is not set. Defaults to './hparams'.
+
+    Returns:
+        Directory hyparams are stored in.
+
+    """
+    return read_path(ENV_HPARAMS_DIR, default)
