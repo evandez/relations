@@ -55,3 +55,4 @@ if __name__ == "__main__":
     logging_utils.add_logging_args(parser)
     models.add_model_args(parser)
     args = parser.parse_args()
+    main(args)
