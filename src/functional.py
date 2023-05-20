@@ -463,11 +463,11 @@ def filter_dataset_samples(
     relations = []
     progress = tqdm(dataset.relations, desc=desc)
     for relation in progress:
+        prompt_template = relation.prompt_templates[0]
+
         progress.set_description(f"{desc} ({relation.name})")
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
-            # TODO(evan): Best thing to do to sample prompts? Maybe iterate over?
-            prompt_template = random.choice(relation.prompt_templates)
             filtered = filter_relation_samples(
                 mt=mt,
                 relation=relation,
