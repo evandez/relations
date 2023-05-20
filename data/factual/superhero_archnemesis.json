@@ -1,9 +1,11 @@
 {
-    "name": "person arch-nemesis name",
+    "name": "superhero archnemesis",
     "prompt_templates": [
-        "Who is the arch-nemesis of {}? It is",
-        "{}'s arch-nemesis is",
-        "What is {}'s arch-nemesis? It is"
+        "The superhero archnemesis of {} is"
+    ],
+    "prompt_templates_zs": [
+        "Who is the superhero archnemesis of {}? It is",
+        "The name of the superhero archnemesis of {} is"
     ],
     "properties": {
         "relation_type": "factual",

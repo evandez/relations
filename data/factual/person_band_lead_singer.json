@@ -1,9 +1,11 @@
 {
     "name": "person lead singer of band",
     "prompt_templates": [
-        "{} is the lead singer of",
-        "Who is the lead singer of {}? It is",
-        "{}:"
+        "{} is the lead singer of"
+    ],
+    "prompt_templates_zs": [
+        "{} is the lead singer of the band named",
+        "What band is {} lead singer of? They lead the band named"
     ],
     "properties": {
         "relation_type": "factual",

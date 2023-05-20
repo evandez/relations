@@ -1,10 +1,13 @@
 {
     "name":"star constellation name",
     "prompt_templates":[
-       "What is the constellation that {} is part of? It is",
-       "{} is part of the constellation",
-       "What constellation does {} belong to? It is"
+       "{} is part of the constellation named"
     ],
+    "prompt_templates_zs":[
+      "What is the name of the constellation that {} is part of? It is part of",
+      "{} is part of the constellation named",
+      "What is the name of the constellation that {} belongs to? It belongs to"
+   ],
     "properties":{
        "relation_type":"factual",
        "domain_name":"star",

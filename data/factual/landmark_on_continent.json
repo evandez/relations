@@ -1,8 +1,10 @@
 {
     "name": "landmark on continent",
     "prompt_templates": [
+        "{} is on the continent of"
+    ],
+    "prompt_templates_zs": [
         "What continent is {} on? It is on",
-        "{} belongs to the continent of",
         "{} is on the continent of"
     ],
     "properties": {

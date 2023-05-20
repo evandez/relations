@@ -1,14 +1,16 @@
 {
-  "name": "election year of presidents",
+  "name": "president election year",
   "prompt_templates": [
-    "{} was elected in",
-    "{}:"
+    "{} was elected in"
+  ],
+  "prompt_templates_zs": [
+    "{} was elected in"
   ],
   "properties": {
     "relation_type": "factual",
     "domain_name": "person",
     "range_name": "year",
-    "symmetric": "false"
+    "symmetric": false
   },
   "samples": [
     {

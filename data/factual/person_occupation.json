@@ -1,9 +1,12 @@
 {
-  "name": "occupation",
+  "name": "person occupation",
   "prompt_templates": [
     "{} works as a",
+    "By profession, {} is a"
+  ],
+  "prompt_templates_zs": [
     "By profession, {} is a",
-    "{} is known for their work as a"
+    "{} works professionally as a"
   ],
   "properties": {
     "relation_type": "factual",

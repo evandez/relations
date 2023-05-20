@@ -1,10 +1,12 @@
 {
     "name":"pokemon evolution",
     "prompt_templates":[
-       "What does {} evolve into? It evolves into",
-       "{} evolves into",
-       "What is {}'s evolved form? It is"
+       "{} evolves into a"
     ],
+    "prompt_templates_zs":[
+      "What does {} evolve into? It evolves into a",
+      "The evolved form of {} is called a"
+   ],
     "properties":{
        "relation_type":"factual",
        "domain_name":"pokemon",

@@ -1,10 +1,13 @@
 {
     "name":"city in country",
     "prompt_templates":[
-       "In which country is {} located? It is",
-       "The country where {} is located is",
-       "Which country is home to {}? It is"
+       "{} is part of",
+       "{} is in the country of"
     ],
+    "prompt_templates_zs":[
+      "{} is part of the country of",
+      "{} is located in the country of"
+   ],
     "properties":{
        "relation_type":"factual",
        "domain_name":"city",

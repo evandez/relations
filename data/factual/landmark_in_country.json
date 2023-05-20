@@ -1,8 +1,10 @@
 {
     "name": "landmark in country",
     "prompt_templates": [
+        "{} is in the country of"
+    ],
+    "prompt_templates_zs": [
         "What country is {} in? It is in",
-        "{} belongs to the country of",
         "{} is in the country of"
     ],
     "properties": {

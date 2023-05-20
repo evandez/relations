@@ -1,9 +1,12 @@
 {
-    "name": "player position in sport ",
+    "name": "person sport position",
     "prompt_templates": [
+        "{} plays in the position of a",
+        "In their sport, {} plays as a"
+    ],
+    "prompt_templates_zs": [
         "Which position does {} play? They play as a",
-        "In their sport, {} plays as a",
-        "{} plays in the position of"
+        "In their sport, {} plays in the position of a"
     ],
     "properties": {
         "relation_type": "factual",

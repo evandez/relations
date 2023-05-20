@@ -1,10 +1,12 @@
 {
-    "name": "company headquarters",
+    "name": "company hq",
     "prompt_templates": [
+        "{} is headquartered in the city of",
+        "The headquarters of {} are in the city of"
+    ],
+    "prompt_templates_zs": [
         "The headquarters of {} is in the city of",
-        "What city is the headquarters of {} located in? It is in",
-        "Where are the headquarters of {}? It's in the city of",
-        "{}'s headquarters are in the city of"
+        "Where are the headquarters of {}? It is in the city of"
     ],
     "properties": {
         "relation_type": "factual",

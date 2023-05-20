@@ -1,10 +1,14 @@
 {
-    "name":"country official currency",
+    "name":"country currency",
     "prompt_templates":[
-       "What is the official currency of {}? It is",
-       "{}'s official currency is",
-       "What is {}'s official currency? It is"
+       "The official currency of {} is the",
+       "{}'s official currency is the"
     ],
+    "prompt_templates_zs":[
+      "What is the official currency of {}? It is called the",
+      "{}'s official currency is called the",
+      "The name of {}'s currency is the"
+   ],
     "properties":{
        "relation_type":"factual",
        "domain_name":"country",

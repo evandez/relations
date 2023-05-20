@@ -1,8 +1,11 @@
 {
-    "name":"person went to university",
+    "name":"person university",
     "prompt_templates":[
-       "Which university did {} attend? They attended",
        "For university, {} attended",
+       "{} went to university at"
+    ],
+    "prompt_templates_zs":[
+       "Which university did {} attend? They attended",
        "What is the university that {} went to? They went to"
     ],
     "properties":{

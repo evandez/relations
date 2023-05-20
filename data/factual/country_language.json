@@ -1,113 +1,116 @@
 {
-    "name": "country capital city",
+    "name": "country language",
     "prompt_templates": [
-        "The capital city of {} is",
-        "The political capital of {} is",
-        "The seat of government for {} is",
-        "The government of {} is centered in"
+        "People in {} speak",
+        "The language used in {} is",
+        "In {}, the primary language is"
+    ],
+    "prompt_templates_zs": [
+        "In {}, people speak the language of",
+        "People in {} speak the language of"
     ],
     "properties": {
         "relation_type": "factual",
         "domain_name": "country",
-        "range_name": "city",
+        "range_name": "language",
         "symmetric": false
     },
     "samples": [
         {
             "subject": "United States",
-            "object": "Washington D.C."
+            "object": "English"
         },
         {
             "subject": "Canada",
-            "object": "Ottawa"
+            "object": "English"
         },
         {
             "subject": "Mexico",
-            "object": "Mexico City"
+            "object": "Spanish"
         },
         {
             "subject": "Brazil",
-            "object": "Bras\\u00edlia"
+            "object": "Portuguese"
         },
         {
             "subject": "Argentina",
-            "object": "Buenos Aires"
+            "object": "Spanish"
         },
         {
             "subject": "Chile",
-            "object": "Santiago"
+            "object": "Spanish"
         },
         {
             "subject": "Peru",
-            "object": "Lima"
+            "object": "Spanish"
         },
         {
             "subject": "Colombia",
-            "object": "Bogot\\u00e1"
+            "object": "Spanish"
         },
         {
             "subject": "Venezuela",
-            "object": "Caracas"
+            "object": "Spanish"
         },
         {
             "subject": "Spain",
-            "object": "Madrid"
+            "object": "Spanish"
         },
         {
             "subject": "France",
-            "object": "Paris"
+            "object": "French"
         },
         {
             "subject": "Germany",
-            "object": "Berlin"
+            "object": "German"
         },
         {
             "subject": "Italy",
-            "object": "Rome"
+            "object": "Italian"
         },
         {
             "subject": "Russia",
-            "object": "Moscow"
+            "object": "Russian"
         },
         {
             "subject": "China",
-            "object": "Beijing"
+            "object": "Mandarin Chinese"
         },
         {
             "subject": "Japan",
-            "object": "Tokyo"
+            "object": "Japanese"
         },
         {
             "subject": "South Korea",
-            "object": "Seoul"
+            "object": "Korean"
         },
         {
             "subject": "India",
-            "object": "New Delhi"
+            "object": "Hindi"
         },
         {
             "subject": "Pakistan",
-            "object": "Islamabad"
+            "object": "Urdu"
         },
         {
             "subject": "Nigeria",
-            "object": "Abuja"
+            "object": "English"
         },
         {
             "subject": "Egypt",
-            "object": "Cairo"
+            "object": "Arabic"
         },
         {
             "subject": "Saudi Arabia",
-            "object": "Riyadh"
+            "object": "Arabic"
         },
         {
             "subject": "Turkey",
-            "object": "Ankara"
+            "object": "Turkish"
         },
         {
             "subject": "Australia",
-            "object": "Canberra"
+            "object": "English"
         }
     ]
 }

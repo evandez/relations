@@ -1,6 +1,9 @@
 {
   "name": "plays pro sport",
   "prompt_templates": [
+    "{} plays the sport of"
+  ],
+  "prompt_templates_zs": [
     "{} plays the sport of",
     "What sport does {} play? They play",
     "{} plays professionally in the sport of"

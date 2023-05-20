@@ -1,9 +1,11 @@
 {
-    "name": "product produced by company",
+    "name": "product by company",
     "prompt_templates": [
-        "{} was produced by",
-        "Which company developed {}? It was developed by",
-        "{} is a product of the company"
+        "{} was created by",
+        "{} is a product of"
+    ],
+    "prompt_templates_zs": [
+        "Which company developed {}? It was developed by"
     ],
     "properties": {
         "relation_type": "factual",

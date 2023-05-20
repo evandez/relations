@@ -1,76 +1,78 @@
 {
-  "name": "person firstborn",
+  "name": "person father",
   "prompt_templates": [
-    "{}'s firstborn child is",
-    "The firstborn child of {} is",
-    "{}:"
+    "{}'s father is named"
+  ],
+  "prompt_templates_zs": [
+    "Who is {}'s father? Their father is named",
+    "{}'s father is named"
   ],
   "properties": {
     "relation_type": "factual",
-    "domain_name": "names",
-    "range_name": "names",
-    "symmetric": "false"
+    "domain_name": "person",
+    "range_name": "person",
+    "symmetric": false
   },
   "samples": [
     {
       "subject": "Kim Kardashian",
-      "object": "North West"
+      "object": "Robert Kardashian"
     },
     {
       "subject": "George W. Bush",
-      "object": "Barbara Pierce Bush"
+      "object": "George H. W. Bush"
     },
     {
       "subject": "Gwyneth Paltrow",
-      "object": "Apple Martin"
+      "object": "Bruce Paltrow"
     },
     {
       "subject": "Liv Tyler",
-      "object": "Milo William Langdon"
+      "object": "Steven Tyler"
     },
     {
       "subject": "Beyoncé Knowles",
-      "object": "Blue Ivy Carter"
+      "object": "Mathew Knowles"
     },
     {
       "subject": "Al Gore",
-      "object": "Karenna Gore Schiff"
+      "object": "Albert Gore Sr."
     },
     {
       "subject": "Rand Paul",
-      "object": "William Paul"
+      "object": "Ron Paul"
     },
     {
       "subject": "Ben Stiller",
-      "object": "Ella Olivia Stiller"
+      "object": "Jerry Stiller"
     },
     {
       "subject": "Donald Trump",
-      "object": "Donald John Trump Jr."
+      "object": "Fred Trump"
     },
     {
       "subject": "David Beckham",
-      "object": "Brooklyn Beckham"
+      "object": "David Edward Alan Beckham"
     },
     {
       "subject": "Jay-Z",
-      "object": "Blue Ivy Carter"
+      "object": "Adnes Reeves"
     },
     {
       "subject": "Michael Jackson",
-      "object": "Paris-Michael Katherine Jackson"
+      "object": "Joe Jackson"
     },
     {
       "subject": "Kobe Bryant",
-      "object": "Natalia Diamante Bryant"
+      "object": "Joe Bryant"
     },
     {
       "subject": "Reese Witherspoon",
-      "object": "Ava Elizabeth Phillippe"
+      "object": "John Witherspoon"
     },
     {
       "subject": "Jennifer Lopez",
-      "object": "Emme Maribel Muñiz"
+      "object": "David Lopez"
     }
   ]
 }

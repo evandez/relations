@@ -1,9 +1,12 @@
 {
-    "name": "compamy's CEO",
+    "name": "company CEO",
     "prompt_templates": [
         "{}'s CEO is",
-        "The CEO of {} is",
-        "{}:"
+        "The CEO of {} is"
+    ],
+    "prompt_templates_zs": [
+        "The name of the CEO of {} is",
+        "Who is the CEO of {}? Their name is"
     ],
     "properties": {
         "relation_type": "factual",

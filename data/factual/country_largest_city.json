@@ -1,10 +1,13 @@
 {
     "name":"country largest city",
     "prompt_templates":[
-       "What is the largest city in {}? It is",
        "The largest city in {} is",
-       "What is the biggest city in {}? It is"
+       "The biggest city in {} is"
     ],
+    "prompt_templates_zs":[
+      "What is the largest city in {}? It is the city of",
+      "The largest city in {} is the city of"
+   ],
     "properties":{
        "relation_type":"factual",
        "domain_name":"country",

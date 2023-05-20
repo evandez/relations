@@ -1,7 +1,9 @@
 {
-  "name": "plays instrument",
+  "name": "person plays instrument",
   "prompt_templates": [
-    "{} is known for playing the instrument of",
+    "{} plays the"
+  ],
+  "prompt_templates_zs": [
     "What instrument does {} play? They play the",
     "The instrument that {} plays is called the"
   ],
