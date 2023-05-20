@@ -12,63 +12,63 @@
   },
   "samples": [
     {
-      "subject": "Bananas",
+      "subject": "bananas",
       "object": "yellow"
     },
     {
-      "subject": "Apples",
+      "subject": "apples",
       "object": "red"
     },
     {
-      "subject": "Watermelons",
+      "subject": "watermelons",
       "object": "green"
     },
     {
-      "subject": "Kiwis",
+      "subject": "kiwis",
       "object": "brown"
     },
     {
-      "subject": "Dragon fruits",
+      "subject": "dragon fruits",
       "object": "pink"
     },
     {
-      "subject": "Eggplants",
+      "subject": "eggplants",
       "object": "purple"
     },
     {
-      "subject": "Zucchinis",
+      "subject": "zucchinis",
       "object": "green"
     },
     {
-      "subject": "Pineapples",
+      "subject": "pineapples",
       "object": "brown"
     },
     {
-      "subject": "Mangoes",
+      "subject": "mangoes",
       "object": "green"
     },
     {
-      "subject": "Cucumbers",
+      "subject": "cucumbers",
       "object": "green"
     },
     {
-      "subject": "Radishes",
+      "subject": "radishes",
       "object": "pink"
     },
     {
-      "subject": "Passion fruits",
+      "subject": "passion fruits",
       "object": "purple"
     },
     {
-      "subject": "Nectarines",
+      "subject": "nectarines",
       "object": "red"
     },
     {
-      "subject": "Plums",
+      "subject": "plums",
       "object": "purple"
     },
     {
-      "subject": "Potatos",
+      "subject": "potatoes",
       "object": "brown"
     }
   ]
