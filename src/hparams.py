@@ -45,7 +45,7 @@ class RelationHParams(HParams):
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
             file = self.default_relation_file(self.relation_name)
-        logger.info(f"writing {self.relation_name} hparams to {file}")
+        logger.info(f'writing "{self.relation_name}" hparams to {file}')
         self.save_json_file(file)
 
     @classmethod
