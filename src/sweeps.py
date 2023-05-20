@@ -207,7 +207,7 @@ def _precompute_hs(
     offset_mapping = inputs.pop("offset_mapping")
 
     batched_hidden_states = []
-    for i in range(batch_size):
+    for i in range(0, len(inputs.input_ids), batch_size):
         with torch.inference_mode():
             outputs = mt.model(
                 inputs.input_ids[i : i + batch_size],
