@@ -157,7 +157,12 @@ def order_1_approx(
     return approx
 
 
-def low_rank_approx(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+Svd = tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+
+
+def low_rank_approx(
+    *, matrix: torch.Tensor, rank: int, svd: Svd | None = None
+) -> torch.Tensor:
     """Compute a low-rank approximation of a matrix.
 
     Args:
@@ -168,12 +173,16 @@ def low_rank_approx(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
         The approximation.
 
     """
-    u, s, v = torch.svd(matrix.float())
+    if svd is None:
+        svd = torch.linalg.svd(matrix.float())
+    u, s, v = svd
     matrix_approx = u[:, :rank] @ torch.diag(s[:rank]) @ v[:, :rank].T
     return matrix_approx.to(matrix.dtype)
 
 
-def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
+def low_rank_pinv(
+    *, matrix: torch.Tensor, rank: int, svd: Svd | None = None
+) -> torch.Tensor:
     """Compute a low-rank pseudo-inverse of a matrix.
 
     Args:
@@ -184,7 +193,9 @@ def low_rank_pinv(*, matrix: torch.Tensor, rank: int) -> torch.Tensor:
         The pseudo-inverse.
 
     """
-    u, s, v = torch.svd(matrix.float())
+    if svd is None:
+        svd = torch.linalg.svd(matrix.float())
+    u, s, v = svd
     matrix_pinv = v[:, :rank] @ torch.diag(1 / s[:rank]) @ u[:, :rank].T
     return matrix_pinv.to(matrix.dtype)
 
