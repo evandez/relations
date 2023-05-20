@@ -142,7 +142,7 @@ def sweep(
                         if x != train_sample and x not in train_icl_samples
                     ]
                     test_subjects = [x.subject for x in test_samples]
-                    test_hs = [hs_by_subj[x.subject][h_layer] for x in test_samples]
+                    test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
                     test_objects = [x.object for x in test_samples]
 
                     results_by_beta = []
