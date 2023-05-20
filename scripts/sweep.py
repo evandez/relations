@@ -2,7 +2,7 @@
 import argparse
 import logging
 
-from src import data, functional, models, sweeps
+from src import data, functional, hparams, models, sweeps
 from src.utils import experiment_utils, logging_utils
 
 import torch
@@ -22,7 +22,7 @@ def main(args: argparse.Namespace) -> None:
 
     with torch.device(device):
         dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
-        results = sweeps.sweep(
+        results = sweeps.sweep_faithfulness(
             mt=mt,
             dataset=dataset,
             h_layers=args.h_layers,
@@ -31,6 +31,14 @@ def main(args: argparse.Namespace) -> None:
             results_dir=experiment.results_dir,
             resume=args.resume,
         )
+        for relation in results.relations:
+            best = relation.best()
+            hparams.RelationHParams(
+                relation_name=relation.name,
+                h_layer=best.layer,
+                z_layer=-1,
+                beta=best.beta.mean,
+            ).save()
 
     results_file = experiment.results_dir / "results_all.json"
     results_file.parent.mkdir(exist_ok=True, parents=True)

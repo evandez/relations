@@ -39,7 +39,7 @@ class RelationHParams(HParams):
     rank: int | None = None
     z_layer: int | None = None
 
-    def save_relation(self, file: PathLike | None = None) -> None:
+    def save(self, file: PathLike | None = None) -> None:
         if file is None:
             file = self.default_relation_file(self.relation_name)
         self.save_json_file(file)
