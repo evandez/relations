@@ -63,7 +63,7 @@ class SweepRelationResults(DataClassJsonMixin):
             for layer in prompt.layers:
                 for sample in layer.samples:
                     best = sample.best()
-                    results_by_layer[layer].append(
+                    results_by_layer[layer.layer].append(
                         (
                             layer.layer,
                             best.beta,
