@@ -1,4 +1,5 @@
 """Reads out hyperparameters from committed config files."""
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeVar
@@ -8,6 +9,8 @@ from src.utils import env_utils
 from src.utils.typing import PathLike
 
 from dataclasses_json import DataClassJsonMixin
+
+logger = logging.getLogger(__name__)
 
 HParamsT = TypeVar("HParamsT", bound="HParams")
 
@@ -42,6 +45,7 @@ class RelationHParams(HParams):
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
             file = self.default_relation_file(self.relation_name)
+        logger.info(f"writing {self.relation_name} hparams to {file}")
         self.save_json_file(file)
 
     @classmethod
