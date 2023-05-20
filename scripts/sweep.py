@@ -22,7 +22,7 @@ def main(args: argparse.Namespace) -> None:
 
     with torch.device(device):
         dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
-        results = sweeps.sweep_faithfulness(
+        results = sweeps.sweep(
             mt=mt,
             dataset=dataset,
             h_layers=args.h_layers,

@@ -22,17 +22,17 @@ DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessBetaResults(DataClassJsonMixin):
+class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrainSampleResults(DataClassJsonMixin):
+class SweepTrainSampleResults(DataClassJsonMixin):
     sample: data.RelationSample
-    betas: list[SweepFaithfulnessBetaResults]
+    betas: list[SweepBetaResults]
 
-    def best(self, k: int = 1) -> SweepFaithfulnessBetaResults:
+    def best(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
@@ -45,23 +45,23 @@ class SweepFaithfulnessTrainSampleResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessLayerResults(DataClassJsonMixin):
+class SweepLayerResults(DataClassJsonMixin):
     layer: int
-    samples: list[SweepFaithfulnessTrainSampleResults]
+    samples: list[SweepTrainSampleResults]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrialResults(DataClassJsonMixin):
+class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
     icl_samples: list[data.RelationSample]
     train_samples: list[data.RelationSample]
-    layers: list[SweepFaithfulnessLayerResults]
+    layers: list[SweepLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessRelationResults(DataClassJsonMixin):
+class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
-    trials: list[SweepFaithfulnessTrialResults]
+    trials: list[SweepTrialResults]
 
     # TODO(evan): Generalize this a bit, just debugging for now.
     def summarize(self) -> None:
@@ -95,11 +95,11 @@ class SweepFaithfulnessRelationResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessResuts(DataClassJsonMixin):
-    relations: list[SweepFaithfulnessRelationResults]
+class SweepResuts(DataClassJsonMixin):
+    relations: list[SweepRelationResults]
 
 
-def sweep_faithfulness(
+def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
@@ -114,7 +114,7 @@ def sweep_faithfulness(
     resume: bool = False,
     desc: str | None = None,
     **kwargs: Any,
-) -> SweepFaithfulnessResuts:
+) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if desc is None:
         desc = f"sweep"
@@ -131,7 +131,7 @@ def sweep_faithfulness(
 
         relation_result = experiment_utils.load_results_file(
             results_dir=results_dir,
-            results_type=SweepFaithfulnessRelationResults,
+            results_type=SweepRelationResults,
             name=relation.name,
             resume=resume,
         )
@@ -219,28 +219,26 @@ def sweep_faithfulness(
                         recall = metrics.recall(pred_objects, test_objects)
                         recalls_by_beta.append(recall)
                         results_by_beta.append(
-                            SweepFaithfulnessBetaResults(beta=beta, recall=recall)
+                            SweepBetaResults(beta=beta, recall=recall)
                         )
 
-                    train_sample_result = SweepFaithfulnessTrainSampleResults(
+                    train_sample_result = SweepTrainSampleResults(
                         sample=train_sample, betas=results_by_beta
                     )
                     train_sample_result.summarize()
                     train_sample_results.append(train_sample_result)
                 layer_results.append(
-                    SweepFaithfulnessLayerResults(
-                        layer=h_layer, samples=train_sample_results
-                    )
+                    SweepLayerResults(layer=h_layer, samples=train_sample_results)
                 )
             trial_results.append(
-                SweepFaithfulnessTrialResults(
+                SweepTrialResults(
                     prompt_template=prompt_template,
                     icl_samples=train_icl_samples,
                     train_samples=train_try_samples,
                     layers=layer_results,
                 )
             )
-        relation_result = SweepFaithfulnessRelationResults(
+        relation_result = SweepRelationResults(
             relation_name=relation.name, trials=trial_results
         )
         relation_result.summarize()
@@ -250,7 +248,7 @@ def sweep_faithfulness(
             name=relation.name,
         )
         relation_results.append(relation_result)
-    return SweepFaithfulnessResuts(relation_results)
+    return SweepResuts(relation_results)
 
 
 def _precompute_hs(
