@@ -1,5 +1,6 @@
 """Tools for running sweeps over hyperparameters."""
 import logging
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Sequence
 
@@ -7,9 +8,9 @@ from src import data, functional, metrics, models, operators
 from src.utils import experiment_utils, tokenizer_utils
 from src.utils.typing import PathLike, StrSequence
 
+import numpy as np
 import torch
 from dataclasses_json import DataClassJsonMixin
-from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,35 @@ class SweepPromptResults(DataClassJsonMixin):
 class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
     prompts: list[SweepPromptResults]
+
+    # TODO(evan): Generalize this a bit, just debugging for now.
+    def summarize(self) -> None:
+        """Print a summary of what happened."""
+        results_by_layer = defaultdict(list)
+        for prompt in self.prompts:
+            for layer in prompt.layers:
+                for sample in layer.samples:
+                    best = sample.best()
+                    results_by_layer[layer].append(
+                        (
+                            layer.layer,
+                            best.beta,
+                            best.recall[0],
+                        )
+                    )
+
+        scores_by_layer = {
+            layer: np.mean([x[-1] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        betas_by_layer = {
+            layer: np.mean([x[1] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        for layer in scores_by_layer:
+            score = scores_by_layer[layer]
+            beta = betas_by_layer[layer]
+            logger.debug(f"layer={layer} | beta={beta:.2f} | recall@1={score:.2f}")
 
 
 @dataclass(frozen=True)
@@ -203,6 +233,8 @@ def sweep(
         relation_result = SweepRelationResults(
             relation_name=relation.name, prompts=prompt_results
         )
+        # TODO(evan): test later
+        # relation_result.summarize()
         experiment_utils.save_results_file(
             results_dir=results_dir,
             results=relation_result,

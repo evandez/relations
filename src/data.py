@@ -314,6 +314,7 @@ def load_dataset_from_args(args: argparse.Namespace) -> RelationDataset:
     dataset = load_dataset()
     dataset = dataset.filter(
         relation_names=args.rel_names,
+        relation_type=args.rel_types,
         domain_name=args.rel_domains,
         range_name=args.rel_ranges,
         disambiguating=args.rel_disamb,
@@ -329,6 +330,9 @@ def add_data_args(parser: argparse.ArgumentParser) -> None:
     """Add dataset filtering args."""
     parser.add_argument(
         "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
+    )
+    parser.add_argument(
+        "--rel-types", nargs="+", type=str, help="filter by relation type"
     )
     parser.add_argument(
         "--rel-domains", nargs="+", type=str, help="filter by relation domain"
