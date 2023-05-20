@@ -2,6 +2,7 @@
 import logging
 from dataclasses import dataclass
 from functools import cached_property
+from typing import Any
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
@@ -34,6 +35,7 @@ class Editor:
         self,
         subject: str,
         target: str,
+        **kwargs: Any,
     ) -> EditResult:
         raise NotImplementedError
 
@@ -68,7 +70,7 @@ class LinearRelationEditor(Editor):
     def z_layer(self) -> Layer:
         return self.lre.z_layer
 
-    def __call__(self, subject: str, target: str) -> LinearRelationEditResult:
+    def __call__(self, subject: str, target: str, **kwargs: Any) -> LinearRelationEditResult:
         raise NotImplementedError
 
 
@@ -80,6 +82,7 @@ class LowRankPInvEditor(LinearRelationEditor):
     """
 
     rank: int = 100
+    svd: functional.Svd | None = None
 
     @cached_property
     def _low_rank_pinv(self) -> torch.Tensor:
@@ -88,13 +91,17 @@ class LowRankPInvEditor(LinearRelationEditor):
         weight = self.lre.weight
         if weight is None:
             raise AssertionError("LRE weight is None, editing does not support this")
-        return functional.low_rank_pinv(matrix=weight, rank=self.rank)
+        return functional.low_rank_pinv(matrix=weight, rank=self.rank, svd=self.svd)
 
     def __call__(
         self,
         subject: str,
         target: str,
+        z_original: torch.Tensor | None = None,
+        z_target: torch.Tensor | None = None,
+        **kwargs: Any,
     ) -> LinearRelationEditResult:
+        _check_no_extra_kwargs(kwargs)
         prompt_original = functional.make_prompt(
             mt=self.mt, prompt_template=self.prompt_template, subject=subject
         )
@@ -106,7 +113,6 @@ class LowRankPInvEditor(LinearRelationEditor):
                 [prompt_original, prompt_target],
                 return_tensors="pt",
                 padding="longest",
-                truncation=True,
                 return_offsets_mapping=True,
             ).to(self.mt.model.device)
 
@@ -118,14 +124,17 @@ class LowRankPInvEditor(LinearRelationEditor):
         )
         subject_edit_index -= 1
 
-        hiddens = functional.compute_hidden_states(
-            mt=self.lre.mt,
-            layers=[self.z_layer],
-            prompt=[prompt_original, prompt_target],
-        )
+        if z_original is None or z_target is None:
+            hiddens = functional.compute_hidden_states(
+                mt=self.lre.mt,
+                layers=[self.z_layer],
+                inputs=inputs,
+            )
 
-        z_original = hiddens.hiddens[0][0, -1, ..., None]
-        z_target = hiddens.hiddens[0][1, -1, ..., None]
+            if z_original is None:
+                z_original = hiddens.hiddens[0][0, -1, ..., None]
+            if z_target is None:
+                z_target = hiddens.hiddens[0][1, -1, ..., None]
 
         weight_pinv = self._low_rank_pinv
         delta = weight_pinv @ (z_target - z_original)
@@ -153,27 +162,37 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
         self,
         subject: str,
         target: str,
+        z_original: torch.Tensor | None = None,
+        z_target: torch.Tensor | None = None,
+        **kwargs: Any,
     ) -> LinearRelationEditResult:
+        _check_no_extra_kwargs(kwargs)
         inputs, subject_edit_index = _compute_inputs(
             mt=self.mt,
             prompt_template=self.prompt_template,
             subject=subject,
         )
 
-        hiddens = functional.compute_hidden_states(
-            mt=self.mt,
-            layers=[self.z_layer],
-            inputs=inputs,
-        )
+        if z_original is None:
+            hiddens = functional.compute_hidden_states(
+                mt=self.mt,
+                layers=[self.z_layer],
+                inputs=inputs,
+            )
 
-        z_original = hiddens.hiddens[0][0, -1, ..., None]
+            if z_original is None:
+                z_original = hiddens.hiddens[0][0, -1, ..., None]
 
-        target_token_id = models.tokenize_words(self.mt, target).input_ids[:, 0].item()
-        embed_target = self.mt.lm_head[-1].weight[target_token_id, ..., None]
-        embed_target = embed_target * (z_original.norm() / embed_target.norm())
+        # Target z is just an embedding vector.
+        if z_target is None:
+            target_token_id = (
+                models.tokenize_words(self.mt, target).input_ids[:, 0].item()
+            )
+            z_target = self.mt.lm_head[-1].weight[target_token_id, ..., None]
+            z_target = z_target * (z_original.norm() / z_target.norm())
 
         weight_pinv = self._low_rank_pinv
-        delta = weight_pinv @ (embed_target - z_original)
+        delta = weight_pinv @ (z_target - z_original)
 
         return _apply_edit(
             mt=self.mt,
@@ -195,7 +214,9 @@ class HiddenBaselineEditor(LinearRelationEditor):
         self,
         subject: str,
         target: str,
+        **kwargs: Any,
     ) -> LinearRelationEditResult:
+        _check_no_extra_kwargs(kwargs)
         inputs, subject_edit_index = _compute_inputs(
             mt=self.mt,
             prompt_template=self.prompt_template,
@@ -229,14 +250,16 @@ class HiddenBaselineEditor(LinearRelationEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class EmbedBaselineEditor(LowRankPInvEditor):
+class EmbedBaselineEditor(LinearRelationEditor):
     """Edit the model by replacing h for the object embedding."""
 
     def __call__(
         self,
         subject: str,
         target: str,
+        **kwargs: Any,
     ) -> LinearRelationEditResult:
+        _check_no_extra_kwargs(kwargs)
         inputs, subject_edit_index = _compute_inputs(
             mt=self.mt, prompt_template=self.prompt_template, subject=subject
         )
@@ -261,6 +284,12 @@ class EmbedBaselineEditor(LowRankPInvEditor):
             n_new_tokens=self.n_new_tokens,
             n_samples=self.n_samples,
         )
+
+
+def _check_no_extra_kwargs(kwargs: dict) -> None:
+    """Check that no extra kwargs were passed."""
+    if kwargs:
+        raise TypeError(f"Unexpected keyword arguments: {kwargs}")
 
 
 def _compute_inputs(
