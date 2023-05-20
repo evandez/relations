@@ -83,9 +83,13 @@ class Relation(DataClassJsonMixin):
     def split(self, size: int) -> tuple["Relation", "Relation"]:
         """Break into a train/test split."""
         if size > len(self.samples):
-            raise ValueError(f"size must be <= len(samples), got: {size}")
+            raise ValueError(f"size must be <= {len(self.samples)}, got: {size}")
 
+        # Shuffle once up front, because we're sometimes sorted, and if the relation
+        # is 1:1, we'll always pick the same samples!
         samples = self.samples.copy()
+        random.shuffle(samples)
+
         samples_by_object = defaultdict(list)
         for sample in samples:
             samples_by_object[sample.object].append(sample)
