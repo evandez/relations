@@ -4,6 +4,7 @@ import json
 import logging
 import random
 import shutil
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -146,7 +147,8 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     """Add args common to all experiments.
 
     The args include:
-        --experiment-name (-n): Requied, unique identifier for this experiment.
+        --experiment-name (-n): Unique identifier for this experiment.
+            Defaults to script name.
         --results-dir: Root directory containing all experiment folders.
         --clear-results-dir: If set, experiment-specific results directory is cleared.
         --args-file-name: Dump all args to this file; defaults to generated name.
@@ -156,7 +158,6 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--experiment-name",
         "-n",
-        required=True,
         help="unique name for the experiment",
     )
     parser.add_argument(
@@ -178,6 +179,8 @@ def add_experiment_args(parser: argparse.ArgumentParser) -> None:
 def setup_experiment(args: argparse.Namespace) -> Experiment:
     """Configure experiment from the args."""
     experiment_name = args.experiment_name
+    if experiment_name is None:
+        experiment_name = Path(sys.argv[0]).stem
     seed = args.seed
 
     logger.info(f"setting up experiment {experiment_name}")

@@ -212,6 +212,8 @@ def _precompute_hs(
             outputs = mt.model(
                 inputs.input_ids[i : i + batch_size],
                 attention_mask=inputs.attention_mask[i : i + batch_size],
+                output_hidden_states=True,
+                return_dict=True,
             )
         batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
     hidden_states = torch.cat(batched_hidden_states, dim=1)
