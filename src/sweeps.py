@@ -1,12 +1,11 @@
 """Tools for running sweeps over hyperparameters."""
 import logging
-import random
 from dataclasses import dataclass
 from typing import Any, Sequence
 
 from src import data, functional, metrics, models, operators
-from src.utils import tokenizer_utils
-from src.utils.typing import StrSequence
+from src.utils import experiment_utils, tokenizer_utils
+from src.utils.typing import PathLike, StrSequence
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -30,6 +29,10 @@ class SweepBetaResults(DataClassJsonMixin):
 class SweepTrainSampleResults(DataClassJsonMixin):
     sample: data.RelationSample
     betas: list[SweepBetaResults]
+
+    def best(self, k: int = 1) -> SweepBetaResults:
+        """Return the best beta by given recall position."""
+        return max(self.betas, key=lambda x: x.recall[k - 1])
 
 
 @dataclass(frozen=True)
@@ -67,6 +70,8 @@ def sweep(
     n_icl_samples: int = DEFAULT_N_ICL_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
     batch_size: int = DEFAULT_BATCH_SIZE,
+    results_dir: PathLike | None = None,
+    resume: bool = False,
     desc: str | None = None,
     **kwargs: Any,
 ) -> SweepResuts:
@@ -79,8 +84,21 @@ def sweep(
         betas = torch.linspace(0, 1, steps=11).tolist()
 
     relation_results = []
-    for relation in dataset.relations:
-        logger.info(f"begin relation: {relation.name}")
+    for ri, relation in enumerate(dataset.relations):
+        logger.info(
+            f'begin relation "{relation.name}" ({ri + 1}/{len(dataset.relations)})'
+        )
+
+        relation_result = experiment_utils.load_results_file(
+            results_dir=results_dir,
+            results_type=SweepRelationResults,
+            name=relation.name,
+            resume=resume,
+        )
+        if relation_result is not None:
+            logger.info(f"loaded previous results for {relation.name}")
+            relation_results.append(relation_result)
+            continue
 
         prompt_results = []
         for prompt_template in relation.prompt_templates:
@@ -117,9 +135,8 @@ def sweep(
             )
 
             layer_results = []
-            progress = tqdm(h_layers, desc=desc)
-            for h_layer in progress:
-                progress.set_description(f"{desc}, h_layer={h_layer}")
+            for h_layer in h_layers:
+                logger.info(f"begin layer: {h_layer}")
 
                 estimator = operators.JacobianIclEstimator(
                     mt=mt, h_layer=h_layer, **kwargs
@@ -142,7 +159,9 @@ def sweep(
                         if x != train_sample and x not in train_icl_samples
                     ]
                     test_subjects = [x.subject for x in test_samples]
-                    test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
+                    test_hs = [
+                        hs_by_subj[x.subject][h_layer, None] for x in test_samples
+                    ]
                     test_objects = [x.object for x in test_samples]
 
                     results_by_beta = []
@@ -161,11 +180,15 @@ def sweep(
                             SweepBetaResults(beta=beta, recall=recall)
                         )
 
-                    train_sample_results.append(
-                        SweepTrainSampleResults(
-                            sample=train_sample, betas=results_by_beta
-                        )
+                    train_sample_result = SweepTrainSampleResults(
+                        sample=train_sample, betas=results_by_beta
                     )
+                    best = train_sample_result.best()
+                    logger.debug(
+                        f"sample={train_sample} | h_layer={h_layer} | "
+                        f"beta={best.beta:.2f} | recall@1={best.recall[0]:.2f}"
+                    )
+                    train_sample_results.append(train_sample_result)
                 layer_results.append(
                     SweepLayerResults(layer=h_layer, samples=train_sample_results)
                 )
@@ -177,9 +200,15 @@ def sweep(
                     layers=layer_results,
                 )
             )
-        relation_results.append(
-            SweepRelationResults(relation_name=relation.name, prompts=prompt_results)
+        relation_result = SweepRelationResults(
+            relation_name=relation.name, prompts=prompt_results
         )
+        experiment_utils.save_results_file(
+            results_dir=results_dir,
+            results=relation_result,
+            name=relation.name,
+        )
+        relation_results.append(relation_result)
     return SweepResuts(relation_results)
 
 

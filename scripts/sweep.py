@@ -28,9 +28,11 @@ def main(args: argparse.Namespace) -> None:
             h_layers=args.h_layers,
             recall_k=args.recall_k,
             batch_size=args.batch_size,
+            results_dir=experiment.results_dir,
+            resume=args.resume,
         )
 
-    results_file = experiment.results_dir / "results.json"
+    results_file = experiment.results_dir / "results_all.json"
     results_file.parent.mkdir(exist_ok=True, parents=True)
     with results_file.open("w") as handle:
         handle.write(results.to_json(indent=4))
