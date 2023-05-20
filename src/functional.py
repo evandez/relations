@@ -448,6 +448,7 @@ def filter_dataset_samples(
     n_icl_lm: int = DEFAULT_N_ICL_LM,
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
+    min_knowns: int = 10,
     desc: str | None = None,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
@@ -485,8 +486,11 @@ def filter_dataset_samples(
                 continue
             known_samples.append(sample)
 
-        if not known_samples:
-            logger.debug(f"filtered out all samples for relation: {relation}")
+        if len(known_samples) < min_knowns:
+            logger.debug(
+                f'not enough known samples for relation "{relation.name}" '
+                f"({len(known_samples)} < {min_knowns})"
+            )
             continue
         relations.append(relation.set(samples=known_samples))
 
