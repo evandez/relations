@@ -5,6 +5,7 @@ from typing import Any
 from src import data, functional, models
 from src.utils.typing import Layer
 
+import baukit
 import torch
 
 logger = logging.getLogger(__name__)
@@ -289,22 +290,6 @@ class CornerGdEstimator(LinearRelationEstimator):
         )
 
 
-def _check_nonempty(**values: list) -> None:
-    for key, value in values.items():
-        if len(value) == 0:
-            raise ValueError(f"expected at least one value for {key}")
-
-
-def _warn_gt_1(**values: list) -> None:
-    for key, value in values.items():
-        if len(value) > 1:
-            logger.warning(f"relation has > 1 {key}, will use first ({value[0]})")
-
-
-############################## baselines ########################################
-import baukit
-
-
 @dataclass(frozen=True)
 class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
@@ -314,6 +299,10 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
     weight_decay: float = 2e-2
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
         device = models.determine_device(self.mt)
         dtype = models.determine_dtype(self.mt)
         samples = relation.samples
@@ -392,10 +381,14 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
 @dataclass(frozen=True)
 class OffsetEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
-    z_layer: Layer = -1
+    z_layer: Layer | None = None
     scaling_factor: float | None = None
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
         samples = relation.samples
         prompt_template = relation.prompt_templates[0]
         device = models.determine_device(self.mt)
@@ -442,13 +435,28 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
         offset = offset * scaling_factor
 
+        if self.z_layer is None:
+            z_layer = models.determine_layers(self.mt)[-1]
+
         operator = LinearRelationOperator(
             mt=self.mt,
             weight=None,
             bias=offset,
             h_layer=self.h_layer,
-            z_layer=self.z_layer,
+            z_layer=z_layer,
             prompt_template=prompt_template,
         )
 
         return operator
+
+
+def _check_nonempty(**values: list) -> None:
+    for key, value in values.items():
+        if len(value) == 0:
+            raise ValueError(f"expected at least one value for {key}")
+
+
+def _warn_gt_1(**values: list) -> None:
+    for key, value in values.items():
+        if len(value) > 1:
+            logger.warning(f"relation has > 1 {key}, will use first ({value[0]})")
