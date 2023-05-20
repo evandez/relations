@@ -59,6 +59,7 @@ class RelationHParams(HParams):
     def default_relation_file(relation: str | data.Relation) -> Path:
         if isinstance(relation, data.Relation):
             relation = relation.name
+        relation = relation.replace(" ", "_").replace("'", "")
         hparams_dir = env_utils.determine_hparams_dir()
         hparams_file = hparams_dir / f"{relation}.json"
         return hparams_file
