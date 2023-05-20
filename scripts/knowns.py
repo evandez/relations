@@ -26,7 +26,11 @@ def main(args: argparse.Namespace) -> None:
     total_samples = 0
     with torch.device(device):
         filtered = functional.filter_dataset_samples(
-            mt=mt, dataset=dataset, n_icl_lm=args.n_icl, n_trials=args.n_trials
+            mt=mt,
+            dataset=dataset,
+            n_icl_lm=args.n_icl,
+            n_trials=args.n_trials,
+            batch_size=args.batch_size,
         )
 
         relations_by_name = {r.name: r for r in dataset.relations}
@@ -56,6 +60,12 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="test model's knowledge")
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=functional.DEFAULT_BATCH_SIZE,
+        help="max batch size for lm",
+    )
     parser.add_argument(
         "--n-icl",
         type=int,

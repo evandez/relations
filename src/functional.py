@@ -445,6 +445,7 @@ def filter_dataset_samples(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
+    batch_size: int = DEFAULT_BATCH_SIZE,
     n_icl_lm: int = DEFAULT_N_ICL_LM,
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
@@ -472,6 +473,7 @@ def filter_dataset_samples(
                 prompt_template=prompt_template,
                 n_icl_lm=n_icl_lm,
                 n_top_lm=n_top_lm,
+                batch_size=batch_size,
             )
             for sample in filtered.samples:
                 counts[sample] += 1
@@ -484,7 +486,7 @@ def filter_dataset_samples(
             known_samples.append(sample)
 
         if not known_samples:
-            logger.warning(f"filtered out all samples for relation: {relation}")
+            logger.debug(f"filtered out all samples for relation: {relation}")
             continue
         relations.append(relation.set(samples=known_samples))
 
