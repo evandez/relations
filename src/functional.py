@@ -174,7 +174,7 @@ def low_rank_approx(
 
     """
     if svd is None:
-        svd = torch.linalg.svd(matrix.float())
+        svd = torch.svd(matrix.float())
     u, s, v = svd
     matrix_approx = u[:, :rank] @ torch.diag(s[:rank]) @ v[:, :rank].T
     return matrix_approx.to(matrix.dtype)
@@ -194,7 +194,7 @@ def low_rank_pinv(
 
     """
     if svd is None:
-        svd = torch.linalg.svd(matrix.float())
+        svd = torch.svd(matrix.float())
     u, s, v = svd
     matrix_pinv = v[:, :rank] @ torch.diag(1 / s[:rank]) @ u[:, :rank].T
     return matrix_pinv.to(matrix.dtype)
