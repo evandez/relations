@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import random
+from collections import defaultdict
 from dataclasses import dataclass, fields
 from pathlib import Path
 from typing import Literal, Sequence
@@ -81,9 +82,29 @@ class Relation(DataClassJsonMixin):
             raise ValueError(f"size must be <= len(samples), got: {size}")
 
         samples = self.samples.copy()
-        random.shuffle(samples)
-        train_samples = samples[:size]
-        test_samples = samples[size:]
+        samples_by_object = defaultdict(list)
+        for sample in samples:
+            samples_by_object[sample.object].append(sample)
+
+        for samples in samples_by_object.values():
+            random.shuffle(samples)
+
+        # List to store the result
+        max_coverage_samples = []
+
+        # As long as there are samples left
+        while samples_by_object:
+            # For each object
+            for object in list(samples_by_object.keys()):
+                # Add one sample to the result and remove it from the object's list
+                max_coverage_samples.append(samples_by_object[object].pop(0))
+
+                # If there are no more samples for this object, remove it from the dict
+                if len(samples_by_object[object]) == 0:
+                    del samples_by_object[object]
+
+        train_samples = max_coverage_samples[:size]
+        test_samples = max_coverage_samples[size:]
 
         return (
             Relation(
