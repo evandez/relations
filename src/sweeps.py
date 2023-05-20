@@ -1,152 +1,254 @@
 """Tools for running sweeps over hyperparameters."""
 import logging
-import random
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Sequence
 
 from src import data, functional, metrics, models, operators
-from src.utils import tokenizer_utils
-from src.utils.typing import StrSequence
+from src.utils import experiment_utils, tokenizer_utils
+from src.utils.typing import PathLike, StrSequence
 
+import numpy as np
 import torch
 from dataclasses_json import DataClassJsonMixin
-from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_RECALL_K = 3
-DEFAULT_N_SAMPLES = 5
+DEFAULT_N_TRIALS = 3
+DEFAULT_N_TRY_SAMPLES = 3
+DEFAULT_N_ICL_SAMPLES = 5
 DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class ZsPromptTemplateResults(DataClassJsonMixin):
+class SweepBetaResults(DataClassJsonMixin):
+    beta: float
+    recall: list[float]
+
+
+@dataclass(frozen=True)
+class SweepTrainSampleResults(DataClassJsonMixin):
+    sample: data.RelationSample
+    betas: list[SweepBetaResults]
+
+    def best(self, k: int = 1) -> SweepBetaResults:
+        """Return the best beta by given recall position."""
+        return max(self.betas, key=lambda x: x.recall[k - 1])
+
+    def summarize(self) -> None:
+        """Sumarize results in debug logs."""
+        best = self.best()
+        logger.debug(
+            f"sample={self.sample} | beta={best.beta:.2f} | recall@1={best.recall[0]:.2f}"
+        )
+
+
+@dataclass(frozen=True)
+class SweepLayerResults(DataClassJsonMixin):
+    layer: int
+    samples: list[SweepTrainSampleResults]
+
+
+@dataclass(frozen=True)
+class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
-    recall: float
+    icl_samples: list[data.RelationSample]
+    train_samples: list[data.RelationSample]
+    layers: list[SweepLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepZsPromptTemplateResults(DataClassJsonMixin):
+class SweepRelationResults(DataClassJsonMixin):
+    relation_name: str
+    trials: list[SweepTrialResults]
 
-    results: list[ZsPromptTemplateResults]
+    # TODO(evan): Generalize this a bit, just debugging for now.
+    def summarize(self) -> None:
+        """Print a summary of what happened."""
+        results_by_layer = defaultdict(list)
+        for trial in self.trials:
+            for layer in trial.layers:
+                for sample in layer.samples:
+                    best = sample.best()
+                    results_by_layer[layer.layer].append(
+                        (
+                            layer.layer,
+                            best.beta,
+                            best.recall[0],
+                        )
+                    )
 
-    def best(self) -> str:
-        """Return the best prompt template."""
-        best = max(self.results, key=lambda x: x.recall)
-        return best.prompt_template
-
-
-def sweep_zs_prompt_template(
-    *,
-    mt: models.ModelAndTokenizer,
-    relation: data.Relation,
-    batch_size: int = DEFAULT_BATCH_SIZE,
-    desc: str | None = None,
-) -> SweepZsPromptTemplateResults:
-    """Choose the best prompt template according to the LM's ZS performance."""
-    if desc is None:
-        desc = f"sweep prompt templates ({relation.name})"
-
-    results = []
-    progress = tqdm(relation.prompt_templates)
-    for prompt_template in progress:
-        progress.set_description(f"{desc} ({prompt_template})")
-
-        prompts = [
-            functional.make_prompt(
-                mt=mt, prompt_template=prompt_template, subject=x.subject
-            )
-            for x in relation.samples
-        ]
-        predictions = functional.predict_next_token(
-            mt=mt, prompt=prompts, k=1, batch_size=batch_size
-        )
-        [recall] = metrics.recall(
-            [[x.token] for [x] in predictions], [x.object for x in relation.samples]
-        )
-        results.append(
-            ZsPromptTemplateResults(prompt_template=prompt_template, recall=recall)
-        )
-
-    return SweepZsPromptTemplateResults(results=results)
+        scores_by_layer = {
+            layer: np.mean([x[-1] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        betas_by_layer = {
+            layer: np.mean([x[1] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        logger.debug(f'summarizing results for "{self.relation_name}"')
+        for la in scores_by_layer:
+            score = scores_by_layer[la]
+            beta = betas_by_layer[la]
+            logger.debug(f"layer={la} | beta={beta:.2f} | recall@1={score:.2f}")
 
 
 @dataclass(frozen=True)
-class SweepHLayerBetaResuts(DataClassJsonMixin):
-    pass
+class SweepResuts(DataClassJsonMixin):
+    relations: list[SweepRelationResults]
 
 
-def sweep_h_layer_and_beta(
+def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
-    n_samples: int = DEFAULT_N_SAMPLES,
+    n_trials: int = DEFAULT_N_TRIALS,
+    n_try_samples: int = DEFAULT_N_TRY_SAMPLES,
+    n_icl_samples: int = DEFAULT_N_ICL_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
     batch_size: int = DEFAULT_BATCH_SIZE,
+    results_dir: PathLike | None = None,
+    resume: bool = False,
     desc: str | None = None,
     **kwargs: Any,
-) -> SweepHLayerBetaResuts:
-    """Sweep over h_layer and beta together, choosing best beta for each layer."""
+) -> SweepResuts:
+    """Sweep over hyperparameters for faithfulness."""
     if desc is None:
-        desc = f"sweep h_layer/beta"
+        desc = f"sweep"
     if h_layers is None:
         h_layers = models.determine_layers(mt)
     if betas is None:
         betas = torch.linspace(0, 1, steps=11).tolist()
 
-    for relation in dataset.relations:
-        logger.info(f"begin relation: {relation.name}")
-
-        # Determine best prompt template for ZS performance.
-        prompt_template = sweep_zs_prompt_template(mt=mt, relation=relation).best()
-        logger.info(f"chose prompt template: {prompt_template}")
-
-        # Precompute all the hs to speed things up.
-        hs_by_subj = _precompute_hs(
-            mt=mt,
-            prompt_template=prompt_template,
-            subjects=[x.subject for x in relation.samples],
-            batch_size=batch_size,
+    relation_results = []
+    for ri, relation in enumerate(dataset.relations):
+        logger.info(
+            f'begin relation "{relation.name}" ({ri + 1}/{len(dataset.relations)})'
         )
 
-        # Decide which will be the train samples we will try.
-        train_samples = random.sample(relation.samples, k=n_samples)
-        logger.info(f"sweeping for train_samples={train_samples}")
+        relation_result = experiment_utils.load_results_file(
+            results_dir=results_dir,
+            results_type=SweepRelationResults,
+            name=relation.name,
+            resume=resume,
+        )
+        if relation_result is not None:
+            logger.info(f"loaded previous results for {relation.name}")
+            relation_results.append(relation_result)
+            continue
 
-        progress = tqdm(h_layers, desc=desc)
-        for h_layer in progress:
-            progress.set_description(f"{desc}, h_layer={h_layer}")
+        prompt_template = relation.prompt_templates[0]
 
-            estimator = operators.JacobianEstimator(mt=mt, h_layer=h_layer, **kwargs)
-            for train_sample in train_samples:
-                operator = estimator(relation.set(samples=[train_sample]))
-                assert operator.bias is not None
-                bias = operator.bias.clone()
+        trial_results = []
+        for trial in range(n_trials):
+            logger.info(f"begin trial {trial + 1}/{n_trials}")
 
-                test_samples = [x for x in relation.samples if x != train_sample]
-                test_subjects = [x.subject for x in test_samples]
-                test_hs = [hs_by_subj[x.subject][h_layer] for x in test_samples]
-                test_objects = [x.object for x in test_samples]
+            if len(relation.samples) <= n_try_samples + n_icl_samples:
+                logger.warning(
+                    f"Not enough samples ({len(relation.samples)}) to "
+                    f'test for "{relation.name} since n_try_samples={n_try_samples} and '
+                    f"n_icl_samples={n_icl_samples}. You should fix this by adding more "
+                    "known samples for the relation."
+                )
+                continue
 
-                recalls_by_beta = []
-                for beta in betas:
-                    operator.bias[:] = bias * beta
+            # Decide which will be the train samples we will try, and which will be the
+            # ICL prompt examples.
+            train_relation, _ = relation.split(n_try_samples + n_icl_samples)
+            train_samples = train_relation.samples
+            train_icl_samples = train_samples[:n_icl_samples]
+            train_try_samples = train_samples[
+                n_icl_samples : n_icl_samples + n_try_samples
+            ]
 
-                    pred_objects = []
-                    for subj, h in zip(test_subjects, test_hs):
-                        preds = operator(subj, h=h, k=recall_k)
-                        pred_objects.append([p.token for p in preds.predictions])
+            logger.info(f"will do icl using: {[str(x) for x in train_icl_samples]}")
+            logger.info(f"will try: {[x.subject for x in train_try_samples]}")
 
-                    recall = metrics.recall(pred_objects, test_objects)
-                    recalls_by_beta.append(recall)
+            # Precompute all the hs to speed things up.
+            hs_by_subj = _precompute_hs(
+                mt=mt,
+                prompt_template=prompt_template,
+                subjects=[x.subject for x in relation.samples],
+                batch_size=batch_size,
+                examples=train_icl_samples,
+            )
 
-                best_i = max(range(len(recalls_by_beta)), key=lambda i: recalls_by_beta[i])
-                best_beta = betas[best_i]
-                best_recall = recalls_by_beta[best_i]
+            layer_results = []
+            for h_layer in h_layers:
+                logger.info(f"begin layer: {h_layer}")
 
-    return SweepHLayerBetaResuts()
+                estimator = operators.JacobianIclEstimator(
+                    mt=mt, h_layer=h_layer, **kwargs
+                )
+
+                train_sample_results = []
+                for train_sample in train_try_samples:
+                    operator = estimator(
+                        relation.set(
+                            samples=[train_sample, *train_icl_samples],
+                            prompt_templates=[prompt_template],
+                        )
+                    )
+                    assert operator.bias is not None
+                    bias = operator.bias.clone()
+
+                    test_samples = [
+                        x
+                        for x in relation.samples
+                        if x != train_sample and x not in train_icl_samples
+                    ]
+                    test_subjects = [x.subject for x in test_samples]
+                    test_hs = [
+                        hs_by_subj[x.subject][h_layer, None] for x in test_samples
+                    ]
+                    test_objects = [x.object for x in test_samples]
+
+                    results_by_beta = []
+                    recalls_by_beta = []
+                    for beta in betas:
+                        operator.bias[:] = bias * beta
+
+                        pred_objects = []
+                        for subj, h in zip(test_subjects, test_hs):
+                            preds = operator(subj, h=h, k=recall_k)
+                            pred_objects.append([p.token for p in preds.predictions])
+
+                        recall = metrics.recall(pred_objects, test_objects)
+                        recalls_by_beta.append(recall)
+                        results_by_beta.append(
+                            SweepBetaResults(beta=beta, recall=recall)
+                        )
+
+                    train_sample_result = SweepTrainSampleResults(
+                        sample=train_sample, betas=results_by_beta
+                    )
+                    train_sample_result.summarize()
+                    train_sample_results.append(train_sample_result)
+                layer_results.append(
+                    SweepLayerResults(layer=h_layer, samples=train_sample_results)
+                )
+            trial_results.append(
+                SweepTrialResults(
+                    prompt_template=prompt_template,
+                    icl_samples=train_icl_samples,
+                    train_samples=train_try_samples,
+                    layers=layer_results,
+                )
+            )
+        relation_result = SweepRelationResults(
+            relation_name=relation.name, trials=trial_results
+        )
+        relation_result.summarize()
+        experiment_utils.save_results_file(
+            results_dir=results_dir,
+            results=relation_result,
+            name=relation.name,
+        )
+        relation_results.append(relation_result)
+    return SweepResuts(relation_results)
 
 
 def _precompute_hs(
@@ -154,6 +256,7 @@ def _precompute_hs(
     mt: models.ModelAndTokenizer,
     prompt_template: str,
     subjects: StrSequence,
+    examples: Sequence[data.RelationSample] | None = None,
     batch_size: int = DEFAULT_BATCH_SIZE,
 ) -> dict[str, torch.Tensor]:
     """Precompute h for every subject at every layer."""
@@ -162,6 +265,7 @@ def _precompute_hs(
             mt=mt,
             prompt_template=prompt_template,
             subject=subject,
+            examples=examples,
         )
         for subject in subjects
     ]
@@ -174,11 +278,13 @@ def _precompute_hs(
     offset_mapping = inputs.pop("offset_mapping")
 
     batched_hidden_states = []
-    for i in range(batch_size):
+    for i in range(0, len(inputs.input_ids), batch_size):
         with torch.inference_mode():
             outputs = mt.model(
                 inputs.input_ids[i : i + batch_size],
                 attention_mask=inputs.attention_mask[i : i + batch_size],
+                output_hidden_states=True,
+                return_dict=True,
             )
         batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
     hidden_states = torch.cat(batched_hidden_states, dim=1)

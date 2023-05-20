@@ -2,7 +2,7 @@ import argparse
 import logging
 from typing import Any
 
-from src import benchmarks, data, editors, models, operators
+from src import benchmarks, data, editors, functional, models, operators
 from src.utils import experiment_utils, logging_utils
 
 import torch
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 BENCHMARKS = ("reconstruction", "faithfulness", "causality")
 ESTIMATORS = {
     "j": operators.JacobianEstimator,
-    "j-icl-max": operators.JacobianIclMaxEstimator,
+    "j-icl": operators.JacobianIclEstimator,
     "j-icl-mean": operators.JacobianIclMeanEstimator,
     "corner-gd": operators.CornerGdEstimator,
 }
@@ -33,6 +33,8 @@ def main(args: argparse.Namespace) -> None:
     with torch.device(device):
         mt = models.load_model(args.model, fp16=args.fp16, device=device)
         dataset = data.load_dataset_from_args(args)
+
+        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
 
         estimator = ESTIMATORS[args.estimator](
             mt=mt,
@@ -111,11 +113,6 @@ if __name__ == "__main__":
         choices=EDITORS,
         default="lr-e",
         help="editor to use",
-    )
-    parser.add_argument(
-        "--resume",
-        action="store_true",
-        help="do not recompute results already in the results dir",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)

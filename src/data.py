@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import random
+from collections import defaultdict
 from dataclasses import dataclass, fields
 from pathlib import Path
 from typing import Literal, Sequence
@@ -49,6 +50,7 @@ class Relation(DataClassJsonMixin):
         prompt_templates: Prompts representing the relation, where the subject is
             represented by {}.
         samples: A list of (subject, object) pairs satisfying the relation.
+        properties: Relation metadata.
         _domain: Explicit list of all possible subjects. Accessed via the @property
             `domain`, which guesses the domain from the samples if not provided.
         _range: Equivalent to `_domain`, but for objects.
@@ -74,15 +76,39 @@ class Relation(DataClassJsonMixin):
             return set(self._range)
         return {sample.object for sample in self.samples}
 
+    def without(self, sample: RelationSample) -> "Relation":
+        """Return a copy of this relation without a given sample."""
+        return self.set(samples=[s for s in self.samples if s != sample])
+
     def split(self, size: int) -> tuple["Relation", "Relation"]:
         """Break into a train/test split."""
         if size > len(self.samples):
             raise ValueError(f"size must be <= len(samples), got: {size}")
 
         samples = self.samples.copy()
-        random.shuffle(samples)
-        train_samples = samples[:size]
-        test_samples = samples[size:]
+        samples_by_object = defaultdict(list)
+        for sample in samples:
+            samples_by_object[sample.object].append(sample)
+
+        for samples in samples_by_object.values():
+            random.shuffle(samples)
+
+        # List to store the result
+        max_coverage_samples = []
+
+        # As long as there are samples left
+        while samples_by_object:
+            # For each object
+            for object in list(samples_by_object.keys()):
+                # Add one sample to the result and remove it from the object's list
+                max_coverage_samples.append(samples_by_object[object].pop(0))
+
+                # If there are no more samples for this object, remove it from the dict
+                if len(samples_by_object[object]) == 0:
+                    del samples_by_object[object]
+
+        train_samples = max_coverage_samples[:size]
+        test_samples = max_coverage_samples[size:]
 
         return (
             Relation(
@@ -288,6 +314,7 @@ def load_dataset_from_args(args: argparse.Namespace) -> RelationDataset:
     dataset = load_dataset()
     dataset = dataset.filter(
         relation_names=args.rel_names,
+        relation_type=args.rel_types,
         domain_name=args.rel_domains,
         range_name=args.rel_ranges,
         disambiguating=args.rel_disamb,
@@ -303,6 +330,9 @@ def add_data_args(parser: argparse.ArgumentParser) -> None:
     """Add dataset filtering args."""
     parser.add_argument(
         "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
+    )
+    parser.add_argument(
+        "--rel-types", nargs="+", type=str, help="filter by relation type"
     )
     parser.add_argument(
         "--rel-domains", nargs="+", type=str, help="filter by relation domain"
