@@ -416,17 +416,16 @@ def filter_relation_samples(
     "knows" the sample if, given an ICL prompt for the relation, it predicts the
     correct answer in the top-1 position.
     """
-    prompts = [
-        make_prompt(
+    prompts = []
+    for sample in relation.samples:
+        examples, _ = relation.without(sample).split(n_icl_lm)
+        prompt = make_prompt(
             prompt_template=prompt_template,
             mt=mt,
             subject=sample.subject,
-            examples=random.sample(
-                [x for x in relation.samples if x != sample], k=n_icl_lm
-            ),
+            examples=examples.samples,
         )
-        for sample in relation.samples
-    ]
+        prompts.append(prompt)
     predictions = predict_next_token(
         mt=mt, prompt=prompts, k=n_top_lm, batch_size=batch_size
     )
@@ -466,6 +465,7 @@ def filter_dataset_samples(
         progress.set_description(f"{desc} ({relation.name})")
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
+            # TODO(evan): Best thing to do to sample prompts? Maybe iterate over?
             prompt_template = random.choice(relation.prompt_templates)
             filtered = filter_relation_samples(
                 mt=mt,

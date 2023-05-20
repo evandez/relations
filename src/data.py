@@ -76,6 +76,10 @@ class Relation(DataClassJsonMixin):
             return set(self._range)
         return {sample.object for sample in self.samples}
 
+    def without(self, sample: RelationSample) -> "Relation":
+        """Return a copy of this relation without a given sample."""
+        return self.set(samples=[s for s in self.samples if s != sample])
+
     def split(self, size: int) -> tuple["Relation", "Relation"]:
         """Break into a train/test split."""
         if size > len(self.samples):
