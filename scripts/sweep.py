@@ -34,7 +34,7 @@ def main(args: argparse.Namespace) -> None:
         for relation in results.relations:
             best = relation.best()
             hparams.RelationHParams(
-                relation_name=relation.name,
+                relation_name=relation.relation_name,
                 h_layer=best.layer,
                 z_layer=-1,
                 beta=best.beta.mean,
