@@ -15,6 +15,7 @@ from dataclasses_json import DataClassJsonMixin
 logger = logging.getLogger(__name__)
 
 DEFAULT_RECALL_K = 3
+DEFAULT_N_TRIALS = 3
 DEFAULT_N_TRY_SAMPLES = 3
 DEFAULT_N_ICL_SAMPLES = 5
 DEFAULT_BATCH_SIZE = 64
@@ -50,7 +51,7 @@ class SweepLayerResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
-class SweepPromptResults(DataClassJsonMixin):
+class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
     icl_samples: list[data.RelationSample]
     train_samples: list[data.RelationSample]
@@ -60,14 +61,14 @@ class SweepPromptResults(DataClassJsonMixin):
 @dataclass(frozen=True)
 class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
-    prompts: list[SweepPromptResults]
+    trials: list[SweepTrialResults]
 
     # TODO(evan): Generalize this a bit, just debugging for now.
     def summarize(self) -> None:
         """Print a summary of what happened."""
         results_by_layer = defaultdict(list)
-        for prompt in self.prompts:
-            for layer in prompt.layers:
+        for trial in self.trials:
+            for layer in trial.layers:
                 for sample in layer.samples:
                     best = sample.best()
                     results_by_layer[layer.layer].append(
@@ -104,6 +105,7 @@ def sweep(
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
+    n_trials: int = DEFAULT_N_TRIALS,
     n_try_samples: int = DEFAULT_N_TRY_SAMPLES,
     n_icl_samples: int = DEFAULT_N_ICL_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
@@ -138,9 +140,11 @@ def sweep(
             relation_results.append(relation_result)
             continue
 
-        prompt_results = []
-        for prompt_template in relation.prompt_templates:
-            logger.info(f"begin prompt template: {prompt_template}")
+        prompt_template = relation.prompt_templates[0]
+
+        trial_results = []
+        for trial in range(n_trials):
+            logger.info(f"begin trial {trial + 1}/{n_trials}")
 
             if len(relation.samples) <= n_try_samples + n_icl_samples:
                 logger.warning(
@@ -226,8 +230,8 @@ def sweep(
                 layer_results.append(
                     SweepLayerResults(layer=h_layer, samples=train_sample_results)
                 )
-            prompt_results.append(
-                SweepPromptResults(
+            trial_results.append(
+                SweepTrialResults(
                     prompt_template=prompt_template,
                     icl_samples=train_icl_samples,
                     train_samples=train_try_samples,
@@ -235,7 +239,7 @@ def sweep(
                 )
             )
         relation_result = SweepRelationResults(
-            relation_name=relation.name, prompts=prompt_results
+            relation_name=relation.name, trials=trial_results
         )
         relation_result.summarize()
         experiment_utils.save_results_file(
