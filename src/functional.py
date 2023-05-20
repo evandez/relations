@@ -1,4 +1,6 @@
+import logging
 import random
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, NamedTuple, Sequence
 
@@ -9,6 +11,13 @@ from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
 import baukit
 import torch
 from dataclasses_json import DataClassJsonMixin
+from tqdm.auto import tqdm
+
+logger = logging.getLogger(__name__)
+
+DEFAULT_BATCH_SIZE = 48  # Reduced to 48 to fit in A6000
+DEFAULT_N_ICL_LM = 2
+DEFAULT_N_TOP_LM = 1
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -332,7 +341,7 @@ def predict_next_token(
     mt: models.ModelAndTokenizer,
     prompt: str | StrSequence,
     k: int = 5,
-    batch_size: int = 48,  # Reduced to 48 to fit in A6000
+    batch_size: int = DEFAULT_BATCH_SIZE,
 ) -> list[list[PredictedToken]]:
     """Compute the next token."""
     if isinstance(prompt, str):
@@ -391,6 +400,97 @@ def make_prompt(
     return prompt
 
 
+@torch.inference_mode()
+def filter_relation_samples(
+    *,
+    mt: models.ModelAndTokenizer,
+    relation: data.Relation,
+    prompt_template: str,
+    n_icl_lm: int = DEFAULT_N_ICL_LM,
+    n_top_lm: int = DEFAULT_N_TOP_LM,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+) -> data.Relation:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all. We say the model
+    "knows" the sample if, given an ICL prompt for the relation, it predicts the
+    correct answer in the top-1 position.
+    """
+    prompts = [
+        make_prompt(
+            prompt_template=prompt_template,
+            mt=mt,
+            subject=sample.subject,
+            examples=random.sample(
+                [x for x in relation.samples if x != sample], k=n_icl_lm
+            ),
+        )
+        for sample in relation.samples
+    ]
+    predictions = predict_next_token(
+        mt=mt, prompt=prompts, k=n_top_lm, batch_size=batch_size
+    )
+    known_samples = {
+        sample
+        for sample, topk in zip(relation.samples, predictions)
+        if any_is_nontrivial_prefix([x.token for x in topk], sample.object)
+    }
+
+    # NB(evan): Need to sort to keep deterministic.
+    return relation.set(samples=sorted(known_samples, key=lambda x: x.subject))
+
+
+@torch.inference_mode()
+def filter_dataset_samples(
+    *,
+    mt: models.ModelAndTokenizer,
+    dataset: data.RelationDataset,
+    n_icl_lm: int = DEFAULT_N_ICL_LM,
+    n_top_lm: int = DEFAULT_N_TOP_LM,
+    n_trials: int = 3,
+    desc: str | None = None,
+) -> data.RelationDataset:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all. We say the model
+    "knows" the sample if, given an ICL prompt for the relation, it predicts the
+    correct answer in the top-1 position.
+    """
+    if desc is None:
+        desc = "filter dataset"
+
+    relations = []
+    progress = tqdm(dataset.relations, desc=desc)
+    for relation in progress:
+        progress.set_description(f"{desc} ({relation.name})")
+        counts: dict[data.RelationSample, int] = defaultdict(int)
+        for _ in range(n_trials):
+            prompt_template = random.choice(relation.prompt_templates)
+            filtered = filter_relation_samples(
+                mt=mt,
+                relation=relation,
+                prompt_template=prompt_template,
+                n_icl_lm=n_icl_lm,
+                n_top_lm=n_top_lm,
+            )
+            for sample in filtered.samples:
+                counts[sample] += 1
+
+        known_samples = []
+        for sample, count in counts.items():
+            if count != n_trials:
+                logger.debug(f"filtered out unknown sample: {sample}")
+                continue
+            known_samples.append(sample)
+
+        if not known_samples:
+            logger.warning(f"filtered out all samples for relation: {relation}")
+            continue
+        relations.append(relation.set(samples=known_samples))
+
+    return data.RelationDataset(relations)
+
+
 def find_subject_token_index(
     *,
     mt: models.ModelAndTokenizer,
@@ -398,6 +498,7 @@ def find_subject_token_index(
     subject: str,
     offset: int = -1,
 ) -> tuple[int, ModelInput]:
+    """Determine index of a specific subject token in prompt."""
     inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
         mt.model.device
     )
