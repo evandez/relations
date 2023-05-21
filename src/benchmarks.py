@@ -934,8 +934,7 @@ def causality(
                     prob_original = probs[token_id_original].item()
                     prob_target = probs[token_id_target].item()
                     logger.debug(
-                        "\t"
-                        + f"edit result: {prob_original=:.2f}, {prob_target=:.2f}, "
+                        f"edit result: {prob_original=:.2f}, {prob_target=:.2f}, "
                         f"top={result.predicted_tokens[0]}"
                     )
 
@@ -952,7 +951,7 @@ def causality(
                             subject_original, h=hs_by_subj[subject_original][None]
                         )
                         lre_preds = output_low_rank.predictions
-                        logger.debug("\t" + f"lre result: {lre_preds[0]}")
+                        logger.debug(f"lre result: {lre_preds[0]}")
 
                     # Also record specificity predictions if we're testing the right
                     # methods.
