@@ -59,6 +59,7 @@ class Relation(DataClassJsonMixin):
 
     name: str
     prompt_templates: list[str]
+    prompt_templates_zs: list[str]
     samples: list[RelationSample]
     properties: RelationProperties
 
@@ -119,6 +120,7 @@ class Relation(DataClassJsonMixin):
             Relation(
                 name=self.name,
                 prompt_templates=self.prompt_templates,
+                prompt_templates_zs=self.prompt_templates_zs,
                 properties=self.properties,
                 samples=train_samples,
                 _domain=list(self.domain),
@@ -127,6 +129,7 @@ class Relation(DataClassJsonMixin):
             Relation(
                 name=self.name,
                 prompt_templates=self.prompt_templates,
+                prompt_templates_zs=self.prompt_templates_zs,
                 properties=self.properties,
                 samples=test_samples,
                 _domain=list(self.domain),
@@ -138,6 +141,7 @@ class Relation(DataClassJsonMixin):
         self,
         name: str | None = None,
         prompt_templates: Sequence[str] | None = None,
+        prompt_templates_zs: Sequence[str] | None = None,
         properties: RelationProperties | None = None,
         samples: Sequence[RelationSample] | None = None,
         domain: Sequence[str] | None = None,
@@ -149,6 +153,9 @@ class Relation(DataClassJsonMixin):
             prompt_templates=list(prompt_templates)
             if prompt_templates is not None
             else self.prompt_templates,
+            prompt_templates_zs=list(prompt_templates_zs)
+            if prompt_templates_zs is not None
+            else self.prompt_templates_zs,
             properties=properties if properties is not None else self.properties,
             samples=list(samples) if samples is not None else self.samples,
             _domain=list(domain) if domain is not None else self._domain,

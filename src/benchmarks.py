@@ -312,6 +312,7 @@ class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
     template: str
+    template_zs: str
     outputs: list[FaithfulnessBenchmarkOutputs]
     recall_lm: list[float]
     recall_lre: list[float]
@@ -492,8 +493,9 @@ def faithfulness(
             # Begin attribute-lens tests on the distracted cases
 
             # Compute zero-shot predictions.
+            prompt_template_zs = random.choice(relation.prompt_templates_zs)
             prompts_zs = [
-                make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
+                make_prompt(prompt_template=prompt_template_zs, subject=x.subject, mt=mt)
                 for x in test.samples
             ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
@@ -507,12 +509,12 @@ def faithfulness(
             # Compute poetry-distracted predictions.
             def poetry_prefix(subject, wrong):  # type: ignore
                 return "".join(
-                    [prompt_template.format(subject) + " " + wrong + ". "] * 2
+                    [prompt_template_zs.format(subject) + " " + wrong + ". "] * 2
                 )
 
             prompts_pd = [
                 make_prompt(
-                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
+                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template_zs,
                     subject=x.subject,
                     mt=mt,
                 )
@@ -647,6 +649,7 @@ def faithfulness(
                     train=train,
                     test=test,
                     template=prompt_template,
+                    template_zs=prompt_template_zs,
                     outputs=[
                         FaithfulnessBenchmarkOutputs(
                             lre=lre,
