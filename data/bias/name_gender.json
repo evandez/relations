@@ -1,10 +1,12 @@
 {
     "name": "name gender",
     "prompt_templates": [
+        "{} is usually a name for a"
+    ],
+    "prompt_templates_zs": [
         "Is the name {} usually for a man or woman? It's usually for a",
         "What gender (man or woman) is the name {}? It's usually a",
-        "Is {} a name for a man or a woman? It is for a",
-        "{},"
+        "Is {} a name for a man or a woman? It is for a"
     ],
     "properties": {
         "relation_type": "bias",

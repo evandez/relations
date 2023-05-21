@@ -1,147 +1,146 @@
 {
-    "name": "task done by person NEEDS REVISION",
+    "name": "task person type",
     "prompt_templates": [
-        "Person who does/operates/makes/plays {} is called",
-        "{},"
+        "{} is best suited for someone with the role of a"
+    ],
+    "prompt_templates_zs": [
+        "The task of {} would be best performed by someone with the role of a",
+        "The professional role most suited to handle {} is a"
     ],
     "properties": {
         "relation_type": "commonsense",
-        "domain_name": "tasks",
-        "range_name": "occupation",
+        "domain_name": "task",
+        "range_name": "occupation type",
         "symmetric": false
     },
     "samples": [
         {
-            "subject": "code",
-            "object": "programmer"
+            "subject": "researching history",
+            "object": "historian"
         },
         {
-            "subject": "farm",
-            "object": "farmer"
+            "subject": "delivering mail",
+            "object": "mail carrier"
         },
         {
-            "subject": "software",
-            "object": "developer"
+            "subject": "photographing weddings",
+            "object": "photographer"
         },
         {
-            "subject": "piano",
+            "subject": "baking cakes",
+            "object": "baker"
+        },
+        {
+            "subject": "leading teams",
+            "object": "leader"
+        },
+        {
+            "subject": "directing movies",
+            "object": "director"
+        },
+        {
+            "subject": "investigating diseases",
+            "object": "epidemiologist"
+        },
+        {
+            "subject": "designing buildings",
+            "object": "architect"
+        },
+        {
+            "subject": "playing piano concertos",
             "object": "pianist"
         },
         {
-            "subject": "bicycle",
-            "object": "cyclist"
+            "subject": "translating books",
+            "object": "translator"
         },
         {
-            "subject": "machine",
-            "object": "operator"
+            "subject": "repairing computers",
+            "object": "technician"
         },
         {
-            "subject": "car",
-            "object": "driver"
+            "subject": "selling houses",
+            "object": "real estate agent"
         },
         {
-            "subject": "website",
-            "object": "webmaster"
+            "subject": "managing hotels",
+            "object": "hotel manager"
         },
         {
-            "subject": "gym",
-            "object": "trainer"
+            "subject": "farming",
+            "object": "farmer"
         },
         {
-            "subject": "game",
-            "object": "gamer"
+            "subject": "rescuing mountaineers",
+            "object": "rescuer"
         },
         {
-            "subject": "book",
-            "object": "author"
+            "subject": "analyzing genetics",
+            "object": "geneticist"
         },
         {
-            "subject": "engine",
-            "object": "mechanic"
-        },
-        {
-            "subject": "dish",
-            "object": "chef"
-        },
-        {
-            "subject": "medicine",
-            "object": "pharmacist"
-        },
-        {
-            "subject": "surgery",
-            "object": "surgeon"
-        },
-        {
-            "subject": "airplane",
+            "subject": "flying airplanes",
             "object": "pilot"
         },
         {
-            "subject": "box",
-            "object": "boxer"
+            "subject": "writing novels",
+            "object": "author"
         },
         {
-            "subject": "ship",
-            "object": "captain"
+            "subject": "investigating crimes",
+            "object": "detective"
         },
         {
-            "subject": "concert",
-            "object": "musician"
+            "subject": "making clothes",
+            "object": "fashion designer"
         },
         {
-            "subject": "painting",
-            "object": "artist"
+            "subject": "conducting an orchestra",
+            "object": "conductor"
         },
         {
-            "subject": "film",
-            "object": "filmmaker"
+            "subject": "building bridges",
+            "object": "civil engineer"
         },
         {
-            "subject": "education",
+            "subject": "treating animals",
+            "object": "veterinarian"
+        },
+        {
+            "subject": "driving trucks",
+            "object": "truck driver"
+        },
+        {
+            "subject": "providing legal advice",
+            "object": "lawyer"
+        },
+        {
+            "subject": "coding software",
+            "object": "software engineer"
+        },
+        {
+            "subject": "reporting news",
+            "object": "journalist"
+        },
+        {
+            "subject": "managing finances",
+            "object": "financial advisor"
+        },
+        {
+            "subject": "exploring space",
+            "object": "astronaut"
+        },
+        {
+            "subject": "teaching students",
             "object": "teacher"
         },
         {
-            "subject": "dance",
-            "object": "dancer"
+            "subject": "cooking meals",
+            "object": "chef"
         },
         {
-            "subject": "science",
-            "object": "scientist"
-        },
-        {
-            "subject": "drama",
-            "object": "actor"
-        },
-        {
-            "subject": "battle",
-            "object": "soldier"
-        },
-        {
-            "subject": "law",
-            "object": "lawer"
-        },
-        {
-            "subject": "digging",
-            "object": "digger"
-        },
-        {
-            "subject": "administer",
-            "object": "administrator"
-        },
-        {
-            "subject": "library",
-            "object": "librarian"
-        },
-        {
-            "subject": "design",
-            "object": "designer"
-        },
-        {
-            "subject": "manufacture",
-            "object": "manufacturer"
-        },
-        {
-            "subject": "construction",
-            "object": "constructor"
+            "subject": "performing surgeries",
+            "object": "surgeon"
         }
     ]
 }

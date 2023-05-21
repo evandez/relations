@@ -1,16 +1,16 @@
 import logging
 import random
 from collections import defaultdict
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, TypeVar
+from dataclasses import dataclass, replace
+from typing import Any, NamedTuple, Sequence
 
-from src import data, editors, functional, metrics, models, operators
+from src import data, editors, functional, hparams, metrics, models, operators
 from src.functional import make_prompt
-from src.utils import experiment_utils
-from src.utils.typing import PathLike
+from src.utils import dataclasses_utils, experiment_utils, tokenizer_utils
+from src.utils.typing import Layer, PathLike, StrSequence
 
 import torch
+from baukit import nethook
 from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
@@ -312,6 +312,7 @@ class FaithfulnessBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.Relation
     test: data.Relation
     template: str
+    template_zs: str
     outputs: list[FaithfulnessBenchmarkOutputs]
     recall_lm: list[float]
     recall_lre: list[float]
@@ -375,8 +376,9 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
 
 def faithfulness(
     *,
-    estimator: operators.LinearRelationEstimator,
+    mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
+    estimator_type: type[operators.LinearRelationEstimator],
     n_train: int = 3,
     n_trials: int = 3,
     k: int = 3,
@@ -435,6 +437,16 @@ def faithfulness(
             results_by_relation.append(relation_results)
             continue
 
+        # TODO(evan): Index on model once changes are merged.
+        relation_hparams = hparams.get(relation.name)
+        estimator = dataclasses_utils.create_with_optional_kwargs(
+            estimator_type,
+            mt=mt,
+            h_layer=relation_hparams.h_layer,
+            z_layer=relation_hparams.z_layer,
+            beta=relation_hparams.beta,
+        )
+
         trials = []
         for _ in range(n_trials):
             prompt_template = relation.prompt_templates[0]
@@ -481,8 +493,9 @@ def faithfulness(
             # Begin attribute-lens tests on the distracted cases
 
             # Compute zero-shot predictions.
+            prompt_template_zs = random.choice(relation.prompt_templates_zs)
             prompts_zs = [
-                make_prompt(prompt_template=prompt_template, subject=x.subject, mt=mt)
+                make_prompt(prompt_template=prompt_template_zs, subject=x.subject, mt=mt)
                 for x in test.samples
             ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
@@ -496,12 +509,12 @@ def faithfulness(
             # Compute poetry-distracted predictions.
             def poetry_prefix(subject, wrong):  # type: ignore
                 return "".join(
-                    [prompt_template.format(subject) + " " + wrong + ". "] * 2
+                    [prompt_template_zs.format(subject) + " " + wrong + ". "] * 2
                 )
 
             prompts_pd = [
                 make_prompt(
-                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template,
+                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template_zs,
                     subject=x.subject,
                     mt=mt,
                 )
@@ -636,6 +649,7 @@ def faithfulness(
                     train=train,
                     test=test,
                     template=prompt_template,
+                    template_zs=prompt_template_zs,
                     outputs=[
                         FaithfulnessBenchmarkOutputs(
                             lre=lre,
@@ -740,15 +754,33 @@ class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     prob_original: float
     prob_target: float
 
-    predicted_tokens: list[functional.PredictedToken]
-    model_generations: list[str]
+    # Post-edit LM preds at current rank.
+    edited_lm_preds: list[functional.PredictedToken]
+    edited_lm_generations: list[str]
+
+    # LRE preds at current rank.
+    lre_preds: list[functional.PredictedToken] | None = None
+
+
+@dataclass(frozen=True, kw_only=True)
+class CausalityBenchmarkRelationTrialRank(DataClassJsonMixin):
+    rank: int
+    samples: list[CausalityBenchmarkRelationTrialSample]
+
+    def efficacy(self) -> float:
+        return sum(x.prob_target > x.prob_original for x in self.samples) / len(
+            self.samples
+        )
 
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
     train: data.RelationDataset
     test: data.RelationDataset
-    samples: list[CausalityBenchmarkRelationTrialSample]
+    ranks: list[CausalityBenchmarkRelationTrialRank]
+
+    def best(self) -> CausalityBenchmarkRelationTrialRank:
+        return max(self.ranks, key=lambda x: x.efficacy())
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -759,8 +791,7 @@ class CausalityRelationResults(DataClassJsonMixin):
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkMetrics(DataClassJsonMixin):
-    efficacy_mean: float
-    efficacy_std: float
+    efficacy: metrics.AggregateMetric
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -771,11 +802,13 @@ class CausalityBenchmarkResults(DataClassJsonMixin):
 
 def causality(
     *,
-    estimator: operators.LinearRelationEstimator,
-    editor_type: type[editors.Editor],
+    mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
+    estimator_type: type[operators.LinearRelationEstimator],
+    editor_type: type[editors.Editor],
     n_train: int = 3,
     n_trials: int = 3,
+    ranks: Sequence[int] | None = None,
     desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
@@ -783,8 +816,8 @@ def causality(
 ) -> CausalityBenchmarkResults:
     if desc is None:
         desc = "causality"
-
-    mt = estimator.mt
+    if ranks is None:
+        ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
 
     results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
@@ -798,6 +831,15 @@ def causality(
             results_by_relation.append(relation_results)
             continue
 
+        relation_hparams = hparams.get(relation.name)
+        estimator = dataclasses_utils.create_with_optional_kwargs(
+            estimator_type,
+            mt=mt,
+            h_layer=relation_hparams.h_layer,
+            z_layer=relation_hparams.z_layer,
+            beta=relation_hparams.beta,
+        )
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = relation.prompt_templates[0]
@@ -806,65 +848,125 @@ def causality(
                 n_train
             )
 
-            editor_kwargs = dict(kwargs)
+            operator = None
+            svd = None
             if issubclass(editor_type, editors.LinearRelationEditor):
-                operator = estimator(train)
-                editor_kwargs["lre"] = operator
-            editor = editor_type(**editor_kwargs)
-
-            relation_samples = []
-            for sample in test.samples:
-                others = [
-                    x
-                    for x in test.samples
-                    if x.subject != sample.subject and x.object != sample.object
-                ]
-                if not others:
-                    logger.debug(
-                        "no sample with different subject and different object "
-                        f"than {sample}, skipping"
-                    )
-                    continue
-                target = random.choice(others)
-
-                subject_original = sample.subject
-                subject_target = target.subject
-
-                object_original = sample.object
-                object_target = target.object
-
-                if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
-                    result = editor(subject_original, object_target)
-                else:
-                    result = editor(subject_original, subject_target)
-
-                [token_id_original, token_id_target] = (
-                    models.tokenize_words(mt, [object_original, object_target])
-                    .input_ids[:, 0]
-                    .tolist()
+                logger.debug(
+                    f"estimate operator for: {[str(x) for x in train.samples]}"
                 )
-                probs = result.model_logits.float().softmax(dim=-1)
-                prob_original = probs[token_id_original].item()
-                prob_target = probs[token_id_target].item()
+                operator = estimator(train)
+                if operator.weight is not None:
+                    svd = torch.svd(operator.weight)
 
-                relation_samples.append(
-                    CausalityBenchmarkRelationTrialSample(
-                        subject_original=subject_original,
-                        subject_target=subject_target,
-                        object_target=object_target,
+            logger.debug("precompute test zs")
+            [hs_by_subj, zs_by_subj] = _precompute_zs(
+                mt=mt,
+                prompt_template=prompt_template,
+                subjects=[x.subject for x in test.samples],
+                examples=train.samples,
+                h_layer=operator.h_layer if operator is not None else None,
+                z_layer=operator.z_layer if operator is not None else None,
+            )
+
+            relation_ranks = []
+            for rank in ranks:
+                relation_samples = []
+                for sample in test.samples:
+                    others = [
+                        x
+                        for x in test.samples
+                        if x.subject != sample.subject and x.object != sample.object
+                    ]
+                    if not others:
+                        logger.debug(
+                            "no sample with different subject and different object "
+                            f"than {sample}, skipping"
+                        )
+                        continue
+                    target = random.choice(others)
+
+                    subject_original = sample.subject
+                    subject_target = target.subject
+
+                    object_original = sample.object
+                    object_target = target.object
+
+                    # Perform the edit and record LM outputs.
+                    editor = dataclasses_utils.create_with_optional_kwargs(
+                        editor_type,
+                        rank=rank,
+                        lre=operator,
+                        svd=svd,
                         prompt_template=prompt_template,
-                        prob_original=prob_original,
-                        prob_target=prob_target,
-                        predicted_tokens=result.predicted_tokens,
-                        model_generations=result.model_generations,
+                        mt=mt,
+                        **kwargs,
+                    )
+
+                    result: editors.EditResult
+                    if editor_type.expects() == "object":
+                        result = nethook.invoke_with_optional_args(
+                            editor,
+                            subject_original,
+                            object_target,
+                            z_original=zs_by_subj.get(subject_original),
+                        )
+                    else:
+                        assert editor_type.expects() == "subject"
+                        result = nethook.invoke_with_optional_args(
+                            editor,
+                            subject_original,
+                            subject_target,
+                            z_original=zs_by_subj.get(subject_original),
+                            z_target=zs_by_subj.get(subject_target),
+                        )
+
+                    [token_id_original, token_id_target] = (
+                        models.tokenize_words(mt, [object_original, object_target])
+                        .input_ids[:, 0]
+                        .tolist()
+                    )
+                    probs = result.model_logits.float().softmax(dim=-1)
+                    prob_original = probs[token_id_original].item()
+                    prob_target = probs[token_id_target].item()
+
+                    # Also record LRE predictions if possible.
+                    lre_preds = None
+                    if operator is not None and operator.weight is not None:
+                        operator_low_rank = replace(
+                            operator,
+                            weight=functional.low_rank_approx(
+                                matrix=operator.weight, rank=rank, svd=svd
+                            ),
+                        )
+                        output_low_rank = operator_low_rank(
+                            subject_original, h=hs_by_subj[subject_original][None]
+                        )
+                        lre_preds = output_low_rank.predictions
+
+                    relation_samples.append(
+                        CausalityBenchmarkRelationTrialSample(
+                            subject_original=subject_original,
+                            subject_target=subject_target,
+                            object_target=object_target,
+                            prompt_template=prompt_template,
+                            prob_original=prob_original,
+                            prob_target=prob_target,
+                            lre_preds=lre_preds,
+                            edited_lm_preds=result.predicted_tokens,
+                            edited_lm_generations=result.model_generations,
+                        )
+                    )
+                relation_ranks.append(
+                    CausalityBenchmarkRelationTrialRank(
+                        rank=rank,
+                        samples=relation_samples,
                     )
                 )
             relation_trials.append(
                 CausalityBenchmarkRelationTrial(
-                    train=train, test=test, samples=relation_samples
+                    train=train, test=test, ranks=relation_ranks
                 )
             )
-
         relation_results = CausalityRelationResults(
             relation_name=relation.name, trials=relation_trials
         )
@@ -875,20 +977,75 @@ def causality(
         )
         results_by_relation.append(relation_results)
 
-    efficacies = torch.tensor(
-        [
-            sample.prob_target > sample.prob_original
-            for relation_result in results_by_relation
-            for trial in relation_result.trials
-            for sample in trial.samples
-        ]
-    )
-    efficacy_mean = efficacies.float().mean().item()
-    efficacy_std = efficacies.float().std().item()
+    # Also computed/evaluated elsewhere, but saving metrics during the run helps
+    # with debugging.
+    efficacies = [
+        trial.best().efficacy()
+        for relation_result in results_by_relation
+        for trial in relation_result.trials
+    ]
+    efficacy = metrics.AggregateMetric.aggregate(efficacies)
 
     return CausalityBenchmarkResults(
         relations=results_by_relation,
-        metrics=CausalityBenchmarkMetrics(
-            efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
-        ),
+        metrics=CausalityBenchmarkMetrics(efficacy=efficacy),
     )
+
+
+# TODO(evan): Pretty close to the one in sweeps.py, should refactor.
+class _PrecomputedHiddens(NamedTuple):
+    hs_by_subj: dict[str, torch.Tensor]
+    zs_by_subj: dict[str, torch.Tensor]
+
+
+def _precompute_zs(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt_template: str,
+    subjects: StrSequence,
+    h_layer: Layer | None = None,
+    z_layer: Layer | None = None,
+    batch_size: int = functional.DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] | None = None,
+) -> _PrecomputedHiddens:
+    """Precompute h for every subject at every layer."""
+    prompts = [
+        functional.make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject=subject,
+            examples=examples,
+        )
+        for subject in subjects
+    ]
+    with models.set_padding_side(mt, padding_side="left"):
+        inputs = mt.tokenizer(
+            prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
+        )
+    offset_mapping = inputs.pop("offset_mapping")
+
+    batched_hidden_states = []
+    for i in range(0, len(inputs.input_ids), batch_size):
+        with torch.inference_mode():
+            outputs = mt.model(
+                inputs.input_ids[i : i + batch_size],
+                attention_mask=inputs.attention_mask[i : i + batch_size],
+                output_hidden_states=True,
+                return_dict=True,
+            )
+        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
+    hidden_states = torch.cat(batched_hidden_states, dim=1)
+
+    zs_by_subj = {}
+    hs_by_subj = {}
+    for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
+        if h_layer is not None:
+            _, h_index = tokenizer_utils.find_token_range(
+                prompt, subject, offset_mapping=offset_mapping[i]
+            )
+            h_index -= 1
+            hs_by_subj[subject] = hidden_states[h_layer, i, h_index]
+        if z_layer is not None:
+            zs_by_subj[subject] = hidden_states[z_layer, i, -1]
+
+    return _PrecomputedHiddens(hs_by_subj, zs_by_subj)
