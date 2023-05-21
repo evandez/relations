@@ -903,7 +903,7 @@ def causality(
                             z_original=zs_by_subj.get(subject_original),
                         )
                     else:
-                        assert editor_type.expects() == "target"
+                        assert editor_type.expects() == "subject"
                         result = nethook.invoke_with_optional_args(
                             editor,
                             subject_original,
