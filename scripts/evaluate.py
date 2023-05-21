@@ -9,7 +9,7 @@ import torch
 
 logger = logging.getLogger(__name__)
 
-BENCHMARKS = ("reconstruction", "faithfulness", "causality")
+BENCHMARKS = ("faithfulness", "causality")
 ESTIMATORS = {
     "j": operators.JacobianEstimator,
     "j-icl": operators.JacobianIclEstimator,
@@ -30,34 +30,23 @@ def main(args: argparse.Namespace) -> None:
     experiment = experiment_utils.setup_experiment(args)
 
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
+    mt = models.load_model(args.model, fp16=args.fp16, device=device)
+    dataset = data.load_dataset_from_args(args)
+
+    estimator_type = ESTIMATORS[args.estimator]
+
     with torch.device(device):
-        mt = models.load_model(args.model, fp16=args.fp16, device=device)
-        dataset = data.load_dataset_from_args(args)
-
         dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
-
-        estimator = ESTIMATORS[args.estimator](
-            mt=mt,
-            h_layer=args.h_layer,
-            z_layer=args.z_layer,
-        )
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
             bench_results_dir = experiment.results_dir / bench
 
             results: Any
-            if bench == "reconstruction":
-                results = benchmarks.reconstruction(
-                    dataset=dataset,
-                    estimator=estimator,
-                    results_dir=bench_results_dir,
-                    resume=args.resume,
-                )
-            elif bench == "faithfulness":
+            if bench == "faithfulness":
                 results = benchmarks.faithfulness(
                     dataset=dataset,
-                    estimator=estimator,
+                    estimator_type=estimator_type,
                     results_dir=bench_results_dir,
                     resume=args.resume,
                 )
@@ -67,7 +56,7 @@ def main(args: argparse.Namespace) -> None:
                 logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
                     dataset=dataset,
-                    estimator=estimator,
+                    estimator_type=estimator_type,
                     editor_type=editor_type,
                     # NB(evan): Results dir also needs to index on the editor type.
                     results_dir=bench_results_dir,
@@ -91,8 +80,6 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--h-layer", type=int, default=13, help="layer to get h from")
-    parser.add_argument("--z-layer", type=int, help="layer to get z from")
     parser.add_argument(
         "--estimator",
         "-e",

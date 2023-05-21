@@ -1,9 +1,11 @@
 {
     "name": "work location",
     "prompt_templates": [
+        "A {} typically works at a"
+    ],
+    "prompt_templates_zs": [
         "A {} typically works at a",
-        "You can usually find a {} working in a",
-        "{},"
+        "You can usually find a {} working in a"
     ],
     "properties": {
         "relation_type": "commonsense",

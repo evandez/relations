@@ -1,10 +1,11 @@
 {
     "name": "person native language",
     "prompt_templates": [
-        "{} is a native speaker of",
+        "{} speaks the language of"
+    ],
+    "prompt_templates_zs": [
         "{} speaks the language of",
-        "What language does {} speak? They speak",
-        "{},"
+        "What language does {} speak? They speak"
     ],
     "properties": {
         "relation_type": "bias",

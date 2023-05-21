@@ -2,7 +2,7 @@
 import logging
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Any
+from typing import Any, Literal
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
@@ -31,12 +31,21 @@ class EditResult:
 class Editor:
     """Abstract editor which edits one subject to look like another."""
 
+    n_top_tokens: int = DEFAULT_N_TOP_TOKENS
+    n_samples: int = DEFAULT_N_SAMPLES
+    n_new_tokens: int = DEFAULT_N_NEW_TOKENS
+
     def __call__(
         self,
         subject: str,
         target: str,
         **kwargs: Any,
     ) -> EditResult:
+        raise NotImplementedError
+
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
         raise NotImplementedError
 
 
@@ -50,9 +59,6 @@ class LinearRelationEditor(Editor):
     """Abstract editor that uses an linear relation operator to edit."""
 
     lre: operators.LinearRelationOperator
-    n_top_tokens: int = DEFAULT_N_TOP_TOKENS
-    n_samples: int = DEFAULT_N_SAMPLES
-    n_new_tokens: int = DEFAULT_N_NEW_TOKENS
 
     @property
     def mt(self) -> models.ModelAndTokenizer:
@@ -70,7 +76,9 @@ class LinearRelationEditor(Editor):
     def z_layer(self) -> Layer:
         return self.lre.z_layer
 
-    def __call__(self, subject: str, target: str, **kwargs: Any) -> LinearRelationEditResult:
+    def __call__(
+        self, subject: str, target: str, **kwargs: Any
+    ) -> LinearRelationEditResult:
         raise NotImplementedError
 
 
@@ -150,6 +158,11 @@ class LowRankPInvEditor(LinearRelationEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "subject"
+
 
 @dataclass(frozen=True, kw_only=True)
 class LowRankPInvEmbedEditor(LowRankPInvEditor):
@@ -205,10 +218,19 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "object"
+
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselineEditor(LinearRelationEditor):
+class HiddenBaselineEditor(Editor):
     """Edit the model by replacing h for the subject with the h of the target."""
+
+    mt: models.ModelAndTokenizer
+    prompt_template: str
+    h_layer: Layer
 
     def __call__(
         self,
@@ -248,10 +270,19 @@ class HiddenBaselineEditor(LinearRelationEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "subject"
+
 
 @dataclass(frozen=True, kw_only=True)
-class EmbedBaselineEditor(LinearRelationEditor):
+class EmbedBaselineEditor(Editor):
     """Edit the model by replacing h for the object embedding."""
+
+    prompt_template: str
+    mt: models.ModelAndTokenizer
+    h_layer: Layer
 
     def __call__(
         self,
@@ -284,6 +315,11 @@ class EmbedBaselineEditor(LinearRelationEditor):
             n_new_tokens=self.n_new_tokens,
             n_samples=self.n_samples,
         )
+
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "object"
 
 
 def _check_no_extra_kwargs(kwargs: dict) -> None:
