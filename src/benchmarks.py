@@ -67,8 +67,6 @@ def reconstruction(
     n_trials: int = 3,
     n_train: int = 3,
     n_random_distractors: int = 3,
-    n_top_lm: int = 3,
-    n_icl_lm: int = 2,
     desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
@@ -82,10 +80,6 @@ def reconstruction(
         n_train: Number of samples to train on per relation.
         n_random_distractors: Number of random distractors to use in addition to the
             two hard distractors.
-        n_top_lm: Consider this many top next token predictions when deciding whether
-            model knows the answer or not.
-        n_icl_lm: Number of ICL examples to use when prompting LM to see if it knows
-            a subject.
         desc: Tqdm description.
         results_dir: If provided, save intermediate results to this directory.
 
@@ -121,25 +115,10 @@ def reconstruction(
 
         relation_trials = []
         for _ in range(n_trials):
-            prompt_template = random.choice(relation.prompt_templates)
-
-            known_samples = _determine_known_samples(
-                mt=mt,
-                relation=relation,
-                prompt_template=prompt_template,
-                n_icl_lm=n_icl_lm,
-                n_top_lm=n_top_lm,
+            prompt_template = relation.prompt_templates[0]
+            train, test = relation.set(prompt_templates=[prompt_template]).split(
+                n_train
             )
-            if len(known_samples) <= n_train:
-                logger.debug(
-                    f"lm does not know > n_train={n_train} samples for "
-                    f'relation {relation.name}, prompt "{prompt_template}" will skip'
-                )
-                continue
-
-            train, test = relation.set(
-                samples=known_samples, prompt_templates=[prompt_template]
-            ).split(n_train)
 
             # Estimate operator and evaluate it.
             operator = estimator(train)
@@ -458,7 +437,7 @@ def faithfulness(
 
         trials = []
         for _ in range(n_trials):
-            prompt_template = random.choice(relation.prompt_templates)
+            prompt_template = relation.prompt_templates[0]
             train, test = relation.set(prompt_templates=[prompt_template]).split(
                 n_train
             )
@@ -564,7 +543,9 @@ def faithfulness(
 
             # Compute repeat-distracted predictions.
             def repeat_prefix(subject, wrong):  # type: ignore
-                return prompt_template.format(subject) + " " + wrong + ". Repeat exactly: "
+                return (
+                    prompt_template.format(subject) + " " + wrong + ". Repeat exactly: "
+                )
 
             prompts_rd = [
                 make_prompt(
@@ -795,8 +776,6 @@ def causality(
     dataset: data.RelationDataset,
     n_train: int = 3,
     n_trials: int = 3,
-    n_top_lm: int = 3,
-    n_icl_lm: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
@@ -821,25 +800,11 @@ def causality(
 
         relation_trials = []
         for _ in range(n_trials):
-            prompt_template = random.choice(relation.prompt_templates)
+            prompt_template = relation.prompt_templates[0]
 
-            known_samples = _determine_known_samples(
-                mt=mt,
-                relation=relation,
-                prompt_template=prompt_template,
-                n_icl_lm=n_icl_lm,
-                n_top_lm=n_top_lm,
+            train, test = relation.set(prompt_templates=[prompt_template]).split(
+                n_train
             )
-            if len(known_samples) <= n_train:
-                logger.debug(
-                    f"lm does not know > n_train={n_train} samples for "
-                    f'relation {relation.name}, prompt "{prompt_template}" will skip'
-                )
-                continue
-
-            train, test = relation.set(
-                samples=known_samples, prompt_templates=[prompt_template]
-            ).split(n_train)
 
             editor_kwargs = dict(kwargs)
             if issubclass(editor_type, editors.LinearRelationEditor):
@@ -927,35 +892,3 @@ def causality(
             efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
         ),
     )
-
-
-def _determine_known_samples(
-    *,
-    mt: models.ModelAndTokenizer,
-    relation: data.Relation,
-    prompt_template: str,
-    n_icl_lm: int,
-    n_top_lm: int,
-) -> list[data.RelationSample]:
-    """Filter samples down to only those that model knows.
-
-    Most benchmarks rely on model knowing the relation at all.
-    """
-    prompts = [
-        functional.make_prompt(
-            prompt_template=prompt_template,
-            mt=mt,
-            subject=sample.subject,
-            examples=random.sample(set(relation.samples) - {sample}, k=n_icl_lm),
-        )
-        for sample in relation.samples
-    ]
-    predictions = functional.predict_next_token(mt=mt, prompt=prompts, k=n_top_lm)
-    known_samples = {
-        sample
-        for sample, topk in zip(relation.samples, predictions)
-        if functional.any_is_nontrivial_prefix([x.token for x in topk], sample.object)
-    }
-
-    # NB(evan): Need to sort to keep deterministic.
-    return sorted(known_samples, key=lambda x: x.subject)
