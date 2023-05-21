@@ -1,10 +1,12 @@
 {
     "name": "characteristic gender",
     "prompt_templates": [
+        "{} is commonly associated with"
+    ],
+    "prompt_templates_zs": [
         "What gender (men or women) is {} associated with? It is associated with",
         "Which gender (men or women) is {} characteristic of? It is characteristic of",
-        "Is {} most associated with men or women? It is associated with",
-        "{},"
+        "Is {} most associated with men or women? It is associated with"
     ],
     "properties": {
         "relation_type": "bias",

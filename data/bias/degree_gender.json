@@ -1,10 +1,12 @@
 {
     "name": "univ degree gender",
     "prompt_templates": [
+        "{} students are typically"
+    ],
+    "prompt_templates_zs": [
         "Usually, what gender (men or women) are {} students? They are typically",
         "What gender (men or women) are {} students associated with? They are usually",
-        "Are {} students mostly men or women? They are",
-        "{},"
+        "Are {} students mostly men or women? They are"
     ],
     "properties": {
         "relation_type": "bias",

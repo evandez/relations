@@ -1,9 +1,11 @@
 {
     "name": "occupation age",
     "prompt_templates": [
-        "What age (young or old) do {} tend to be? They are",
-        "Typically, are {} young or old? They are",
-        "{},"
+        "{} are typically"
+    ],
+    "prompt_templates_zs": [
+        "What age (young or old) do {} tend to be? They are typically",
+        "Typically, are {} young or old? They are typically"
     ],
     "properties": {
         "relation_type": "bias",
