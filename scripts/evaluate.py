@@ -40,25 +40,27 @@ def main(args: argparse.Namespace) -> None:
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
-            bench_results_dir = experiment.results_dir / bench
+            bench_results_dir = experiment.results_dir / bench / args.estimator
 
             results: Any
             if bench == "faithfulness":
                 results = benchmarks.faithfulness(
+                    mt=mt,
                     dataset=dataset,
                     estimator_type=estimator_type,
                     results_dir=bench_results_dir,
                     resume=args.resume,
                 )
             elif bench == "causality":
+                # NB(evan): Results dir also needs to index on the editor type.
                 bench_results_dir /= args.editor
                 editor_type: type[editors.Editor] = EDITORS[args.editor]
                 logger.info(f"using editing algorithm: {editor_type.__name__}")
                 results = benchmarks.causality(
+                    mt=mt,
                     dataset=dataset,
                     estimator_type=estimator_type,
                     editor_type=editor_type,
-                    # NB(evan): Results dir also needs to index on the editor type.
                     results_dir=bench_results_dir,
                     resume=args.resume,
                 )
