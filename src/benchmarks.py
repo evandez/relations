@@ -858,7 +858,7 @@ def causality(
                 subjects=[x.subject for x in test.samples],
                 examples=train.samples,
                 h_layer=operator.h_layer if operator is not None else None,
-                z_layer=-1 if operator is not None else None,
+                z_layer=operator.z_layer if operator is not None else None,
             )
 
             relation_ranks = []
@@ -894,6 +894,7 @@ def causality(
                         **kwargs,
                     )
 
+                    result: editors.EditResult
                     if editor_type.expects() == "object":
                         result = nethook.invoke_with_optional_args(
                             editor,
