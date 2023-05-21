@@ -1,7 +1,7 @@
 import logging
 import random
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, NamedTuple, Sequence
 
 from src import data, editors, functional, hparams, metrics, models, operators
@@ -751,8 +751,12 @@ class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     prob_original: float
     prob_target: float
 
-    predicted_tokens: list[functional.PredictedToken]
-    model_generations: list[str]
+    # Post-edit LM preds at current rank.
+    edited_lm_preds: list[functional.PredictedToken]
+    edited_lm_generations: list[str]
+
+    # LRE preds at current rank.
+    lre_preds: list[functional.PredictedToken] | None = None
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -884,6 +888,7 @@ def causality(
                     object_original = sample.object
                     object_target = target.object
 
+                    # Perform the edit and record LM outputs.
                     editor = dataclasses_utils.create_with_optional_kwargs(
                         editor_type,
                         rank=rank,
@@ -921,6 +926,18 @@ def causality(
                     prob_original = probs[token_id_original].item()
                     prob_target = probs[token_id_target].item()
 
+                    # Also record LRE predictions if possible.
+                    lre_preds = None
+                    if operator is not None and operator.weight is not None:
+                        operator_low_rank = replace(
+                            operator,
+                            weight=functional.low_rank_approx(
+                                matrix=operator.weight, rank=rank, svd=svd
+                            ),
+                        )
+                        output_low_rank = operator_low_rank(subject_original)
+                        lre_preds = output_low_rank.predictions
+
                     relation_samples.append(
                         CausalityBenchmarkRelationTrialSample(
                             subject_original=subject_original,
@@ -929,8 +946,9 @@ def causality(
                             prompt_template=prompt_template,
                             prob_original=prob_original,
                             prob_target=prob_target,
-                            predicted_tokens=result.predicted_tokens,
-                            model_generations=result.model_generations,
+                            lre_preds=lre_preds,
+                            edited_lm_preds=result.predicted_tokens,
+                            edited_lm_generations=result.model_generations,
                         )
                     )
                 relation_ranks.append(
