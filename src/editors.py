@@ -31,6 +31,10 @@ class EditResult:
 class Editor:
     """Abstract editor which edits one subject to look like another."""
 
+    n_top_tokens: int = DEFAULT_N_TOP_TOKENS
+    n_samples: int = DEFAULT_N_SAMPLES
+    n_new_tokens: int = DEFAULT_N_NEW_TOKENS
+
     def __call__(
         self,
         subject: str,
@@ -55,9 +59,6 @@ class LinearRelationEditor(Editor):
     """Abstract editor that uses an linear relation operator to edit."""
 
     lre: operators.LinearRelationOperator
-    n_top_tokens: int = DEFAULT_N_TOP_TOKENS
-    n_samples: int = DEFAULT_N_SAMPLES
-    n_new_tokens: int = DEFAULT_N_NEW_TOKENS
 
     @property
     def mt(self) -> models.ModelAndTokenizer:
@@ -224,8 +225,12 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselinEditor(LinearRelationEditor):
+class HiddenBaselinEditor(Editor):
     """Edit the model by replacing h for the subject with the h of the target."""
+
+    mt: models.ModelAndTokenizer
+    prompt_template: str
+    h_layer: Layer
 
     def __call__(
         self,
@@ -272,8 +277,12 @@ class HiddenBaselinEditor(LinearRelationEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class EmbedBaselineEditor(LinearRelationEditor):
+class EmbedBaselineEditor(Editor):
     """Edit the model by replacing h for the object embedding."""
+
+    prompt_template: str
+    mt: models.ModelAndTokenizer
+    h_layer: Layer
 
     def __call__(
         self,
