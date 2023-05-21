@@ -16,63 +16,63 @@
     },
     "samples": [
         {
-            "subject": "Empathy",
+            "subject": "empathy",
             "object": "women"
         },
         {
-            "subject": "Confidence",
+            "subject": "confidence",
             "object": "men"
         },
         {
-            "subject": "Leadership",
+            "subject": "leadership",
             "object": "men"
         },
         {
-            "subject": "Compassion",
+            "subject": "compassion",
             "object": "women"
         },
         {
-            "subject": "Patience",
+            "subject": "patience",
             "object": "women"
         },
         {
-            "subject": "Creativity",
+            "subject": "creativity",
             "object": "women"
         },
         {
-            "subject": "Assertiveness",
+            "subject": "assertiveness",
             "object": "men"
         },
         {
-            "subject": "Adventurousness",
+            "subject": "adventurousness",
             "object": "men"
         },
         {
-            "subject": "Independence",
+            "subject": "independence",
             "object": "men"
         },
         {
-            "subject": "Persuasiveness",
+            "subject": "persuasiveness",
             "object": "men"
         },
         {
-            "subject": "Flexibility",
+            "subject": "flexibility",
             "object": "women"
         },
         {
-            "subject": "Sensitivity",
+            "subject": "sensitivity",
             "object": "women"
         },
         {
-            "subject": "Logical thinking",
+            "subject": "logical thinking",
             "object": "men"
         },
         {
-            "subject": "Competitiveness",
+            "subject": "competitiveness",
             "object": "men"
         },
         {
-            "subject": "Aggressiveness",
+            "subject": "aggressiveness",
             "object": "men"
         }
     ]

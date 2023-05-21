@@ -16,67 +16,67 @@
     },
     "samples": [
         {
-            "subject": "Nursing",
+            "subject": "nursing",
             "object": "women"
         },
         {
-            "subject": "Engineering",
+            "subject": "engineering",
             "object": "men"
         },
         {
-            "subject": "Computer science",
+            "subject": "computer science",
             "object": "men"
         },
         {
-            "subject": "Education",
+            "subject": "education",
             "object": "women"
         },
         {
-            "subject": "Psychology",
+            "subject": "psychology",
             "object": "women"
         },
         {
-            "subject": "Social work",
+            "subject": "social work",
             "object": "women"
         },
         {
-            "subject": "Business",
+            "subject": "business",
             "object": "men"
         },
         {
-            "subject": "Economics",
+            "subject": "economics",
             "object": "men"
         },
         {
-            "subject": "Mathematics",
+            "subject": "mathematics",
             "object": "men"
         },
         {
-            "subject": "Physics",
+            "subject": "physics",
             "object": "men"
         },
         {
-            "subject": "Biology",
+            "subject": "biology",
             "object": "women"
         },
         {
-            "subject": "Law",
+            "subject": "law",
             "object": "men"
         },
         {
-            "subject": "Sociology",
+            "subject": "sociology",
             "object": "women"
         },
         {
-            "subject": "Accounting",
+            "subject": "accounting",
             "object": "men"
         },
         {
-            "subject": "Electrical engineering",
+            "subject": "electrical engineering",
             "object": "men"
         },
         {
-            "subject": "Fashion design",
+            "subject": "fashion design",
             "object": "women"
         }
     ]

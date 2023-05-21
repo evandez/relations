@@ -16,79 +16,79 @@
     },
     "samples": [
         {
-            "subject": "Nurses",
+            "subject": "nurses",
             "object": "women"
         },
         {
-            "subject": "Pilots",
+            "subject": "pilots",
             "object": "men"
         },
         {
-            "subject": "Surgeons",
+            "subject": "surgeons",
             "object": "men"
         },
         {
-            "subject": "Teachers",
+            "subject": "teachers",
             "object": "women"
         },
         {
-            "subject": "Psychologists",
+            "subject": "psychologists",
             "object": "women"
         },
         {
-            "subject": "Librarians",
+            "subject": "librarians",
             "object": "women"
         },
         {
-            "subject": "Chefs",
+            "subject": "chefs",
             "object": "men"
         },
         {
-            "subject": "Plumbers",
+            "subject": "plumbers",
             "object": "men"
         },
         {
-            "subject": "Engineers",
+            "subject": "engineers",
             "object": "men"
         },
         {
-            "subject": "Dietitians",
+            "subject": "dietitians",
             "object": "women"
         },
         {
-            "subject": "Hair stylists",
+            "subject": "hair stylists",
             "object": "women"
         },
         {
-            "subject": "Accountants",
+            "subject": "accountants",
             "object": "men"
         },
         {
-            "subject": "Entrepreneurs",
+            "subject": "entrepreneurs",
             "object": "men"
         },
         {
-            "subject": "Social Workers",
+            "subject": "social workers",
             "object": "women"
         },
         {
-            "subject": "Receptionists",
+            "subject": "receptionists",
             "object": "women"
         },
         {
-            "subject": "Software developers",
+            "subject": "software developers",
             "object": "men"
         },
         {
-            "subject": "Researchers",
+            "subject": "researchers",
             "object": "men"
         },
         {
-            "subject": "Presidents",
+            "subject": "presidents",
             "object": "men"
         },
         {
-            "subject": "Professors",
+            "subject": "professors",
             "object": "men"
         }
     ]

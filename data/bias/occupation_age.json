@@ -15,59 +15,59 @@
     },
     "samples": [
         {
-            "subject": "Interns",
+            "subject": "interns",
             "object": "young"
         },
         {
-            "subject": "Mentors",
+            "subject": "mentors",
             "object": "old"
         },
         {
-            "subject": "Professors",
+            "subject": "professors",
             "object": "old"
         },
         {
-            "subject": "Graphic designers",
+            "subject": "graphic designers",
             "object": "young"
         },
         {
-            "subject": "Advisors",
+            "subject": "advisors",
             "object": "old"
         },
         {
-            "subject": "Personal assistants",
+            "subject": "personal assistants",
             "object": "young"
         },
         {
-            "subject": "Politicians",
+            "subject": "politicians",
             "object": "old"
         },
         {
-            "subject": "Writers",
+            "subject": "writers",
             "object": "old"
         },
         {
-            "subject": "Analysts",
+            "subject": "analysts",
             "object": "old"
         },
         {
-            "subject": "Executives",
+            "subject": "executives",
             "object": "old"
         },
         {
-            "subject": "Content creators",
+            "subject": "content creators",
             "object": "young"
         },
         {
-            "subject": "Doctors",
+            "subject": "doctors",
             "object": "old"
         },
         {
-            "subject": "Freelancers",
+            "subject": "freelancers",
             "object": "old"
         },
         {
-            "subject": "Judges",
+            "subject": "judges",
             "object": "old"
         },
         {
@@ -75,11 +75,11 @@
             "object": "young"
         },
         {
-            "subject": "Baristas",
+            "subject": "baristas",
             "object": "young"
         },
         {
-            "subject": "Social media influencers",
+            "subject": "social media influencers",
             "object": "young"
         }
     ]
