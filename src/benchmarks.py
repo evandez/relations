@@ -2,13 +2,12 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, TypeVar
+from typing import Any, Sequence
 
 from src import data, editors, functional, metrics, models, operators
 from src.functional import make_prompt
-from src.utils import experiment_utils
-from src.utils.typing import PathLike
+from src.utils import experiment_utils, tokenizer_utils
+from src.utils.typing import PathLike, StrSequence
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -808,9 +807,20 @@ def causality(
 
             editor_kwargs = dict(kwargs)
             if issubclass(editor_type, editors.LinearRelationEditor):
+                logger.debug(
+                    f"estimate operator for: {[str(x) for x in train.samples]}"
+                )
                 operator = estimator(train)
                 editor_kwargs["lre"] = operator
             editor = editor_type(**editor_kwargs)
+
+            logger.debug("precompute test zs")
+            zs_by_subj = _precompute_zs(
+                mt=mt,
+                prompt_template=prompt_template,
+                subjects=[x.subject for x in test.samples],
+                examples=train.samples,
+            )
 
             relation_samples = []
             for sample in test.samples:
@@ -834,9 +844,18 @@ def causality(
                 object_target = target.object
 
                 if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
-                    result = editor(subject_original, object_target)
+                    result = editor(
+                        subject_original,
+                        object_target,
+                        z_original=zs_by_subj[subject_original],
+                    )
                 else:
-                    result = editor(subject_original, subject_target)
+                    result = editor(
+                        subject_original,
+                        subject_target,
+                        z_original=zs_by_subj[subject_original],
+                        z_target=zs_by_subj[subject_target],
+                    )
 
                 [token_id_original, token_id_target] = (
                     models.tokenize_words(mt, [object_original, object_target])
@@ -892,3 +911,47 @@ def causality(
             efficacy_mean=efficacy_mean, efficacy_std=efficacy_std
         ),
     )
+
+
+def _precompute_zs(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt_template: str,
+    subjects: StrSequence,
+    batch_size: int = functional.DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] | None = None,
+) -> dict[str, torch.Tensor]:
+    """Precompute h for every subject at every layer."""
+    prompts = [
+        functional.make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject=subject,
+            examples=examples,
+        )
+        for subject in subjects
+    ]
+    with models.set_padding_side(mt, padding_side="left"):
+        inputs = mt.tokenizer(
+            prompts,
+            return_tensors="pt",
+            padding="longest",
+        )
+
+    batched_hidden_states = []
+    for i in range(0, len(inputs.input_ids), batch_size):
+        with torch.inference_mode():
+            outputs = mt.model(
+                inputs.input_ids[i : i + batch_size],
+                attention_mask=inputs.attention_mask[i : i + batch_size],
+                output_hidden_states=True,
+                return_dict=True,
+            )
+        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
+    hidden_states = torch.cat(batched_hidden_states, dim=1)
+
+    zs_by_subj = {}
+    for i, subject in enumerate(prompts):
+        zs_by_subj[subject] = hidden_states[-1, i, -1]
+
+    return zs_by_subj
