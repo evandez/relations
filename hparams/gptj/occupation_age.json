@@ -1,6 +1,6 @@
 {
-    "relation_name": "country largest city",
-    "h_layer": 6,
+    "relation_name": "occupation age",
+    "h_layer": 9,
     "beta": 0.18333333730697632,
     "model_name": "gptj",
     "rank": null,

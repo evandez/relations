@@ -1,0 +1,8 @@
+{
+    "relation_name": "task person type",
+    "h_layer": 13,
+    "beta": 0.3666666696468989,
+    "model_name": "gptj",
+    "rank": null,
+    "z_layer": -1
+}

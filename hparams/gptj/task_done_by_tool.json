@@ -1,6 +1,6 @@
 {
-    "relation_name": "work location",
-    "h_layer": 14,
+    "relation_name": "task done by tool",
+    "h_layer": 8,
     "beta": 0.28333333631356555,
     "model_name": "gptj",
     "rank": null,

@@ -1,0 +1,8 @@
+{
+    "relation_name": "superhero person",
+    "h_layer": 10,
+    "beta": 0.6333333253860474,
+    "model_name": "gptj",
+    "rank": null,
+    "z_layer": -1
+}

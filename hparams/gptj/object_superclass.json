@@ -1,0 +1,8 @@
+{
+    "relation_name": "object superclass",
+    "h_layer": 9,
+    "beta": 0.5833333184321722,
+    "model_name": "gptj",
+    "rank": null,
+    "z_layer": -1
+}

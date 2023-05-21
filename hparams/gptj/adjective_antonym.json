@@ -1,7 +1,7 @@
 {
-    "relation_name": "country capital city",
+    "relation_name": "adjective antonym",
     "h_layer": 6,
-    "beta": 0.38333334028720856,
+    "beta": 0.21666667113701502,
     "model_name": "gptj",
     "rank": null,
     "z_layer": -1

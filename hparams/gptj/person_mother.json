@@ -1,7 +1,7 @@
 {
-    "relation_name": "work location",
+    "relation_name": "person mother",
     "h_layer": 14,
-    "beta": 0.28333333631356555,
+    "beta": 0.46666667858759564,
     "model_name": "gptj",
     "rank": null,
     "z_layer": -1

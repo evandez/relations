@@ -1,6 +1,6 @@
 {
-    "relation_name": "person lead singer of band",
-    "h_layer": 12,
+    "relation_name": "adjective superlative",
+    "h_layer": 11,
     "beta": 0.5166666706403097,
     "model_name": "gptj",
     "rank": null,

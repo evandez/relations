@@ -1,0 +1,8 @@
+{
+    "relation_name": "landmark on continent",
+    "h_layer": 10,
+    "beta": 0.4333333373069763,
+    "model_name": "gptj",
+    "rank": null,
+    "z_layer": -1
+}
