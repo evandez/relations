@@ -39,7 +39,6 @@ class RelationHParams(HParams):
     relation_name: str
     h_layer: int
     beta: float
-    model: str
     rank: int | None = None
     z_layer: int | None = None
 
