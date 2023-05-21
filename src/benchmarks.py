@@ -495,7 +495,9 @@ def faithfulness(
             # Compute zero-shot predictions.
             prompt_template_zs = random.choice(relation.prompt_templates_zs)
             prompts_zs = [
-                make_prompt(prompt_template=prompt_template_zs, subject=x.subject, mt=mt)
+                make_prompt(
+                    prompt_template=prompt_template_zs, subject=x.subject, mt=mt
+                )
                 for x in test.samples
             ]
             outputs_zs = functional.predict_next_token(mt=mt, prompt=prompts_zs, k=k)
@@ -514,7 +516,8 @@ def faithfulness(
 
             prompts_pd = [
                 make_prompt(
-                    prompt_template=poetry_prefix(x.subject, wrong) + prompt_template_zs,
+                    prompt_template=poetry_prefix(x.subject, wrong)
+                    + prompt_template_zs,
                     subject=x.subject,
                     mt=mt,
                 )
@@ -817,12 +820,10 @@ def causality(
     if desc is None:
         desc = "causality"
     if ranks is None:
-        if issubclass(editor_type, editors.LowRankPInvEditor):
+        if dataclasses_utils.has_field(editor_type, "rank"):
             ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
         else:
-            ranks = [None]
-        
-        
+            ranks = [0]
 
     results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
@@ -873,8 +874,8 @@ def causality(
                 z_layer=operator.z_layer if operator is not None else None,
             )
 
-            relation_samples = {r:[] for r in ranks} 
-            relation_ranks = []        
+            relation_ranks = []
+            relation_samples: dict[int, list] = defaultdict(list)
             for sample in test.samples:
                 others = [
                     x
@@ -898,7 +899,7 @@ def causality(
                     # Perform the edit and record LM outputs.
                     editor = dataclasses_utils.create_with_optional_kwargs(
                         editor_type,
-                        h_layer= relation_hparams.h_layer,
+                        h_layer=relation_hparams.h_layer,
                         rank=rank,
                         lre=operator,
                         svd=svd,
@@ -906,10 +907,11 @@ def causality(
                         mt=mt,
                         **kwargs,
                     )
+
                     result: editors.EditResult
                     if editor_type.expects() == "object":
                         result = nethook.invoke_with_optional_args(
-                            fn=(lambda subject, target: editor(subject=subject,target=target)),
+                            editor.__call__,
                             subject=subject_original,
                             target=object_target,
                             z_original=zs_by_subj.get(subject_original),
@@ -917,7 +919,7 @@ def causality(
                     else:
                         assert editor_type.expects() == "subject"
                         result = nethook.invoke_with_optional_args(
-                            fn=(lambda subject, target: editor(subject=subject,target=target)),
+                            editor.__call__,
                             subject=subject_original,
                             target=subject_target,
                             z_original=zs_by_subj.get(subject_original),
