@@ -856,7 +856,7 @@ def causality(
                     svd = torch.svd(operator.weight)
 
             logger.debug("precompute test zs")
-            [_, zs_by_subj] = _precompute_zs(
+            [hs_by_subj, zs_by_subj] = _precompute_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in test.samples],
@@ -935,7 +935,9 @@ def causality(
                                 matrix=operator.weight, rank=rank, svd=svd
                             ),
                         )
-                        output_low_rank = operator_low_rank(subject_original)
+                        output_low_rank = operator_low_rank(
+                            subject_original, h=hs_by_subj.get(subject_original)
+                        )
                         lre_preds = output_low_rank.predictions
 
                     relation_samples.append(
