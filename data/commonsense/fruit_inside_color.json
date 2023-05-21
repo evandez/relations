@@ -1,0 +1,77 @@
+{
+    "name": "fruit inside color",
+    "prompt_templates": [
+        "On the inside, {} are"
+    ],
+    "prompt_templates_zs": [
+        "What color are {} on the inside? They are"
+    ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "fruit",
+        "range_name": "color",
+        "symmetric": false
+    },
+    "samples": [
+        {
+            "subject": "bananas",
+            "object": "white"
+        },
+        {
+            "subject": "apples",
+            "object": "white"
+        },
+        {
+            "subject": "watermelons",
+            "object": "red"
+        },
+        {
+            "subject": "kiwis",
+            "object": "green"
+        },
+        {
+            "subject": "dragon fruits",
+            "object": "white"
+        },
+        {
+            "subject": "eggplants",
+            "object": "white"
+        },
+        {
+            "subject": "zucchinis",
+            "object": "white"
+        },
+        {
+            "subject": "pineapples",
+            "object": "yellow"
+        },
+        {
+            "subject": "mangoes",
+            "object": "orange"
+        },
+        {
+            "subject": "cucumbers",
+            "object": "white"
+        },
+        {
+            "subject": "radishes",
+            "object": "white"
+        },
+        {
+            "subject": "passion fruits",
+            "object": "yellow"
+        },
+        {
+            "subject": "nectarines",
+            "object": "yellow"
+        },
+        {
+            "subject": "plums",
+            "object": "red"
+        },
+        {
+            "subject": "potatos",
+            "object": "white"
+        }
+    ]
+}

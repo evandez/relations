@@ -1,9 +1,11 @@
 {
     "name": "word sentiment",
     "prompt_templates": [
+        "The sentiment of '{}' is"
+    ],
+    "prompt_templates_zs": [
         "Is the sentiment of the word '{}' positive, negative, or neutral? It is",
-        "What is the sentiment (positive, negative, neutral) of '{}'? It is",
-        "{},"
+        "What is the sentiment (positive, negative, neutral) of '{}'? It is"
     ],
     "properties": {
         "relation_type": "commonsense",

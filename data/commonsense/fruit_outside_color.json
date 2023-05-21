@@ -1,0 +1,77 @@
+{
+  "name": "fruit outside color",
+  "prompt_templates": [
+      "On the outside, {} are"
+  ],
+  "prompt_templates_zs": [
+      "What color are {} on the outside? They are"
+  ],
+  "properties": {
+      "relation_type": "factual",
+      "domain_name": "fruit",
+      "range_name": "color",
+      "symmetric": false
+  },
+  "samples": [
+      {
+          "subject": "bananas",
+          "object": "yellow"
+      },
+      {
+          "subject": "apples",
+          "object": "red"
+      },
+      {
+          "subject": "watermelons",
+          "object": "green"
+      },
+      {
+          "subject": "kiwis",
+          "object": "brown"
+      },
+      {
+          "subject": "dragon fruits",
+          "object": "pink"
+      },
+      {
+          "subject": "eggplants",
+          "object": "purple"
+      },
+      {
+          "subject": "zucchinis",
+          "object": "green"
+      },
+      {
+          "subject": "pineapples",
+          "object": "brown"
+      },
+      {
+          "subject": "mangoes",
+          "object": "green"
+      },
+      {
+          "subject": "cucumbers",
+          "object": "green"
+      },
+      {
+          "subject": "radishes",
+          "object": "pink"
+      },
+      {
+          "subject": "passion fruits",
+          "object": "purple"
+      },
+      {
+          "subject": "nectarines",
+          "object": "red"
+      },
+      {
+          "subject": "plums",
+          "object": "purple"
+      },
+      {
+          "subject": "potatos",
+          "object": "brown"
+      }
+  ]
+}

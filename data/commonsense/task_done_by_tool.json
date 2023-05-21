@@ -1,10 +1,11 @@
 {
     "name": "task done by tool",
     "prompt_templates": [
-        "The tool used for {} is a",
+        "The tool used for {} is called a"
+    ],
+    "prompt_templates_zs": [
         "What tool is used for {}? Usually, you need a",
-        "To accomplish {}, you need a tool called a",
-        "{},"
+        "To accomplish {}, you need a tool called a"
     ],
     "properties": {
         "relation_type": "commonsense",
