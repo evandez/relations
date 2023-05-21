@@ -2,7 +2,7 @@
 import logging
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Any
+from typing import Any, Literal
 
 from src import functional, models, operators
 from src.utils import tokenizer_utils
@@ -39,6 +39,11 @@ class Editor:
     ) -> EditResult:
         raise NotImplementedError
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        raise NotImplementedError
+
 
 @dataclass(frozen=True, kw_only=True)
 class LinearRelationEditResult(EditResult):
@@ -70,7 +75,9 @@ class LinearRelationEditor(Editor):
     def z_layer(self) -> Layer:
         return self.lre.z_layer
 
-    def __call__(self, subject: str, target: str, **kwargs: Any) -> LinearRelationEditResult:
+    def __call__(
+        self, subject: str, target: str, **kwargs: Any
+    ) -> LinearRelationEditResult:
         raise NotImplementedError
 
 
@@ -150,6 +157,11 @@ class LowRankPInvEditor(LinearRelationEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "subject"
+
 
 @dataclass(frozen=True, kw_only=True)
 class LowRankPInvEmbedEditor(LowRankPInvEditor):
@@ -205,9 +217,14 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "object"
+
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselineEditor(LinearRelationEditor):
+class HiddenBaselinEditor(LinearRelationEditor):
     """Edit the model by replacing h for the subject with the h of the target."""
 
     def __call__(
@@ -248,6 +265,11 @@ class HiddenBaselineEditor(LinearRelationEditor):
             n_samples=self.n_samples,
         )
 
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "subject"
+
 
 @dataclass(frozen=True, kw_only=True)
 class EmbedBaselineEditor(LinearRelationEditor):
@@ -284,6 +306,11 @@ class EmbedBaselineEditor(LinearRelationEditor):
             n_new_tokens=self.n_new_tokens,
             n_samples=self.n_samples,
         )
+
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "object"
 
 
 def _check_no_extra_kwargs(kwargs: dict) -> None:

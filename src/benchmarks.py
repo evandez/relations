@@ -4,12 +4,13 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, NamedTuple, Sequence
 
-from src import data, editors, functional, metrics, models, operators
+from src import data, editors, functional, hparams, metrics, models, operators
 from src.functional import make_prompt
-from src.utils import experiment_utils, tokenizer_utils
+from src.utils import dataclasses_utils, experiment_utils, tokenizer_utils
 from src.utils.typing import Layer, PathLike, StrSequence
 
 import torch
+from baukit import nethook
 from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
@@ -374,8 +375,9 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
 
 def faithfulness(
     *,
-    estimator: operators.LinearRelationEstimator,
+    mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
+    estimator_type: type[operators.LinearRelationEstimator],
     n_train: int = 3,
     n_trials: int = 3,
     k: int = 3,
@@ -433,6 +435,16 @@ def faithfulness(
         if relation_results is not None:
             results_by_relation.append(relation_results)
             continue
+
+        # TODO(evan): Index on model once changes are merged.
+        relation_hparams = hparams.get(relation.name)
+        estimator = dataclasses_utils.create_with_optional_kwargs(
+            estimator_type,
+            mt=mt,
+            h_layer=relation_hparams.h_layer,
+            z_layer=relation_hparams.z_layer,
+            beta=relation_hparams.beta,
+        )
 
         trials = []
         for _ in range(n_trials):
@@ -783,9 +795,10 @@ class CausalityBenchmarkResults(DataClassJsonMixin):
 
 def causality(
     *,
-    estimator: operators.LinearRelationEstimator,
-    editor_type: type[editors.Editor],
+    mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
+    estimator_type: type[operators.LinearRelationEstimator],
+    editor_type: type[editors.Editor],
     n_train: int = 3,
     n_trials: int = 3,
     ranks: Sequence[int] | None = None,
@@ -799,8 +812,6 @@ def causality(
     if ranks is None:
         ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
 
-    mt = estimator.mt
-
     results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
         relation_results = experiment_utils.load_results_file(
@@ -813,6 +824,15 @@ def causality(
             results_by_relation.append(relation_results)
             continue
 
+        relation_hparams = hparams.get(relation.name)
+        estimator = dataclasses_utils.create_with_optional_kwargs(
+            estimator_type,
+            mt=mt,
+            h_layer=relation_hparams.h_layer,
+            z_layer=relation_hparams.z_layer,
+            beta=relation_hparams.beta,
+        )
+
         relation_trials = []
         for _ in range(n_trials):
             prompt_template = relation.prompt_templates[0]
@@ -822,11 +842,14 @@ def causality(
             )
 
             operator = None
+            svd = None
             if issubclass(editor_type, editors.LinearRelationEditor):
                 logger.debug(
                     f"estimate operator for: {[str(x) for x in train.samples]}"
                 )
                 operator = estimator(train)
+                if operator.weight is not None:
+                    svd = torch.svd(operator.weight)
 
             logger.debug("precompute test zs")
             [_, zs_by_subj] = _precompute_zs(
@@ -861,29 +884,32 @@ def causality(
                     object_original = sample.object
                     object_target = target.object
 
-                    editor_kwargs = dict(kwargs)
-                    if issubclass(editor_type, editors.LinearRelationEditor):
-                        editor_kwargs["rank"] = rank
-                        editor_kwargs["lre"] = operator
-                    editor = editor_type(**editor_kwargs)
+                    editor = dataclasses_utils.create_with_optional_kwargs(
+                        editor_type,
+                        rank=rank,
+                        lre=operator,
+                        svd=svd,
+                        prompt_template=prompt_template,
+                        mt=mt,
+                        **kwargs,
+                    )
 
-                    # TODO(evan): Need to fix how different editors called, this won't
-                    # work for baselines.
-                    if issubclass(editor_type, editors.LowRankPInvEmbedEditor):
-                        result = editor(
+                    if editor_type.expects() == "object":
+                        result = nethook.invoke_with_optional_args(
+                            editor,
                             subject_original,
                             object_target,
                             z_original=zs_by_subj.get(subject_original),
                         )
-                    elif issubclass(editor_type, editors.LowRankPInvEditor):
-                        result = editor(
+                    else:
+                        assert editor_type.expects() == "target"
+                        result = nethook.invoke_with_optional_args(
+                            editor,
                             subject_original,
                             subject_target,
                             z_original=zs_by_subj.get(subject_original),
                             z_target=zs_by_subj.get(subject_target),
                         )
-                    else:
-                        result = editor(subject_original, subject_target)
 
                     [token_id_original, token_id_target] = (
                         models.tokenize_words(mt, [object_original, object_target])
@@ -927,6 +953,8 @@ def causality(
         )
         results_by_relation.append(relation_results)
 
+    # Also computed/evaluated elsewhere, but saving metrics during the run helps
+    # with debugging.
     efficacies = [
         trial.best().efficacy()
         for relation_result in results_by_relation
