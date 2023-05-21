@@ -56,6 +56,20 @@ class ModelAndTokenizer:
         else:
             raise ValueError(f"unknown model type: {type(self.model).__name__}")
 
+    @property
+    def name(self) -> str:
+        """Return human-readable name for this model."""
+        if isinstance(self.model, transformers.GPTNeoXForCausalLM):
+            return GPT_NEO_X_NAME_SHORT
+        elif isinstance(self.model, transformers.LlamaForCausalLM):
+            # TODO(evan): Does not factor in different sizes.
+            return LLAMA_NAME_SHORT
+        elif isinstance(self.model, transformers.GPTJForCausalLM):
+            return GPT_J_NAME
+        else:
+            # TODO(evan): Can probably do better than failing.
+            raise ValueError(f"unknown model name: {type(self.model).__name__}")
+
     def to_(self, device: Optional[Device]) -> None:
         """Send model to the device."""
         self.model.to(device)
