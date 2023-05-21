@@ -140,3 +140,4 @@ dmypy.json
 scan-for-best*
 *results*/
 *models*/
+hparams/
