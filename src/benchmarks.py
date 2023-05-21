@@ -893,7 +893,10 @@ def causality(
                 object_original = sample.object
                 object_target = target.object
                 for rank in ranks:
-                    logger.info(f"testing sample {sample.subject}, rank {rank}")
+                    logger.info(
+                        f"{relation.name=}, trial={trial + 1}/{n_trials}, "
+                        f"{sample.subject=}, {rank=}"
+                    )
 
                     # Perform the edit and record LM outputs.
                     editor = dataclasses_utils.create_with_optional_kwargs(
