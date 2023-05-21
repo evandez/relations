@@ -1,12 +1,14 @@
 {
-    "name": "word first letter",
+    "name": "word last letter",
     "prompt_templates": [
-        "{} starts with the letter",
-        "The first character of the word {} is",
-        "{},"
+        "{} ends with the letter"
+    ],
+    "prompt_templates_zs": [
+        "{} ends with the letter",
+        "The last character of the word {} is"
     ],
     "properties": {
-        "relation_type": "morphological",
+        "relation_type": "linguistic",
         "domain_name": "word",
         "range_name": "letter",
         "symmetric": false
@@ -14,163 +16,163 @@
     "samples": [
         {
             "subject": "BEND",
-            "object": "B"
-        },
-        {
-            "subject": "HEAVY",
-            "object": "H"
-        },
-        {
-            "subject": "BEAUTIFUL",
-            "object": "B"
-        },
-        {
-            "subject": "ASK",
-            "object": "A"
-        },
-        {
-            "subject": "EXPAND",
-            "object": "E"
-        },
-        {
-            "subject": "FRONT",
-            "object": "F"
-        },
-        {
-            "subject": "TOUGH",
-            "object": "T"
-        },
-        {
-            "subject": "KIND",
-            "object": "K"
-        },
-        {
-            "subject": "GO",
-            "object": "G"
-        },
-        {
-            "subject": "SURGERY",
-            "object": "S"
-        },
-        {
-            "subject": "PAST",
-            "object": "P"
-        },
-        {
-            "subject": "INSIDE",
-            "object": "I"
-        },
-        {
-            "subject": "ENTER",
-            "object": "E"
-        },
-        {
-            "subject": "BEGIN",
-            "object": "B"
-        },
-        {
-            "subject": "VANISH",
-            "object": "V"
-        },
-        {
-            "subject": "FALL",
-            "object": "F"
-        },
-        {
-            "subject": "CRAZY",
-            "object": "C"
-        },
-        {
-            "subject": "FORGET",
-            "object": "F"
-        },
-        {
-            "subject": "FROWN",
-            "object": "F"
-        },
-        {
-            "subject": "GREAT",
-            "object": "G"
-        },
-        {
-            "subject": "LEARN",
-            "object": "L"
-        },
-        {
-            "subject": "SMOOTH",
-            "object": "S"
-        },
-        {
-            "subject": "WIDE",
-            "object": "W"
-        },
-        {
-            "subject": "AIRPLANE",
-            "object": "A"
-        },
-        {
-            "subject": "WRONG",
-            "object": "W"
-        },
-        {
-            "subject": "DANCE",
             "object": "D"
         },
         {
-            "subject": "WIN",
-            "object": "W"
+            "subject": "HEAVY",
+            "object": "Y"
         },
         {
-            "subject": "BELIEVE",
-            "object": "B"
-        },
-        {
-            "subject": "CONCERT",
-            "object": "C"
-        },
-        {
-            "subject": "BICYCLE",
-            "object": "B"
-        },
-        {
-            "subject": "STALE",
-            "object": "S"
-        },
-        {
-            "subject": "LIBRARY",
+            "subject": "BEAUTIFUL",
             "object": "L"
         },
         {
-            "subject": "CALL",
-            "object": "C"
-        },
-        {
-            "subject": "GIVE",
-            "object": "G"
-        },
-        {
-            "subject": "KNOW",
+            "subject": "ASK",
             "object": "K"
         },
         {
-            "subject": "CLIMB",
-            "object": "C"
+            "subject": "EXPAND",
+            "object": "D"
         },
         {
-            "subject": "FRESH",
-            "object": "F"
+            "subject": "FRONT",
+            "object": "T"
         },
         {
-            "subject": "LOOK",
-            "object": "L"
+            "subject": "TOUGH",
+            "object": "H"
         },
         {
-            "subject": "OLD",
+            "subject": "KIND",
+            "object": "D"
+        },
+        {
+            "subject": "GO",
             "object": "O"
         },
         {
-            "subject": "GYM",
+            "subject": "SURGERY",
+            "object": "Y"
+        },
+        {
+            "subject": "PAST",
+            "object": "T"
+        },
+        {
+            "subject": "INSIDE",
+            "object": "E"
+        },
+        {
+            "subject": "ENTER",
+            "object": "R"
+        },
+        {
+            "subject": "BEGIN",
+            "object": "N"
+        },
+        {
+            "subject": "VANISH",
+            "object": "H"
+        },
+        {
+            "subject": "FALL",
+            "object": "L"
+        },
+        {
+            "subject": "CRAZY",
+            "object": "Y"
+        },
+        {
+            "subject": "FORGET",
+            "object": "T"
+        },
+        {
+            "subject": "FROWN",
+            "object": "N"
+        },
+        {
+            "subject": "GREAT",
+            "object": "T"
+        },
+        {
+            "subject": "LEARN",
+            "object": "N"
+        },
+        {
+            "subject": "SMOOTH",
+            "object": "H"
+        },
+        {
+            "subject": "WIDE",
+            "object": "E"
+        },
+        {
+            "subject": "AIRPLANE",
+            "object": "E"
+        },
+        {
+            "subject": "WRONG",
             "object": "G"
+        },
+        {
+            "subject": "DANCE",
+            "object": "E"
+        },
+        {
+            "subject": "WIN",
+            "object": "N"
+        },
+        {
+            "subject": "BELIEVE",
+            "object": "E"
+        },
+        {
+            "subject": "CONCERT",
+            "object": "T"
+        },
+        {
+            "subject": "BICYCLE",
+            "object": "E"
+        },
+        {
+            "subject": "STALE",
+            "object": "E"
+        },
+        {
+            "subject": "LIBRARY",
+            "object": "Y"
+        },
+        {
+            "subject": "CALL",
+            "object": "L"
+        },
+        {
+            "subject": "GIVE",
+            "object": "E"
+        },
+        {
+            "subject": "KNOW",
+            "object": "W"
+        },
+        {
+            "subject": "CLIMB",
+            "object": "B"
+        },
+        {
+            "subject": "FRESH",
+            "object": "H"
+        },
+        {
+            "subject": "LOOK",
+            "object": "K"
+        },
+        {
+            "subject": "OLD",
+            "object": "D"
+        },
+        {
+            "subject": "GYM",
+            "object": "M"
         },
         {
             "subject": "HIGH",
@@ -178,235 +180,235 @@
         },
         {
             "subject": "DECIDE",
-            "object": "D"
+            "object": "E"
         },
         {
             "subject": "CHOOSE",
-            "object": "C"
+            "object": "E"
         },
         {
             "subject": "WANT",
-            "object": "W"
+            "object": "T"
         },
         {
             "subject": "LOUD",
-            "object": "L"
+            "object": "D"
         },
         {
             "subject": "WALK",
-            "object": "W"
+            "object": "K"
         },
         {
             "subject": "BOX",
-            "object": "B"
+            "object": "X"
         },
         {
             "subject": "RUDE",
-            "object": "R"
+            "object": "E"
         },
         {
             "subject": "MACHINE",
-            "object": "M"
+            "object": "E"
         },
         {
             "subject": "CALM",
-            "object": "C"
+            "object": "M"
         },
         {
             "subject": "RIGHT",
-            "object": "R"
+            "object": "T"
         },
         {
             "subject": "INCLUDE",
-            "object": "I"
+            "object": "E"
         },
         {
             "subject": "FALSE",
-            "object": "F"
+            "object": "E"
         },
         {
             "subject": "WHISPER",
-            "object": "W"
+            "object": "R"
         },
         {
             "subject": "DEEP",
-            "object": "D"
+            "object": "P"
         },
         {
             "subject": "FILM",
-            "object": "F"
+            "object": "M"
         },
         {
             "subject": "LAUGH",
-            "object": "L"
+            "object": "H"
         },
         {
             "subject": "SOUR",
-            "object": "S"
+            "object": "R"
         },
         {
             "subject": "BLESS",
-            "object": "B"
+            "object": "S"
         },
         {
             "subject": "DIRTY",
-            "object": "D"
-        },
-        {
-            "subject": "LITTLE",
-            "object": "L"
-        },
-        {
-            "subject": "BUILD",
-            "object": "B"
-        },
-        {
-            "subject": "EDUCATION",
-            "object": "E"
-        },
-        {
-            "subject": "LIKE",
-            "object": "L"
-        },
-        {
-            "subject": "NEED",
-            "object": "N"
-        },
-        {
-            "subject": "HARD",
-            "object": "H"
-        },
-        {
-            "subject": "FINISH",
-            "object": "F"
-        },
-        {
-            "subject": "BRING",
-            "object": "B"
-        },
-        {
-            "subject": "SAD",
-            "object": "S"
-        },
-        {
-            "subject": "BAD",
-            "object": "B"
-        },
-        {
-            "subject": "LAZY",
-            "object": "L"
-        },
-        {
-            "subject": "TOGETHER",
-            "object": "T"
-        },
-        {
-            "subject": "SHORT",
-            "object": "S"
-        },
-        {
-            "subject": "JUMP",
-            "object": "J"
-        },
-        {
-            "subject": "SOFTWARE",
-            "object": "S"
-        },
-        {
-            "subject": "WET",
-            "object": "W"
-        },
-        {
-            "subject": "TRUE",
-            "object": "T"
-        },
-        {
-            "subject": "BATTLE",
-            "object": "B"
-        },
-        {
-            "subject": "CHEER",
-            "object": "C"
-        },
-        {
-            "subject": "SIMPLE",
-            "object": "S"
-        },
-        {
-            "subject": "SLOW",
-            "object": "S"
-        },
-        {
-            "subject": "FULL",
-            "object": "F"
-        },
-        {
-            "subject": "LIGHT",
-            "object": "L"
-        },
-        {
-            "subject": "PIANO",
-            "object": "P"
-        },
-        {
-            "subject": "WRITE",
-            "object": "W"
-        },
-        {
-            "subject": "EAT",
-            "object": "E"
-        },
-        {
-            "subject": "FOLLOW",
-            "object": "F"
-        },
-        {
-            "subject": "GENTLE",
-            "object": "G"
-        },
-        {
-            "subject": "THINK",
-            "object": "T"
-        },
-        {
-            "subject": "DRAMA",
-            "object": "D"
-        },
-        {
-            "subject": "UNDERSTAND",
-            "object": "U"
-        },
-        {
-            "subject": "BUY",
-            "object": "B"
-        },
-        {
-            "subject": "PUSH",
-            "object": "P"
-        },
-        {
-            "subject": "COLD",
-            "object": "C"
-        },
-        {
-            "subject": "YES",
             "object": "Y"
         },
         {
-            "subject": "DRY",
+            "subject": "LITTLE",
+            "object": "E"
+        },
+        {
+            "subject": "BUILD",
             "object": "D"
         },
         {
-            "subject": "FRIENDLY",
-            "object": "F"
+            "subject": "EDUCATION",
+            "object": "N"
         },
         {
-            "subject": "SHAKE",
+            "subject": "LIKE",
+            "object": "E"
+        },
+        {
+            "subject": "NEED",
+            "object": "D"
+        },
+        {
+            "subject": "HARD",
+            "object": "D"
+        },
+        {
+            "subject": "FINISH",
+            "object": "H"
+        },
+        {
+            "subject": "BRING",
+            "object": "G"
+        },
+        {
+            "subject": "SAD",
+            "object": "D"
+        },
+        {
+            "subject": "BAD",
+            "object": "D"
+        },
+        {
+            "subject": "LAZY",
+            "object": "Y"
+        },
+        {
+            "subject": "TOGETHER",
+            "object": "R"
+        },
+        {
+            "subject": "SHORT",
+            "object": "T"
+        },
+        {
+            "subject": "JUMP",
+            "object": "P"
+        },
+        {
+            "subject": "SOFTWARE",
+            "object": "E"
+        },
+        {
+            "subject": "WET",
+            "object": "T"
+        },
+        {
+            "subject": "TRUE",
+            "object": "E"
+        },
+        {
+            "subject": "BATTLE",
+            "object": "E"
+        },
+        {
+            "subject": "CHEER",
+            "object": "R"
+        },
+        {
+            "subject": "SIMPLE",
+            "object": "E"
+        },
+        {
+            "subject": "SLOW",
+            "object": "W"
+        },
+        {
+            "subject": "FULL",
+            "object": "L"
+        },
+        {
+            "subject": "LIGHT",
+            "object": "T"
+        },
+        {
+            "subject": "PIANO",
+            "object": "O"
+        },
+        {
+            "subject": "WRITE",
+            "object": "E"
+        },
+        {
+            "subject": "EAT",
+            "object": "T"
+        },
+        {
+            "subject": "FOLLOW",
+            "object": "W"
+        },
+        {
+            "subject": "GENTLE",
+            "object": "E"
+        },
+        {
+            "subject": "THINK",
+            "object": "K"
+        },
+        {
+            "subject": "DRAMA",
+            "object": "A"
+        },
+        {
+            "subject": "UNDERSTAND",
+            "object": "D"
+        },
+        {
+            "subject": "BUY",
+            "object": "Y"
+        },
+        {
+            "subject": "PUSH",
+            "object": "H"
+        },
+        {
+            "subject": "COLD",
+            "object": "D"
+        },
+        {
+            "subject": "YES",
             "object": "S"
         },
         {
+            "subject": "DRY",
+            "object": "Y"
+        },
+        {
+            "subject": "FRIENDLY",
+            "object": "Y"
+        },
+        {
+            "subject": "SHAKE",
+            "object": "E"
+        },
+        {
             "subject": "HAPPY",
-            "object": "H"
+            "object": "Y"
         },
         {
             "subject": "REMEMBER",
@@ -414,471 +416,471 @@
         },
         {
             "subject": "DRINK",
-            "object": "D"
+            "object": "K"
         },
         {
             "subject": "TAKE",
-            "object": "T"
-        },
-        {
-            "subject": "SICK",
-            "object": "S"
-        },
-        {
-            "subject": "PULL",
-            "object": "P"
-        },
-        {
-            "subject": "SWIM",
-            "object": "S"
-        },
-        {
-            "subject": "FAST",
-            "object": "F"
-        },
-        {
-            "subject": "LOVE",
-            "object": "L"
-        },
-        {
-            "subject": "POLITE",
-            "object": "P"
-        },
-        {
-            "subject": "COME",
-            "object": "C"
-        },
-        {
-            "subject": "UGLY",
-            "object": "U"
-        },
-        {
-            "subject": "PRAISE",
-            "object": "P"
-        },
-        {
-            "subject": "STRONG",
-            "object": "S"
-        },
-        {
-            "subject": "CRUEL",
-            "object": "C"
-        },
-        {
-            "subject": "ATTRACT",
-            "object": "A"
-        },
-        {
-            "subject": "POSITIVE",
-            "object": "P"
-        },
-        {
-            "subject": "LONG",
-            "object": "L"
-        },
-        {
-            "subject": "BORROW",
-            "object": "B"
-        },
-        {
-            "subject": "SAVE",
-            "object": "S"
-        },
-        {
-            "subject": "MAD",
-            "object": "M"
-        },
-        {
-            "subject": "MEDICINE",
-            "object": "M"
-        },
-        {
-            "subject": "MEET",
-            "object": "M"
-        },
-        {
-            "subject": "WORK",
-            "object": "W"
-        },
-        {
-            "subject": "UP",
-            "object": "U"
-        },
-        {
-            "subject": "SWEET",
-            "object": "S"
-        },
-        {
-            "subject": "SPEAK",
-            "object": "S"
-        },
-        {
-            "subject": "MANUFACTURE",
-            "object": "M"
-        },
-        {
-            "subject": "ATTACK",
-            "object": "A"
-        },
-        {
-            "subject": "TALL",
-            "object": "T"
-        },
-        {
-            "subject": "INHALE",
-            "object": "I"
-        },
-        {
-            "subject": "SAFE",
-            "object": "S"
-        },
-        {
-            "subject": "OPEN",
-            "object": "O"
-        },
-        {
-            "subject": "INCREASE",
-            "object": "I"
-        },
-        {
-            "subject": "SCATTER",
-            "object": "S"
-        },
-        {
-            "subject": "ARRIVE",
-            "object": "A"
-        },
-        {
-            "subject": "HELP",
-            "object": "H"
-        },
-        {
-            "subject": "LEAVE",
-            "object": "L"
-        },
-        {
-            "subject": "SIT",
-            "object": "S"
-        },
-        {
-            "subject": "CHEAP",
-            "object": "C"
-        },
-        {
-            "subject": "QUESTION",
-            "object": "Q"
-        },
-        {
-            "subject": "SEPARATE",
-            "object": "S"
-        },
-        {
-            "subject": "EASY",
             "object": "E"
         },
         {
-            "subject": "QUICK",
-            "object": "Q"
+            "subject": "SICK",
+            "object": "K"
         },
         {
-            "subject": "CUT",
-            "object": "C"
+            "subject": "PULL",
+            "object": "L"
         },
         {
-            "subject": "GAME",
-            "object": "G"
+            "subject": "SWIM",
+            "object": "M"
         },
         {
-            "subject": "QUIET",
-            "object": "Q"
-        },
-        {
-            "subject": "FRIEND",
-            "object": "F"
-        },
-        {
-            "subject": "POOR",
-            "object": "P"
-        },
-        {
-            "subject": "HAVE",
-            "object": "H"
-        },
-        {
-            "subject": "TALK",
+            "subject": "FAST",
             "object": "T"
         },
         {
-            "subject": "YOUNG",
+            "subject": "LOVE",
+            "object": "E"
+        },
+        {
+            "subject": "POLITE",
+            "object": "E"
+        },
+        {
+            "subject": "COME",
+            "object": "E"
+        },
+        {
+            "subject": "UGLY",
             "object": "Y"
         },
         {
-            "subject": "PLAY",
+            "subject": "PRAISE",
+            "object": "E"
+        },
+        {
+            "subject": "STRONG",
+            "object": "G"
+        },
+        {
+            "subject": "CRUEL",
+            "object": "L"
+        },
+        {
+            "subject": "ATTRACT",
+            "object": "T"
+        },
+        {
+            "subject": "POSITIVE",
+            "object": "E"
+        },
+        {
+            "subject": "LONG",
+            "object": "G"
+        },
+        {
+            "subject": "BORROW",
+            "object": "W"
+        },
+        {
+            "subject": "SAVE",
+            "object": "E"
+        },
+        {
+            "subject": "MAD",
+            "object": "D"
+        },
+        {
+            "subject": "MEDICINE",
+            "object": "E"
+        },
+        {
+            "subject": "MEET",
+            "object": "T"
+        },
+        {
+            "subject": "WORK",
+            "object": "K"
+        },
+        {
+            "subject": "UP",
             "object": "P"
         },
         {
+            "subject": "SWEET",
+            "object": "T"
+        },
+        {
+            "subject": "SPEAK",
+            "object": "K"
+        },
+        {
+            "subject": "MANUFACTURE",
+            "object": "E"
+        },
+        {
+            "subject": "ATTACK",
+            "object": "K"
+        },
+        {
+            "subject": "TALL",
+            "object": "L"
+        },
+        {
+            "subject": "INHALE",
+            "object": "E"
+        },
+        {
+            "subject": "SAFE",
+            "object": "E"
+        },
+        {
+            "subject": "OPEN",
+            "object": "N"
+        },
+        {
+            "subject": "INCREASE",
+            "object": "E"
+        },
+        {
+            "subject": "SCATTER",
+            "object": "R"
+        },
+        {
+            "subject": "ARRIVE",
+            "object": "E"
+        },
+        {
+            "subject": "HELP",
+            "object": "P"
+        },
+        {
+            "subject": "LEAVE",
+            "object": "E"
+        },
+        {
+            "subject": "SIT",
+            "object": "T"
+        },
+        {
+            "subject": "CHEAP",
+            "object": "P"
+        },
+        {
+            "subject": "QUESTION",
+            "object": "N"
+        },
+        {
+            "subject": "SEPARATE",
+            "object": "E"
+        },
+        {
+            "subject": "EASY",
+            "object": "Y"
+        },
+        {
+            "subject": "QUICK",
+            "object": "K"
+        },
+        {
+            "subject": "CUT",
+            "object": "T"
+        },
+        {
+            "subject": "GAME",
+            "object": "E"
+        },
+        {
+            "subject": "QUIET",
+            "object": "T"
+        },
+        {
+            "subject": "FRIEND",
+            "object": "D"
+        },
+        {
+            "subject": "POOR",
+            "object": "R"
+        },
+        {
+            "subject": "HAVE",
+            "object": "E"
+        },
+        {
+            "subject": "TALK",
+            "object": "K"
+        },
+        {
+            "subject": "YOUNG",
+            "object": "G"
+        },
+        {
+            "subject": "PLAY",
+            "object": "Y"
+        },
+        {
             "subject": "BRIGHT",
-            "object": "B"
+            "object": "T"
         },
         {
             "subject": "LOSE",
-            "object": "L"
+            "object": "E"
         },
         {
             "subject": "START",
-            "object": "S"
+            "object": "T"
         },
         {
             "subject": "BREAK",
-            "object": "B"
+            "object": "K"
         },
         {
             "subject": "LAW",
-            "object": "L"
+            "object": "W"
         },
         {
             "subject": "GOOD",
-            "object": "G"
+            "object": "D"
         },
         {
             "subject": "HONEST",
-            "object": "H"
+            "object": "T"
         },
         {
             "subject": "STUPID",
-            "object": "S"
+            "object": "D"
         },
         {
             "subject": "SMART",
-            "object": "S"
+            "object": "T"
         },
         {
             "subject": "WISE",
-            "object": "W"
+            "object": "E"
         },
         {
             "subject": "CLOSE",
-            "object": "C"
+            "object": "E"
         },
         {
             "subject": "READ",
-            "object": "R"
+            "object": "D"
         },
         {
             "subject": "DULL",
-            "object": "D"
+            "object": "L"
         },
         {
             "subject": "SHY",
-            "object": "S"
+            "object": "Y"
         },
         {
             "subject": "DARK",
-            "object": "D"
+            "object": "K"
         },
         {
             "subject": "THIN",
-            "object": "T"
+            "object": "N"
         },
         {
             "subject": "ZESTY",
-            "object": "Z"
+            "object": "Y"
         },
         {
             "subject": "NEW",
-            "object": "N"
+            "object": "W"
         },
         {
             "subject": "CATCH",
-            "object": "C"
+            "object": "H"
         },
         {
             "subject": "HATE",
-            "object": "H"
+            "object": "E"
         },
         {
             "subject": "CREATE",
-            "object": "C"
+            "object": "E"
         },
         {
             "subject": "TRY",
-            "object": "T"
+            "object": "Y"
         },
         {
             "subject": "FARM",
-            "object": "F"
+            "object": "M"
         },
         {
             "subject": "LARGE",
-            "object": "L"
+            "object": "E"
         },
         {
             "subject": "SMALL",
-            "object": "S"
+            "object": "L"
         },
         {
             "subject": "FLOAT",
-            "object": "F"
+            "object": "T"
         },
         {
             "subject": "STAND",
-            "object": "S"
+            "object": "D"
         },
         {
             "subject": "BIG",
-            "object": "B"
-        },
-        {
-            "subject": "TINY",
-            "object": "T"
-        },
-        {
-            "subject": "WEBSITE",
-            "object": "W"
-        },
-        {
-            "subject": "SUCCEED",
-            "object": "S"
-        },
-        {
-            "subject": "THICK",
-            "object": "T"
-        },
-        {
-            "subject": "ANGRY",
-            "object": "A"
-        },
-        {
-            "subject": "CLOCKWISE",
-            "object": "C"
-        },
-        {
-            "subject": "CHANGE",
-            "object": "C"
-        },
-        {
-            "subject": "RISE",
-            "object": "R"
-        },
-        {
-            "subject": "MAKE",
-            "object": "M"
-        },
-        {
-            "subject": "LOW",
-            "object": "L"
-        },
-        {
-            "subject": "WEAR",
-            "object": "W"
-        },
-        {
-            "subject": "DO",
-            "object": "D"
-        },
-        {
-            "subject": "CODE",
-            "object": "C"
-        },
-        {
-            "subject": "FIERCE",
-            "object": "F"
-        },
-        {
-            "subject": "CLEAN",
-            "object": "C"
-        },
-        {
-            "subject": "DIGGING",
-            "object": "D"
-        },
-        {
-            "subject": "STUDY",
-            "object": "S"
-        },
-        {
-            "subject": "DRIVE",
-            "object": "D"
-        },
-        {
-            "subject": "HIT",
-            "object": "H"
-        },
-        {
-            "subject": "CRY",
-            "object": "C"
-        },
-        {
-            "subject": "LEND",
-            "object": "L"
-        },
-        {
-            "subject": "RUN",
-            "object": "R"
-        },
-        {
-            "subject": "HUNGRY",
-            "object": "H"
-        },
-        {
-            "subject": "STRAIGHT",
-            "object": "S"
-        },
-        {
-            "subject": "BOOK",
-            "object": "B"
-        },
-        {
-            "subject": "SHIP",
-            "object": "S"
-        },
-        {
-            "subject": "GET",
             "object": "G"
         },
         {
-            "subject": "LIVE",
-            "object": "L"
+            "subject": "TINY",
+            "object": "Y"
         },
         {
-            "subject": "MESSY",
-            "object": "M"
+            "subject": "WEBSITE",
+            "object": "E"
         },
         {
-            "subject": "WILD",
+            "subject": "SUCCEED",
+            "object": "D"
+        },
+        {
+            "subject": "THICK",
+            "object": "K"
+        },
+        {
+            "subject": "ANGRY",
+            "object": "Y"
+        },
+        {
+            "subject": "CLOCKWISE",
+            "object": "E"
+        },
+        {
+            "subject": "CHANGE",
+            "object": "E"
+        },
+        {
+            "subject": "RISE",
+            "object": "E"
+        },
+        {
+            "subject": "MAKE",
+            "object": "E"
+        },
+        {
+            "subject": "LOW",
             "object": "W"
         },
         {
-            "subject": "ADMINISTER",
-            "object": "A"
+            "subject": "WEAR",
+            "object": "R"
         },
         {
-            "subject": "ACCEPT",
-            "object": "A"
+            "subject": "DO",
+            "object": "O"
         },
         {
-            "subject": "HEALTHY",
-            "object": "H"
+            "subject": "CODE",
+            "object": "E"
         },
         {
-            "subject": "HEAR",
-            "object": "H"
+            "subject": "FIERCE",
+            "object": "E"
         },
         {
-            "subject": "FIND",
-            "object": "F"
-        },
-        {
-            "subject": "FLY",
-            "object": "F"
-        },
-        {
-            "subject": "NARROW",
+            "subject": "CLEAN",
             "object": "N"
         },
         {
+            "subject": "DIGGING",
+            "object": "G"
+        },
+        {
+            "subject": "STUDY",
+            "object": "Y"
+        },
+        {
+            "subject": "DRIVE",
+            "object": "E"
+        },
+        {
+            "subject": "HIT",
+            "object": "T"
+        },
+        {
+            "subject": "CRY",
+            "object": "Y"
+        },
+        {
+            "subject": "LEND",
+            "object": "D"
+        },
+        {
+            "subject": "RUN",
+            "object": "N"
+        },
+        {
+            "subject": "HUNGRY",
+            "object": "Y"
+        },
+        {
+            "subject": "STRAIGHT",
+            "object": "T"
+        },
+        {
+            "subject": "BOOK",
+            "object": "K"
+        },
+        {
+            "subject": "SHIP",
+            "object": "P"
+        },
+        {
+            "subject": "GET",
+            "object": "T"
+        },
+        {
+            "subject": "LIVE",
+            "object": "E"
+        },
+        {
+            "subject": "MESSY",
+            "object": "Y"
+        },
+        {
+            "subject": "WILD",
+            "object": "D"
+        },
+        {
+            "subject": "ADMINISTER",
+            "object": "R"
+        },
+        {
+            "subject": "ACCEPT",
+            "object": "T"
+        },
+        {
+            "subject": "HEALTHY",
+            "object": "Y"
+        },
+        {
+            "subject": "HEAR",
+            "object": "R"
+        },
+        {
+            "subject": "FIND",
+            "object": "D"
+        },
+        {
+            "subject": "FLY",
+            "object": "Y"
+        },
+        {
+            "subject": "NARROW",
+            "object": "W"
+        },
+        {
             "subject": "SHALLOW",
-            "object": "S"
+            "object": "W"
         },
         {
             "subject": "ENGINE",
@@ -886,95 +888,95 @@
         },
         {
             "subject": "SCIENCE",
-            "object": "S"
+            "object": "E"
         },
         {
             "subject": "CONNECT",
-            "object": "C"
+            "object": "T"
         },
         {
             "subject": "DISH",
-            "object": "D"
-        },
-        {
-            "subject": "PUT",
-            "object": "P"
-        },
-        {
-            "subject": "CAR",
-            "object": "C"
-        },
-        {
-            "subject": "DAY",
-            "object": "D"
-        },
-        {
-            "subject": "CONSTRUCTION",
-            "object": "C"
-        },
-        {
-            "subject": "SEE",
-            "object": "S"
-        },
-        {
-            "subject": "DESIGN",
-            "object": "D"
-        },
-        {
-            "subject": "FUNNY",
-            "object": "F"
-        },
-        {
-            "subject": "SOFT",
-            "object": "S"
-        },
-        {
-            "subject": "SMILE",
-            "object": "S"
-        },
-        {
-            "subject": "RICH",
-            "object": "R"
-        },
-        {
-            "subject": "SAY",
-            "object": "S"
-        },
-        {
-            "subject": "HOT",
             "object": "H"
         },
         {
-            "subject": "NEAR",
+            "subject": "PUT",
+            "object": "T"
+        },
+        {
+            "subject": "CAR",
+            "object": "R"
+        },
+        {
+            "subject": "DAY",
+            "object": "Y"
+        },
+        {
+            "subject": "CONSTRUCTION",
             "object": "N"
         },
         {
+            "subject": "SEE",
+            "object": "E"
+        },
+        {
+            "subject": "DESIGN",
+            "object": "N"
+        },
+        {
+            "subject": "FUNNY",
+            "object": "Y"
+        },
+        {
+            "subject": "SOFT",
+            "object": "T"
+        },
+        {
+            "subject": "SMILE",
+            "object": "E"
+        },
+        {
+            "subject": "RICH",
+            "object": "H"
+        },
+        {
+            "subject": "SAY",
+            "object": "Y"
+        },
+        {
+            "subject": "HOT",
+            "object": "T"
+        },
+        {
+            "subject": "NEAR",
+            "object": "R"
+        },
+        {
             "subject": "WITTY",
-            "object": "W"
+            "object": "Y"
         },
         {
             "subject": "SLEEP",
-            "object": "S"
-        },
-        {
-            "subject": "PAINTING",
             "object": "P"
         },
         {
+            "subject": "PAINTING",
+            "object": "G"
+        },
+        {
             "subject": "WEAK",
-            "object": "W"
+            "object": "K"
         },
         {
             "subject": "FORGIVE",
-            "object": "F"
+            "object": "E"
         },
         {
             "subject": "MEAN",
-            "object": "M"
+            "object": "N"
         },
         {
             "subject": "BRAVE",
-            "object": "B"
+            "object": "E"
         }
     ]
 }

@@ -1,14 +1,16 @@
 {
-    "name": "word superlative",
+    "name": "adjective superlative",
     "prompt_templates": [
+        "The superlative form of {} is"
+    ],
+    "prompt_templates_zs": [
         "The superlative form of {} is",
-        "What is the superlative form of {}? It is",
-        "{},"
+        "What is the superlative form of {}? It is"
     ],
     "properties": {
-        "relation_type": "morphological",
-        "domain_name": "word",
-        "range_name": "word",
+        "relation_type": "linguistic",
+        "domain_name": "adjective",
+        "range_name": "adjective",
         "symmetric": false
     },
     "samples": [

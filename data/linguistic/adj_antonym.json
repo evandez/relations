@@ -1,14 +1,16 @@
 {
-    "name": "word antonym",
+    "name": "adjective antonym",
     "prompt_templates": [
+        "The opposite of {} is"
+    ],
+    "prompt_templates_zs": [
         "The opposite of {} is",
-        "The antonym of {} is",
-        "{},"
+        "The antonym of {} is"
     ],
     "properties": {
-        "relation_type": "morphological",
-        "domain_name": "word",
-        "range_name": "word",
+        "relation_type": "linguistic",
+        "domain_name": "adjective",
+        "range_name": "adjective",
         "symmetric": true
     },
     "samples": [
