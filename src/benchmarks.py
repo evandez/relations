@@ -936,7 +936,7 @@ def causality(
                             ),
                         )
                         output_low_rank = operator_low_rank(
-                            subject_original, h=hs_by_subj.get(subject_original)
+                            subject_original, h=hs_by_subj[subject_original][None]
                         )
                         lre_preds = output_low_rank.predictions
 
