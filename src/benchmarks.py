@@ -437,8 +437,7 @@ def faithfulness(
             results_by_relation.append(relation_results)
             continue
 
-        # TODO(evan): Index on model once changes are merged.
-        relation_hparams = hparams.get(relation.name)
+        relation_hparams = hparams.get(mt, relation)
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -837,7 +836,7 @@ def causality(
             results_by_relation.append(relation_results)
             continue
 
-        relation_hparams = hparams.get(relation.name)
+        relation_hparams = hparams.get(mt, relation)
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -948,6 +947,11 @@ def causality(
                             subject_original, h=hs_by_subj[subject_original][None]
                         )
                         lre_preds = output_low_rank.predictions
+
+                    # Also record specificity predictions if we're testing the right
+                    # methods.
+                    if operator is not None and operator.weight is not None:
+                        pass
 
                     relation_samples[rank].append(
                         CausalityBenchmarkRelationTrialSample(

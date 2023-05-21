@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TypeVar
 
-from src import data
+from src import data, models
 from src.utils import env_utils
 from src.utils.typing import PathLike
 
@@ -35,26 +35,27 @@ RelationHParamsT = TypeVar("RelationHParamsT", bound="RelationHParams")
 
 @dataclass(frozen=True, kw_only=True)
 class RelationHParams(HParams):
+    model_name: str
     relation_name: str
     h_layer: int
     beta: float
-    model_name: str
+    model: str
     rank: int | None = None
     z_layer: int | None = None
 
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
-            file = self.default_relation_file(
-                self.relation_name, model_name=self.model_name
-            )
+            file = self.default_relation_file(self.model_name, self.relation_name)
         logger.info(f'writing "{self.relation_name}" hparams to {file}')
         self.save_json_file(file)
 
     @classmethod
     def from_relation(
-        cls: type[RelationHParamsT], relation: str | data.Relation
+        cls: type[RelationHParamsT],
+        model: str | models.ModelAndTokenizer,
+        relation: str | data.Relation,
     ) -> RelationHParamsT:
-        hparams_file = cls.default_relation_file(relation)
+        hparams_file = cls.default_relation_file(model, relation)
         if not hparams_file.exists():
             raise FileNotFoundError(
                 f'expected {cls.__name__} file for relation "{relation}" at {hparams_file}'
@@ -63,18 +64,21 @@ class RelationHParams(HParams):
 
     @staticmethod
     def default_relation_file(
-        relation: str | data.Relation, model_name: str | None = None
+        model: str | models.ModelAndTokenizer,
+        relation: str | data.Relation,
     ) -> Path:
+        if isinstance(model, models.ModelAndTokenizer):
+            model = model.name
         if isinstance(relation, data.Relation):
             relation = relation.name
         relation = relation.replace(" ", "_").replace("'", "")
-        hparams_dir = env_utils.determine_hparams_dir()
-        if model_name is not None:
-            hparams_dir = hparams_dir / model_name
+        hparams_dir = env_utils.determine_hparams_dir() / model
         hparams_file = hparams_dir / f"{relation}.json"
         return hparams_file
 
 
-def get(relation: str | data.Relation) -> RelationHParams:
+def get(
+    model: models.ModelAndTokenizer, relation: str | data.Relation
+) -> RelationHParams:
     """Get hyperparameters for a given relation."""
-    return RelationHParams.from_relation(relation)
+    return RelationHParams.from_relation(model, relation)
