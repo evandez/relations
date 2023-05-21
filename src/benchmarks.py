@@ -776,8 +776,8 @@ class CausalityBenchmarkRelationTrialRank(DataClassJsonMixin):
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
-    train: data.RelationDataset
-    test: data.RelationDataset
+    train: data.Relation
+    test: data.Relation
     ranks: list[CausalityBenchmarkRelationTrialRank]
 
     def best(self) -> CausalityBenchmarkRelationTrialRank:
@@ -810,13 +810,10 @@ def causality(
     n_train: int = 3,
     n_trials: int = 3,
     ranks: Sequence[int] | None = None,
-    desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
     **kwargs: Any,
 ) -> CausalityBenchmarkResults:
-    if desc is None:
-        desc = "causality"
     if ranks is None:
         if dataclasses_utils.has_field(editor_type, "rank"):
             ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
@@ -824,7 +821,8 @@ def causality(
             ranks = [0]
 
     results_by_relation = []
-    for relation in tqdm(dataset.relations, desc=desc):
+    for relation in dataset.relations:
+        logger.info(f'begin relation: "{relation.name}"')
         relation_results = experiment_utils.load_results_file(
             results_dir=results_dir,
             name=relation.name,
@@ -845,7 +843,8 @@ def causality(
         )
 
         relation_trials = []
-        for _ in range(n_trials):
+        for trial in range(n_trials):
+            logger.info(f"begin trial: {trial + 1}/{n_trials}")
             prompt_template = relation.prompt_templates[0]
 
             train, test = relation.set(prompt_templates=[prompt_template]).split(
@@ -855,14 +854,14 @@ def causality(
             operator = None
             svd = None
             if issubclass(editor_type, editors.LinearRelationEditor):
-                logger.debug(
-                    f"estimate operator for: {[str(x) for x in train.samples]}"
+                logger.info(
+                    f"estimating operator for: {[str(x) for x in train.samples]}"
                 )
                 operator = estimator(train)
                 if operator.weight is not None:
                     svd = torch.svd(operator.weight.float())
 
-            logger.debug("precompute test zs")
+            logger.info("precomputing test zs...")
             [hs_by_subj, zs_by_subj] = _precompute_zs(
                 mt=mt,
                 prompt_template=prompt_template,
@@ -894,6 +893,8 @@ def causality(
                 object_original = sample.object
                 object_target = target.object
                 for rank in ranks:
+                    logger.info(f"testing sample {sample.subject}, rank {rank}")
+
                     # Perform the edit and record LM outputs.
                     editor = dataclasses_utils.create_with_optional_kwargs(
                         editor_type,
@@ -932,6 +933,11 @@ def causality(
                     probs = result.model_logits.float().softmax(dim=-1)
                     prob_original = probs[token_id_original].item()
                     prob_target = probs[token_id_target].item()
+                    logger.debug(
+                        "\t"
+                        + f"edit result: {prob_original=:.2f}, {prob_target=:.2f}, "
+                        f"top={result.predicted_tokens[0]}"
+                    )
 
                     # Also record LRE predictions if possible.
                     lre_preds = None
@@ -946,6 +952,7 @@ def causality(
                             subject_original, h=hs_by_subj[subject_original][None]
                         )
                         lre_preds = output_low_rank.predictions
+                        logger.debug("\t" + f"lre result: {lre_preds[0]}")
 
                     # Also record specificity predictions if we're testing the right
                     # methods.
