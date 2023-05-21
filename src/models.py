@@ -11,11 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
-from src.utils import env_utils, tokenizer_utils
-from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
-
 import torch
 import transformers
+from src.utils import env_utils, tokenizer_utils
+from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +65,8 @@ class ModelAndTokenizer:
             return LLAMA_NAME_SHORT
         elif isinstance(self.model, transformers.GPTJForCausalLM):
             return GPT_J_NAME_SHORT
+        elif isinstance(self.model, transformers.GPT2LMHeadModel):
+            return "gpt2-xl"
         else:
             # TODO(evan): Can probably do better than failing.
             raise ValueError(f"unknown model name: {type(self.model).__name__}")

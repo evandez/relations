@@ -1,0 +1,8 @@
+{
+    "relation_name": "person sport position",
+    "h_layer": 31,
+    "beta": 0.11666666716337204,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

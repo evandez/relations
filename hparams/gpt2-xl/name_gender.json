@@ -1,0 +1,8 @@
+{
+    "relation_name": "name gender",
+    "h_layer": 28,
+    "beta": 0.4166666766007741,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

@@ -1,0 +1,8 @@
+{
+    "relation_name": "landmark on continent",
+    "h_layer": 21,
+    "beta": 0.43333332737286884,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

@@ -1,0 +1,8 @@
+{
+    "relation_name": "occupation age",
+    "h_layer": 19,
+    "beta": 0.28333333134651184,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

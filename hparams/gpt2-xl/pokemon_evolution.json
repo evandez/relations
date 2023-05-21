@@ -1,0 +1,8 @@
+{
+    "relation_name": "pokemon evolution",
+    "h_layer": 20,
+    "beta": 0.40000000844399136,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

@@ -1,0 +1,8 @@
+{
+    "relation_name": "adjective comparative",
+    "h_layer": 22,
+    "beta": 0.18333333979050317,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}

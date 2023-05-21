@@ -1,0 +1,8 @@
+{
+    "relation_name": "univ degree gender",
+    "h_layer": 5,
+    "beta": 0.5000000124176344,
+    "model_name": "gpt2-xl",
+    "rank": null,
+    "z_layer": -1
+}
