@@ -38,6 +38,7 @@ def main(args: argparse.Namespace) -> None:
                 h_layer=best.layer,
                 z_layer=-1,
                 beta=best.beta.mean,
+                model_name=mt.name,
             ).save()
 
     results_file = experiment.results_dir / "results_all.json"

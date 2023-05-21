@@ -65,7 +65,7 @@ class ModelAndTokenizer:
             # TODO(evan): Does not factor in different sizes.
             return LLAMA_NAME_SHORT
         elif isinstance(self.model, transformers.GPTJForCausalLM):
-            return GPT_J_NAME
+            return GPT_J_NAME_SHORT
         else:
             # TODO(evan): Can probably do better than failing.
             raise ValueError(f"unknown model name: {type(self.model).__name__}")

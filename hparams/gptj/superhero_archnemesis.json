@@ -1,0 +1,8 @@
+{
+    "relation_name": "superhero archnemesis",
+    "h_layer": 3,
+    "beta": 0.4333333472410838,
+    "rank": null,
+    "z_layer": -1,
+    "model_name": "gptj"
+}
