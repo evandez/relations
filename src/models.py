@@ -11,10 +11,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
-import torch
-import transformers
 from src.utils import env_utils, tokenizer_utils
 from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
+
+import torch
+import transformers
 
 logger = logging.getLogger(__name__)
 
@@ -167,14 +168,15 @@ def determine_layer_paths(
 
     assert isinstance(model, Model), type(model)
 
+    layers = [*layers]  # Copy so we can edit in place
     layer_paths: dict[Layer, str] = {}
-    for layer in layers:
+    for i, layer in enumerate(layers):
         if layer == "emb":
             layer_paths[layer] = determine_embedding_layer_path(model)
             continue
 
         if layer < 0:
-            layer = len(determine_layers(model)) + layer
+            layers[i] = layer = len(determine_layers(model)) + layer
 
         if isinstance(model, transformers.GPTNeoXForCausalLM):
             layer_path = f"gpt_neox.layers.{layer}"
