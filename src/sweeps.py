@@ -176,12 +176,8 @@ def sweep_faithfulness(
             # ICL prompt examples.
             train_relation, test_relation = relation.split(n_train_samples)
             train_samples = train_relation.samples
-            train_icl_samples = train_samples[:-1]
 
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
-            logger.info(
-                f"will do icl for testing using: {[str(x) for x in train_icl_samples]}"
-            )
 
             # Precompute all the hs to speed things up.
             hs_by_subj = _precompute_hs(
@@ -189,7 +185,7 @@ def sweep_faithfulness(
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in relation.samples],
                 batch_size=batch_size,
-                examples=train_icl_samples,
+                examples=train_samples,
             )
 
             layer_results = []

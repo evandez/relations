@@ -1,7 +1,7 @@
 {
-    "relation_name": "country capital city",
+    "relation_name": "work location",
     "h_layer": 13,
-    "beta": 0.30000001192092896,
+    "beta": 0.26666667064030963,
     "rank": null,
     "z_layer": -1,
     "model_name": "gptj"

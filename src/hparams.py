@@ -38,9 +38,9 @@ class RelationHParams(HParams):
     relation_name: str
     h_layer: int
     beta: float
+    model_name: str
     rank: int | None = None
     z_layer: int | None = None
-    model_name: str | None = None
 
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
