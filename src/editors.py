@@ -225,7 +225,7 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselinEditor(Editor):
+class HiddenBaselineEditor(Editor):
     """Edit the model by replacing h for the subject with the h of the target."""
 
     mt: models.ModelAndTokenizer

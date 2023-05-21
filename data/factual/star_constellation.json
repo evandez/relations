@@ -1,0 +1,139 @@
+{
+    "name":"star constellation name",
+    "prompt_templates":[
+       "{} is part of the constellation named"
+    ],
+    "prompt_templates_zs":[
+      "What is the name of the constellation that {} is part of? It is part of",
+      "{} is part of the constellation named",
+      "What is the name of the constellation that {} belongs to? It belongs to"
+   ],
+    "properties":{
+       "relation_type":"factual",
+       "domain_name":"star",
+       "range_name":"constellation",
+       "symmetric":false
+    },
+    "samples":[
+       {
+          "subject":"Sirius",
+          "object":"Canis Major"
+       },
+       {
+          "subject":"Betelgeuse",
+          "object":"Orion"
+       },
+       {
+          "subject":"Rigel",
+          "object":"Orion"
+       },
+       {
+          "subject":"Vega",
+          "object":"Lyra"
+       },
+       {
+          "subject":"Arcturus",
+          "object":"Boötes"
+       },
+       {
+          "subject":"Capella",
+          "object":"Auriga"
+       },
+       {
+          "subject":"Procyon",
+          "object":"Canis Minor"
+       },
+       {
+          "subject":"Altair",
+          "object":"Aquila"
+       },
+       {
+          "subject":"Aldebaran",
+          "object":"Taurus"
+       },
+       {
+          "subject":"Spica",
+          "object":"Virgo"
+       },
+       {
+          "subject":"Antares",
+          "object":"Scorpius"
+       },
+       {
+          "subject":"Pollux",
+          "object":"Gemini"
+       },
+       {
+          "subject":"Fomalhaut",
+          "object":"Piscis Austrinus"
+       },
+       {
+          "subject":"Deneb",
+          "object":"Cygnus"
+       },
+       {
+          "subject":"Regulus",
+          "object":"Leo"
+       },
+       {
+          "subject":"Castor",
+          "object":"Gemini"
+       },
+       {
+          "subject":"Mizar",
+          "object":"Ursa Major"
+       },
+       {
+          "subject":"Dubhe",
+          "object":"Ursa Major"
+       },
+       {
+          "subject":"Alcor",
+          "object":"Ursa Major"
+       },
+       {
+          "subject":"Algol",
+          "object":"Perseus"
+       },
+       {
+          "subject":"Alphecca",
+          "object":"Corona Borealis"
+       },
+       {
+          "subject":"Zubenelgenubi",
+          "object":"Libra"
+       },
+       {
+          "subject":"Gacrux",
+          "object":"Crux"
+       },
+       {
+          "subject":"Bellatrix",
+          "object":"Orion"
+       },
+       {
+          "subject":"Alnair",
+          "object":"Grus"
+       },
+       {
+          "subject":"Shaula",
+          "object":"Scorpius"
+       },
+       {
+          "subject":"Kaus Australis",
+          "object":"Sagittarius"
+       },
+       {
+          "subject":"Diphda",
+          "object":"Cetus"
+       },
+       {
+          "subject":"Schedar",
+          "object":"Cassiopeia"
+       },
+       {
+          "subject":"Mirfak",
+          "object":"Perseus"
+       }
+    ]
+}

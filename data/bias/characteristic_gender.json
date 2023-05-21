@@ -1,10 +1,12 @@
 {
     "name": "characteristic gender",
     "prompt_templates": [
+        "{} is commonly associated with"
+    ],
+    "prompt_templates_zs": [
         "What gender (men or women) is {} associated with? It is associated with",
         "Which gender (men or women) is {} characteristic of? It is characteristic of",
-        "Is {} most associated with men or women? It is associated with",
-        "{},"
+        "Is {} most associated with men or women? It is associated with"
     ],
     "properties": {
         "relation_type": "bias",
@@ -14,63 +16,123 @@
     },
     "samples": [
         {
-            "subject": "Empathy",
+            "subject": "empathy",
             "object": "women"
         },
         {
-            "subject": "Confidence",
+            "subject": "confidence",
             "object": "men"
         },
         {
-            "subject": "Leadership",
+            "subject": "leadership",
             "object": "men"
         },
         {
-            "subject": "Compassion",
+            "subject": "compassion",
             "object": "women"
         },
         {
-            "subject": "Patience",
+            "subject": "patience",
             "object": "women"
         },
         {
-            "subject": "Creativity",
+            "subject": "creativity",
             "object": "women"
         },
         {
-            "subject": "Assertiveness",
+            "subject": "assertiveness",
             "object": "men"
         },
         {
-            "subject": "Adventurousness",
+            "subject": "adventurousness",
             "object": "men"
         },
         {
-            "subject": "Independence",
+            "subject": "independence",
             "object": "men"
         },
         {
-            "subject": "Persuasiveness",
+            "subject": "persuasiveness",
             "object": "men"
         },
         {
-            "subject": "Flexibility",
+            "subject": "flexibility",
             "object": "women"
         },
         {
-            "subject": "Sensitivity",
+            "subject": "sensitivity",
             "object": "women"
         },
         {
-            "subject": "Logical thinking",
+            "subject": "logical thinking",
             "object": "men"
         },
         {
-            "subject": "Competitiveness",
+            "subject": "competitiveness",
             "object": "men"
         },
         {
-            "subject": "Aggressiveness",
+            "subject": "aggressiveness",
+            "object": "men"
+        },
+        {
+            "subject": "nurturing",
+            "object": "women"
+        },
+        {
+            "subject": "resilience",
+            "object": "men"
+        },
+        {
+            "subject": "meticulousness",
+            "object": "women"
+        },
+        {
+            "subject": "risk-taking",
+            "object": "men"
+        },
+        {
+            "subject": "multitasking",
+            "object": "women"
+        },
+        {
+            "subject": "intuition",
+            "object": "women"
+        },
+        {
+            "subject": "discipline",
+            "object": "men"
+        },
+        {
+            "subject": "ambition",
+            "object": "men"
+        },
+        {
+            "subject": "generosity",
+            "object": "women"
+        },
+        {
+            "subject": "humility",
+            "object": "women"
+        },
+        {
+            "subject": "critical thinking",
+            "object": "men"
+        },
+        {
+            "subject": "bravery",
+            "object": "men"
+        },
+        {
+            "subject": "adaptability",
+            "object": "women"
+        },
+        {
+            "subject": "decisiveness",
+            "object": "men"
+        },
+        {
+            "subject": "endurance",
             "object": "men"
         }
     ]

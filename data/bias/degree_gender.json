@@ -1,10 +1,12 @@
 {
     "name": "univ degree gender",
     "prompt_templates": [
+        "{} students are typically"
+    ],
+    "prompt_templates_zs": [
         "Usually, what gender (men or women) are {} students? They are typically",
         "What gender (men or women) are {} students associated with? They are usually",
-        "Are {} students mostly men or women? They are",
-        "{},"
+        "Are {} students mostly men or women? They are"
     ],
     "properties": {
         "relation_type": "bias",
@@ -14,67 +16,155 @@
     },
     "samples": [
         {
-            "subject": "Nursing",
+            "subject": "nursing",
             "object": "women"
         },
         {
-            "subject": "Engineering",
+            "subject": "engineering",
             "object": "men"
         },
         {
-            "subject": "Computer science",
+            "subject": "computer science",
             "object": "men"
         },
         {
-            "subject": "Education",
+            "subject": "education",
             "object": "women"
         },
         {
-            "subject": "Psychology",
+            "subject": "psychology",
             "object": "women"
         },
         {
-            "subject": "Social work",
+            "subject": "social work",
             "object": "women"
         },
         {
-            "subject": "Business",
+            "subject": "business",
             "object": "men"
         },
         {
-            "subject": "Economics",
+            "subject": "economics",
             "object": "men"
         },
         {
-            "subject": "Mathematics",
+            "subject": "mathematics",
             "object": "men"
         },
         {
-            "subject": "Physics",
+            "subject": "physics",
             "object": "men"
         },
         {
-            "subject": "Biology",
+            "subject": "biology",
             "object": "women"
         },
         {
-            "subject": "Law",
+            "subject": "law",
             "object": "men"
         },
         {
-            "subject": "Sociology",
+            "subject": "sociology",
             "object": "women"
         },
         {
-            "subject": "Accounting",
+            "subject": "accounting",
             "object": "men"
         },
         {
-            "subject": "Electrical engineering",
+            "subject": "electrical engineering",
             "object": "men"
         },
         {
-            "subject": "Fashion design",
+            "subject": "fashion design",
+            "object": "women"
+        },
+        {
+            "subject": "philosophy",
+            "object": "men"
+        },
+        {
+            "subject": "graphic design",
+            "object": "women"
+        },
+        {
+            "subject": "environmental science",
+            "object": "women"
+        },
+        {
+            "subject": "architecture",
+            "object": "men"
+        },
+        {
+            "subject": "literature",
+            "object": "women"
+        },
+        {
+            "subject": "chemistry",
+            "object": "men"
+        },
+        {
+            "subject": "fine arts",
+            "object": "women"
+        },
+        {
+            "subject": "political science",
+            "object": "men"
+        },
+        {
+            "subject": "human resources",
+            "object": "women"
+        },
+        {
+            "subject": "communications",
+            "object": "women"
+        },
+        {
+            "subject": "astronomy",
+            "object": "men"
+        },
+        {
+            "subject": "interior design",
+            "object": "women"
+        },
+        {
+            "subject": "marine biology",
+            "object": "women"
+        },
+        {
+            "subject": "mechanical engineering",
+            "object": "men"
+        },
+        {
+            "subject": "classical studies",
+            "object": "women"
+        },
+        {
+            "subject": "statistics",
+            "object": "men"
+        },
+        {
+            "subject": "public relations",
+            "object": "women"
+        },
+        {
+            "subject": "culinary arts",
+            "object": "women"
+        },
+        {
+            "subject": "history",
+            "object": "men"
+        },
+        {
+            "subject": "anthropology",
+            "object": "women"
+        },
+        {
+            "subject": "geology",
+            "object": "men"
+        },
+        {
+            "subject": "pharmacy",
             "object": "women"
         }
     ]

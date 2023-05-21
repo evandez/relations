@@ -1,0 +1,222 @@
+{
+    "name": "person mother",
+    "prompt_templates": [
+        "{}'s mother is named"
+    ],
+    "prompt_templates_zs": [
+        "Who is {}'s mother? Their mother is named",
+        "{}'s mother is named"
+    ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "person",
+        "range_name": "person",
+        "symmetric": false
+    },
+    "samples": [
+        {
+            "subject": "George W. Bush",
+            "object": "Barbara Bush"
+        },
+        {
+            "subject": "Barack Obama",
+            "object": "Ann Dunham"
+        },
+        {
+            "subject": "Hillary Clinton",
+            "object": "Dorothy Howell Rodham"
+        },
+        {
+            "subject": "Martin Luther King Jr.",
+            "object": "Alberta Williams King"
+        },
+        {
+            "subject": "Lady Gaga",
+            "object": "Cynthia Germanotta"
+        },
+        {
+            "subject": "Miley Cyrus",
+            "object": "Tish Cyrus"
+        },
+        {
+            "subject": "Elon Musk",
+            "object": "Maye Musk"
+        },
+        {
+            "subject": "Beyoncé",
+            "object": "Tina Knowles"
+        },
+        {
+            "subject": "Selena Gomez",
+            "object": "Mandy Teefey"
+        },
+        {
+            "subject": "Justin Bieber",
+            "object": "Pattie Mallette"
+        },
+        {
+            "subject": "Leonardo DiCaprio",
+            "object": "Irmelin Indenbirken"
+        },
+        {
+            "subject": "Madonna",
+            "object": "Madonna Louise Fortin"
+        },
+        {
+            "subject": "Oprah Winfrey",
+            "object": "Vernita Lee"
+        },
+        {
+            "subject": "Bill Gates",
+            "object": "Mary Maxwell Gates"
+        },
+        {
+            "subject": "Mark Zuckerberg",
+            "object": "Karen Kempner"
+        },
+        {
+            "subject": "Taylor Swift",
+            "object": "Andrea Swift"
+        },
+        {
+            "subject": "Drake",
+            "object": "Sandi Graham"
+        },
+        {
+            "subject": "Ariana Grande",
+            "object": "Joan Grande"
+        },
+        {
+            "subject": "Kanye West",
+            "object": "Donda West"
+        },
+        {
+            "subject": "Rihanna",
+            "object": "Monica Braithwaite"
+        },
+        {
+            "subject": "Brad Pitt",
+            "object": "Jane Etta Pitt"
+        },
+        {
+            "subject": "Angelina Jolie",
+            "object": "Marcheline Bertrand"
+        },
+        {
+            "subject": "Will Smith",
+            "object": "Caroline Bright"
+        },
+        {
+            "subject": "Jaden Smith",
+            "object": "Jada Pinkett Smith"
+        },
+        {
+            "subject": "Michael Jackson",
+            "object": "Katherine Jackson"
+        },
+        {
+            "subject": "Justin Timberlake",
+            "object": "Lynn Harless"
+        },
+        {
+            "subject": "Britney Spears",
+            "object": "Lynne Spears"
+        },
+        {
+            "subject": "Eminem",
+            "object": "Debbie Mathers"
+        },
+        {
+            "subject": "Prince William",
+            "object": "Princess Diana"
+        },
+        {
+            "subject": "Prince Harry",
+            "object": "Princess Diana"
+        },
+        {
+            "subject": "John F. Kennedy",
+            "object": "Rose Kennedy"
+        },
+        {
+            "subject": "Franklin D. Roosevelt",
+            "object": "Sara Ann Delano"
+        },
+        {
+            "subject": "Queen Elizabeth II",
+            "object": "Queen Elizabeth The Queen Mother"
+        },
+        {
+            "subject": "Charles, Prince of Wales",
+            "object": "Queen Elizabeth II"
+        },
+        {
+            "subject": "Princess Margaret",
+            "object": "Queen Elizabeth The Queen Mother"
+        },
+        {
+            "subject": "Prince Philip",
+            "object": "Princess Alice of Battenberg"
+        },
+        {
+            "subject": "Anne, Princess Royal",
+            "object": "Queen Elizabeth II"
+        },
+        {
+            "subject": "Prince Andrew, Duke of York",
+            "object": "Queen Elizabeth II"
+        },
+        {
+            "subject": "Prince Edward, Earl of Wessex",
+            "object": "Queen Elizabeth II"
+        },
+        {
+            "subject": "King George VI",
+            "object": "Queen Mary"
+        },
+        {
+            "subject": "Prince George of Cambridge",
+            "object": "Kate Middleton"
+        },
+        {
+            "subject": "Prince Louis of Cambridge",
+            "object": "Kate Middleton"
+        },
+        {
+            "subject": "Princess Charlotte of Cambridge",
+            "object": "Kate Middleton"
+        },
+        {
+            "subject": "Archie Mountbatten-Windsor",
+            "object": "Meghan Markle"
+        },
+        {
+            "subject": "Lilibet 'Lili' Diana Mountbatten-Windsor",
+            "object": "Meghan Markle"
+        },
+        {
+            "subject": "John Lennon",
+            "object": "Julia Lennon"
+        },
+        {
+            "subject": "George Harrison",
+            "object": "Louise French"
+        },
+        {
+            "subject": "Paul McCartney",
+            "object": "Mary McCartney"
+        },
+        {
+            "subject": "Ringo Starr",
+            "object": "Elsie Gleave"
+        },
+        {
+            "subject": "Freddie Mercury",
+            "object": "Jer Bulsara"
+        },
+        {
+            "subject": "J.K. Rowling",
+            "object": "Anne Volant Rowling"
+        }
+    ]
+}

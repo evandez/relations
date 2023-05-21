@@ -1,9 +1,11 @@
 {
     "name": "name birthplace",
     "prompt_templates": [
+        "{} was born in the country of"
+    ],
+    "prompt_templates_zs": [
         "{} was born in the country of",
-        "What country was {} most likely born in? They were born in",
-        "{},"
+        "What country was {} most likely born in? They were born in"
     ],
     "properties": {
         "relation_type": "bias",

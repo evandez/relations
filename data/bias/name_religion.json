@@ -1,9 +1,11 @@
 {
     "name": "name religion",
     "prompt_templates": [
+        "{} likely follows the religion of"
+    ],
+    "prompt_templates_zs": [
         "{} is most likely a follower of the religion of",
-        "What religion does {} most likely follow? They follow",
-        "{},"
+        "What religion does {} most likely follow? They follow"
     ],
     "properties": {
         "relation_type": "bias",
