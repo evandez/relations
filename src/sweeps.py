@@ -16,23 +16,22 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_RECALL_K = 3
 DEFAULT_N_TRIALS = 3
-DEFAULT_N_TRY_SAMPLES = 3
-DEFAULT_N_ICL_SAMPLES = 5
+DEFAULT_N_TRAIN_SAMPLES = 5
 DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class SweepBetaResults(DataClassJsonMixin):
+class SweepFaithfulnessBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
 
 
 @dataclass(frozen=True)
-class SweepTrainSampleResults(DataClassJsonMixin):
-    sample: data.RelationSample
-    betas: list[SweepBetaResults]
+class SweepFaithfulnessTrainResults(DataClassJsonMixin):
+    samples: list[data.RelationSample]
+    betas: list[SweepFaithfulnessBetaResults]
 
-    def best(self, k: int = 1) -> SweepBetaResults:
+    def best(self, k: int = 1) -> SweepFaithfulnessBetaResults:
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
@@ -40,88 +39,107 @@ class SweepTrainSampleResults(DataClassJsonMixin):
         """Sumarize results in debug logs."""
         best = self.best()
         logger.debug(
-            f"sample={self.sample} | beta={best.beta:.2f} | recall@1={best.recall[0]:.2f}"
+            f"beta={best.beta:.2f} | recall@1={best.recall[0]:.2f} | samples={[str(x) for x in self.samples]}"
         )
 
 
 @dataclass(frozen=True)
-class SweepLayerResults(DataClassJsonMixin):
+class SweepFaithfulnessLayerResults(DataClassJsonMixin):
     layer: int
-    samples: list[SweepTrainSampleResults]
+    result: SweepFaithfulnessTrainResults
 
 
 @dataclass(frozen=True)
-class SweepTrialResults(DataClassJsonMixin):
+class SweepFaithfulnessTrialResults(DataClassJsonMixin):
     prompt_template: str
-    icl_samples: list[data.RelationSample]
     train_samples: list[data.RelationSample]
-    layers: list[SweepLayerResults]
+    layers: list[SweepFaithfulnessLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepRelationResults(DataClassJsonMixin):
-    relation_name: str
-    trials: list[SweepTrialResults]
+class SweepFaithfulnessLayerSummary(DataClassJsonMixin):
+    layer: int
+    beta: metrics.AggregateMetric
+    recall: metrics.AggregateMetric
 
-    # TODO(evan): Generalize this a bit, just debugging for now.
-    def summarize(self) -> None:
-        """Print a summary of what happened."""
+
+@dataclass(frozen=True)
+class SweepFaithfulnessRelationResults(DataClassJsonMixin):
+    relation_name: str
+    trials: list[SweepFaithfulnessTrialResults]
+
+    def by_layer(self, k: int = 1) -> dict[int, SweepFaithfulnessLayerSummary]:
+        """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
-                for sample in layer.samples:
-                    best = sample.best()
-                    results_by_layer[layer.layer].append(
-                        (
-                            layer.layer,
-                            best.beta,
-                            best.recall[0],
-                        )
+                best = layer.result.best()
+                results_by_layer[layer.layer].append(
+                    (
+                        layer.layer,
+                        best.beta,
+                        best.recall[k - 1],
                     )
+                )
 
-        scores_by_layer = {
-            layer: np.mean([x[-1] for x in results])
+        recalls_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[-1] for x in results])
             for layer, results in results_by_layer.items()
         }
         betas_by_layer = {
-            layer: np.mean([x[1] for x in results])
+            layer: metrics.AggregateMetric.aggregate([x[1] for x in results])
             for layer, results in results_by_layer.items()
         }
+        return {
+            layer: SweepFaithfulnessLayerSummary(
+                layer=layer,
+                beta=betas_by_layer[layer],
+                recall=recalls_by_layer[layer],
+            )
+            for layer in recalls_by_layer
+        }
+
+    def best(self, k: int = 1) -> SweepFaithfulnessLayerSummary:
+        """Return the best layer and average beta for that layer."""
+        results_by_layer = self.by_layer()
+        best_layer = max(
+            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+        )
+        return results_by_layer[best_layer]
+
+    def summarize(self, k: int = 1) -> None:
+        """Print a summary of what happened."""
+        results_by_layer = self.by_layer(k=k)
         logger.debug(f'summarizing results for "{self.relation_name}"')
-        for la in scores_by_layer:
-            score = scores_by_layer[la]
-            beta = betas_by_layer[la]
-            logger.debug(f"layer={la} | beta={beta:.2f} | recall@1={score:.2f}")
+        for la, summ in results_by_layer.items():
+            logger.debug(f"layer={la} | beta={summ.beta} | recall@{k}={summ.recall}")
 
 
 @dataclass(frozen=True)
-class SweepResuts(DataClassJsonMixin):
-    relations: list[SweepRelationResults]
+class SweepFaithfulnessResuts(DataClassJsonMixin):
+    relations: list[SweepFaithfulnessRelationResults]
 
 
-def sweep(
+def sweep_faithfulness(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
     n_trials: int = DEFAULT_N_TRIALS,
-    n_try_samples: int = DEFAULT_N_TRY_SAMPLES,
-    n_icl_samples: int = DEFAULT_N_ICL_SAMPLES,
+    n_train_samples: int = DEFAULT_N_TRAIN_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
     batch_size: int = DEFAULT_BATCH_SIZE,
     results_dir: PathLike | None = None,
     resume: bool = False,
-    desc: str | None = None,
     **kwargs: Any,
-) -> SweepResuts:
+) -> SweepFaithfulnessResuts:
     """Sweep over hyperparameters for faithfulness."""
-    if desc is None:
-        desc = f"sweep"
     if h_layers is None:
         h_layers = models.determine_layers(mt)
     if betas is None:
-        betas = torch.linspace(0, 1, steps=11).tolist()
+        betas = torch.linspace(0, 1, steps=21).tolist()
+    logger.info("begin sweeping faithfulness")
 
     relation_results = []
     for ri, relation in enumerate(dataset.relations):
@@ -131,7 +149,7 @@ def sweep(
 
         relation_result = experiment_utils.load_results_file(
             results_dir=results_dir,
-            results_type=SweepRelationResults,
+            results_type=SweepFaithfulnessRelationResults,
             name=relation.name,
             resume=resume,
         )
@@ -146,26 +164,24 @@ def sweep(
         for trial in range(n_trials):
             logger.info(f"begin trial {trial + 1}/{n_trials}")
 
-            if len(relation.samples) <= n_try_samples + n_icl_samples:
+            if len(relation.samples) <= n_train_samples:
                 logger.warning(
                     f"Not enough samples ({len(relation.samples)}) to "
-                    f'test for "{relation.name} since n_try_samples={n_try_samples} and '
-                    f"n_icl_samples={n_icl_samples}. You should fix this by adding more "
-                    "known samples for the relation."
+                    f'test for "{relation.name} with n_train_samples={n_train_samples}.'
+                    f"You should fix this by adding more known samples for the relation."
                 )
                 continue
 
             # Decide which will be the train samples we will try, and which will be the
             # ICL prompt examples.
-            train_relation, _ = relation.split(n_try_samples + n_icl_samples)
+            train_relation, test_relation = relation.split(n_train_samples)
             train_samples = train_relation.samples
-            train_icl_samples = train_samples[:n_icl_samples]
-            train_try_samples = train_samples[
-                n_icl_samples : n_icl_samples + n_try_samples
-            ]
+            train_icl_samples = train_samples[:-1]
 
-            logger.info(f"will do icl using: {[str(x) for x in train_icl_samples]}")
-            logger.info(f"will try: {[x.subject for x in train_try_samples]}")
+            logger.info(f"will train using: {[str(x) for x in train_samples]}")
+            logger.info(
+                f"will do icl for testing using: {[str(x) for x in train_icl_samples]}"
+            )
 
             # Precompute all the hs to speed things up.
             hs_by_subj = _precompute_hs(
@@ -180,65 +196,55 @@ def sweep(
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
-                estimator = operators.JacobianIclEstimator(
+                estimator = operators.JacobianIclMeanEstimator(
                     mt=mt, h_layer=h_layer, **kwargs
                 )
 
-                train_sample_results = []
-                for train_sample in train_try_samples:
-                    operator = estimator(
-                        relation.set(
-                            samples=[train_sample, *train_icl_samples],
-                            prompt_templates=[prompt_template],
-                        )
+                operator = estimator(
+                    relation.set(
+                        samples=train_samples,
+                        prompt_templates=[prompt_template],
                     )
-                    assert operator.bias is not None
-                    bias = operator.bias.clone()
+                )
+                assert operator.bias is not None
+                bias = operator.bias.clone()
 
-                    test_samples = [
-                        x
-                        for x in relation.samples
-                        if x != train_sample and x not in train_icl_samples
-                    ]
-                    test_subjects = [x.subject for x in test_samples]
-                    test_hs = [
-                        hs_by_subj[x.subject][h_layer, None] for x in test_samples
-                    ]
-                    test_objects = [x.object for x in test_samples]
+                test_samples = test_relation.samples
+                test_subjects = [x.subject for x in test_samples]
+                test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
+                test_objects = [x.object for x in test_samples]
 
-                    results_by_beta = []
-                    recalls_by_beta = []
-                    for beta in betas:
-                        operator.bias[:] = bias * beta
+                results_by_beta = []
+                recalls_by_beta = []
+                for beta in betas:
+                    operator.bias[:] = bias * beta
 
-                        pred_objects = []
-                        for subj, h in zip(test_subjects, test_hs):
-                            preds = operator(subj, h=h, k=recall_k)
-                            pred_objects.append([p.token for p in preds.predictions])
+                    pred_objects = []
+                    for subj, h in zip(test_subjects, test_hs):
+                        preds = operator(subj, h=h, k=recall_k)
+                        pred_objects.append([p.token for p in preds.predictions])
 
-                        recall = metrics.recall(pred_objects, test_objects)
-                        recalls_by_beta.append(recall)
-                        results_by_beta.append(
-                            SweepBetaResults(beta=beta, recall=recall)
-                        )
-
-                    train_sample_result = SweepTrainSampleResults(
-                        sample=train_sample, betas=results_by_beta
+                    recall = metrics.recall(pred_objects, test_objects)
+                    recalls_by_beta.append(recall)
+                    results_by_beta.append(
+                        SweepFaithfulnessBetaResults(beta=beta, recall=recall)
                     )
-                    train_sample_result.summarize()
-                    train_sample_results.append(train_sample_result)
+
+                train_result = SweepFaithfulnessTrainResults(
+                    samples=train_samples, betas=results_by_beta
+                )
+                train_result.summarize()
                 layer_results.append(
-                    SweepLayerResults(layer=h_layer, samples=train_sample_results)
+                    SweepFaithfulnessLayerResults(layer=h_layer, result=train_result)
                 )
             trial_results.append(
-                SweepTrialResults(
+                SweepFaithfulnessTrialResults(
                     prompt_template=prompt_template,
-                    icl_samples=train_icl_samples,
-                    train_samples=train_try_samples,
+                    train_samples=train_samples,
                     layers=layer_results,
                 )
             )
-        relation_result = SweepRelationResults(
+        relation_result = SweepFaithfulnessRelationResults(
             relation_name=relation.name, trials=trial_results
         )
         relation_result.summarize()
@@ -248,7 +254,7 @@ def sweep(
             name=relation.name,
         )
         relation_results.append(relation_result)
-    return SweepResuts(relation_results)
+    return SweepFaithfulnessResuts(relation_results)
 
 
 def _precompute_hs(
