@@ -1,78 +1,222 @@
 {
-  "name": "person father",
-  "prompt_templates": [
-    "{}'s father is named"
-  ],
-  "prompt_templates_zs": [
-    "Who is {}'s father? Their father is named",
-    "{}'s father is named"
-  ],
-  "properties": {
-    "relation_type": "factual",
-    "domain_name": "person",
-    "range_name": "person",
-    "symmetric": false
-  },
-  "samples": [
-    {
-      "subject": "Kim Kardashian",
-      "object": "Robert Kardashian"
+    "name": "person father",
+    "prompt_templates": [
+        "{}'s father is named"
+    ],
+    "prompt_templates_zs": [
+        "Who is {}'s father? Their father is named",
+        "{}'s father is named"
+    ],
+    "properties": {
+        "relation_type": "factual",
+        "domain_name": "person",
+        "range_name": "person",
+        "symmetric": false
     },
-    {
-      "subject": "George W. Bush",
-      "object": "George H. W. Bush"
-    },
-    {
-      "subject": "Gwyneth Paltrow",
-      "object": "Bruce Paltrow"
-    },
-    {
-      "subject": "Liv Tyler",
-      "object": "Steven Tyler"
-    },
-    {
-      "subject": "Beyoncé Knowles",
-      "object": "Mathew Knowles"
-    },
-    {
-      "subject": "Al Gore",
-      "object": "Albert Gore Sr."
-    },
-    {
-      "subject": "Rand Paul",
-      "object": "Ron Paul"
-    },
-    {
-      "subject": "Ben Stiller",
-      "object": "Jerry Stiller"
-    },
-    {
-      "subject": "Donald Trump",
-      "object": "Fred Trump"
-    },
-    {
-      "subject": "David Beckham",
-      "object": "David Edward Alan Beckham"
-    },
-    {
-      "subject": "Jay-Z",
-      "object": "Adnes Reeves"
-    },
-    {
-      "subject": "Michael Jackson",
-      "object": "Joe Jackson"
-    },
-    {
-      "subject": "Kobe Bryant",
-      "object": "Joe Bryant"
-    },
-    {
-      "subject": "Reese Witherspoon",
-      "object": "John Witherspoon"
-    },
-    {
-      "subject": "Jennifer Lopez",
-      "object": "David Lopez"
-    }
-  ]
+    "samples": [
+        {
+            "subject": "Kim Kardashian",
+            "object": "Robert Kardashian"
+        },
+        {
+            "subject": "George W. Bush",
+            "object": "George H. W. Bush"
+        },
+        {
+            "subject": "Gwyneth Paltrow",
+            "object": "Bruce Paltrow"
+        },
+        {
+            "subject": "Liv Tyler",
+            "object": "Steven Tyler"
+        },
+        {
+            "subject": "Beyoncé Knowles",
+            "object": "Mathew Knowles"
+        },
+        {
+            "subject": "Al Gore",
+            "object": "Albert Gore Sr."
+        },
+        {
+            "subject": "Rand Paul",
+            "object": "Ron Paul"
+        },
+        {
+            "subject": "Ben Stiller",
+            "object": "Jerry Stiller"
+        },
+        {
+            "subject": "Donald Trump",
+            "object": "Fred Trump"
+        },
+        {
+            "subject": "David Beckham",
+            "object": "David Edward Alan Beckham"
+        },
+        {
+            "subject": "Jay-Z",
+            "object": "Adnes Reeves"
+        },
+        {
+            "subject": "Michael Jackson",
+            "object": "Joe Jackson"
+        },
+        {
+            "subject": "Kobe Bryant",
+            "object": "Joe Bryant"
+        },
+        {
+            "subject": "Reese Witherspoon",
+            "object": "John Witherspoon"
+        },
+        {
+            "subject": "Jennifer Lopez",
+            "object": "David Lopez"
+        },
+        {
+            "subject": "Jaden Smith",
+            "object": "Will Smith"
+        },
+        {
+            "subject": "Paris Jackson",
+            "object": "Michael Jackson"
+        },
+        {
+            "subject": "Scott Eastwood",
+            "object": "Clint Eastwood"
+        },
+        {
+            "subject": "Enrique Iglesias",
+            "object": "Julio Iglesias"
+        },
+        {
+            "subject": "Charlie Sheen",
+            "object": "Martin Sheen"
+        },
+        {
+            "subject": "Angelina Jolie",
+            "object": "Jon Voight"
+        },
+        {
+            "subject": "Nicolas Cage",
+            "object": "August Coppola"
+        },
+        {
+            "subject": "Jamie Lee Curtis",
+            "object": "Tony Curtis"
+        },
+        {
+            "subject": "Rumer Willis",
+            "object": "Bruce Willis"
+        },
+        {
+            "subject": "Jeff Bridges",
+            "object": "Lloyd Bridges"
+        },
+        {
+            "subject": "Kate Hudson",
+            "object": "Bill Hudson"
+        },
+        {
+            "subject": "Sophia Loren",
+            "object": "Riccardo Scicolone"
+        },
+        {
+            "subject": "Dakota Johnson",
+            "object": "Don Johnson"
+        },
+        {
+            "subject": "Zoe Kravitz",
+            "object": "Lenny Kravitz"
+        },
+        {
+            "subject": "Dylan Brosnan",
+            "object": "Pierce Brosnan"
+        },
+        {
+            "subject": "Rashida Jones",
+            "object": "Quincy Jones"
+        },
+        {
+            "subject": "Miley Cyrus",
+            "object": "Billy Ray Cyrus"
+        },
+        {
+            "subject": "Abby Elliott",
+            "object": "Chris Elliott"
+        },
+        {
+            "subject": "Kiefer Sutherland",
+            "object": "Donald Sutherland"
+        },
+        {
+            "subject": "Georgia May Jagger",
+            "object": "Mick Jagger"
+        },
+        {
+            "subject": "Paula Abdul",
+            "object": "Harry Abdul"
+        },
+        {
+            "subject": "Chet Hanks",
+            "object": "Tom Hanks"
+        },
+        {
+            "subject": "Ivanka Trump",
+            "object": "Donald Trump"
+        },
+        {
+            "subject": "Liza Minnelli",
+            "object": "Vincente Minnelli"
+        },
+        {
+            "subject": "Patrick Schwarzenegger",
+            "object": "Arnold Schwarzenegger"
+        },
+        {
+            "subject": "Tracy Reiner",
+            "object": "Rob Reiner"
+        },
+        {
+            "subject": "Jakob Dylan",
+            "object": "Bob Dylan"
+        },
+        {
+            "subject": "Max Irons",
+            "object": "Jeremy Irons"
+        },
+        {
+            "subject": "Eva Amurri",
+            "object": "Franco Amurri"
+        },
+        {
+            "subject": "Grace Kelly",
+            "object": "John B. Kelly Sr."
+        },
+        {
+            "subject": "Jason Schwartzman",
+            "object": "Francis Ford Coppola"
+        },
+        {
+            "subject": "Colin Hanks",
+            "object": "Tom Hanks"
+        },
+        {
+            "subject": "Alexander Skarsgård",
+            "object": "Stellan Skarsgård"
+        },
+        {
+            "subject": "Sosie Bacon",
+            "object": "Kevin Bacon"
+        },
+        {
+            "subject": "Stella McCartney",
+            "object": "Paul McCartney"
+        },
+        {
+            "subject": "Jessica Capshaw",
+            "object": "Steven Spielberg"
+        }
+    ]
 }

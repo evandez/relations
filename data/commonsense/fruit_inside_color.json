@@ -72,6 +72,90 @@
         {
             "subject": "potatos",
             "object": "white"
+        },
+        {
+            "subject": "strawberries",
+            "object": "red"
+        },
+        {
+            "subject": "avocados",
+            "object": "green"
+        },
+        {
+            "subject": "peaches",
+            "object": "yellow"
+        },
+        {
+            "subject": "pomegranates",
+            "object": "red"
+        },
+        {
+            "subject": "cherries",
+            "object": "red"
+        },
+        {
+            "subject": "grapes",
+            "object": "green"
+        },
+        {
+            "subject": "blueberries",
+            "object": "green"
+        },
+        {
+            "subject": "oranges",
+            "object": "orange"
+        },
+        {
+            "subject": "lemons",
+            "object": "yellow"
+        },
+        {
+            "subject": "limes",
+            "object": "green"
+        },
+        {
+            "subject": "grapefruits",
+            "object": "pink"
+        },
+        {
+            "subject": "blackberries",
+            "object": "red"
+        },
+        {
+            "subject": "raspberries",
+            "object": "red"
+        },
+        {
+            "subject": "papayas",
+            "object": "orange"
+        },
+        {
+            "subject": "apricots",
+            "object": "orange"
+        },
+        {
+            "subject": "tomatoes",
+            "object": "red"
+        },
+        {
+            "subject": "bell peppers",
+            "object": "red"
+        },
+        {
+            "subject": "persimmons",
+            "object": "orange"
+        },
+        {
+            "subject": "lychees",
+            "object": "white"
+        },
+        {
+            "subject": "coconuts",
+            "object": "white"
+        },
+        {
+            "subject": "cantaloupes",
+            "object": "orange"
         }
     ]
 }

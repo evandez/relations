@@ -74,6 +74,66 @@
         {
             "subject": "aggressiveness",
             "object": "men"
+        },
+        {
+            "subject": "nurturing",
+            "object": "women"
+        },
+        {
+            "subject": "resilience",
+            "object": "men"
+        },
+        {
+            "subject": "meticulousness",
+            "object": "women"
+        },
+        {
+            "subject": "risk-taking",
+            "object": "men"
+        },
+        {
+            "subject": "multitasking",
+            "object": "women"
+        },
+        {
+            "subject": "intuition",
+            "object": "women"
+        },
+        {
+            "subject": "discipline",
+            "object": "men"
+        },
+        {
+            "subject": "ambition",
+            "object": "men"
+        },
+        {
+            "subject": "generosity",
+            "object": "women"
+        },
+        {
+            "subject": "humility",
+            "object": "women"
+        },
+        {
+            "subject": "critical thinking",
+            "object": "men"
+        },
+        {
+            "subject": "bravery",
+            "object": "men"
+        },
+        {
+            "subject": "adaptability",
+            "object": "women"
+        },
+        {
+            "subject": "decisiveness",
+            "object": "men"
+        },
+        {
+            "subject": "endurance",
+            "object": "men"
         }
     ]
 }

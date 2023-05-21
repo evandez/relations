@@ -81,6 +81,118 @@
         {
             "subject": "social media influencers",
             "object": "young"
+        },
+        {
+            "subject": "architects",
+            "object": "old"
+        },
+        {
+            "subject": "web developers",
+            "object": "young"
+        },
+        {
+            "subject": "videographers",
+            "object": "young"
+        },
+        {
+            "subject": "astronauts",
+            "object": "old"
+        },
+        {
+            "subject": "biologists",
+            "object": "old"
+        },
+        {
+            "subject": "chefs",
+            "object": "old"
+        },
+        {
+            "subject": "dancers",
+            "object": "young"
+        },
+        {
+            "subject": "engineers",
+            "object": "old"
+        },
+        {
+            "subject": "farmers",
+            "object": "old"
+        },
+        {
+            "subject": "game designers",
+            "object": "young"
+        },
+        {
+            "subject": "hiking guides",
+            "object": "young"
+        },
+        {
+            "subject": "investigators",
+            "object": "old"
+        },
+        {
+            "subject": "journalists",
+            "object": "old"
+        },
+        {
+            "subject": "kindergarten teachers",
+            "object": "young"
+        },
+        {
+            "subject": "librarians",
+            "object": "old"
+        },
+        {
+            "subject": "musicians",
+            "object": "young"
+        },
+        {
+            "subject": "nurses",
+            "object": "old"
+        },
+        {
+            "subject": "ophthalmologists",
+            "object": "old"
+        },
+        {
+            "subject": "psychologists",
+            "object": "old"
+        },
+        {
+            "subject": "quantum physicists",
+            "object": "old"
+        },
+        {
+            "subject": "restaurant managers",
+            "object": "old"
+        },
+        {
+            "subject": "scientists",
+            "object": "old"
+        },
+        {
+            "subject": "tattoo artists",
+            "object": "young"
+        },
+        {
+            "subject": "university students",
+            "object": "young"
+        },
+        {
+            "subject": "veterinarians",
+            "object": "old"
+        },
+        {
+            "subject": "waitstaff",
+            "object": "young"
+        },
+        {
+            "subject": "yoga instructors",
+            "object": "young"
+        },
+        {
+            "subject": "zookeepers",
+            "object": "old"
         }
     ]
 }

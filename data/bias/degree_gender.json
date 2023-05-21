@@ -78,6 +78,94 @@
         {
             "subject": "fashion design",
             "object": "women"
+        },
+        {
+            "subject": "philosophy",
+            "object": "men"
+        },
+        {
+            "subject": "graphic design",
+            "object": "women"
+        },
+        {
+            "subject": "environmental science",
+            "object": "women"
+        },
+        {
+            "subject": "architecture",
+            "object": "men"
+        },
+        {
+            "subject": "literature",
+            "object": "women"
+        },
+        {
+            "subject": "chemistry",
+            "object": "men"
+        },
+        {
+            "subject": "fine arts",
+            "object": "women"
+        },
+        {
+            "subject": "political science",
+            "object": "men"
+        },
+        {
+            "subject": "human resources",
+            "object": "women"
+        },
+        {
+            "subject": "communications",
+            "object": "women"
+        },
+        {
+            "subject": "astronomy",
+            "object": "men"
+        },
+        {
+            "subject": "interior design",
+            "object": "women"
+        },
+        {
+            "subject": "marine biology",
+            "object": "women"
+        },
+        {
+            "subject": "mechanical engineering",
+            "object": "men"
+        },
+        {
+            "subject": "classical studies",
+            "object": "women"
+        },
+        {
+            "subject": "statistics",
+            "object": "men"
+        },
+        {
+            "subject": "public relations",
+            "object": "women"
+        },
+        {
+            "subject": "culinary arts",
+            "object": "women"
+        },
+        {
+            "subject": "history",
+            "object": "men"
+        },
+        {
+            "subject": "anthropology",
+            "object": "women"
+        },
+        {
+            "subject": "geology",
+            "object": "men"
+        },
+        {
+            "subject": "pharmacy",
+            "object": "women"
         }
     ]
 }
