@@ -8,7 +8,7 @@
         "The professional role most suited to handle {} is a"
     ],
     "properties": {
-        "relation_type": "factual",
+        "relation_type": "commonsense",
         "domain_name": "task",
         "range_name": "occupation type",
         "symmetric": false

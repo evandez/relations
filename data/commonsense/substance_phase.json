@@ -8,7 +8,7 @@
         "What is the phase of matter of {} at room temperature? It is"
     ],
     "properties": {
-        "relation_type": "factual",
+        "relation_type": "commonsense",
         "domain_name": "substance",
         "range_name": "phase of matter",
         "symmetric": false

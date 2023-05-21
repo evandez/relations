@@ -7,7 +7,7 @@
       "What color are {} on the outside? They are"
   ],
   "properties": {
-      "relation_type": "factual",
+      "relation_type": "commonsense",
       "domain_name": "fruit",
       "range_name": "color",
       "symmetric": false
