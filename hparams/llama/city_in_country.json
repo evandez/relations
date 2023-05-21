@@ -1,0 +1,8 @@
+{
+    "relation_name": "city in country",
+    "h_layer": 17,
+    "beta": 0.16666666915019354,
+    "model_name": "llama",
+    "rank": null,
+    "z_layer": -1
+}

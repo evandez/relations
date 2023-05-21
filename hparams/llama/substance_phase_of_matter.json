@@ -1,0 +1,8 @@
+{
+    "relation_name": "substance phase of matter",
+    "h_layer": 13,
+    "beta": 0.3333333333333333,
+    "model_name": "llama",
+    "rank": null,
+    "z_layer": -1
+}

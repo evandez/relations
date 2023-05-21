@@ -1,0 +1,8 @@
+{
+    "relation_name": "company CEO",
+    "h_layer": 1,
+    "beta": 0.11666666964689891,
+    "model_name": "llama",
+    "rank": null,
+    "z_layer": -1
+}

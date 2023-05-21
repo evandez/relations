@@ -1,0 +1,8 @@
+{
+    "relation_name": "country currency",
+    "h_layer": 12,
+    "beta": 0.20000000298023224,
+    "model_name": "llama",
+    "rank": null,
+    "z_layer": -1
+}
