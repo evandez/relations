@@ -100,7 +100,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--editor",
         choices=EDITORS,
-        default="lr-e",
+        default="lr",
         help="editor to use",
     )
     data.add_data_args(parser)

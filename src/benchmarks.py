@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import Any, NamedTuple, Sequence
+from typing import Any, Callable, NamedTuple, Sequence
 
 from src import data, editors, functional, hparams, metrics, models, operators
 from src.functional import make_prompt
@@ -10,7 +10,6 @@ from src.utils import dataclasses_utils, experiment_utils, tokenizer_utils
 from src.utils.typing import Layer, PathLike, StrSequence
 
 import torch
-from baukit import nethook
 from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
@@ -909,7 +908,7 @@ def causality(
 
                     result: editors.EditResult
                     if editor_type.expects() == "object":
-                        result = nethook.invoke_with_optional_args(
+                        result = dataclasses_utils.call_with_optional_kwargs(
                             editor.__call__,
                             subject=subject_original,
                             target=object_target,
@@ -917,7 +916,7 @@ def causality(
                         )
                     else:
                         assert editor_type.expects() == "subject"
-                        result = nethook.invoke_with_optional_args(
+                        result = dataclasses_utils.call_with_optional_kwargs(
                             editor.__call__,
                             subject=subject_original,
                             target=subject_target,

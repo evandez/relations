@@ -1,6 +1,7 @@
 """Utilities for interacting with dataclasses."""
+import inspect
 from dataclasses import fields, is_dataclass
-from typing import Any, TypeVar
+from typing import Any, Callable, TypeVar
 
 T = TypeVar("T")
 
@@ -18,6 +19,20 @@ def create_with_optional_kwargs(cls: type[T], **kwargs: Any) -> T:
         if key in cls_fields:
             cls_kwargs[key] = value
     return cls(**cls_kwargs)
+
+
+def call_with_optional_kwargs(fn: Callable[..., T], **kwargs: Any) -> T:
+    """Call fn with only those kwargs it accepts.
+
+    Works on non-dataclasses too, but designed to be compatible with dataclasses
+    implementing `__call__`.
+    """
+    argspec = inspect.getfullargspec(fn)
+    kwargs = {**kwargs}
+    for key in kwargs:
+        if key not in argspec.args:
+            del kwargs[key]
+    return fn(**kwargs)
 
 
 def has_field(cls: type[T], field_name: str) -> bool:
