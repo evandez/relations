@@ -895,7 +895,8 @@ def causality(
                 for rank in ranks:
                     logger.info(
                         f"{relation.name=}, trial={trial + 1}/{n_trials}, "
-                        f"{sample.subject=}, {rank=}"
+                        f"{subject_original=}, {object_original=}, "
+                        f"{subject_target=}, {object_target=}, {rank=}"
                     )
 
                     # Perform the edit and record LM outputs.
