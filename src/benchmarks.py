@@ -817,7 +817,12 @@ def causality(
     if desc is None:
         desc = "causality"
     if ranks is None:
-        ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
+        if issubclass(editor_type, editors.LowRankPInvEditor):
+            ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
+        else:
+            ranks = [None]
+        
+        
 
     results_by_relation = []
     for relation in tqdm(dataset.relations, desc=desc):
@@ -856,7 +861,7 @@ def causality(
                 )
                 operator = estimator(train)
                 if operator.weight is not None:
-                    svd = torch.svd(operator.weight)
+                    svd = torch.svd(operator.weight.float())
 
             logger.debug("precompute test zs")
             [hs_by_subj, zs_by_subj] = _precompute_zs(
@@ -868,32 +873,32 @@ def causality(
                 z_layer=operator.z_layer if operator is not None else None,
             )
 
-            relation_ranks = []
-            for rank in ranks:
-                relation_samples = []
-                for sample in test.samples:
-                    others = [
-                        x
-                        for x in test.samples
-                        if x.subject != sample.subject and x.object != sample.object
-                    ]
-                    if not others:
-                        logger.debug(
-                            "no sample with different subject and different object "
-                            f"than {sample}, skipping"
-                        )
-                        continue
-                    target = random.choice(others)
+            relation_samples = {r:[] for r in ranks} 
+            relation_ranks = []        
+            for sample in test.samples:
+                others = [
+                    x
+                    for x in test.samples
+                    if x.subject != sample.subject and x.object != sample.object
+                ]
+                if not others:
+                    logger.debug(
+                        "no sample with different subject and different object "
+                        f"than {sample}, skipping"
+                    )
+                    continue
+                target = random.choice(others)
 
-                    subject_original = sample.subject
-                    subject_target = target.subject
+                subject_original = sample.subject
+                subject_target = target.subject
 
-                    object_original = sample.object
-                    object_target = target.object
-
+                object_original = sample.object
+                object_target = target.object
+                for rank in ranks:
                     # Perform the edit and record LM outputs.
                     editor = dataclasses_utils.create_with_optional_kwargs(
                         editor_type,
+                        h_layer= relation_hparams.h_layer,
                         rank=rank,
                         lre=operator,
                         svd=svd,
@@ -901,21 +906,20 @@ def causality(
                         mt=mt,
                         **kwargs,
                     )
-
                     result: editors.EditResult
                     if editor_type.expects() == "object":
                         result = nethook.invoke_with_optional_args(
-                            editor,
-                            subject_original,
-                            object_target,
+                            fn=(lambda subject, target: editor(subject=subject,target=target)),
+                            subject=subject_original,
+                            target=object_target,
                             z_original=zs_by_subj.get(subject_original),
                         )
                     else:
                         assert editor_type.expects() == "subject"
                         result = nethook.invoke_with_optional_args(
-                            editor,
-                            subject_original,
-                            subject_target,
+                            fn=(lambda subject, target: editor(subject=subject,target=target)),
+                            subject=subject_original,
+                            target=subject_target,
                             z_original=zs_by_subj.get(subject_original),
                             z_target=zs_by_subj.get(subject_target),
                         )
@@ -943,7 +947,7 @@ def causality(
                         )
                         lre_preds = output_low_rank.predictions
 
-                    relation_samples.append(
+                    relation_samples[rank].append(
                         CausalityBenchmarkRelationTrialSample(
                             subject_original=subject_original,
                             subject_target=subject_target,
@@ -956,10 +960,11 @@ def causality(
                             edited_lm_generations=result.model_generations,
                         )
                     )
+            for rank in ranks:
                 relation_ranks.append(
                     CausalityBenchmarkRelationTrialRank(
                         rank=rank,
-                        samples=relation_samples,
+                        samples=relation_samples[rank],
                     )
                 )
             relation_trials.append(
@@ -1021,7 +1026,7 @@ def _precompute_zs(
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
-        )
+        ).to(mt.model.device)
     offset_mapping = inputs.pop("offset_mapping")
 
     batched_hidden_states = []
