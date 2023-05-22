@@ -983,11 +983,6 @@ def causality(
                         lre_preds = output_low_rank.predictions
                         logger.debug(f"lre result: {lre_preds[0]}")
 
-                    # Also record specificity predictions if we're testing the right
-                    # methods.
-                    if operator is not None and operator.weight is not None:
-                        pass
-
                     relation_samples[rank].append(
                         CausalityBenchmarkRelationTrialSample(
                             subject_original=subject_original,
