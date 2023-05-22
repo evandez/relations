@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import Any, Callable, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence, cast
 
 from src import data, editors, functional, hparams, metrics, models, operators
 from src.functional import make_prompt
@@ -787,6 +787,14 @@ class CausalityBenchmarkRelationTrialRank(DataClassJsonMixin):
                 for x in self.samples
             ]
         )
+
+    def faithfulness_score(self) -> float | None:
+        if any(x.lre_preds is None for x in self.samples):
+            return None
+        return metrics.recall(
+            [[x.token for x in cast(list, xs.lre_preds)] for xs in self.samples],
+            [x.object_target for x in self.samples],
+        )[0]
 
 
 @dataclass(frozen=True, kw_only=True)
