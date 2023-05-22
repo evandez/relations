@@ -302,7 +302,7 @@ class EmbedBaselineEditor(Editor):
         h_original = hiddens.hiddens[0][0, subject_edit_index, ..., None]
 
         target_token_id = models.tokenize_words(self.mt, target).input_ids[:, 0].item()
-        embed_target = self.mt.lm_head[-1].weight[target_token_id, :]
+        embed_target = self.mt.lm_head[-1].weight[target_token_id]
         embed_target = embed_target * (h_original.norm() / embed_target.norm())
 
         return _apply_edit(

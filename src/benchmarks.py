@@ -437,6 +437,9 @@ def faithfulness(
             continue
 
         relation_hparams = hparams.get(mt, relation)
+        if relation_hparams is None:
+            logger.info(f"no hparams for {relation.name}; skipping")
+            continue
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -870,6 +873,9 @@ def causality(
             continue
 
         relation_hparams = hparams.get(mt, relation)
+        if relation_hparams is None:
+            logger.info(f"no hparams for {relation.name}; skipping")
+            continue
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -1027,7 +1033,8 @@ def causality(
                 )
 
             # Record performance for all ranks for ICL-style prompt.
-            logger.info("begin sweep over ranks...")
+            if len(ranks) > 1:
+                logger.info("begin sweep over ranks...")
             relation_ranks = []
             for rank in ranks:
                 relation_samples = []
