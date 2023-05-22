@@ -45,7 +45,9 @@ class RelationHParams(HParams):
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
             file = self.default_relation_file(self.model_name, self.relation_name)
-        logger.info(f'writing "{self.relation_name}" hparams to {file}')
+        logger.info(
+            f'writing {self.model_name}/"{self.relation_name}" hparams to {file}'
+        )
         self.save_json_file(file)
 
     @classmethod
@@ -59,7 +61,10 @@ class RelationHParams(HParams):
             raise FileNotFoundError(
                 f'expected {cls.__name__} file for relation "{relation}" at {hparams_file}'
             )
-        return cls.from_json_file(hparams_file)
+        logger.info(f"reading hparams from {hparams_file}")
+        hparams = cls.from_json_file(hparams_file)
+        logger.info(f'{hparams.model_name}/"{hparams.relation_name}" hparams: {hparams}')
+        return hparams
 
     @staticmethod
     def default_relation_file(

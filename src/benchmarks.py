@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import Any, Callable, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence, cast
 
 from src import data, editors, functional, hparams, metrics, models, operators
 from src.functional import make_prompt
@@ -64,7 +64,7 @@ def reconstruction(
     estimator: operators.LinearRelationEstimator,
     dataset: data.RelationDataset,
     n_trials: int = 3,
-    n_train: int = 3,
+    n_train: int = 5,
     n_random_distractors: int = 3,
     desc: str | None = None,
     results_dir: PathLike | None = None,
@@ -378,7 +378,7 @@ def faithfulness(
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
     estimator_type: type[operators.LinearRelationEstimator],
-    n_train: int = 3,
+    n_train: int = 5,
     n_trials: int = 3,
     k: int = 3,
     desc: str | None = None,
@@ -749,7 +749,10 @@ def faithfulness(
 class CausalityBenchmarkRelationTrialSample(DataClassJsonMixin):
     subject_original: str
     subject_target: str
+
+    object_original: str
     object_target: str
+
     prompt_template: str
 
     prob_original: float
@@ -768,20 +771,46 @@ class CausalityBenchmarkRelationTrialRank(DataClassJsonMixin):
     rank: int
     samples: list[CausalityBenchmarkRelationTrialSample]
 
-    def efficacy(self) -> float:
-        return sum(x.prob_target > x.prob_original for x in self.samples) / len(
-            self.samples
+    def efficacy_score(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [x.prob_target > x.prob_original for x in self.samples]
         )
+
+    def efficacy_magnitude(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [x.prob_target - x.prob_original for x in self.samples]
+        )
+
+    def efficacy_score_hard(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [
+                functional.is_nontrivial_prefix(
+                    x.edited_lm_preds[0].token, x.object_target
+                )
+                for x in self.samples
+            ]
+        )
+
+    def faithfulness_score(self) -> float | None:
+        if any(x.lre_preds is None for x in self.samples):
+            return None
+        return metrics.recall(
+            [[x.token for x in cast(list, xs.lre_preds)] for xs in self.samples],
+            [x.object_original for x in self.samples],
+        )[0]
 
 
 @dataclass(frozen=True, kw_only=True)
 class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
-    train: data.RelationDataset
-    test: data.RelationDataset
+    train: data.Relation
+    test: data.Relation
     ranks: list[CausalityBenchmarkRelationTrialRank]
 
+    # Best rank applied zero-shot, if this method supports that.
+    rank_zs: CausalityBenchmarkRelationTrialRank | None
+
     def best(self) -> CausalityBenchmarkRelationTrialRank:
-        return max(self.ranks, key=lambda x: x.efficacy())
+        return max(self.ranks, key=lambda x: x.efficacy_score().mean)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -807,24 +836,28 @@ def causality(
     dataset: data.RelationDataset,
     estimator_type: type[operators.LinearRelationEstimator],
     editor_type: type[editors.Editor],
-    n_train: int = 3,
+    n_train: int = 5,
     n_trials: int = 3,
     ranks: Sequence[int] | None = None,
-    desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
-    **kwargs: Any,
 ) -> CausalityBenchmarkResults:
-    if desc is None:
-        desc = "causality"
     if ranks is None:
         if dataclasses_utils.has_field(editor_type, "rank"):
-            ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
+            hidden_size = models.determine_hidden_size(mt)
+            ranks = [
+                *range(0, 100, 2),
+                *range(100, 200, 5),
+                *range(200, 500, 25),
+                *range(500, 1000, 50),
+                *range(1000, hidden_size + 1, 250),
+            ]
         else:
             ranks = [0]
 
     results_by_relation = []
-    for relation in tqdm(dataset.relations, desc=desc):
+    for relation in dataset.relations:
+        logger.info(f'begin relation: "{relation.name}"')
         relation_results = experiment_utils.load_results_file(
             results_dir=results_dir,
             name=relation.name,
@@ -845,35 +878,16 @@ def causality(
         )
 
         relation_trials = []
-        for _ in range(n_trials):
+        for trial in range(n_trials):
+            logger.info(f"begin trial: {trial + 1}/{n_trials}")
             prompt_template = relation.prompt_templates[0]
 
             train, test = relation.set(prompt_templates=[prompt_template]).split(
                 n_train
             )
 
-            operator = None
-            svd = None
-            if issubclass(editor_type, editors.LinearRelationEditor):
-                logger.debug(
-                    f"estimate operator for: {[str(x) for x in train.samples]}"
-                )
-                operator = estimator(train)
-                if operator.weight is not None:
-                    svd = torch.svd(operator.weight.float())
-
-            logger.debug("precompute test zs")
-            [hs_by_subj, zs_by_subj] = _precompute_zs(
-                mt=mt,
-                prompt_template=prompt_template,
-                subjects=[x.subject for x in test.samples],
-                examples=train.samples,
-                h_layer=operator.h_layer if operator is not None else None,
-                z_layer=operator.z_layer if operator is not None else None,
-            )
-
-            relation_ranks = []
-            relation_samples: dict[int, list] = defaultdict(list)
+            # Pick test targets up front so we can use them for all ranks.
+            targets = {}
             for sample in test.samples:
                 others = [
                     x
@@ -886,95 +900,200 @@ def causality(
                         f"than {sample}, skipping"
                     )
                     continue
-                target = random.choice(others)
+                targets[sample] = random.choice(others)
 
+            operator = None
+            svd = None
+            if issubclass(editor_type, editors.LinearRelationEditor):
+                logger.info(
+                    f"estimating operator for: {[str(x) for x in train.samples]}"
+                )
+                operator = estimator(train)
+                if operator.weight is not None:
+                    svd = torch.svd(operator.weight.float())
+
+            logger.info("precomputing test zs...")
+            [hs_by_subj, zs_by_subj] = _precompute_zs(
+                mt=mt,
+                prompt_template=prompt_template,
+                subjects=[x.subject for x in test.samples],
+                examples=train.samples,
+                h_layer=operator.h_layer if operator is not None else None,
+                z_layer=operator.z_layer if operator is not None else None,
+            )
+
+            # Wrap the whole sample-wise edit procedure in a fn.
+            def edit(
+                *,
+                sample: data.RelationSample,
+                target: data.RelationSample,
+                rank: int,
+                prompt_template: str,
+                zs: bool = False,
+            ) -> CausalityBenchmarkRelationTrialSample:
                 subject_original = sample.subject
                 subject_target = target.subject
 
                 object_original = sample.object
                 object_target = target.object
-                for rank in ranks:
-                    # Perform the edit and record LM outputs.
-                    editor = dataclasses_utils.create_with_optional_kwargs(
-                        editor_type,
-                        h_layer=relation_hparams.h_layer,
-                        rank=rank,
-                        lre=operator,
-                        svd=svd,
-                        prompt_template=prompt_template,
-                        mt=mt,
-                        **kwargs,
+                logger.debug(
+                    f"{relation.name=}, trial={trial + 1}/{n_trials}, {zs=}, "
+                    f"{subject_original=}, {object_original=}, "
+                    f"{subject_target=}, {object_target=}, {rank=}"
+                )
+
+                # Perform the edit and record LM outputs.
+                n_samples = 5 if zs else 1
+                n_new_tokens = 50 if zs else 1
+                if zs:
+                    operator = replace(operator, prompt_template=prompt_template)
+                editor = dataclasses_utils.create_with_optional_kwargs(
+                    editor_type,
+                    h_layer=relation_hparams.h_layer,
+                    rank=rank,
+                    lre=operator,
+                    svd=svd,
+                    prompt_template=prompt_template,
+                    mt=mt,
+                    n_samples=n_samples,
+                    n_new_tokens=n_new_tokens,
+                )
+
+                result: editors.EditResult
+                if editor_type.expects() == "object":
+                    result = dataclasses_utils.call_with_optional_kwargs(
+                        editor.__call__,
+                        subject=subject_original,
+                        target=object_target,
+                        z_original=zs_by_subj.get(subject_original),
+                    )
+                else:
+                    assert editor_type.expects() == "subject"
+                    result = dataclasses_utils.call_with_optional_kwargs(
+                        editor.__call__,
+                        subject=subject_original,
+                        target=subject_target,
+                        z_original=zs_by_subj.get(subject_original),
+                        z_target=zs_by_subj.get(subject_target),
                     )
 
-                    result: editors.EditResult
-                    if editor_type.expects() == "object":
-                        result = dataclasses_utils.call_with_optional_kwargs(
-                            editor.__call__,
-                            subject=subject_original,
-                            target=object_target,
-                            z_original=zs_by_subj.get(subject_original),
-                        )
-                    else:
-                        assert editor_type.expects() == "subject"
-                        result = dataclasses_utils.call_with_optional_kwargs(
-                            editor.__call__,
-                            subject=subject_original,
-                            target=subject_target,
-                            z_original=zs_by_subj.get(subject_original),
-                            z_target=zs_by_subj.get(subject_target),
-                        )
+                [token_id_original, token_id_target] = (
+                    models.tokenize_words(mt, [object_original, object_target])
+                    .input_ids[:, 0]
+                    .tolist()
+                )
+                probs = result.model_logits.float().softmax(dim=-1)
+                prob_original = probs[token_id_original].item()
+                prob_target = probs[token_id_target].item()
+                logger.debug(
+                    f"edit result: {prob_original=:.2f}, {prob_target=:.2f}, "
+                    f"top={result.predicted_tokens[0]}"
+                )
 
-                    [token_id_original, token_id_target] = (
-                        models.tokenize_words(mt, [object_original, object_target])
-                        .input_ids[:, 0]
-                        .tolist()
+                # Also record LRE predictions if possible.
+                lre_preds = None
+                if operator is not None and operator.weight is not None:
+                    operator_low_rank = replace(
+                        operator,
+                        weight=functional.low_rank_approx(
+                            matrix=operator.weight, rank=rank, svd=svd
+                        ),
                     )
-                    probs = result.model_logits.float().softmax(dim=-1)
-                    prob_original = probs[token_id_original].item()
-                    prob_target = probs[token_id_target].item()
-
-                    # Also record LRE predictions if possible.
-                    lre_preds = None
-                    if operator is not None and operator.weight is not None:
-                        operator_low_rank = replace(
-                            operator,
-                            weight=functional.low_rank_approx(
-                                matrix=operator.weight, rank=rank, svd=svd
-                            ),
-                        )
-                        output_low_rank = operator_low_rank(
-                            subject_original, h=hs_by_subj[subject_original][None]
-                        )
-                        lre_preds = output_low_rank.predictions
-
-                    # Also record specificity predictions if we're testing the right
-                    # methods.
-                    if operator is not None and operator.weight is not None:
-                        pass
-
-                    relation_samples[rank].append(
-                        CausalityBenchmarkRelationTrialSample(
-                            subject_original=subject_original,
-                            subject_target=subject_target,
-                            object_target=object_target,
-                            prompt_template=prompt_template,
-                            prob_original=prob_original,
-                            prob_target=prob_target,
-                            lre_preds=lre_preds,
-                            edited_lm_preds=result.predicted_tokens,
-                            edited_lm_generations=result.model_generations,
-                        )
+                    output_low_rank = operator_low_rank(
+                        subject_original, h=hs_by_subj[subject_original][None]
                     )
+                    lre_preds = output_low_rank.predictions
+                    logger.debug(f"lre result: {lre_preds[0]}")
+
+                return CausalityBenchmarkRelationTrialSample(
+                    subject_original=subject_original,
+                    subject_target=subject_target,
+                    object_original=object_original,
+                    object_target=object_target,
+                    prompt_template=prompt_template,
+                    prob_original=prob_original,
+                    prob_target=prob_target,
+                    lre_preds=lre_preds,
+                    edited_lm_preds=result.predicted_tokens,
+                    edited_lm_generations=result.model_generations,
+                )
+
+            # Record performance for all ranks for ICL-style prompt.
+            relation_ranks = []
             for rank in ranks:
+                relation_samples = []
+                for sample in test.samples:
+                    target = targets.get(sample)
+                    if target is None:
+                        continue
+                    relation_sample = edit(
+                        sample=sample,
+                        target=target,
+                        rank=rank,
+                        prompt_template=prompt_template,
+                        zs=False,
+                    )
+                    relation_samples.append(relation_sample)
                 relation_ranks.append(
                     CausalityBenchmarkRelationTrialRank(
                         rank=rank,
-                        samples=relation_samples[rank],
+                        samples=relation_samples,
                     )
                 )
+
+            # Record performance for zero-shot prompt. Choose lowest rank
+            # with that score. VERY HACKY. HOPE IT WORKS!
+            rank_zs = None
+            if issubclass(editor_type, editors.LinearRelationEditor):
+                logger.info("will try to evaluate ZS performance too")
+
+                prompt_template_zs = relation.prompt_templates_zs[0]
+                logger.info(f"zs prompt: {prompt_template_zs}")
+
+                test_zs = functional.filter_relation_samples(
+                    mt=mt,
+                    relation=test,
+                    prompt_template=prompt_template_zs,
+                    n_icl_lm=0,
+                    n_top_lm=1,
+                )
+                if len(test_zs.samples) == 0:
+                    logger.info("no known ZS samples, skipping")
+                    continue
+
+                scores = [
+                    round(
+                        rank.efficacy_score_hard().mean,
+                        2,
+                    )
+                    for rank in relation_ranks
+                ]
+                best_score = max(scores)
+                best_index = sorted(scores).index(best_score)
+                best_rank = ranks[best_index]
+                logger.info(f"chose rank {best_rank} ({best_score}) for ZS eval")
+
+                relation_samples_zs = []
+                for sample in test_zs.samples:
+                    target = targets.get(sample)
+                    if target is None:
+                        continue
+                    relation_sample_zs = edit(
+                        sample=sample,
+                        target=target,
+                        rank=best_rank,
+                        prompt_template=prompt_template_zs,
+                        zs=True,
+                    )
+                    relation_samples_zs.append(relation_sample_zs)
+                rank_zs = CausalityBenchmarkRelationTrialRank(
+                    rank=best_rank,
+                    samples=relation_samples_zs,
+                )
+
             relation_trials.append(
                 CausalityBenchmarkRelationTrial(
-                    train=train, test=test, ranks=relation_ranks
+                    train=train, test=test, ranks=relation_ranks, rank_zs=rank_zs
                 )
             )
         relation_results = CausalityRelationResults(
@@ -987,10 +1106,9 @@ def causality(
         )
         results_by_relation.append(relation_results)
 
-    # Also computed/evaluated elsewhere, but saving metrics during the run helps
-    # with debugging.
+    # This isn't the metric we really want, just helpful for debugging.
     efficacies = [
-        trial.best().efficacy()
+        trial.best().efficacy_score().mean
         for relation_result in results_by_relation
         for trial in relation_result.trials
     ]

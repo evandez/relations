@@ -440,6 +440,11 @@ def filter_relation_samples(
     predictions = predict_next_token(
         mt=mt, prompt=prompts, k=n_top_lm, batch_size=batch_size
     )
+
+    # Helpful to see what the model predicted sometimes.
+    for sample, topk in zip(relation.samples, predictions):
+        logger.debug(f"{sample.subject=}, {sample.object=}, predicted={topk[0]}")
+
     known_samples = {
         sample
         for sample, topk in zip(relation.samples, predictions)
@@ -460,7 +465,6 @@ def filter_dataset_samples(
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
     min_knowns: int = 10,
-    desc: str | None = None,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
 
@@ -468,15 +472,12 @@ def filter_dataset_samples(
     "knows" the sample if, given an ICL prompt for the relation, it predicts the
     correct answer in the top-1 position.
     """
-    if desc is None:
-        desc = "filter dataset"
+    logger.info("filtering dataset to knowns only...")
 
     relations = []
-    progress = tqdm(dataset.relations, desc=desc)
-    for relation in progress:
+    for relation in dataset.relations:
         prompt_template = relation.prompt_templates[0]
 
-        progress.set_description(f"{desc} ({relation.name})")
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
             filtered = filter_relation_samples(

@@ -29,7 +29,7 @@ def call_with_optional_kwargs(fn: Callable[..., T], **kwargs: Any) -> T:
     """
     argspec = inspect.getfullargspec(fn)
     kwargs = {**kwargs}
-    for key in kwargs:
+    for key in list(kwargs):
         if key not in argspec.args:
             del kwargs[key]
     return fn(**kwargs)
