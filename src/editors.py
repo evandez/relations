@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_N_TOP_TOKENS = 10
 DEFAULT_N_SAMPLES = 5
-DEFAULT_N_NEW_TOKENS = 50
+DEFAULT_N_NEW_TOKENS = 1
 
 
 @dataclass(frozen=True, kw_only=True)
