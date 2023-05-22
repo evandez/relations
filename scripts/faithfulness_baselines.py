@@ -14,7 +14,6 @@ from src.operators import (
 from src.utils import experiment_utils, logging_utils
 
 import torch
-from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +35,8 @@ def evaluate(
 
 
 def main(args: argparse.Namespace) -> None:
+    logging_utils.configure(args=args)
+
     dataset = data.load_dataset()
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
@@ -51,13 +52,9 @@ def main(args: argparse.Namespace) -> None:
 
     all_results = []
 
-    progress = tqdm(dataset.relations, desc="faithfulness baselines")
-    for relation_hparams in tqdm(os.listdir(hparams_path)):
+    for relation_hparams in os.listdir(hparams_path):
         with open(os.path.join(hparams_path, relation_hparams), "r") as f:
             hparams = json.load(f)
-        if hparams["relation_name"] != "country capital city":
-            continue
-        progress.set_description(hparams["relation_name"])
         logger.info(
             f"{hparams['relation_name']} | h_layer: {hparams['h_layer']} | beta: {hparams['beta']}"
         )
@@ -70,8 +67,12 @@ def main(args: argparse.Namespace) -> None:
             relation_names=[hparams["relation_name"]],
         )
         cur_relation_known_dataset = functional.filter_dataset_samples(
-            mt=mt, dataset=cur_relation_dataset
+            mt=mt, dataset=cur_relation_dataset, n_icl_lm=N_TRAINING
         )
+        if len(cur_relation_known_dataset.relations) == 0:
+            logger.info("Skipping relation with no known samples")
+            continue
+
         cur_relation = cur_relation_dataset[0]
         cur_relation_known = cur_relation_known_dataset[0]
 
@@ -197,6 +198,7 @@ def main(args: argparse.Namespace) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     models.add_model_args(parser)
+    logging_utils.add_logging_args(parser)
     parser.add_argument(
         "--hparams-path",
         type=str,
@@ -226,7 +228,6 @@ if __name__ == "__main__":
     )
 
     experiment_utils.add_experiment_args(parser)
-    logging_utils.add_logging_args(parser)
     args = parser.parse_args()
     print(args)
     main(args)
