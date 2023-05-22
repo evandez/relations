@@ -76,6 +76,8 @@ class LinearRelationOperator(RelationOperator):
             prompt = functional.make_prompt(
                 mt=self.mt, prompt_template=self.prompt_template, subject=subject
             )
+            logger.debug(f'computing h from prompt "{prompt}"')
+
             h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt, prompt=prompt, subject=subject
             )
@@ -84,6 +86,8 @@ class LinearRelationOperator(RelationOperator):
                 mt=self.mt, layers=[self.h_layer], inputs=inputs
             )
             h = hs[:, h_index]
+        else:
+            logger.debug("using precomputed h")
 
         z = h
         if self.weight is not None:
