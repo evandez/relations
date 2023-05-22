@@ -806,6 +806,9 @@ class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
     test: data.Relation
     ranks: list[CausalityBenchmarkRelationTrialRank]
 
+    # Best rank applied zero-shot.
+    rank_zs: CausalityBenchmarkRelationTrialRank
+
     def best(self) -> CausalityBenchmarkRelationTrialRank:
         return max(self.ranks, key=lambda x: x.efficacy_score().mean)
 
@@ -842,7 +845,14 @@ def causality(
 ) -> CausalityBenchmarkResults:
     if ranks is None:
         if dataclasses_utils.has_field(editor_type, "rank"):
-            ranks = [*range(0, 100, 2), *range(100, 250, 10)]
+            hidden_size = models.determine_hidden_size(mt)
+            ranks = [
+                *range(0, 100, 2),
+                *range(100, 200, 5),
+                *range(200, 500, 25),
+                *range(500, 1000, 50),
+                *range(1000, hidden_size + 1, 250),
+            ]
         else:
             ranks = [0]
 
