@@ -8,7 +8,6 @@ from src import data, functional, metrics, models, operators
 from src.utils import experiment_utils, tokenizer_utils
 from src.utils.typing import PathLike, StrSequence
 
-import numpy as np
 import torch
 from dataclasses_json import DataClassJsonMixin
 
