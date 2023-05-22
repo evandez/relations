@@ -44,7 +44,7 @@ def main(args: argparse.Namespace) -> None:
         f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
     )
 
-    hparams_path = f"{args.hparams_path}/{args.model}"
+    hparams_path = f"{args.hparams_path}/{mt.name}"
     save_dir = args.save_dir
     os.makedirs(save_dir, exist_ok=True)
     N_TRIALS = args.n_trials
