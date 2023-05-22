@@ -36,7 +36,9 @@ def main(args: argparse.Namespace) -> None:
     estimator_type = ESTIMATORS[args.estimator]
 
     with torch.device(device):
-        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
+        dataset = functional.filter_dataset_samples(
+            mt=mt, dataset=dataset, batch_size=args.batch_size
+        )
 
         for bench in args.benchmarks:
             logger.info(f"begin benchmark: {bench}")
@@ -63,6 +65,7 @@ def main(args: argparse.Namespace) -> None:
                     editor_type=editor_type,
                     results_dir=bench_results_dir,
                     resume=args.resume,
+                    batch_size=args.batch_size,
                 )
             else:
                 raise ValueError(f"unknown benchmark: {bench}")
@@ -102,6 +105,12 @@ if __name__ == "__main__":
         choices=EDITORS,
         default="lr",
         help="editor to use",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=functional.DEFAULT_BATCH_SIZE,
+        help="max batch size for lm",
     )
     data.add_data_args(parser)
     models.add_model_args(parser)

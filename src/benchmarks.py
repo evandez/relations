@@ -838,6 +838,7 @@ def causality(
     editor_type: type[editors.Editor],
     n_train: int = 5,
     n_trials: int = 3,
+    batch_size: int = functional.DEFAULT_BATCH_SIZE,
     ranks: Sequence[int] | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
@@ -929,6 +930,7 @@ def causality(
                 target: data.RelationSample,
                 rank: int,
                 prompt_template: str,
+                operator: operators.LinearRelationEstimator | None = None,
                 zs: bool = False,
             ) -> CausalityBenchmarkRelationTrialSample:
                 subject_original = sample.subject
@@ -945,7 +947,7 @@ def causality(
                 # Perform the edit and record LM outputs.
                 n_samples = 5 if zs else 1
                 n_new_tokens = 50 if zs else 1
-                if zs:
+                if zs and operator is not None:
                     operator = replace(operator, prompt_template=prompt_template)
                 editor = dataclasses_utils.create_with_optional_kwargs(
                     editor_type,
@@ -1031,6 +1033,7 @@ def causality(
                         target=target,
                         rank=rank,
                         prompt_template=prompt_template,
+                        operator=operator,
                         zs=False,
                     )
                     relation_samples.append(relation_sample)
@@ -1056,6 +1059,7 @@ def causality(
                     prompt_template=prompt_template_zs,
                     n_icl_lm=0,
                     n_top_lm=1,
+                    batch_size=batch_size,
                 )
                 if len(test_zs.samples) == 0:
                     logger.info("no known ZS samples, skipping")
@@ -1083,6 +1087,7 @@ def causality(
                         target=target,
                         rank=best_rank,
                         prompt_template=prompt_template_zs,
+                        operator=operator,
                         zs=True,
                     )
                     relation_samples_zs.append(relation_sample_zs)
