@@ -936,7 +936,7 @@ def causality(
 
                 object_original = sample.object
                 object_target = target.object
-                logger.info(
+                logger.debug(
                     f"{relation.name=}, trial={trial + 1}/{n_trials}, {zs=}, "
                     f"{subject_original=}, {object_original=}, "
                     f"{subject_target=}, {object_target=}, {rank=}"
