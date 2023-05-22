@@ -914,7 +914,7 @@ def causality(
                     svd = torch.svd(operator.weight.float())
 
             logger.info("precomputing test zs...")
-            [hs_by_subj, zs_by_subj] = _precompute_zs(
+            [h_by_subj, z_by_subj] = _precompute_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in test.samples],
@@ -923,7 +923,6 @@ def causality(
                 z_layer=operator.z_layer if operator is not None else None,
             )
 
-            # Wrap the whole sample-wise edit procedure in a fn.
             def edit(
                 *,
                 sample: data.RelationSample,
@@ -933,6 +932,11 @@ def causality(
                 operator: operators.LinearRelationOperator | None = None,
                 zs: bool = False,
             ) -> CausalityBenchmarkRelationTrialSample:
+                """The whole editing test wrapped in a fn.
+
+                Note: When zs=True, we're evaluating editor on a zero-shot prompt.
+                So do not cache anything, and update operator to use that prompt.
+                """
                 subject_original = sample.subject
                 subject_target = target.subject
 
@@ -967,7 +971,7 @@ def causality(
                         editor.__call__,
                         subject=subject_original,
                         target=object_target,
-                        z_original=zs_by_subj.get(subject_original) if not zs else None,
+                        z_original=z_by_subj.get(subject_original) if not zs else None,
                     )
                 else:
                     assert editor_type.expects() == "subject"
@@ -975,8 +979,8 @@ def causality(
                         editor.__call__,
                         subject=subject_original,
                         target=subject_target,
-                        z_original=zs_by_subj.get(subject_original) if not zs else None,
-                        z_target=zs_by_subj.get(subject_target) if not zs else None,
+                        z_original=z_by_subj.get(subject_original) if not zs else None,
+                        z_target=z_by_subj.get(subject_target) if not zs else None,
                     )
 
                 [token_id_original, token_id_target] = (
@@ -1003,7 +1007,7 @@ def causality(
                     )
                     output_low_rank = operator_low_rank(
                         subject_original,
-                        h=hs_by_subj[subject_original][None] if not zs else None,
+                        h=h_by_subj[subject_original][None] if not zs else None,
                     )
                     lre_preds = output_low_rank.predictions
                     logger.debug(f"lre result: {lre_preds[0]}")
@@ -1128,8 +1132,8 @@ def causality(
 
 # TODO(evan): Pretty close to the one in sweeps.py, should refactor.
 class _PrecomputedHiddens(NamedTuple):
-    hs_by_subj: dict[str, torch.Tensor]
-    zs_by_subj: dict[str, torch.Tensor]
+    h_by_subj: dict[str, torch.Tensor]
+    z_by_subj: dict[str, torch.Tensor]
 
 
 def _precompute_zs(
@@ -1170,16 +1174,16 @@ def _precompute_zs(
         batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
     hidden_states = torch.cat(batched_hidden_states, dim=1)
 
-    zs_by_subj = {}
-    hs_by_subj = {}
+    z_by_subj = {}
+    h_by_subj = {}
     for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
         if h_layer is not None:
             _, h_index = tokenizer_utils.find_token_range(
                 prompt, subject, offset_mapping=offset_mapping[i]
             )
             h_index -= 1
-            hs_by_subj[subject] = hidden_states[h_layer, i, h_index]
+            h_by_subj[subject] = hidden_states[h_layer, i, h_index]
         if z_layer is not None:
-            zs_by_subj[subject] = hidden_states[z_layer, i, -1]
+            z_by_subj[subject] = hidden_states[z_layer, i, -1]
 
-    return _PrecomputedHiddens(hs_by_subj, zs_by_subj)
+    return _PrecomputedHiddens(h_by_subj, z_by_subj)
