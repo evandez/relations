@@ -427,6 +427,7 @@ def filter_relation_samples(
     "knows" the sample if, given an ICL prompt for the relation, it predicts the
     correct answer in the top-1 position.
     """
+    logger.debug(f'filtering for knowns using prompt "{prompt_template}"')
     prompts = []
     for sample in relation.samples:
         examples, _ = relation.without(sample).split(n_icl_lm)
