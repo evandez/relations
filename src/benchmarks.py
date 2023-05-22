@@ -930,7 +930,7 @@ def causality(
                 target: data.RelationSample,
                 rank: int,
                 prompt_template: str,
-                operator: operators.LinearRelationEstimator | None = None,
+                operator: operators.LinearRelationOperator | None = None,
                 zs: bool = False,
             ) -> CausalityBenchmarkRelationTrialSample:
                 subject_original = sample.subject
@@ -967,7 +967,7 @@ def causality(
                         editor.__call__,
                         subject=subject_original,
                         target=object_target,
-                        z_original=zs_by_subj.get(subject_original),
+                        z_original=zs_by_subj.get(subject_original) if not zs else None,
                     )
                 else:
                     assert editor_type.expects() == "subject"
@@ -975,8 +975,8 @@ def causality(
                         editor.__call__,
                         subject=subject_original,
                         target=subject_target,
-                        z_original=zs_by_subj.get(subject_original),
-                        z_target=zs_by_subj.get(subject_target),
+                        z_original=zs_by_subj.get(subject_original) if not zs else None,
+                        z_target=zs_by_subj.get(subject_target) if not zs else None,
                     )
 
                 [token_id_original, token_id_target] = (
@@ -1002,7 +1002,8 @@ def causality(
                         ),
                     )
                     output_low_rank = operator_low_rank(
-                        subject_original, h=hs_by_subj[subject_original][None]
+                        subject_original,
+                        h=hs_by_subj[subject_original][None] if not zs else None,
                     )
                     lre_preds = output_low_rank.predictions
                     logger.debug(f"lre result: {lre_preds[0]}")
