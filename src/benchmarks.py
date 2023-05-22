@@ -1027,6 +1027,7 @@ def causality(
                 )
 
             # Record performance for all ranks for ICL-style prompt.
+            logger.info("begin sweep over ranks...")
             relation_ranks = []
             for rank in ranks:
                 relation_samples = []
