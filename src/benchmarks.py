@@ -842,7 +842,7 @@ def causality(
 ) -> CausalityBenchmarkResults:
     if ranks is None:
         if dataclasses_utils.has_field(editor_type, "rank"):
-            ranks = [*range(0, 50, 5), *range(50, 100, 10), *range(100, 250, 25)]
+            ranks = [*range(0, 100, 2), *range(100, 250, 10)]
         else:
             ranks = [0]
 
