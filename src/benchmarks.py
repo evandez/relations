@@ -921,6 +921,7 @@ def causality(
                 examples=train.samples,
                 h_layer=operator.h_layer if operator is not None else None,
                 z_layer=operator.z_layer if operator is not None else None,
+                batch_size=batch_size,
             )
 
             def edit(
@@ -1162,28 +1163,32 @@ def _precompute_zs(
         ).to(mt.model.device)
     offset_mapping = inputs.pop("offset_mapping")
 
-    batched_hidden_states = []
-    for i in range(0, len(inputs.input_ids), batch_size):
+    z_by_subj = {}
+    h_by_subj = {}
+    for batch_start in range(0, len(inputs.input_ids), batch_size):
         with torch.inference_mode():
             outputs = mt.model(
-                inputs.input_ids[i : i + batch_size],
-                attention_mask=inputs.attention_mask[i : i + batch_size],
+                inputs.input_ids[batch_start : batch_start + batch_size],
+                attention_mask=inputs.attention_mask[
+                    batch_start : batch_start + batch_size
+                ],
                 output_hidden_states=True,
                 return_dict=True,
             )
-        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
-    hidden_states = torch.cat(batched_hidden_states, dim=1)
-
-    z_by_subj = {}
-    h_by_subj = {}
-    for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
-        if h_layer is not None:
-            _, h_index = tokenizer_utils.find_token_range(
-                prompt, subject, offset_mapping=offset_mapping[i]
-            )
-            h_index -= 1
-            h_by_subj[subject] = hidden_states[h_layer, i, h_index]
-        if z_layer is not None:
-            z_by_subj[subject] = hidden_states[z_layer, i, -1]
+        hidden_states = outputs.hidden_states[1:]
+        for batch_index in range(batch_size):
+            abs_index = batch_start + batch_index
+            if abs_index >= len(inputs.input_ids):
+                break
+            subject = subjects[abs_index]
+            if h_layer is not None:
+                prompt = prompts[abs_index]
+                _, h_index = tokenizer_utils.find_token_range(
+                    prompt, subject, offset_mapping=offset_mapping[abs_index]
+                )
+                h_index -= 1
+                h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
+            if z_layer is not None:
+                z_by_subj[subject] = hidden_states[z_layer][batch_index, -1]
 
     return _PrecomputedHiddens(h_by_subj, z_by_subj)
