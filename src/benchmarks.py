@@ -1039,55 +1039,55 @@ def causality(
                     )
                 )
 
-                # Record performance for zero-shot prompt. Choose lowest rank
-                # with that score. VERY HACKY. HOPE IT WORKS!
-                rank_zs = None
-                if issubclass(editor_type, editors.LinearRelationEditor):
-                    logger.info("will try to evaluate ZS performance too")
+            # Record performance for zero-shot prompt. Choose lowest rank
+            # with that score. VERY HACKY. HOPE IT WORKS!
+            rank_zs = None
+            if issubclass(editor_type, editors.LinearRelationEditor):
+                logger.info("will try to evaluate ZS performance too")
 
-                    prompt_template_zs = relation.prompt_templates_zs[0]
-                    logger.info(f"zs prompt: {prompt_template_zs}")
+                prompt_template_zs = relation.prompt_templates_zs[0]
+                logger.info(f"zs prompt: {prompt_template_zs}")
 
-                    test_zs = functional.filter_relation_samples(
-                        mt=mt,
-                        relation=test,
-                        prompt_template=prompt_template_zs,
-                        n_icl_lm=0,
-                        n_top_lm=1,
+                test_zs = functional.filter_relation_samples(
+                    mt=mt,
+                    relation=test,
+                    prompt_template=prompt_template_zs,
+                    n_icl_lm=0,
+                    n_top_lm=1,
+                )
+                if len(test_zs.samples) == 0:
+                    logger.info("no known ZS samples, skipping")
+                    continue
+
+                scores = [
+                    round(
+                        rank.efficacy_score_hard().mean,
+                        2,
                     )
-                    if len(test_zs.samples) == 0:
-                        logger.info("no known ZS samples, skipping")
+                    for rank in relation_ranks
+                ]
+                best_score = max(scores)
+                best_index = sorted(scores).index(best_score)
+                best_rank = ranks[best_index]
+                logger.info(f"chose rank {best_rank} ({best_score}) for ZS eval")
+
+                relation_samples_zs = []
+                for sample in test_zs.samples:
+                    target = targets.get(sample)
+                    if target is None:
                         continue
-
-                    scores = [
-                        round(
-                            rank.efficacy_score_hard().mean,
-                            2,
-                        )
-                        for rank in relation_ranks
-                    ]
-                    best_score = max(scores)
-                    best_index = sorted(scores).index(best_score)
-                    best_rank = ranks[best_index]
-                    logger.info(f"chose rank {best_rank} ({best_score}) for ZS eval")
-
-                    relation_samples_zs = []
-                    for sample in test.samples:
-                        target = targets.get(sample)
-                        if target is None:
-                            continue
-                        relation_sample_zs = edit(
-                            sample=sample,
-                            target=target,
-                            rank=best_rank,
-                            prompt_template=prompt_template_zs,
-                            zs=True,
-                        )
-                        relation_samples_zs.append(relation_sample_zs)
-                    rank_zs = CausalityBenchmarkRelationTrialRank(
+                    relation_sample_zs = edit(
+                        sample=sample,
+                        target=target,
                         rank=best_rank,
-                        samples=relation_samples_zs,
+                        prompt_template=prompt_template_zs,
+                        zs=True,
                     )
+                    relation_samples_zs.append(relation_sample_zs)
+                rank_zs = CausalityBenchmarkRelationTrialRank(
+                    rank=best_rank,
+                    samples=relation_samples_zs,
+                )
 
             relation_trials.append(
                 CausalityBenchmarkRelationTrial(
