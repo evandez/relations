@@ -4,13 +4,12 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, NamedTuple, Sequence
 
-from src import data, models
-from src.utils import tokenizer_utils
-from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
-
 import baukit
 import torch
 from dataclasses_json import DataClassJsonMixin
+from src import data, models
+from src.utils import tokenizer_utils
+from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -522,7 +521,8 @@ def find_subject_token_index(
         mt.model.device
     )
     offset_mapping = inputs.pop("offset_mapping")
-
+    if "token_type_ids" in inputs:
+        inputs.pop("token_type_ids")
     # Find the last occurrence of the subject
     subject_i, subject_j = tokenizer_utils.find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0], occurrence=-1

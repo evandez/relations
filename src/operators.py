@@ -1,12 +1,11 @@
 import logging
 from dataclasses import dataclass, field, replace
-from typing import Any
-
-from src import data, functional, models
-from src.utils.typing import Layer
+from typing import Any, Literal
 
 import baukit
 import torch
+from src import data, functional, models
+from src.utils.typing import Layer
 
 logger = logging.getLogger(__name__)
 
@@ -298,6 +297,7 @@ class CornerGdEstimator(LinearRelationEstimator):
 class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
+    mode: Literal["zs", "icl"] = "zs"
     n_steps: int = 100
     lr: float = 5e-2
     weight_decay: float = 2e-2
@@ -310,7 +310,7 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
         device = models.determine_device(self.mt)
         dtype = models.determine_dtype(self.mt)
         samples = relation.samples
-        prompt_template = relation.prompt_templates[0]
+        prompt_template = "{}" if self.mode == "zs" else relation.prompt_templates[0]
 
         H_stack: list[torch.Tensor] = []
         Z_stack: list[torch.Tensor] = []
@@ -323,12 +323,15 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
         )
 
         for sample in samples:
-            prompt = functional.make_prompt(
-                mt=self.mt,
-                prompt_template=prompt_template,
-                subject=sample.subject,
-                examples=samples,
-            )
+            if self.mode == "zs":
+                prompt = prompt_template.format(sample.subject)
+            elif self.mode == "icl":
+                prompt = functional.make_prompt(
+                    mt=self.mt,
+                    prompt_template=prompt_template,
+                    subject=sample.subject,
+                    examples=samples,
+                )
             h_index, inputs = functional.find_subject_token_index(
                 mt=self.mt,
                 prompt=prompt,
@@ -370,6 +373,14 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
             loss.backward()
             optimizer.step()
 
+        if self.mode == "icl":
+            prompt_template = functional.make_prompt(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=samples,
+            )
+
         operator = LinearRelationOperator(
             mt=self.mt,
             weight=weight.detach().to(dtype).to(device),
@@ -387,6 +398,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None
+    mode: Literal["icl", "zs"] = "zs"
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         _check_nonempty(
@@ -394,7 +406,8 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         )
         _warn_gt_1(prompt_templates=relation.prompt_templates)
         samples = relation.samples
-        prompt_template = relation.prompt_templates[0]
+        prompt_template = "{}" if self.mode == "zs" else relation.prompt_templates[0]
+
         range_tokenized = models.tokenize_words(
             tokenizer=self.mt.tokenizer, words=list(relation.range)
         )
@@ -408,12 +421,15 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
             H = []
             h_layer_name = models.determine_layer_paths(self.mt, [self.h_layer])[0]
             for sample in samples:
-                prompt = functional.make_prompt(
-                    mt=self.mt,
-                    prompt_template=prompt_template,
-                    subject=sample.subject,
-                    examples=samples,
-                )
+                if self.mode == "zs":
+                    prompt = prompt_template.format(sample.subject)
+                elif self.mode == "icl":
+                    prompt = functional.make_prompt(
+                        mt=self.mt,
+                        prompt_template=prompt_template,
+                        subject=sample.subject,
+                        examples=samples,
+                    )
                 h_index, inputs = functional.find_subject_token_index(
                     mt=self.mt,
                     prompt=prompt,
@@ -440,6 +456,14 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
         if self.z_layer is None:
             z_layer = models.determine_layers(self.mt)[-1]
+
+        if self.mode == "icl":
+            prompt_template = functional.make_prompt(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=samples,
+            )
 
         operator = LinearRelationOperator(
             mt=self.mt,
