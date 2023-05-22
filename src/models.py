@@ -168,22 +168,22 @@ def determine_layer_paths(
 
     assert isinstance(model, Model), type(model)
 
-    layers = [*layers]  # Copy so we can edit in place
     layer_paths: dict[Layer, str] = {}
-    for i, layer in enumerate(layers):
+    for layer in layers:
         if layer == "emb":
             layer_paths[layer] = determine_embedding_layer_path(model)
             continue
 
-        if layer < 0:
-            layers[i] = layer = len(determine_layers(model)) + layer
+        layer_index = layer
+        if layer_index < 0:
+            layer_index = len(determine_layers(model)) + layer
 
         if isinstance(model, transformers.GPTNeoXForCausalLM):
-            layer_path = f"gpt_neox.layers.{layer}"
+            layer_path = f"gpt_neox.layers.{layer_index}"
         elif isinstance(model, transformers.LlamaForCausalLM):
-            layer_path = f"model.layers.{layer}"
+            layer_path = f"model.layers.{layer_index}"
         else:
-            layer_path = f"transformer.h.{layer}"
+            layer_path = f"transformer.h.{layer_index}"
         layer_paths[layer] = layer_path
 
     return layer_paths if return_dict else tuple(layer_paths[la] for la in layers)
