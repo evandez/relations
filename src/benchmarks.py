@@ -1054,12 +1054,16 @@ def causality(
                         zs=False,
                     )
                     relation_samples.append(relation_sample)
-                relation_ranks.append(
-                    CausalityBenchmarkRelationTrialRank(
-                        rank=rank,
-                        samples=relation_samples,
+
+                if relation_samples:
+                    relation_ranks.append(
+                        CausalityBenchmarkRelationTrialRank(
+                            rank=rank,
+                            samples=relation_samples,
+                        )
                     )
-                )
+                else:
+                    logger.debug(f"rank {rank} trial had no viable samples, skipping")
 
             # Record performance for zero-shot prompt. Choose lowest rank
             # with that score. VERY HACKY. HOPE IT WORKS!
@@ -1113,14 +1117,23 @@ def causality(
                     samples=relation_samples_zs,
                 )
 
-            relation_trials.append(
-                CausalityBenchmarkRelationTrial(
-                    train=train, test=test, ranks=relation_ranks, rank_zs=rank_zs
+            if relation_ranks:
+                relation_trials.append(
+                    CausalityBenchmarkRelationTrial(
+                        train=train, test=test, ranks=relation_ranks, rank_zs=rank_zs
+                    )
                 )
+            else:
+                logger.info(f"trial {trial} had no viable samples, skipping")
+
+        if relation_trials:
+            relation_results = CausalityRelationResults(
+                relation_name=relation.name, trials=relation_trials
             )
-        relation_results = CausalityRelationResults(
-            relation_name=relation.name, trials=relation_trials
-        )
+        else:
+            logger.info("relation had no viable edits, skipping")
+            continue
+
         experiment_utils.save_results_file(
             results_dir=results_dir,
             name=relation.name,
