@@ -768,9 +768,24 @@ class CausalityBenchmarkRelationTrialRank(DataClassJsonMixin):
     rank: int
     samples: list[CausalityBenchmarkRelationTrialSample]
 
-    def efficacy(self) -> float:
-        return sum(x.prob_target > x.prob_original for x in self.samples) / len(
-            self.samples
+    def efficacy_score(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [x.prob_target > x.prob_original for x in self.samples]
+        )
+
+    def efficacy_magnitude(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [x.prob_target - x.prob_original for x in self.samples]
+        )
+
+    def efficacy_score_hard(self) -> metrics.AggregateMetric:
+        return metrics.AggregateMetric.aggregate(
+            [
+                functional.is_nontrivial_prefix(
+                    x.edited_lm_preds[0].token, x.object_target
+                )
+                for x in self.samples
+            ]
         )
 
 
@@ -781,7 +796,7 @@ class CausalityBenchmarkRelationTrial(DataClassJsonMixin):
     ranks: list[CausalityBenchmarkRelationTrialRank]
 
     def best(self) -> CausalityBenchmarkRelationTrialRank:
-        return max(self.ranks, key=lambda x: x.efficacy())
+        return max(self.ranks, key=lambda x: x.efficacy_score().mean)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -997,10 +1012,9 @@ def causality(
         )
         results_by_relation.append(relation_results)
 
-    # Also computed/evaluated elsewhere, but saving metrics during the run helps
-    # with debugging.
+    # This isn't the metric we really want, just helpful for debugging.
     efficacies = [
-        trial.best().efficacy()
+        trial.best().efficacy_score().mean
         for relation_result in results_by_relation
         for trial in relation_result.trials
     ]
