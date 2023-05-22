@@ -841,6 +841,7 @@ def causality(
     editor_type: type[editors.Editor],
     n_train: int = 5,
     n_trials: int = 3,
+    max_test_samples: int = 100,
     batch_size: int = functional.DEFAULT_BATCH_SIZE,
     ranks: Sequence[int] | None = None,
     results_dir: PathLike | None = None,
@@ -876,6 +877,8 @@ def causality(
         if relation_hparams is None:
             logger.info(f"no hparams for {relation.name}; skipping")
             continue
+        assert relation_hparams is not None
+
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -890,7 +893,7 @@ def causality(
             prompt_template = relation.prompt_templates[0]
 
             train, test = relation.set(prompt_templates=[prompt_template]).split(
-                n_train
+                n_train, test_size=max_test_samples
             )
 
             # Pick test targets up front so we can use them for all ranks.
@@ -962,7 +965,7 @@ def causality(
                     operator = replace(operator, prompt_template=prompt_template)
                 editor = dataclasses_utils.create_with_optional_kwargs(
                     editor_type,
-                    h_layer=relation_hparams.h_layer,
+                    h_layer=cast(hparams.RelationHParams, relation_hparams).h_layer,
                     rank=rank,
                     lre=operator,
                     svd=svd,

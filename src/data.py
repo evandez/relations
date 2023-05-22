@@ -82,10 +82,12 @@ class Relation(DataClassJsonMixin):
         """Return a copy of this relation without a given sample."""
         return self.set(samples=[s for s in self.samples if s != sample])
 
-    def split(self, size: int) -> tuple["Relation", "Relation"]:
+    def split(self, train_size: int, test_size: int | None = None) -> tuple["Relation", "Relation"]:
         """Break into a train/test split."""
-        if size > len(self.samples):
-            raise ValueError(f"size must be <= {len(self.samples)}, got: {size}")
+        if train_size > len(self.samples):
+            raise ValueError(f"size must be <= {len(self.samples)}, got: {train_size}")
+        if test_size is None:
+            test_size = len(self.samples) - train_size
 
         # Shuffle once up front, because we're sometimes sorted, and if the relation
         # is 1:1, we'll always pick the same samples!
@@ -113,8 +115,8 @@ class Relation(DataClassJsonMixin):
                 if len(samples_by_object[object]) == 0:
                     del samples_by_object[object]
 
-        train_samples = max_coverage_samples[:size]
-        test_samples = max_coverage_samples[size:]
+        train_samples = max_coverage_samples[:train_size]
+        test_samples = max_coverage_samples[train_size:train_size + test_size]
 
         return (
             Relation(
