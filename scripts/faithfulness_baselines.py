@@ -3,6 +3,7 @@ import json
 import logging
 import os
 
+import torch
 from src import data, functional, metrics, models
 from src.operators import (
     JacobianEstimator,
@@ -12,8 +13,6 @@ from src.operators import (
     OffsetEstimatorBaseline,
 )
 from src.utils import experiment_utils, logging_utils
-
-import torch
 
 logger = logging.getLogger(__name__)
 
@@ -109,27 +108,81 @@ def main(args: argparse.Namespace) -> None:
                     }
                     for sample in train.samples
                 ],
-                "zero_shot": {},  # W_r and b_r calculated without any ICL examples
-                "logit_lens": {},  # F(h) = h
-                "corner": {},  # F(h) = h + b
-                "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
-                "icl_mean_emb": {},  # ICL-Mean but h set to embedding
-                "icl_mean": {},  # flagship method
+                "zero_shot": {
+                    "logit_lens": {},  # F(h) = h
+                    "corner": {},  # F(h) = h + b
+                    "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
+                    "lre_emb": {},  # ICL-Mean but h set to embedding
+                    "lre": {},  # ICL, don't do mean as it's zero shot
+                },
+                "icl": {
+                    "logit_lens": {},  # F(h) = h
+                    "corner": {},  # F(h) = h + b
+                    "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
+                    "lre_emb": {},  # ICL-Mean but h set to embedding
+                    "lre": {},  # ICL-Mean
+                },
             }
 
-            zero_shot_estimator = JacobianEstimator(
+            logger.info("------------ ZERO SHOT ------------")
+            logit_lens_operator = LinearRelationOperator(
+                mt=mt,
+                h_layer=hparams["h_layer"],
+                weight=None,
+                bias=None,
+                prompt_template="{}",
+                z_layer=-1,
+            )
+            logit_lens_recall = evaluate(logit_lens_operator, test)
+            logger.info(f"logit lens: {logit_lens_recall['recall']}")
+            trial_results["zero_shot"]["logit_lens"] = logit_lens_recall
+
+            offset_estimator = OffsetEstimatorBaseline(
+                mt=mt, h_layer=hparams["h_layer"], mode="zs"
+            )
+            offset_operator = offset_estimator(train)
+            offset_recall = evaluate(offset_operator, test)
+            logger.info(f"offset: {offset_recall['recall']}")
+            trial_results["zero_shot"]["corner"] = offset_recall
+
+            learned_estimator = LearnedLinearEstimatorBaseline(
+                mt=mt,
+                h_layer=hparams["h_layer"],
+                mode="zs",
+            )
+            learned_operator = learned_estimator(train)
+            learned_recall = evaluate(learned_operator, test)
+            logger.info(f"learned: {learned_recall['recall']}")
+            trial_results["zero_shot"]["learned_linear"] = learned_recall
+
+            lre_zs_emb_estimator = JacobianEstimator(
+                mt=mt,
+                h_layer="emb",
+                beta=hparams["beta"],
+            )
+            lre_zs_emb_operator = lre_zs_emb_estimator.estimate_for_subject(
+                subject=train.samples[0].subject,
+                prompt_template="{}",
+            )
+            zero_shot_recall = evaluate(lre_zs_emb_operator, test)
+            logger.info(f"LRE (emb): {zero_shot_recall['recall']}")
+            trial_results["zero_shot"]["lre_emb"] = zero_shot_recall
+
+            lre_zs_estimator = JacobianEstimator(
                 mt=mt,
                 h_layer=hparams["h_layer"],
                 beta=hparams["beta"],
             )
-            zero_shot_operator = zero_shot_estimator.estimate_for_subject(
+            lre_zs_operator = lre_zs_estimator.estimate_for_subject(
                 subject=train.samples[0].subject,
-                prompt_template=prompt_template,
+                prompt_template="{}",
             )
-            zero_shot_recall = evaluate(zero_shot_operator, test)
-            logger.info(f"zero shot recall: {zero_shot_recall['recall']}")
-            trial_results["zero_shot"] = zero_shot_recall
+            zero_shot_recall = evaluate(lre_zs_operator, test)
+            logger.info(f"LRE: {zero_shot_recall['recall']}")
+            trial_results["zero_shot"]["lre"] = zero_shot_recall
 
+            logger.info("")
+            logger.info("------------ ICL ------------")
             logit_lens_operator = LinearRelationOperator(
                 mt=mt,
                 h_layer=hparams["h_layer"],
@@ -139,46 +192,46 @@ def main(args: argparse.Namespace) -> None:
                 z_layer=-1,
             )
             logit_lens_recall = evaluate(logit_lens_operator, test)
-            logger.info(f"logit lens recall: {logit_lens_recall['recall']}")
-            trial_results["logit_lens"] = logit_lens_recall
+            logger.info(f"logit lens: {logit_lens_recall['recall']}")
+            trial_results["icl"]["logit_lens"] = logit_lens_recall
 
             offset_estimator = OffsetEstimatorBaseline(
-                mt=mt,
-                h_layer=hparams["h_layer"],
+                mt=mt, h_layer=hparams["h_layer"], mode="icl"
             )
             offset_operator = offset_estimator(train)
             offset_recall = evaluate(offset_operator, test)
-            logger.info(f"offset recall: {offset_recall['recall']}")
-            trial_results["corner"] = offset_recall
+            logger.info(f"offset: {offset_recall['recall']}")
+            trial_results["icl"]["corner"] = offset_recall
 
             learned_estimator = LearnedLinearEstimatorBaseline(
                 mt=mt,
                 h_layer=hparams["h_layer"],
+                mode="icl",
             )
             learned_operator = learned_estimator(train)
             learned_recall = evaluate(learned_operator, test)
-            logger.info(f"learned recall: {learned_recall['recall']}")
-            trial_results["learned_linear"] = learned_recall
+            logger.info(f"learned: {learned_recall['recall']}")
+            trial_results["icl"]["learned_linear"] = learned_recall
 
-            mean_emb_estimator = JacobianIclMeanEstimator(
+            lre_icl_emb_estimator = JacobianIclMeanEstimator(
                 mt=mt,
                 h_layer="emb",
                 beta=hparams["beta"],
             )
-            mean_emb_operator = mean_emb_estimator(train)
-            mean_emb_recall = evaluate(mean_emb_operator, test)
-            logger.info(f"icl mean recall (emb): {mean_emb_recall['recall']}")
-            trial_results["icl_mean_emb"] = mean_emb_recall
+            lre_icl_emb_operator = lre_icl_emb_estimator(train)
+            lre_emb_recall = evaluate(lre_icl_emb_operator, test)
+            logger.info(f"LRE (emb): {lre_emb_recall['recall']}")
+            trial_results["icl"]["lre_emb"] = lre_emb_recall
 
-            mean_estimator = JacobianIclMeanEstimator(
+            lre_estimator = JacobianIclMeanEstimator(
                 mt=mt,
                 h_layer=hparams["h_layer"],
                 beta=hparams["beta"],
             )
-            mean_operator = mean_estimator(train)
-            mean_recall = evaluate(mean_operator, test)
-            logger.info(f"icl mean recall: {mean_recall['recall']}")
-            trial_results["icl_mean"] = mean_recall
+            lre_operator = lre_estimator(train)
+            mean_recall = evaluate(lre_operator, test)
+            logger.info(f"LRE: {mean_recall['recall']}")
+            trial_results["icl"]["lre"] = mean_recall
 
             result["trials"].append(trial_results)
             logger.info("")
@@ -189,7 +242,7 @@ def main(args: argparse.Namespace) -> None:
         )
         logger.info("\n\n")
 
-        with open(f"{save_dir}/gptj.json", "w") as f:
+        with open(f"{save_dir}/{mt.name}.json", "w") as f:
             json.dump(all_results, f, indent=4)
 
         # break
