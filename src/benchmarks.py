@@ -945,6 +945,8 @@ def causality(
                 # Perform the edit and record LM outputs.
                 n_samples = 5 if zs else 1
                 n_new_tokens = 50 if zs else 1
+                if zs:
+                    operator = replace(operator, prompt_template=prompt_template)
                 editor = dataclasses_utils.create_with_optional_kwargs(
                     editor_type,
                     h_layer=relation_hparams.h_layer,
