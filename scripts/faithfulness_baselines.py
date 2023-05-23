@@ -3,7 +3,6 @@ import json
 import logging
 import os
 
-import torch
 from src import data, functional, metrics, models
 from src.operators import (
     JacobianEstimator,
@@ -13,6 +12,8 @@ from src.operators import (
     OffsetEstimatorBaseline,
 )
 from src.utils import experiment_utils, logging_utils
+
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +34,162 @@ def evaluate(
     }
 
 
+def get_zero_shot_results(
+    mt: models.ModelAndTokenizer,
+    h_layer: int,
+    beta: float,
+    train: data.Relation,
+    test: data.Relation,
+) -> dict:
+    print("------------ ZERO SHOT ------------")
+    results: dict = {
+        "logit_lens": {},  # F(h) = h
+        "corner": {},  # F(h) = h + b
+        "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
+        "lre_emb": {},  # ICL-Mean but h set to embedding
+        "lre": {},  # ICL, don't do mean as it's zero shot
+    }
+    logit_lens_operator = LinearRelationOperator(
+        mt=mt,
+        h_layer=h_layer,
+        weight=None,
+        bias=None,
+        prompt_template="{}",
+        z_layer=-1,
+    )
+    logit_lens_recall = evaluate(logit_lens_operator, test)
+    print(
+        f"logit lens: {logit_lens_recall['recall']}",
+        logit_lens_operator.prompt_template,
+    )
+    results["logit_lens"] = logit_lens_recall
+
+    offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="zs")
+    offset_operator = offset_estimator(train)
+    offset_recall = evaluate(offset_operator, test)
+    print(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
+    results["corner"] = offset_recall
+
+    learned_estimator = LearnedLinearEstimatorBaseline(
+        mt=mt,
+        h_layer=h_layer,
+        mode="zs",
+    )
+    learned_operator = learned_estimator(train)
+    learned_recall = evaluate(learned_operator, test)
+    print(f"learned: {learned_recall['recall']}", learned_operator.prompt_template)
+    results["learned_linear"] = learned_recall
+
+    lre_zs_emb_estimator = JacobianEstimator(
+        mt=mt,
+        h_layer="emb",
+        beta=beta,
+    )
+    lre_zs_emb_operator = lre_zs_emb_estimator.estimate_for_subject(
+        subject=train.samples[0].subject,
+        prompt_template="{}",
+    )
+    zero_shot_recall = evaluate(lre_zs_emb_operator, test)
+    print(
+        f"LRE (emb): {zero_shot_recall['recall']}", lre_zs_emb_operator.prompt_template
+    )
+    results["lre_emb"] = zero_shot_recall
+
+    lre_zs_estimator = JacobianEstimator(
+        mt=mt,
+        h_layer=h_layer,
+        beta=beta,
+    )
+    lre_zs_operator = lre_zs_estimator.estimate_for_subject(
+        subject=train.samples[0].subject,
+        prompt_template="{}",
+    )
+    zero_shot_recall = evaluate(lre_zs_operator, test)
+    print(f"LRE: {zero_shot_recall['recall']}", lre_zs_operator.prompt_template)
+    results["lre"] = zero_shot_recall
+
+    return results
+
+
+def get_icl_results(
+    mt: models.ModelAndTokenizer,
+    h_layer: int,
+    beta: float,
+    train: data.Relation,
+    test: data.Relation,
+    icl_prompt: str,
+) -> dict:
+    print("------------ ICL ------------")
+    results: dict = {
+        "logit_lens": {},  # F(h) = h
+        "corner": {},  # F(h) = h + b
+        "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
+        "lre_emb": {},  # ICL-Mean but h set to embedding
+        "lre": {},  # ICL, don't do mean as it's zero shot
+    }
+    logit_lens_operator = LinearRelationOperator(
+        mt=mt,
+        h_layer=h_layer,
+        weight=None,
+        bias=None,
+        prompt_template=icl_prompt,
+        z_layer=-1,
+    )
+    logit_lens_recall = evaluate(logit_lens_operator, test)
+    print(
+        f"logit lens: {logit_lens_recall['recall']}",
+        logit_lens_operator.prompt_template,
+    )
+    results["logit_lens"] = logit_lens_recall
+
+    offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="icl")
+    offset_operator = offset_estimator(train)
+    offset_recall = evaluate(offset_operator, test)
+    print(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
+    results["corner"] = offset_recall
+
+    learned_estimator = LearnedLinearEstimatorBaseline(
+        mt=mt,
+        h_layer=h_layer,
+        mode="icl",
+    )
+    learned_operator = learned_estimator(train)
+    learned_recall = evaluate(learned_operator, test)
+    print(f"learned: {learned_recall['recall']}", learned_operator.prompt_template)
+    results["learned_linear"] = learned_recall
+
+    lre_icl_emb_estimator = JacobianIclMeanEstimator(
+        mt=mt,
+        h_layer="emb",
+        beta=beta,
+    )
+    lre_icl_emb_operator = lre_icl_emb_estimator(train)
+    lre_emb_recall = evaluate(lre_icl_emb_operator, test)
+    print(
+        f"LRE (emb): {lre_emb_recall['recall']}", lre_icl_emb_operator.prompt_template
+    )
+    results["lre_emb"] = lre_emb_recall
+
+    lre_estimator = JacobianIclMeanEstimator(
+        mt=mt,
+        h_layer=h_layer,
+        beta=beta,
+    )
+    lre_operator = lre_estimator(train)
+    mean_recall = evaluate(lre_operator, test)
+    print(f"LRE: {mean_recall['recall']}", lre_operator.prompt_template)
+    results["lre"] = mean_recall
+
+    return results
+
+
 def main(args: argparse.Namespace) -> None:
     logging_utils.configure(args=args)
 
-    dataset = data.load_dataset()
+    dataset = data.load_dataset_from_args(args)
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-    logger.info(
+    print(
         f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
     )
 
@@ -54,7 +204,7 @@ def main(args: argparse.Namespace) -> None:
     for relation_hparams in os.listdir(hparams_path):
         with open(os.path.join(hparams_path, relation_hparams), "r") as f:
             hparams = json.load(f)
-        logger.info(
+        print(
             f"{hparams['relation_name']} | h_layer: {hparams['h_layer']} | beta: {hparams['beta']}"
         )
         result = {
@@ -69,13 +219,13 @@ def main(args: argparse.Namespace) -> None:
             mt=mt, dataset=cur_relation_dataset, n_icl_lm=N_TRAINING
         )
         if len(cur_relation_known_dataset.relations) == 0:
-            logger.info("Skipping relation with no known samples")
+            print("Skipping relation with no known samples")
             continue
 
         cur_relation = cur_relation_dataset[0]
         cur_relation_known = cur_relation_known_dataset[0]
 
-        logger.info(
+        print(
             f"known samples: {len(cur_relation_known.samples)}/{len(cur_relation.samples)}"
         )
         result["known_samples"] = len(cur_relation_known.samples)
@@ -83,14 +233,14 @@ def main(args: argparse.Namespace) -> None:
         result["trials"] = []
 
         prompt_template = cur_relation_known.prompt_templates[0]
-        logger.info(f"prompt template: {prompt_template}")
+        print(f"prompt template: {prompt_template}")
         result["prompt_template"] = prompt_template
-        logger.info("")
+        print("")
 
         for trial in range(N_TRIALS):
-            logger.info(f"trial {trial + 1}/{N_TRIALS}")
+            print(f"trial {trial + 1}/{N_TRIALS}")
             train, test = cur_relation_known.split(size=N_TRAINING)
-            logger.info(f"train: {[str(sample) for sample in train.samples]}")
+            print(f"train: {[str(sample) for sample in train.samples]}")
 
             icl_prompt = functional.make_prompt(
                 mt=mt,
@@ -108,139 +258,34 @@ def main(args: argparse.Namespace) -> None:
                     }
                     for sample in train.samples
                 ],
-                "zero_shot": {
-                    "logit_lens": {},  # F(h) = h
-                    "corner": {},  # F(h) = h + b
-                    "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
-                    "lre_emb": {},  # ICL-Mean but h set to embedding
-                    "lre": {},  # ICL, don't do mean as it's zero shot
-                },
-                "icl": {
-                    "logit_lens": {},  # F(h) = h
-                    "corner": {},  # F(h) = h + b
-                    "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
-                    "lre_emb": {},  # ICL-Mean but h set to embedding
-                    "lre": {},  # ICL-Mean
-                },
+                "zero_shot": {},
+                "icl": {},
             }
-
-            logger.info("------------ ZERO SHOT ------------")
-            logit_lens_operator = LinearRelationOperator(
-                mt=mt,
-                h_layer=hparams["h_layer"],
-                weight=None,
-                bias=None,
-                prompt_template="{}",
-                z_layer=-1,
-            )
-            logit_lens_recall = evaluate(logit_lens_operator, test)
-            logger.info(f"logit lens: {logit_lens_recall['recall']}")
-            trial_results["zero_shot"]["logit_lens"] = logit_lens_recall
-
-            offset_estimator = OffsetEstimatorBaseline(
-                mt=mt, h_layer=hparams["h_layer"], mode="zs"
-            )
-            offset_operator = offset_estimator(train)
-            offset_recall = evaluate(offset_operator, test)
-            logger.info(f"offset: {offset_recall['recall']}")
-            trial_results["zero_shot"]["corner"] = offset_recall
-
-            learned_estimator = LearnedLinearEstimatorBaseline(
-                mt=mt,
-                h_layer=hparams["h_layer"],
-                mode="zs",
-            )
-            learned_operator = learned_estimator(train)
-            learned_recall = evaluate(learned_operator, test)
-            logger.info(f"learned: {learned_recall['recall']}")
-            trial_results["zero_shot"]["learned_linear"] = learned_recall
-
-            lre_zs_emb_estimator = JacobianEstimator(
-                mt=mt,
-                h_layer="emb",
-                beta=hparams["beta"],
-            )
-            lre_zs_emb_operator = lre_zs_emb_estimator.estimate_for_subject(
-                subject=train.samples[0].subject,
-                prompt_template="{}",
-            )
-            zero_shot_recall = evaluate(lre_zs_emb_operator, test)
-            logger.info(f"LRE (emb): {zero_shot_recall['recall']}")
-            trial_results["zero_shot"]["lre_emb"] = zero_shot_recall
-
-            lre_zs_estimator = JacobianEstimator(
+            trial_results["zero_shot"] = get_zero_shot_results(
                 mt=mt,
                 h_layer=hparams["h_layer"],
                 beta=hparams["beta"],
+                train=train,
+                test=test,
             )
-            lre_zs_operator = lre_zs_estimator.estimate_for_subject(
-                subject=train.samples[0].subject,
-                prompt_template="{}",
-            )
-            zero_shot_recall = evaluate(lre_zs_operator, test)
-            logger.info(f"LRE: {zero_shot_recall['recall']}")
-            trial_results["zero_shot"]["lre"] = zero_shot_recall
 
-            logger.info("")
-            logger.info("------------ ICL ------------")
-            logit_lens_operator = LinearRelationOperator(
-                mt=mt,
-                h_layer=hparams["h_layer"],
-                weight=None,
-                bias=None,
-                prompt_template=icl_prompt,
-                z_layer=-1,
-            )
-            logit_lens_recall = evaluate(logit_lens_operator, test)
-            logger.info(f"logit lens: {logit_lens_recall['recall']}")
-            trial_results["icl"]["logit_lens"] = logit_lens_recall
-
-            offset_estimator = OffsetEstimatorBaseline(
-                mt=mt, h_layer=hparams["h_layer"], mode="icl"
-            )
-            offset_operator = offset_estimator(train)
-            offset_recall = evaluate(offset_operator, test)
-            logger.info(f"offset: {offset_recall['recall']}")
-            trial_results["icl"]["corner"] = offset_recall
-
-            learned_estimator = LearnedLinearEstimatorBaseline(
-                mt=mt,
-                h_layer=hparams["h_layer"],
-                mode="icl",
-            )
-            learned_operator = learned_estimator(train)
-            learned_recall = evaluate(learned_operator, test)
-            logger.info(f"learned: {learned_recall['recall']}")
-            trial_results["icl"]["learned_linear"] = learned_recall
-
-            lre_icl_emb_estimator = JacobianIclMeanEstimator(
-                mt=mt,
-                h_layer="emb",
-                beta=hparams["beta"],
-            )
-            lre_icl_emb_operator = lre_icl_emb_estimator(train)
-            lre_emb_recall = evaluate(lre_icl_emb_operator, test)
-            logger.info(f"LRE (emb): {lre_emb_recall['recall']}")
-            trial_results["icl"]["lre_emb"] = lre_emb_recall
-
-            lre_estimator = JacobianIclMeanEstimator(
+            trial_results["icl"] = get_icl_results(
                 mt=mt,
                 h_layer=hparams["h_layer"],
                 beta=hparams["beta"],
+                train=train,
+                test=test,
+                icl_prompt=icl_prompt,
             )
-            lre_operator = lre_estimator(train)
-            mean_recall = evaluate(lre_operator, test)
-            logger.info(f"LRE: {mean_recall['recall']}")
-            trial_results["icl"]["lre"] = mean_recall
+
+            print("")
 
             result["trials"].append(trial_results)
-            logger.info("")
+            print("")
 
         all_results.append(result)
-        logger.info(
-            "-----------------------------------------------------------------------"
-        )
-        logger.info("\n\n")
+        print("-----------------------------------------------------------------------")
+        print("\n\n")
 
         with open(f"{save_dir}/{mt.name}.json", "w") as f:
             json.dump(all_results, f, indent=4)
@@ -250,8 +295,12 @@ def main(args: argparse.Namespace) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+
+    data.add_data_args(parser)
     models.add_model_args(parser)
     logging_utils.add_logging_args(parser)
+    experiment_utils.add_experiment_args(parser)
+
     parser.add_argument(
         "--hparams-path",
         type=str,
@@ -262,7 +311,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/faithfulness_baselines",
+        default="results/faithfulness_baselines_test",
         help="path to save results",
     )
 
@@ -280,7 +329,6 @@ if __name__ == "__main__":
         help="number of training samples",
     )
 
-    experiment_utils.add_experiment_args(parser)
     args = parser.parse_args()
     print(args)
     main(args)
