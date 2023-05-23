@@ -41,7 +41,7 @@ def get_zero_shot_results(
     train: data.Relation,
     test: data.Relation,
 ) -> dict:
-    print("------------ ZERO SHOT ------------")
+    logger.info("------------ ZERO SHOT ------------")
     results: dict = {
         "logit_lens": {},  # F(h) = h
         "corner": {},  # F(h) = h + b
@@ -58,7 +58,7 @@ def get_zero_shot_results(
         z_layer=-1,
     )
     logit_lens_recall = evaluate(logit_lens_operator, test)
-    print(
+    logger.info(
         f"logit lens: {logit_lens_recall['recall']}",
         logit_lens_operator.prompt_template,
     )
@@ -67,7 +67,7 @@ def get_zero_shot_results(
     offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="zs")
     offset_operator = offset_estimator(train)
     offset_recall = evaluate(offset_operator, test)
-    print(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
+    logger.info(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
     results["corner"] = offset_recall
 
     learned_estimator = LearnedLinearEstimatorBaseline(
@@ -77,7 +77,9 @@ def get_zero_shot_results(
     )
     learned_operator = learned_estimator(train)
     learned_recall = evaluate(learned_operator, test)
-    print(f"learned: {learned_recall['recall']}", learned_operator.prompt_template)
+    logger.info(
+        f"learned: {learned_recall['recall']}", learned_operator.prompt_template
+    )
     results["learned_linear"] = learned_recall
 
     lre_zs_emb_estimator = JacobianEstimator(
@@ -90,7 +92,7 @@ def get_zero_shot_results(
         prompt_template="{}",
     )
     zero_shot_recall = evaluate(lre_zs_emb_operator, test)
-    print(
+    logger.info(
         f"LRE (emb): {zero_shot_recall['recall']}", lre_zs_emb_operator.prompt_template
     )
     results["lre_emb"] = zero_shot_recall
@@ -105,7 +107,7 @@ def get_zero_shot_results(
         prompt_template="{}",
     )
     zero_shot_recall = evaluate(lre_zs_operator, test)
-    print(f"LRE: {zero_shot_recall['recall']}", lre_zs_operator.prompt_template)
+    logger.info(f"LRE: {zero_shot_recall['recall']}", lre_zs_operator.prompt_template)
     results["lre"] = zero_shot_recall
 
     return results
@@ -119,7 +121,7 @@ def get_icl_results(
     test: data.Relation,
     icl_prompt: str,
 ) -> dict:
-    print("------------ ICL ------------")
+    logger.info("------------ ICL ------------")
     results: dict = {
         "logit_lens": {},  # F(h) = h
         "corner": {},  # F(h) = h + b
@@ -136,7 +138,7 @@ def get_icl_results(
         z_layer=-1,
     )
     logit_lens_recall = evaluate(logit_lens_operator, test)
-    print(
+    logger.info(
         f"logit lens: {logit_lens_recall['recall']}",
         logit_lens_operator.prompt_template,
     )
@@ -145,7 +147,7 @@ def get_icl_results(
     offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="icl")
     offset_operator = offset_estimator(train)
     offset_recall = evaluate(offset_operator, test)
-    print(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
+    logger.info(f"offset: {offset_recall['recall']}", offset_operator.prompt_template)
     results["corner"] = offset_recall
 
     learned_estimator = LearnedLinearEstimatorBaseline(
@@ -155,7 +157,9 @@ def get_icl_results(
     )
     learned_operator = learned_estimator(train)
     learned_recall = evaluate(learned_operator, test)
-    print(f"learned: {learned_recall['recall']}", learned_operator.prompt_template)
+    logger.info(
+        f"learned: {learned_recall['recall']}", learned_operator.prompt_template
+    )
     results["learned_linear"] = learned_recall
 
     lre_icl_emb_estimator = JacobianIclMeanEstimator(
@@ -165,7 +169,7 @@ def get_icl_results(
     )
     lre_icl_emb_operator = lre_icl_emb_estimator(train)
     lre_emb_recall = evaluate(lre_icl_emb_operator, test)
-    print(
+    logger.info(
         f"LRE (emb): {lre_emb_recall['recall']}", lre_icl_emb_operator.prompt_template
     )
     results["lre_emb"] = lre_emb_recall
@@ -177,7 +181,7 @@ def get_icl_results(
     )
     lre_operator = lre_estimator(train)
     mean_recall = evaluate(lre_operator, test)
-    print(f"LRE: {mean_recall['recall']}", lre_operator.prompt_template)
+    logger.info(f"LRE: {mean_recall['recall']}", lre_operator.prompt_template)
     results["lre"] = mean_recall
 
     return results
@@ -189,7 +193,7 @@ def main(args: argparse.Namespace) -> None:
     dataset = data.load_dataset_from_args(args)
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-    print(
+    logger.info(
         f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
     )
 
@@ -204,7 +208,7 @@ def main(args: argparse.Namespace) -> None:
     for relation_hparams in os.listdir(hparams_path):
         with open(os.path.join(hparams_path, relation_hparams), "r") as f:
             hparams = json.load(f)
-        print(
+        logger.info(
             f"{hparams['relation_name']} | h_layer: {hparams['h_layer']} | beta: {hparams['beta']}"
         )
         result = {
@@ -219,13 +223,13 @@ def main(args: argparse.Namespace) -> None:
             mt=mt, dataset=cur_relation_dataset, n_icl_lm=N_TRAINING
         )
         if len(cur_relation_known_dataset.relations) == 0:
-            print("Skipping relation with no known samples")
+            logger.info("Skipping relation with no known samples")
             continue
 
         cur_relation = cur_relation_dataset[0]
         cur_relation_known = cur_relation_known_dataset[0]
 
-        print(
+        logger.info(
             f"known samples: {len(cur_relation_known.samples)}/{len(cur_relation.samples)}"
         )
         result["known_samples"] = len(cur_relation_known.samples)
@@ -233,14 +237,14 @@ def main(args: argparse.Namespace) -> None:
         result["trials"] = []
 
         prompt_template = cur_relation_known.prompt_templates[0]
-        print(f"prompt template: {prompt_template}")
+        logger.info(f"prompt template: {prompt_template}")
         result["prompt_template"] = prompt_template
-        print("")
+        logger.info("")
 
         for trial in range(N_TRIALS):
-            print(f"trial {trial + 1}/{N_TRIALS}")
+            logger.info(f"trial {trial + 1}/{N_TRIALS}")
             train, test = cur_relation_known.split(size=N_TRAINING)
-            print(f"train: {[str(sample) for sample in train.samples]}")
+            logger.info(f"train: {[str(sample) for sample in train.samples]}")
 
             icl_prompt = functional.make_prompt(
                 mt=mt,
@@ -278,14 +282,16 @@ def main(args: argparse.Namespace) -> None:
                 icl_prompt=icl_prompt,
             )
 
-            print("")
+            logger.info("")
 
             result["trials"].append(trial_results)
-            print("")
+            logger.info("")
 
         all_results.append(result)
-        print("-----------------------------------------------------------------------")
-        print("\n\n")
+        logger.info(
+            "-----------------------------------------------------------------------"
+        )
+        logger.info("\n\n")
 
         with open(f"{save_dir}/{mt.name}.json", "w") as f:
             json.dump(all_results, f, indent=4)
@@ -330,5 +336,5 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    print(args)
+    logger.info(args)
     main(args)
