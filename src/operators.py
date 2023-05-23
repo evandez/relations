@@ -2,10 +2,11 @@ import logging
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
-import baukit
-import torch
 from src import data, functional, models
 from src.utils.typing import Layer
+
+import baukit
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -310,7 +311,11 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
         device = models.determine_device(self.mt)
         dtype = models.determine_dtype(self.mt)
         samples = relation.samples
-        prompt_template = "{}" if self.mode == "zs" else relation.prompt_templates[0]
+        prompt_template = (
+            self.mt.tokenizer.eos_token + " {}"
+            if self.mode == "zs"
+            else relation.prompt_templates[0]
+        )
 
         H_stack: list[torch.Tensor] = []
         Z_stack: list[torch.Tensor] = []
@@ -406,7 +411,11 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         )
         _warn_gt_1(prompt_templates=relation.prompt_templates)
         samples = relation.samples
-        prompt_template = "{}" if self.mode == "zs" else relation.prompt_templates[0]
+        prompt_template = (
+            self.mt.tokenizer.eos_token + " {}"
+            if self.mode == "zs"
+            else relation.prompt_templates[0]
+        )
 
         range_tokenized = models.tokenize_words(
             tokenizer=self.mt.tokenizer, words=list(relation.range)
