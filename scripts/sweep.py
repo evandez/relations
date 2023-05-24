@@ -6,7 +6,6 @@ from src import data, functional, hparams, models, sweeps
 from src.utils import experiment_utils, logging_utils
 
 import torch
-from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ def main(args: argparse.Namespace) -> None:
 
     with torch.device(device):
         dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
-        results = sweeps.sweep_faithfulness(
+        results = sweeps.sweep(
             mt=mt,
             dataset=dataset,
             h_layers=args.h_layers,
@@ -32,12 +31,16 @@ def main(args: argparse.Namespace) -> None:
             resume=args.resume,
         )
         for relation in results.relations:
-            best = relation.best()
+            best_by_f = relation.best_by_faithfulness()
+            best_by_e = relation.best_by_efficacy()
             hparams.RelationHParams(
                 relation_name=relation.relation_name,
-                h_layer=best.layer,
+                h_layer=best_by_f.layer,
+                h_layer_edit=best_by_e.layer,
                 z_layer=-1,
-                beta=best.beta.mean,
+                beta=best_by_f.beta.mean,
+                # Not clear what this should be set to, if anything.
+                # rank=math.floor(best_by_e.rank.mean),
                 model_name=mt.name,
             ).save()
 

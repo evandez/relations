@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, NamedTuple, Sequence
+from typing import Any, NamedTuple, Sequence, overload
 
 from src import data, models
 from src.utils import tokenizer_utils
@@ -559,7 +559,29 @@ def random_incorrect_targets(true_targets: list[str]) -> list[str]:
     return result
 
 
-def get_hidden_state_at_subject(
+def random_edit_targets(
+    samples: list[data.RelationSample],
+) -> dict[data.RelationSample, data.RelationSample]:
+    """Pick random edit targets for each of the given samples.
+
+    If there are no other samples with different subject and different object,
+    then the sample is skipped.
+    """
+    targets = {}
+    for sample in samples:
+        others = [
+            x
+            for x in samples
+            if x.subject != sample.subject and x.object != sample.object
+        ]
+        if not others:
+            logger.debug(f"no valid edit target for {sample}, skipping")
+            continue
+        targets[sample] = random.choice(others)
+    return targets
+
+
+def compute_h(
     mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: Layer
 ) -> torch.Tensor:
     """Runs a single prompt in inference and reads out the hidden state at the
@@ -567,6 +589,91 @@ def get_hidden_state_at_subject(
     h_index, inputs = find_subject_token_index(mt=mt, prompt=prompt, subject=subject)
     [[hs], _] = compute_hidden_states(mt=mt, layers=[h_layer], inputs=inputs)
     return hs[:, h_index]
+
+
+class HZBySubject(NamedTuple):
+    """Subject h and z vectors, potentially from multiple different layers.
+
+    Dict keys are subjects, values are either single layer tensor (if only one layer
+    is specified) or dict of layer -> tensor (if multiple layers are specified).
+    If h_layer/z_layer was None, dict will be empty.
+    """
+
+    h_by_subj: dict
+    z_by_subj: dict
+
+
+def compute_hs_and_zs(
+    *,
+    mt: models.ModelAndTokenizer,
+    prompt_template: str,
+    subjects: StrSequence,
+    h_layer: Layer | Sequence[Layer] | None = None,
+    z_layer: Layer | Sequence[Layer] | None = None,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] | None = None,
+) -> HZBySubject:
+    """Precompute h for every subject at every layer."""
+    if h_layer is None and z_layer is None:
+        raise ValueError("Must specify at least one of h_layer and z_layer.")
+
+    prompts = [
+        make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject=subject,
+            examples=examples,
+        )
+        for subject in subjects
+    ]
+    with models.set_padding_side(mt, padding_side="left"):
+        inputs = mt.tokenizer(
+            prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
+        ).to(mt.model.device)
+    offset_mapping = inputs.pop("offset_mapping")
+
+    z_by_subj = {}
+    h_by_subj = {}
+    for batch_start in range(0, len(inputs.input_ids), batch_size):
+        with torch.inference_mode():
+            outputs = mt.model(
+                inputs.input_ids[batch_start : batch_start + batch_size],
+                attention_mask=inputs.attention_mask[
+                    batch_start : batch_start + batch_size
+                ],
+                output_hidden_states=True,
+                return_dict=True,
+            )
+        hidden_states = outputs.hidden_states[1:]
+
+        for batch_index in range(batch_size):
+            abs_index = batch_start + batch_index
+            if abs_index >= len(inputs.input_ids):
+                break
+            subject = subjects[abs_index]
+
+            if h_layer is not None:
+                prompt = prompts[abs_index]
+                _, h_index = tokenizer_utils.find_token_range(
+                    prompt, subject, offset_mapping=offset_mapping[abs_index]
+                )
+                h_index -= 1
+                if isinstance(h_layer, int):
+                    h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
+                else:
+                    h_by_subj[subject] = {
+                        hl: hidden_states[hl][batch_index, h_index] for hl in h_layer
+                    }
+
+            if z_layer is not None:
+                if isinstance(z_layer, int):
+                    z_by_subj[subject] = hidden_states[z_layer][batch_index, -1]
+                else:
+                    z_by_subj[subject] = {
+                        zl: hidden_states[zl][batch_index, -1] for zl in z_layer
+                    }
+
+    return HZBySubject(h_by_subj, z_by_subj)
 
 
 def untuple(x: Any) -> Any:
