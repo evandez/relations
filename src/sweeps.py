@@ -52,10 +52,10 @@ class SweepTrainResults(DataClassJsonMixin):
         best_beta = self.best_beta()
         best_rank = self.best_rank()
         logger.info(
-            "layer finished |"
-            f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} |"
-            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} |"
-            f"norm(Jh)={self.jh_norm:.2f} |"
+            "layer finished | "
+            f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} | "
+            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} | "
+            f"norm(Jh)={self.jh_norm:.2f} | "
             f"samples={[str(x) for x in self.samples]}"
         )
 
@@ -154,7 +154,7 @@ class SweepRelationResults(DataClassJsonMixin):
         logger.debug(f'summarizing results for "{self.relation_name}"')
         for la, summ in results_by_layer.items():
             logger.info(
-                f"layer={la} | beta={summ.beta.mean:.2f} | recall@{k}={summ.recall.mean:.2f} |"
+                f"layer={la} | beta={summ.beta.mean:.2f} | recall@{k}={summ.recall.mean:.2f} | "
                 f"rank={summ.rank.mean:.2f} | efficacy={summ.efficacy.mean:.2f}"
             )
 
