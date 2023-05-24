@@ -36,10 +36,11 @@ def main(args: argparse.Namespace) -> None:
             hparams.RelationHParams(
                 relation_name=relation.relation_name,
                 h_layer=best_by_f.layer,
+                h_layer_edit=best_by_e.layer,
                 z_layer=-1,
                 beta=best_by_f.beta.mean,
-                rank=best_by_e.rank,
-                h_layer_edit=best_by_e.layer_causal,
+                # Not clear what this should be set to, if anything.
+                # rank=math.floor(best_by_e.rank.mean),
                 model_name=mt.name,
             ).save()
 

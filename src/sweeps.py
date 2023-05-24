@@ -255,7 +255,7 @@ def sweep(
 
                 test_samples = test_relation.samples
                 test_subjects = [x.subject for x in test_samples]
-                test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
+                test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
                 test_objects = [x.object for x in test_samples]
 
                 # Try all betas and record recall.
