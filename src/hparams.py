@@ -41,6 +41,7 @@ class RelationHParams(HParams):
     beta: float
     rank: int | None = None
     z_layer: int | None = None
+    h_layer_edit: int | None = None
 
     def save(self, file: PathLike | None = None) -> None:
         if file is None:

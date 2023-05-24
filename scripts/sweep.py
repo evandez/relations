@@ -31,12 +31,15 @@ def main(args: argparse.Namespace) -> None:
             resume=args.resume,
         )
         for relation in results.relations:
-            best = relation.best()
+            best_by_f = relation.best_by_faithfulness()
+            best_by_e = relation.best_by_efficacy()
             hparams.RelationHParams(
                 relation_name=relation.relation_name,
-                h_layer=best.layer,
+                h_layer=best_by_f.layer,
                 z_layer=-1,
-                beta=best.beta.mean,
+                beta=best_by_f.beta.mean,
+                rank=best_by_e.rank,
+                h_layer_edit=best_by_e.layer_causal,
                 model_name=mt.name,
             ).save()
 

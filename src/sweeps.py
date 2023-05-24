@@ -35,10 +35,8 @@ class SweepRankResults(DataClassJsonMixin):
 class SweepTrainResults(DataClassJsonMixin):
     samples: list[data.RelationSample]
     betas: list[SweepBetaResults]
-
-    # New fields, None by default for backwards compat
-    ranks: list[SweepRankResults] | None = None
-    jh_norm: float | None = None
+    ranks: list[SweepRankResults]
+    jh_norm: float
 
     def best_beta(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
@@ -52,14 +50,13 @@ class SweepTrainResults(DataClassJsonMixin):
     def summarize(self) -> None:
         """Sumarize results in debug logs."""
         best_beta = self.best_beta()
-        message = f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} |"
-        if self.ranks is not None:
-            best_rank = self.best_rank()
-            message += f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} |"
-        if self.jh_norm is not None:
-            message += f"Jh_norm={self.jh_norm:.2f} |"
-        message += f"samples={[str(x) for x in self.samples]}"
-        logger.debug(message)
+        best_rank = self.best_rank()
+        logger.debug(
+            f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} |"
+            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} |"
+            f"norm(Jh)={self.jh_norm:.2f} |"
+            f"samples={[str(x) for x in self.samples]}"
+        )
 
 
 @dataclass(frozen=True)
@@ -80,6 +77,8 @@ class SweepLayerSummary(DataClassJsonMixin):
     layer: int
     beta: metrics.AggregateMetric
     recall: metrics.AggregateMetric
+    rank: metrics.AggregateMetric
+    efficacy: metrics.AggregateMetric
 
 
 @dataclass(frozen=True)
@@ -92,37 +91,59 @@ class SweepRelationResults(DataClassJsonMixin):
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
-                best = layer.result.best_beta()
+                best_beta = layer.result.best_beta()
+                best_rank = layer.result.best_rank()
                 results_by_layer[layer.layer].append(
                     (
                         layer.layer,
-                        best.beta,
-                        best.recall[k - 1],
+                        best_beta.beta,
+                        best_beta.recall[k - 1],
+                        best_rank.rank,
+                        best_rank.efficacy,
                     )
                 )
 
-        recalls_by_layer = {
-            layer: metrics.AggregateMetric.aggregate([x[-1] for x in results])
-            for layer, results in results_by_layer.items()
-        }
         betas_by_layer = {
             layer: metrics.AggregateMetric.aggregate([x[1] for x in results])
             for layer, results in results_by_layer.items()
         }
+        recalls_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[2] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        ranks_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[3] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        efficacies_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[4] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+
         return {
             layer: SweepLayerSummary(
                 layer=layer,
                 beta=betas_by_layer[layer],
                 recall=recalls_by_layer[layer],
+                rank=ranks_by_layer[layer],
+                efficacy=efficacies_by_layer[layer],
             )
             for layer in recalls_by_layer
         }
 
-    def best(self, k: int = 1) -> SweepLayerSummary:
+    def best_by_faithfulness(self, k: int = 1) -> SweepLayerSummary:
+        """Return the best layer and average beta for that layer."""
+        results_by_layer = self.by_layer(k=k)
+        best_layer = max(
+            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+        )
+        return results_by_layer[best_layer]
+
+    def best_by_efficacy(self) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
         results_by_layer = self.by_layer()
         best_layer = max(
-            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+            results_by_layer, key=lambda x: results_by_layer[x].efficacy.mean
         )
         return results_by_layer[best_layer]
 
@@ -131,7 +152,10 @@ class SweepRelationResults(DataClassJsonMixin):
         results_by_layer = self.by_layer(k=k)
         logger.debug(f'summarizing results for "{self.relation_name}"')
         for la, summ in results_by_layer.items():
-            logger.debug(f"layer={la} | beta={summ.beta} | recall@{k}={summ.recall}")
+            logger.debug(
+                f"layer={la} | beta={summ.beta.mean:.2f} | recall@{k}={summ.recall.mean:.2f} |"
+                f"rank={summ.rank.mean:.2f} | efficacy={summ.efficacy.mean:.2f}"
+            )
 
 
 @dataclass(frozen=True)
@@ -290,7 +314,15 @@ def sweep(
                     )
 
                 train_result = SweepTrainResults(
-                    samples=train_samples, betas=results_by_beta, ranks=results_by_rank
+                    samples=train_samples,
+                    betas=results_by_beta,
+                    ranks=results_by_rank,
+                    jh_norm=torch.stack(operator.metadata["jh"])
+                    .float()
+                    .view(len(train_samples), models.determine_hidden_size(mt))
+                    .norm(dim=-1)
+                    .mean(dim=0)
+                    .item(),
                 )
                 train_result.summarize()
                 layer_results.append(
