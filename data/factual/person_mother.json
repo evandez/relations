@@ -4,6 +4,7 @@
         "{}'s mother is named"
     ],
     "prompt_templates_zs": [
+        "Name of mother of {} is",
         "Who is {}'s mother? Their mother is named",
         "{}'s mother is named"
     ],

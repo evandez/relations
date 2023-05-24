@@ -46,6 +46,8 @@ def get_h(
     h_index -= 1
     return {
         layer_name: functional.untuple(traces[layer_name].output)[0][h_index]
+        .detach()
+        .cpu()
         for layer_name in layer_names
     }
 
@@ -64,7 +66,9 @@ def evaluate(
         if hs_by_subj is None:
             preds = operator(subject=sample.subject, k=k)
         else:
-            h = hs_by_subj[sample.subject][layer_name][None]
+            h = hs_by_subj[sample.subject][layer_name][None].to(
+                operator.mt.model.device
+            )
             preds = operator(subject=sample.subject, h=h, k=k)
         pred_objects.append([p.token for p in preds.predictions])
         subject_to_pred[sample.subject] = [p.token for p in preds.predictions]
