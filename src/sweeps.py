@@ -20,17 +20,17 @@ DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessBetaResults(DataClassJsonMixin):
+class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrainResults(DataClassJsonMixin):
+class SweepTrainResults(DataClassJsonMixin):
     samples: list[data.RelationSample]
-    betas: list[SweepFaithfulnessBetaResults]
+    betas: list[SweepBetaResults]
 
-    def best(self, k: int = 1) -> SweepFaithfulnessBetaResults:
+    def best(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
@@ -43,31 +43,31 @@ class SweepFaithfulnessTrainResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessLayerResults(DataClassJsonMixin):
+class SweepLayerResults(DataClassJsonMixin):
     layer: int
-    result: SweepFaithfulnessTrainResults
+    result: SweepTrainResults
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrialResults(DataClassJsonMixin):
+class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
     train_samples: list[data.RelationSample]
-    layers: list[SweepFaithfulnessLayerResults]
+    layers: list[SweepLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessLayerSummary(DataClassJsonMixin):
+class SweepLayerSummary(DataClassJsonMixin):
     layer: int
     beta: metrics.AggregateMetric
     recall: metrics.AggregateMetric
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessRelationResults(DataClassJsonMixin):
+class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
-    trials: list[SweepFaithfulnessTrialResults]
+    trials: list[SweepTrialResults]
 
-    def by_layer(self, k: int = 1) -> dict[int, SweepFaithfulnessLayerSummary]:
+    def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
         """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
@@ -90,7 +90,7 @@ class SweepFaithfulnessRelationResults(DataClassJsonMixin):
             for layer, results in results_by_layer.items()
         }
         return {
-            layer: SweepFaithfulnessLayerSummary(
+            layer: SweepLayerSummary(
                 layer=layer,
                 beta=betas_by_layer[layer],
                 recall=recalls_by_layer[layer],
@@ -98,7 +98,7 @@ class SweepFaithfulnessRelationResults(DataClassJsonMixin):
             for layer in recalls_by_layer
         }
 
-    def best(self, k: int = 1) -> SweepFaithfulnessLayerSummary:
+    def best(self, k: int = 1) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
         results_by_layer = self.by_layer()
         best_layer = max(
@@ -115,11 +115,11 @@ class SweepFaithfulnessRelationResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessResuts(DataClassJsonMixin):
-    relations: list[SweepFaithfulnessRelationResults]
+class SweepResuts(DataClassJsonMixin):
+    relations: list[SweepRelationResults]
 
 
-def sweep_faithfulness(
+def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
@@ -132,7 +132,7 @@ def sweep_faithfulness(
     results_dir: PathLike | None = None,
     resume: bool = False,
     **kwargs: Any,
-) -> SweepFaithfulnessResuts:
+) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if h_layers is None:
         h_layers = models.determine_layers(mt)
@@ -148,7 +148,7 @@ def sweep_faithfulness(
 
         relation_result = experiment_utils.load_results_file(
             results_dir=results_dir,
-            results_type=SweepFaithfulnessRelationResults,
+            results_type=SweepRelationResults,
             name=relation.name,
             resume=resume,
         )
@@ -179,7 +179,7 @@ def sweep_faithfulness(
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
 
             # Precompute all the hs to speed things up.
-            hs_by_subj = _precompute_hs(
+            hs_by_subj, _ = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in relation.samples],
@@ -221,25 +221,23 @@ def sweep_faithfulness(
 
                     recall = metrics.recall(pred_objects, test_objects)
                     recalls_by_beta.append(recall)
-                    results_by_beta.append(
-                        SweepFaithfulnessBetaResults(beta=beta, recall=recall)
-                    )
+                    results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
 
-                train_result = SweepFaithfulnessTrainResults(
+                train_result = SweepTrainResults(
                     samples=train_samples, betas=results_by_beta
                 )
                 train_result.summarize()
                 layer_results.append(
-                    SweepFaithfulnessLayerResults(layer=h_layer, result=train_result)
+                    SweepLayerResults(layer=h_layer, result=train_result)
                 )
             trial_results.append(
-                SweepFaithfulnessTrialResults(
+                SweepTrialResults(
                     prompt_template=prompt_template,
                     train_samples=train_samples,
                     layers=layer_results,
                 )
             )
-        relation_result = SweepFaithfulnessRelationResults(
+        relation_result = SweepRelationResults(
             relation_name=relation.name, trials=trial_results
         )
         relation_result.summarize()
@@ -249,53 +247,4 @@ def sweep_faithfulness(
             name=relation.name,
         )
         relation_results.append(relation_result)
-    return SweepFaithfulnessResuts(relation_results)
-
-
-def _precompute_hs(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt_template: str,
-    subjects: StrSequence,
-    examples: Sequence[data.RelationSample] | None = None,
-    batch_size: int = DEFAULT_BATCH_SIZE,
-) -> dict[str, torch.Tensor]:
-    """Precompute h for every subject at every layer."""
-    prompts = [
-        functional.make_prompt(
-            mt=mt,
-            prompt_template=prompt_template,
-            subject=subject,
-            examples=examples,
-        )
-        for subject in subjects
-    ]
-    inputs = mt.tokenizer(
-        prompts,
-        return_tensors="pt",
-        padding="longest",
-        return_offsets_mapping=True,
-    )
-    offset_mapping = inputs.pop("offset_mapping")
-
-    batched_hidden_states = []
-    for i in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[i : i + batch_size],
-                attention_mask=inputs.attention_mask[i : i + batch_size],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
-    hidden_states = torch.cat(batched_hidden_states, dim=1)
-
-    hs_by_subj = {}
-    for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
-        _, h_index = tokenizer_utils.find_token_range(
-            prompt, subject, offset_mapping=offset_mapping[i]
-        )
-        h_index -= 1
-        hs_by_subj[subject] = hidden_states[:, i, h_index]
-
-    return hs_by_subj
+    return SweepResuts(relation_results)

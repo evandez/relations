@@ -2,12 +2,11 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import Any, NamedTuple, Sequence, cast
+from typing import Sequence, cast
 
 from src import data, editors, functional, hparams, metrics, models, operators
-from src.functional import make_prompt
-from src.utils import dataclasses_utils, experiment_utils, tokenizer_utils
-from src.utils.typing import Layer, PathLike, StrSequence
+from src.utils import dataclasses_utils, experiment_utils
+from src.utils.typing import PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -129,7 +128,7 @@ def reconstruction(
                 z_true = functional.compute_hidden_states(
                     mt=estimator.mt,
                     layers=[operator.z_layer],
-                    prompt=make_prompt(
+                    prompt=functional.make_prompt(
                         prompt_template=prompt_template, subject=subject, mt=mt
                     ),
                 ).hiddens[0][0, -1]
@@ -496,7 +495,7 @@ def faithfulness(
             # Compute zero-shot predictions.
             prompt_template_zs = random.choice(relation.prompt_templates_zs)
             prompts_zs = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=prompt_template_zs, subject=x.subject, mt=mt
                 )
                 for x in test.samples
@@ -516,7 +515,7 @@ def faithfulness(
                 )
 
             prompts_pd = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=poetry_prefix(x.subject, wrong)
                     + prompt_template_zs,
                     subject=x.subject,
@@ -535,9 +534,7 @@ def faithfulness(
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_pdlens = []
             for x, p in zip(test.samples, prompts_pd):
-                h = functional.get_hidden_state_at_subject(
-                    mt, p, x.subject, operator.h_layer
-                )
+                h = functional.compute_h(mt, p, x.subject, operator.h_layer)
                 output_pdlens = operator("", k=k, h=h)
                 outputs_pdlens.append(output_pdlens.predictions)
             preds_pdlens = [[x.token for x in xs] for xs in outputs_pdlens]
@@ -565,7 +562,7 @@ def faithfulness(
                 )
 
             prompts_rd = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=repeat_prefix(x.subject, wrong) + prompt_template,
                     subject=x.subject,
                     mt=mt,
@@ -583,9 +580,7 @@ def faithfulness(
             # Compute attribute lens: LRE predictions on the RD samples.
             outputs_rdlens = []
             for x, p in zip(test.samples, prompts_rd):
-                h = functional.get_hidden_state_at_subject(
-                    mt, p, x.subject, operator.h_layer
-                )
+                h = functional.compute_h(mt, p, x.subject, operator.h_layer)
                 output_rdlens = operator("", k=k, h=h)
                 outputs_rdlens.append(output_rdlens.predictions)
             preds_rdlens = [[x.token for x in xs] for xs in outputs_rdlens]
@@ -923,7 +918,7 @@ def causality(
                     svd = torch.svd(operator.weight.float())
 
             logger.info("precomputing test zs...")
-            [h_by_subj, z_by_subj] = _precompute_zs(
+            [h_by_subj, z_by_subj] = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in test.samples],
@@ -1119,7 +1114,7 @@ def causality(
                     )
                 else:
                     logger.info(f"trial {trial} had no viable samples, skipping")
-                
+
             if relation_ranks:
                 relation_trials.append(
                     CausalityBenchmarkRelationTrial(
@@ -1156,66 +1151,3 @@ def causality(
         relations=results_by_relation,
         metrics=CausalityBenchmarkMetrics(efficacy=efficacy),
     )
-
-
-# TODO(evan): Pretty close to the one in sweeps.py, should refactor.
-class _PrecomputedHiddens(NamedTuple):
-    h_by_subj: dict[str, torch.Tensor]
-    z_by_subj: dict[str, torch.Tensor]
-
-
-def _precompute_zs(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt_template: str,
-    subjects: StrSequence,
-    h_layer: Layer | None = None,
-    z_layer: Layer | None = None,
-    batch_size: int = functional.DEFAULT_BATCH_SIZE,
-    examples: Sequence[data.RelationSample] | None = None,
-) -> _PrecomputedHiddens:
-    """Precompute h for every subject at every layer."""
-    prompts = [
-        functional.make_prompt(
-            mt=mt,
-            prompt_template=prompt_template,
-            subject=subject,
-            examples=examples,
-        )
-        for subject in subjects
-    ]
-    with models.set_padding_side(mt, padding_side="left"):
-        inputs = mt.tokenizer(
-            prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
-        ).to(mt.model.device)
-    offset_mapping = inputs.pop("offset_mapping")
-
-    z_by_subj = {}
-    h_by_subj = {}
-    for batch_start in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[batch_start : batch_start + batch_size],
-                attention_mask=inputs.attention_mask[
-                    batch_start : batch_start + batch_size
-                ],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        hidden_states = outputs.hidden_states[1:]
-        for batch_index in range(batch_size):
-            abs_index = batch_start + batch_index
-            if abs_index >= len(inputs.input_ids):
-                break
-            subject = subjects[abs_index]
-            if h_layer is not None:
-                prompt = prompts[abs_index]
-                _, h_index = tokenizer_utils.find_token_range(
-                    prompt, subject, offset_mapping=offset_mapping[abs_index]
-                )
-                h_index -= 1
-                h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
-            if z_layer is not None:
-                z_by_subj[subject] = hidden_states[z_layer][batch_index, -1]
-
-    return _PrecomputedHiddens(h_by_subj, z_by_subj)
