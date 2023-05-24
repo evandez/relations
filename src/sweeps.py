@@ -275,7 +275,7 @@ def sweep(
 
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
-                svd = torch.svd(operator.weight)
+                svd = torch.svd(operator.weight.float())
 
                 test_targets = functional.random_edit_targets(test_samples)
                 results_by_rank = []
