@@ -80,6 +80,7 @@ class SweepLayerSummary(DataClassJsonMixin):
     recall: metrics.AggregateMetric
     rank: metrics.AggregateMetric
     efficacy: metrics.AggregateMetric
+    jh_norm: metrics.AggregateMetric
 
 
 @dataclass(frozen=True)
@@ -101,6 +102,7 @@ class SweepRelationResults(DataClassJsonMixin):
                         best_beta.recall[k - 1],
                         best_rank.rank,
                         best_rank.efficacy,
+                        layer.result.jh_norm,
                     )
                 )
 
@@ -120,6 +122,10 @@ class SweepRelationResults(DataClassJsonMixin):
             layer: metrics.AggregateMetric.aggregate([x[4] for x in results])
             for layer, results in results_by_layer.items()
         }
+        jh_norms_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[5] for x in results])
+            for layer, results in results_by_layer.items()
+        }
 
         return {
             layer: SweepLayerSummary(
@@ -128,6 +134,7 @@ class SweepRelationResults(DataClassJsonMixin):
                 recall=recalls_by_layer[layer],
                 rank=ranks_by_layer[layer],
                 efficacy=efficacies_by_layer[layer],
+                jh_norm=jh_norms_by_layer[layer],
             )
             for layer in recalls_by_layer
         }
