@@ -274,7 +274,7 @@ def sweep(
                         pred_objects.append([p.token for p in preds.predictions])
 
                     recall = metrics.recall(pred_objects, test_objects)
-                    logger.debug(f"reading finished {h_layer=} {beta=} {recall=:.2f}")
+                    logger.debug(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
                     recalls_by_beta.append(recall)
                     results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
 
