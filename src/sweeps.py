@@ -4,9 +4,9 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from src import data, functional, metrics, models, operators
-from src.utils import experiment_utils, tokenizer_utils
-from src.utils.typing import PathLike, StrSequence
+from src import data, editors, functional, metrics, models, operators
+from src.utils import experiment_utils
+from src.utils.typing import PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -26,20 +26,40 @@ class SweepBetaResults(DataClassJsonMixin):
 
 
 @dataclass(frozen=True)
+class SweepRankResults(DataClassJsonMixin):
+    rank: int
+    efficacy: float
+
+
+@dataclass(frozen=True)
 class SweepTrainResults(DataClassJsonMixin):
     samples: list[data.RelationSample]
     betas: list[SweepBetaResults]
 
-    def best(self, k: int = 1) -> SweepBetaResults:
+    # New fields, None by default for backwards compat
+    ranks: list[SweepRankResults] | None = None
+    jh_norm: float | None = None
+
+    def best_beta(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
+    def best_rank(self) -> SweepRankResults:
+        """Return the best rank by efficacy."""
+        assert self.ranks is not None
+        return max(self.ranks, key=lambda x: x.efficacy)
+
     def summarize(self) -> None:
         """Sumarize results in debug logs."""
-        best = self.best()
-        logger.debug(
-            f"beta={best.beta:.2f} | recall@1={best.recall[0]:.2f} | samples={[str(x) for x in self.samples]}"
-        )
+        best_beta = self.best_beta()
+        message = f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} |"
+        if self.ranks is not None:
+            best_rank = self.best_rank()
+            message += f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} |"
+        if self.jh_norm is not None:
+            message += f"Jh_norm={self.jh_norm:.2f} |"
+        message += f"samples={[str(x) for x in self.samples]}"
+        logger.debug(message)
 
 
 @dataclass(frozen=True)
@@ -72,7 +92,7 @@ class SweepRelationResults(DataClassJsonMixin):
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
-                best = layer.result.best()
+                best = layer.result.best_beta()
                 results_by_layer[layer.layer].append(
                     (
                         layer.layer,
@@ -125,6 +145,7 @@ def sweep(
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
+    ranks: Sequence[int] | None = None,
     n_trials: int = DEFAULT_N_TRIALS,
     n_train_samples: int = DEFAULT_N_TRAIN_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
@@ -138,6 +159,8 @@ def sweep(
         h_layers = models.determine_layers(mt)
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
+    if ranks is None:
+        ranks = range(0, 500, 5)
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -179,10 +202,12 @@ def sweep(
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
 
             # Precompute all the hs to speed things up.
-            hs_by_subj, _ = functional.compute_hs_and_zs(
+            hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in relation.samples],
+                h_layer=h_layers,
+                z_layer=-1,
                 batch_size=batch_size,
                 examples=train_samples,
             )
@@ -209,6 +234,7 @@ def sweep(
                 test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
                 test_objects = [x.object for x in test_samples]
 
+                # Try all betas and record recall.
                 results_by_beta = []
                 recalls_by_beta = []
                 for beta in betas:
@@ -223,13 +249,54 @@ def sweep(
                     recalls_by_beta.append(recall)
                     results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
 
+                # Try all ranks and record efficacy.
+                assert operator.weight is not None
+                svd = torch.svd(operator.weight)
+
+                test_targets = functional.random_edit_targets(test_samples)
+                results_by_rank = []
+                for rank in ranks:
+                    editor = editors.LowRankPInvEditor(
+                        lre=operator,
+                        rank=rank,
+                        n_samples=1,
+                        n_new_tokens=1,
+                        svd=svd,
+                    )
+
+                    pred_objects = []
+                    targ_objects = []
+                    for sample in test_samples:
+                        target = test_targets.get(sample)
+                        if target is None:
+                            logger.debug(f"cannot edit {target}, skipping")
+                            continue
+
+                        z_original = zs_by_subj[sample.subject]
+                        z_target = zs_by_subj[target.subject]
+                        result = editor(
+                            sample.subject,
+                            target.subject,
+                            z_original=z_original,
+                            z_target=z_target,
+                        )
+
+                        pred_objects.append([result.predicted_tokens[0].token])
+                        targ_objects.append(target.object)
+
+                    [efficacy] = metrics.recall(pred_objects, targ_objects)
+                    results_by_rank.append(
+                        SweepRankResults(rank=rank, efficacy=efficacy)
+                    )
+
                 train_result = SweepTrainResults(
-                    samples=train_samples, betas=results_by_beta
+                    samples=train_samples, betas=results_by_beta, ranks=results_by_rank
                 )
                 train_result.summarize()
                 layer_results.append(
                     SweepLayerResults(layer=h_layer, result=train_result)
                 )
+
             trial_results.append(
                 SweepTrialResults(
                     prompt_template=prompt_template,
@@ -237,6 +304,7 @@ def sweep(
                     layers=layer_results,
                 )
             )
+
         relation_result = SweepRelationResults(
             relation_name=relation.name, trials=trial_results
         )

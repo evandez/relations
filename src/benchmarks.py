@@ -891,21 +891,8 @@ def causality(
                 n_train, test_size=max_test_samples
             )
 
-            # Pick test targets up front so we can use them for all ranks.
-            targets = {}
-            for sample in test.samples:
-                others = [
-                    x
-                    for x in test.samples
-                    if x.subject != sample.subject and x.object != sample.object
-                ]
-                if not others:
-                    logger.debug(
-                        "no sample with different subject and different object "
-                        f"than {sample}, skipping"
-                    )
-                    continue
-                targets[sample] = random.choice(others)
+            # NB(evan): Pick test targets up front so we can use them for all ranks.
+            targets = functional.random_edit_targets(test.samples)
 
             operator = None
             svd = None

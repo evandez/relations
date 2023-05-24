@@ -559,6 +559,28 @@ def random_incorrect_targets(true_targets: list[str]) -> list[str]:
     return result
 
 
+def random_edit_targets(
+    samples: list[data.RelationSample],
+) -> dict[data.RelationSample, data.RelationSample]:
+    """Pick random edit targets for each of the given samples.
+
+    If there are no other samples with different subject and different object,
+    then the sample is skipped.
+    """
+    targets = {}
+    for sample in samples:
+        others = [
+            x
+            for x in samples
+            if x.subject != sample.subject and x.object != sample.object
+        ]
+        if not others:
+            logger.debug(f"no valid edit target for {sample}, skipping")
+            continue
+        targets[sample] = random.choice(others)
+    return targets
+
+
 def compute_h(
     mt: models.ModelAndTokenizer, prompt: str, subject: str, h_layer: Layer
 ) -> torch.Tensor:
