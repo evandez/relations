@@ -662,8 +662,7 @@ def compute_hs_and_zs(
                     h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
                 else:
                     h_by_subj[subject] = {
-                        hl: hidden_states[subject][batch_index, h_index]
-                        for hl in h_layer
+                        hl: hidden_states[hl][batch_index, h_index] for hl in h_layer
                     }
 
             if z_layer is not None:
