@@ -185,7 +185,7 @@ def sweep(
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
-        ranks = range(0, 500, 5)
+        ranks = range(0, 250, 10)
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
