@@ -51,7 +51,8 @@ class SweepTrainResults(DataClassJsonMixin):
         """Sumarize results in debug logs."""
         best_beta = self.best_beta()
         best_rank = self.best_rank()
-        logger.debug(
+        logger.info(
+            "layer finished |"
             f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} |"
             f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} |"
             f"norm(Jh)={self.jh_norm:.2f} |"
@@ -152,7 +153,7 @@ class SweepRelationResults(DataClassJsonMixin):
         results_by_layer = self.by_layer(k=k)
         logger.debug(f'summarizing results for "{self.relation_name}"')
         for la, summ in results_by_layer.items():
-            logger.debug(
+            logger.info(
                 f"layer={la} | beta={summ.beta.mean:.2f} | recall@{k}={summ.recall.mean:.2f} |"
                 f"rank={summ.rank.mean:.2f} | efficacy={summ.efficacy.mean:.2f}"
             )
@@ -268,13 +269,13 @@ def sweep(
                     for subj, h in zip(test_subjects, test_hs):
                         preds = operator(subj, h=h, k=recall_k)
 
-                        pred = preds.predictions[0]
+                        pred = str(preds.predictions[0])
                         logger.debug(f"reading {h_layer=} {beta=} {subj=} {pred=}")
 
                         pred_objects.append([p.token for p in preds.predictions])
 
                     recall = metrics.recall(pred_objects, test_objects)
-                    logger.debug(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
+                    logger.info(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
                     recalls_by_beta.append(recall)
                     results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
 
@@ -310,16 +311,16 @@ def sweep(
                             z_target=z_target,
                         )
 
-                        pred = result.predicted_tokens[0]
+                        pred = str(result.predicted_tokens[0])
                         logger.debug(
                             f"editing: {h_layer=} {rank=} {sample.subject=} {target.subject=} {pred=}"
                         )
 
-                        pred_objects.append([pred.token])
+                        pred_objects.append([result.predicted_tokens[0].token])
                         targ_objects.append(target.object)
 
                     [efficacy] = metrics.recall(pred_objects, targ_objects)
-                    logger.debug(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
+                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
                     results_by_rank.append(
                         SweepRankResults(rank=rank, efficacy=efficacy)
                     )
