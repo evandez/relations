@@ -2,12 +2,11 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, replace
-from typing import Any, NamedTuple, Sequence, cast
+from typing import Sequence, cast
 
 from src import data, editors, functional, hparams, metrics, models, operators
-from src.functional import make_prompt
-from src.utils import dataclasses_utils, experiment_utils, tokenizer_utils
-from src.utils.typing import Layer, PathLike, StrSequence
+from src.utils import dataclasses_utils, experiment_utils
+from src.utils.typing import PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -129,7 +128,7 @@ def reconstruction(
                 z_true = functional.compute_hidden_states(
                     mt=estimator.mt,
                     layers=[operator.z_layer],
-                    prompt=make_prompt(
+                    prompt=functional.make_prompt(
                         prompt_template=prompt_template, subject=subject, mt=mt
                     ),
                 ).hiddens[0][0, -1]
@@ -437,6 +436,9 @@ def faithfulness(
             continue
 
         relation_hparams = hparams.get(mt, relation)
+        if relation_hparams is None:
+            logger.info(f"no hparams for {relation.name}; skipping")
+            continue
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -493,7 +495,7 @@ def faithfulness(
             # Compute zero-shot predictions.
             prompt_template_zs = random.choice(relation.prompt_templates_zs)
             prompts_zs = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=prompt_template_zs, subject=x.subject, mt=mt
                 )
                 for x in test.samples
@@ -513,7 +515,7 @@ def faithfulness(
                 )
 
             prompts_pd = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=poetry_prefix(x.subject, wrong)
                     + prompt_template_zs,
                     subject=x.subject,
@@ -532,9 +534,7 @@ def faithfulness(
             # Compute attribute lens: LRE predictions on the PD samples.
             outputs_pdlens = []
             for x, p in zip(test.samples, prompts_pd):
-                h = functional.get_hidden_state_at_subject(
-                    mt, p, x.subject, operator.h_layer
-                )
+                h = functional.compute_h(mt, p, x.subject, operator.h_layer)
                 output_pdlens = operator("", k=k, h=h)
                 outputs_pdlens.append(output_pdlens.predictions)
             preds_pdlens = [[x.token for x in xs] for xs in outputs_pdlens]
@@ -562,7 +562,7 @@ def faithfulness(
                 )
 
             prompts_rd = [
-                make_prompt(
+                functional.make_prompt(
                     prompt_template=repeat_prefix(x.subject, wrong) + prompt_template,
                     subject=x.subject,
                     mt=mt,
@@ -580,9 +580,7 @@ def faithfulness(
             # Compute attribute lens: LRE predictions on the RD samples.
             outputs_rdlens = []
             for x, p in zip(test.samples, prompts_rd):
-                h = functional.get_hidden_state_at_subject(
-                    mt, p, x.subject, operator.h_layer
-                )
+                h = functional.compute_h(mt, p, x.subject, operator.h_layer)
                 output_rdlens = operator("", k=k, h=h)
                 outputs_rdlens.append(output_rdlens.predictions)
             preds_rdlens = [[x.token for x in xs] for xs in outputs_rdlens]
@@ -838,6 +836,7 @@ def causality(
     editor_type: type[editors.Editor],
     n_train: int = 5,
     n_trials: int = 3,
+    max_test_samples: int = 100,
     batch_size: int = functional.DEFAULT_BATCH_SIZE,
     ranks: Sequence[int] | None = None,
     results_dir: PathLike | None = None,
@@ -870,6 +869,11 @@ def causality(
             continue
 
         relation_hparams = hparams.get(mt, relation)
+        if relation_hparams is None:
+            logger.info(f"no hparams for {relation.name}; skipping")
+            continue
+        assert relation_hparams is not None
+
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
@@ -884,24 +888,11 @@ def causality(
             prompt_template = relation.prompt_templates[0]
 
             train, test = relation.set(prompt_templates=[prompt_template]).split(
-                n_train
+                n_train, test_size=max_test_samples
             )
 
-            # Pick test targets up front so we can use them for all ranks.
-            targets = {}
-            for sample in test.samples:
-                others = [
-                    x
-                    for x in test.samples
-                    if x.subject != sample.subject and x.object != sample.object
-                ]
-                if not others:
-                    logger.debug(
-                        "no sample with different subject and different object "
-                        f"than {sample}, skipping"
-                    )
-                    continue
-                targets[sample] = random.choice(others)
+            # NB(evan): Pick test targets up front so we can use them for all ranks.
+            targets = functional.random_edit_targets(test.samples)
 
             operator = None
             svd = None
@@ -914,13 +905,14 @@ def causality(
                     svd = torch.svd(operator.weight.float())
 
             logger.info("precomputing test zs...")
-            [h_by_subj, z_by_subj] = _precompute_zs(
+            [h_by_subj, z_by_subj] = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in test.samples],
                 examples=train.samples,
                 h_layer=operator.h_layer if operator is not None else None,
                 z_layer=operator.z_layer if operator is not None else None,
+                batch_size=batch_size,
             )
 
             def edit(
@@ -955,7 +947,7 @@ def causality(
                     operator = replace(operator, prompt_template=prompt_template)
                 editor = dataclasses_utils.create_with_optional_kwargs(
                     editor_type,
-                    h_layer=relation_hparams.h_layer,
+                    h_layer=cast(hparams.RelationHParams, relation_hparams).h_layer,
                     rank=rank,
                     lre=operator,
                     svd=svd,
@@ -1026,6 +1018,8 @@ def causality(
                 )
 
             # Record performance for all ranks for ICL-style prompt.
+            if len(ranks) > 1:
+                logger.info("begin sweep over ranks...")
             relation_ranks = []
             for rank in ranks:
                 relation_samples = []
@@ -1042,73 +1036,89 @@ def causality(
                         zs=False,
                     )
                     relation_samples.append(relation_sample)
-                relation_ranks.append(
-                    CausalityBenchmarkRelationTrialRank(
-                        rank=rank,
-                        samples=relation_samples,
+
+                if relation_samples:
+                    relation_ranks.append(
+                        CausalityBenchmarkRelationTrialRank(
+                            rank=rank,
+                            samples=relation_samples,
+                        )
                     )
-                )
+                else:
+                    logger.debug(f"rank {rank} trial had no viable samples, skipping")
 
             # Record performance for zero-shot prompt. Choose lowest rank
             # with that score. VERY HACKY. HOPE IT WORKS!
             rank_zs = None
             if issubclass(editor_type, editors.LinearRelationEditor):
-                logger.info("will try to evaluate ZS performance too")
+                if relation_ranks:
+                    logger.info("will try to evaluate ZS performance too")
 
-                prompt_template_zs = relation.prompt_templates_zs[0]
-                logger.info(f"zs prompt: {prompt_template_zs}")
+                    prompt_template_zs = relation.prompt_templates_zs[0]
+                    logger.info(f"zs prompt: {prompt_template_zs}")
 
-                test_zs = functional.filter_relation_samples(
-                    mt=mt,
-                    relation=test,
-                    prompt_template=prompt_template_zs,
-                    n_icl_lm=0,
-                    n_top_lm=1,
-                    batch_size=batch_size,
-                )
-                if len(test_zs.samples) == 0:
-                    logger.info("no known ZS samples, skipping")
-                    continue
-
-                scores = [
-                    round(
-                        rank.efficacy_score_hard().mean,
-                        2,
-                    )
-                    for rank in relation_ranks
-                ]
-                best_score = max(scores)
-                best_index = sorted(scores).index(best_score)
-                best_rank = ranks[best_index]
-                logger.info(f"chose rank {best_rank} ({best_score}) for ZS eval")
-
-                relation_samples_zs = []
-                for sample in test_zs.samples:
-                    target = targets.get(sample)
-                    if target is None:
-                        continue
-                    relation_sample_zs = edit(
-                        sample=sample,
-                        target=target,
-                        rank=best_rank,
+                    test_zs = functional.filter_relation_samples(
+                        mt=mt,
+                        relation=test,
                         prompt_template=prompt_template_zs,
-                        operator=operator,
-                        zs=True,
+                        n_icl_lm=0,
+                        n_top_lm=1,
+                        batch_size=batch_size,
                     )
-                    relation_samples_zs.append(relation_sample_zs)
-                rank_zs = CausalityBenchmarkRelationTrialRank(
-                    rank=best_rank,
-                    samples=relation_samples_zs,
-                )
+                    if len(test_zs.samples) == 0:
+                        logger.info("no known ZS samples, skipping")
+                        continue
 
-            relation_trials.append(
-                CausalityBenchmarkRelationTrial(
-                    train=train, test=test, ranks=relation_ranks, rank_zs=rank_zs
+                    scores = [
+                        round(
+                            rank.efficacy_score_hard().mean,
+                            2,
+                        )
+                        for rank in relation_ranks
+                    ]
+                    best_score = max(scores)
+                    best_index = sorted(scores).index(best_score)
+                    best_rank = ranks[best_index]
+                    logger.info(f"chose rank {best_rank} ({best_score}) for ZS eval")
+
+                    relation_samples_zs = []
+                    for sample in test_zs.samples:
+                        target = targets.get(sample)
+                        if target is None:
+                            continue
+                        relation_sample_zs = edit(
+                            sample=sample,
+                            target=target,
+                            rank=best_rank,
+                            prompt_template=prompt_template_zs,
+                            operator=operator,
+                            zs=True,
+                        )
+                        relation_samples_zs.append(relation_sample_zs)
+                    rank_zs = CausalityBenchmarkRelationTrialRank(
+                        rank=best_rank,
+                        samples=relation_samples_zs,
+                    )
+                else:
+                    logger.info(f"trial {trial} had no viable samples, skipping")
+
+            if relation_ranks:
+                relation_trials.append(
+                    CausalityBenchmarkRelationTrial(
+                        train=train, test=test, ranks=relation_ranks, rank_zs=rank_zs
+                    )
                 )
+            else:
+                logger.info(f"trial {trial} had no viable samples, skipping")
+
+        if relation_trials:
+            relation_results = CausalityRelationResults(
+                relation_name=relation.name, trials=relation_trials
             )
-        relation_results = CausalityRelationResults(
-            relation_name=relation.name, trials=relation_trials
-        )
+        else:
+            logger.info("relation had no viable edits, skipping")
+            continue
+
         experiment_utils.save_results_file(
             results_dir=results_dir,
             name=relation.name,
@@ -1128,62 +1138,3 @@ def causality(
         relations=results_by_relation,
         metrics=CausalityBenchmarkMetrics(efficacy=efficacy),
     )
-
-
-# TODO(evan): Pretty close to the one in sweeps.py, should refactor.
-class _PrecomputedHiddens(NamedTuple):
-    h_by_subj: dict[str, torch.Tensor]
-    z_by_subj: dict[str, torch.Tensor]
-
-
-def _precompute_zs(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt_template: str,
-    subjects: StrSequence,
-    h_layer: Layer | None = None,
-    z_layer: Layer | None = None,
-    batch_size: int = functional.DEFAULT_BATCH_SIZE,
-    examples: Sequence[data.RelationSample] | None = None,
-) -> _PrecomputedHiddens:
-    """Precompute h for every subject at every layer."""
-    prompts = [
-        functional.make_prompt(
-            mt=mt,
-            prompt_template=prompt_template,
-            subject=subject,
-            examples=examples,
-        )
-        for subject in subjects
-    ]
-    with models.set_padding_side(mt, padding_side="left"):
-        inputs = mt.tokenizer(
-            prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
-        ).to(mt.model.device)
-    offset_mapping = inputs.pop("offset_mapping")
-
-    batched_hidden_states = []
-    for i in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[i : i + batch_size],
-                attention_mask=inputs.attention_mask[i : i + batch_size],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
-    hidden_states = torch.cat(batched_hidden_states, dim=1)
-
-    z_by_subj = {}
-    h_by_subj = {}
-    for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
-        if h_layer is not None:
-            _, h_index = tokenizer_utils.find_token_range(
-                prompt, subject, offset_mapping=offset_mapping[i]
-            )
-            h_index -= 1
-            h_by_subj[subject] = hidden_states[h_layer, i, h_index]
-        if z_layer is not None:
-            z_by_subj[subject] = hidden_states[z_layer, i, -1]
-
-    return _PrecomputedHiddens(h_by_subj, z_by_subj)

@@ -4,11 +4,10 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from src import data, functional, metrics, models, operators
-from src.utils import experiment_utils, tokenizer_utils
-from src.utils.typing import PathLike, StrSequence
+from src import data, editors, functional, metrics, models, operators
+from src.utils import experiment_utils
+from src.utils.typing import PathLike
 
-import numpy as np
 import torch
 from dataclasses_json import DataClassJsonMixin
 
@@ -21,89 +20,131 @@ DEFAULT_BATCH_SIZE = 64
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessBetaResults(DataClassJsonMixin):
+class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrainResults(DataClassJsonMixin):
-    samples: list[data.RelationSample]
-    betas: list[SweepFaithfulnessBetaResults]
+class SweepRankResults(DataClassJsonMixin):
+    rank: int
+    efficacy: float
 
-    def best(self, k: int = 1) -> SweepFaithfulnessBetaResults:
+
+@dataclass(frozen=True)
+class SweepTrainResults(DataClassJsonMixin):
+    samples: list[data.RelationSample]
+    betas: list[SweepBetaResults]
+    ranks: list[SweepRankResults]
+    jh_norm: float
+
+    def best_beta(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
+    def best_rank(self) -> SweepRankResults:
+        """Return the best rank by efficacy."""
+        assert self.ranks is not None
+        return max(self.ranks, key=lambda x: x.efficacy)
+
     def summarize(self) -> None:
         """Sumarize results in debug logs."""
-        best = self.best()
-        logger.debug(
-            f"beta={best.beta:.2f} | recall@1={best.recall[0]:.2f} | samples={[str(x) for x in self.samples]}"
+        best_beta = self.best_beta()
+        best_rank = self.best_rank()
+        logger.info(
+            "layer finished | "
+            f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} | "
+            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} | "
+            f"norm(Jh)={self.jh_norm:.2f} | "
+            f"samples={[str(x) for x in self.samples]}"
         )
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessLayerResults(DataClassJsonMixin):
+class SweepLayerResults(DataClassJsonMixin):
     layer: int
-    result: SweepFaithfulnessTrainResults
+    result: SweepTrainResults
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessTrialResults(DataClassJsonMixin):
+class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
     train_samples: list[data.RelationSample]
-    layers: list[SweepFaithfulnessLayerResults]
+    layers: list[SweepLayerResults]
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessLayerSummary(DataClassJsonMixin):
+class SweepLayerSummary(DataClassJsonMixin):
     layer: int
     beta: metrics.AggregateMetric
     recall: metrics.AggregateMetric
+    rank: metrics.AggregateMetric
+    efficacy: metrics.AggregateMetric
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessRelationResults(DataClassJsonMixin):
+class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
-    trials: list[SweepFaithfulnessTrialResults]
+    trials: list[SweepTrialResults]
 
-    def by_layer(self, k: int = 1) -> dict[int, SweepFaithfulnessLayerSummary]:
+    def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
         """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
-                best = layer.result.best()
+                best_beta = layer.result.best_beta()
+                best_rank = layer.result.best_rank()
                 results_by_layer[layer.layer].append(
                     (
                         layer.layer,
-                        best.beta,
-                        best.recall[k - 1],
+                        best_beta.beta,
+                        best_beta.recall[k - 1],
+                        best_rank.rank,
+                        best_rank.efficacy,
                     )
                 )
 
-        recalls_by_layer = {
-            layer: metrics.AggregateMetric.aggregate([x[-1] for x in results])
-            for layer, results in results_by_layer.items()
-        }
         betas_by_layer = {
             layer: metrics.AggregateMetric.aggregate([x[1] for x in results])
             for layer, results in results_by_layer.items()
         }
+        recalls_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[2] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        ranks_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[3] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+        efficacies_by_layer = {
+            layer: metrics.AggregateMetric.aggregate([x[4] for x in results])
+            for layer, results in results_by_layer.items()
+        }
+
         return {
-            layer: SweepFaithfulnessLayerSummary(
+            layer: SweepLayerSummary(
                 layer=layer,
                 beta=betas_by_layer[layer],
                 recall=recalls_by_layer[layer],
+                rank=ranks_by_layer[layer],
+                efficacy=efficacies_by_layer[layer],
             )
             for layer in recalls_by_layer
         }
 
-    def best(self, k: int = 1) -> SweepFaithfulnessLayerSummary:
+    def best_by_faithfulness(self, k: int = 1) -> SweepLayerSummary:
+        """Return the best layer and average beta for that layer."""
+        results_by_layer = self.by_layer(k=k)
+        best_layer = max(
+            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+        )
+        return results_by_layer[best_layer]
+
+    def best_by_efficacy(self) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
         results_by_layer = self.by_layer()
         best_layer = max(
-            results_by_layer, key=lambda x: results_by_layer[x].recall.mean
+            results_by_layer, key=lambda x: results_by_layer[x].efficacy.mean
         )
         return results_by_layer[best_layer]
 
@@ -112,20 +153,24 @@ class SweepFaithfulnessRelationResults(DataClassJsonMixin):
         results_by_layer = self.by_layer(k=k)
         logger.debug(f'summarizing results for "{self.relation_name}"')
         for la, summ in results_by_layer.items():
-            logger.debug(f"layer={la} | beta={summ.beta} | recall@{k}={summ.recall}")
+            logger.info(
+                f"layer={la} | beta={summ.beta.mean:.2f} | recall@{k}={summ.recall.mean:.2f} | "
+                f"rank={summ.rank.mean:.2f} | efficacy={summ.efficacy.mean:.2f}"
+            )
 
 
 @dataclass(frozen=True)
-class SweepFaithfulnessResuts(DataClassJsonMixin):
-    relations: list[SweepFaithfulnessRelationResults]
+class SweepResuts(DataClassJsonMixin):
+    relations: list[SweepRelationResults]
 
 
-def sweep_faithfulness(
+def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
     h_layers: Sequence[int] | None = None,
     betas: Sequence[float] | None = None,
+    ranks: Sequence[int] | None = None,
     n_trials: int = DEFAULT_N_TRIALS,
     n_train_samples: int = DEFAULT_N_TRAIN_SAMPLES,
     recall_k: int = DEFAULT_RECALL_K,
@@ -133,12 +178,14 @@ def sweep_faithfulness(
     results_dir: PathLike | None = None,
     resume: bool = False,
     **kwargs: Any,
-) -> SweepFaithfulnessResuts:
+) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if h_layers is None:
         h_layers = models.determine_layers(mt)
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
+    if ranks is None:
+        ranks = range(0, 250, 10)
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -149,7 +196,7 @@ def sweep_faithfulness(
 
         relation_result = experiment_utils.load_results_file(
             results_dir=results_dir,
-            results_type=SweepFaithfulnessRelationResults,
+            results_type=SweepRelationResults,
             name=relation.name,
             resume=resume,
         )
@@ -180,10 +227,12 @@ def sweep_faithfulness(
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
 
             # Precompute all the hs to speed things up.
-            hs_by_subj = _precompute_hs(
+            hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
                 subjects=[x.subject for x in relation.samples],
+                h_layer=h_layers,
+                z_layer=-1,
                 batch_size=batch_size,
                 examples=train_samples,
             )
@@ -207,9 +256,10 @@ def sweep_faithfulness(
 
                 test_samples = test_relation.samples
                 test_subjects = [x.subject for x in test_samples]
-                test_hs = [hs_by_subj[x.subject][h_layer, None] for x in test_samples]
+                test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
                 test_objects = [x.object for x in test_samples]
 
+                # Try all betas and record recall.
                 results_by_beta = []
                 recalls_by_beta = []
                 for beta in betas:
@@ -218,29 +268,88 @@ def sweep_faithfulness(
                     pred_objects = []
                     for subj, h in zip(test_subjects, test_hs):
                         preds = operator(subj, h=h, k=recall_k)
+
+                        pred = str(preds.predictions[0])
+                        logger.debug(f"reading {h_layer=} {beta=} {subj=} {pred=}")
+
                         pred_objects.append([p.token for p in preds.predictions])
 
                     recall = metrics.recall(pred_objects, test_objects)
+                    logger.info(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
                     recalls_by_beta.append(recall)
-                    results_by_beta.append(
-                        SweepFaithfulnessBetaResults(beta=beta, recall=recall)
+                    results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
+
+                # Try all ranks and record efficacy.
+                assert operator.weight is not None
+                svd = torch.svd(operator.weight.float())
+
+                test_targets = functional.random_edit_targets(test_samples)
+                results_by_rank = []
+                for rank in ranks:
+                    editor = editors.LowRankPInvEditor(
+                        lre=operator,
+                        rank=rank,
+                        n_samples=1,
+                        n_new_tokens=1,
+                        svd=svd,
                     )
 
-                train_result = SweepFaithfulnessTrainResults(
-                    samples=train_samples, betas=results_by_beta
+                    pred_objects = []
+                    targ_objects = []
+                    for sample in test_samples:
+                        target = test_targets.get(sample)
+                        if target is None:
+                            logger.debug(f"cannot edit {target}, skipping")
+                            continue
+
+                        z_original = zs_by_subj[sample.subject]
+                        z_target = zs_by_subj[target.subject]
+                        result = editor(
+                            sample.subject,
+                            target.subject,
+                            z_original=z_original,
+                            z_target=z_target,
+                        )
+
+                        pred = str(result.predicted_tokens[0])
+                        logger.debug(
+                            f"editing: {h_layer=} {rank=} {sample.subject=} {target.subject=} {pred=}"
+                        )
+
+                        pred_objects.append([result.predicted_tokens[0].token])
+                        targ_objects.append(target.object)
+
+                    [efficacy] = metrics.recall(pred_objects, targ_objects)
+                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
+                    results_by_rank.append(
+                        SweepRankResults(rank=rank, efficacy=efficacy)
+                    )
+
+                train_result = SweepTrainResults(
+                    samples=train_samples,
+                    betas=results_by_beta,
+                    ranks=results_by_rank,
+                    jh_norm=torch.stack(operator.metadata["Jh"])
+                    .float()
+                    .view(len(train_samples), models.determine_hidden_size(mt))
+                    .norm(dim=-1)
+                    .mean(dim=0)
+                    .item(),
                 )
                 train_result.summarize()
                 layer_results.append(
-                    SweepFaithfulnessLayerResults(layer=h_layer, result=train_result)
+                    SweepLayerResults(layer=h_layer, result=train_result)
                 )
+
             trial_results.append(
-                SweepFaithfulnessTrialResults(
+                SweepTrialResults(
                     prompt_template=prompt_template,
                     train_samples=train_samples,
                     layers=layer_results,
                 )
             )
-        relation_result = SweepFaithfulnessRelationResults(
+
+        relation_result = SweepRelationResults(
             relation_name=relation.name, trials=trial_results
         )
         relation_result.summarize()
@@ -250,53 +359,4 @@ def sweep_faithfulness(
             name=relation.name,
         )
         relation_results.append(relation_result)
-    return SweepFaithfulnessResuts(relation_results)
-
-
-def _precompute_hs(
-    *,
-    mt: models.ModelAndTokenizer,
-    prompt_template: str,
-    subjects: StrSequence,
-    examples: Sequence[data.RelationSample] | None = None,
-    batch_size: int = DEFAULT_BATCH_SIZE,
-) -> dict[str, torch.Tensor]:
-    """Precompute h for every subject at every layer."""
-    prompts = [
-        functional.make_prompt(
-            mt=mt,
-            prompt_template=prompt_template,
-            subject=subject,
-            examples=examples,
-        )
-        for subject in subjects
-    ]
-    inputs = mt.tokenizer(
-        prompts,
-        return_tensors="pt",
-        padding="longest",
-        return_offsets_mapping=True,
-    )
-    offset_mapping = inputs.pop("offset_mapping")
-
-    batched_hidden_states = []
-    for i in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[i : i + batch_size],
-                attention_mask=inputs.attention_mask[i : i + batch_size],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        batched_hidden_states.append(torch.stack(outputs.hidden_states)[1:])
-    hidden_states = torch.cat(batched_hidden_states, dim=1)
-
-    hs_by_subj = {}
-    for i, (subject, prompt) in enumerate(zip(subjects, prompts)):
-        _, h_index = tokenizer_utils.find_token_range(
-            prompt, subject, offset_mapping=offset_mapping[i]
-        )
-        h_index -= 1
-        hs_by_subj[subject] = hidden_states[:, i, h_index]
-
-    return hs_by_subj
+    return SweepResuts(relation_results)

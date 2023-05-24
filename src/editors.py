@@ -145,7 +145,7 @@ class LowRankPInvEditor(LinearRelationEditor):
                 z_target = hiddens.hiddens[0][1, -1, ..., None]
 
         weight_pinv = self._low_rank_pinv
-        delta = weight_pinv @ (z_target - z_original)
+        delta = weight_pinv @ (z_target.squeeze() - z_original.squeeze())
 
         return _apply_edit(
             mt=self.mt,
@@ -203,9 +203,10 @@ class LowRankPInvEmbedEditor(LowRankPInvEditor):
             )
             z_target = self.mt.lm_head[-1].weight[target_token_id, ..., None]
             z_target = z_target * (z_original.norm() / z_target.norm())
+            assert z_target is not None
 
         weight_pinv = self._low_rank_pinv
-        delta = weight_pinv @ (z_target - z_original)
+        delta = weight_pinv @ (z_target.squeeze() - z_original.squeeze())
 
         return _apply_edit(
             mt=self.mt,
@@ -301,7 +302,7 @@ class EmbedBaselineEditor(Editor):
         h_original = hiddens.hiddens[0][0, subject_edit_index, ..., None]
 
         target_token_id = models.tokenize_words(self.mt, target).input_ids[:, 0].item()
-        embed_target = self.mt.lm_head[-1].weight[target_token_id, :]
+        embed_target = self.mt.lm_head[-1].weight[target_token_id]
         embed_target = embed_target * (h_original.norm() / embed_target.norm())
 
         return _apply_edit(

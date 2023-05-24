@@ -41,6 +41,7 @@ class RelationHParams(HParams):
     beta: float
     rank: int | None = None
     z_layer: int | None = None
+    h_layer_edit: int | None = None
 
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
@@ -55,15 +56,15 @@ class RelationHParams(HParams):
         cls: type[RelationHParamsT],
         model: str | models.ModelAndTokenizer,
         relation: str | data.Relation,
-    ) -> RelationHParamsT:
+    ) -> RelationHParamsT | None:
         hparams_file = cls.default_relation_file(model, relation)
         if not hparams_file.exists():
-            raise FileNotFoundError(
-                f'expected {cls.__name__} file for relation "{relation}" at {hparams_file}'
-            )
+            return None
         logger.info(f"reading hparams from {hparams_file}")
         hparams = cls.from_json_file(hparams_file)
-        logger.info(f'{hparams.model_name}/"{hparams.relation_name}" hparams: {hparams}')
+        logger.info(
+            f'{hparams.model_name}/"{hparams.relation_name}" hparams: {hparams}'
+        )
         return hparams
 
     @staticmethod
@@ -83,6 +84,6 @@ class RelationHParams(HParams):
 
 def get(
     model: models.ModelAndTokenizer, relation: str | data.Relation
-) -> RelationHParams:
+) -> RelationHParams | None:
     """Get hyperparameters for a given relation."""
     return RelationHParams.from_relation(model, relation)
