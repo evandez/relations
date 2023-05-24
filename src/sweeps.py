@@ -267,9 +267,14 @@ def sweep(
                     pred_objects = []
                     for subj, h in zip(test_subjects, test_hs):
                         preds = operator(subj, h=h, k=recall_k)
+
+                        pred = preds.predictions[0]
+                        logger.debug(f"reading {h_layer=} {beta=} {subj=} {pred=}")
+
                         pred_objects.append([p.token for p in preds.predictions])
 
                     recall = metrics.recall(pred_objects, test_objects)
+                    logger.debug(f"reading finished {h_layer=} {beta=} {recall=:.2f}")
                     recalls_by_beta.append(recall)
                     results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
 
@@ -305,10 +310,16 @@ def sweep(
                             z_target=z_target,
                         )
 
-                        pred_objects.append([result.predicted_tokens[0].token])
+                        pred = result.predicted_tokens[0]
+                        logger.debug(
+                            f"editing: {h_layer=} {rank=} {sample.subject=} {target.subject=} {pred=}"
+                        )
+
+                        pred_objects.append([pred.token])
                         targ_objects.append(target.object)
 
                     [efficacy] = metrics.recall(pred_objects, targ_objects)
+                    logger.debug(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
                     results_by_rank.append(
                         SweepRankResults(rank=rank, efficacy=efficacy)
                     )
@@ -317,7 +328,7 @@ def sweep(
                     samples=train_samples,
                     betas=results_by_beta,
                     ranks=results_by_rank,
-                    jh_norm=torch.stack(operator.metadata["jh"])
+                    jh_norm=torch.stack(operator.metadata["Jh"])
                     .float()
                     .view(len(train_samples), models.determine_hidden_size(mt))
                     .norm(dim=-1)
