@@ -6,7 +6,7 @@ from typing import Any, Sequence
 
 from src import data, editors, functional, metrics, models, operators
 from src.utils import experiment_utils
-from src.utils.typing import PathLike
+from src.utils.typing import Layer, PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -62,7 +62,7 @@ class SweepTrainResults(DataClassJsonMixin):
 
 @dataclass(frozen=True)
 class SweepLayerResults(DataClassJsonMixin):
-    layer: int
+    layer: Layer
     result: SweepTrainResults
 
 
@@ -75,7 +75,7 @@ class SweepTrialResults(DataClassJsonMixin):
 
 @dataclass(frozen=True)
 class SweepLayerSummary(DataClassJsonMixin):
-    layer: int
+    layer: Layer
     beta: metrics.AggregateMetric
     recall: metrics.AggregateMetric
     rank: metrics.AggregateMetric
@@ -168,7 +168,7 @@ def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
-    h_layers: Sequence[int] | None = None,
+    h_layers: Sequence[Layer] | None = None,
     betas: Sequence[float] | None = None,
     ranks: Sequence[int] | None = None,
     n_trials: int = DEFAULT_N_TRIALS,
@@ -181,7 +181,8 @@ def sweep(
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if h_layers is None:
-        h_layers = models.determine_layers(mt)
+        emb_layer: Layer = "emb"
+        h_layers = [emb_layer] + list(models.determine_layers(mt))
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:

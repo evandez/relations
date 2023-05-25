@@ -610,12 +610,14 @@ def compute_hs_and_zs(
     subjects: StrSequence,
     h_layer: Layer | Sequence[Layer] | None = None,
     z_layer: Layer | Sequence[Layer] | None = None,
-    batch_size: int = DEFAULT_BATCH_SIZE,
+    batch_size: int = 8,
     examples: Sequence[data.RelationSample] | None = None,
 ) -> HZBySubject:
     """Precompute h for every subject at every layer."""
     if h_layer is None and z_layer is None:
         raise ValueError("Must specify at least one of h_layer and z_layer.")
+    if z_layer == -1:
+        z_layer = models.determine_layers(mt)[z_layer]
 
     prompts = [
         make_prompt(
@@ -634,17 +636,24 @@ def compute_hs_and_zs(
 
     z_by_subj = {}
     h_by_subj = {}
+    h_layers = [h_layer] if isinstance(h_layer, int) else h_layer
+    z_layers = [z_layer] if isinstance(z_layer, int) else z_layer
+
+    layer_idx_to_name = {
+        l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
+    }
+
     for batch_start in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[batch_start : batch_start + batch_size],
-                attention_mask=inputs.attention_mask[
-                    batch_start : batch_start + batch_size
-                ],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        hidden_states = outputs.hidden_states[1:]
+        with torch.no_grad():
+            with baukit.TraceDict(
+                mt.model, layers=layer_idx_to_name.values()
+            ) as traces:
+                outputs = mt.model(
+                    inputs.input_ids[batch_start : batch_start + batch_size],
+                    attention_mask=inputs.attention_mask[
+                        batch_start : batch_start + batch_size
+                    ],
+                )
 
         for batch_index in range(batch_size):
             abs_index = batch_start + batch_index
@@ -659,18 +668,28 @@ def compute_hs_and_zs(
                 )
                 h_index -= 1
                 if isinstance(h_layer, int):
-                    h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
+                    h_by_subj[subject] = untuple(
+                        traces[layer_idx_to_name[h_layer]].output
+                    )[batch_index, h_index]
                 else:
                     h_by_subj[subject] = {
-                        hl: hidden_states[hl][batch_index, h_index] for hl in h_layer
+                        hl: untuple(traces[layer_idx_to_name[hl]].output)[
+                            batch_index, h_index
+                        ]
+                        for hl in h_layer
                     }
 
             if z_layer is not None:
                 if isinstance(z_layer, int):
-                    z_by_subj[subject] = hidden_states[z_layer][batch_index, -1]
+                    z_by_subj[subject] = untuple(
+                        traces[layer_idx_to_name[z_layer]].output
+                    )[batch_index, -1]
                 else:
                     z_by_subj[subject] = {
-                        zl: hidden_states[zl][batch_index, -1] for zl in z_layer
+                        zl: untuple(traces[layer_idx_to_name[zl]].output)[
+                            batch_index, h_index
+                        ]
+                        for zl in z_layer
                     }
 
     return HZBySubject(h_by_subj, z_by_subj)
