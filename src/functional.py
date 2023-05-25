@@ -610,7 +610,7 @@ def compute_hs_and_zs(
     subjects: StrSequence,
     h_layer: Layer | Sequence[Layer] | None = None,
     z_layer: Layer | Sequence[Layer] | None = None,
-    batch_size: int = 8,
+    batch_size: int = DEFAULT_BATCH_SIZE,
     examples: Sequence[data.RelationSample] | None = None,
 ) -> HZBySubject:
     """Precompute h for every subject at every layer."""
