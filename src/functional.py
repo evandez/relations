@@ -466,6 +466,8 @@ def filter_dataset_samples(
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
     min_knowns: int = 10,
+    common_prompt_template: str | None = None,
+    single_token_subject: bool = False,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
 
@@ -475,9 +477,17 @@ def filter_dataset_samples(
     """
     logger.info("filtering dataset to knowns only...")
 
+    if common_prompt_template is not None:
+        assert (
+            "{}" in common_prompt_template
+        ), "common_prompt_template must contain {} to be filled with subject"
+
     relations = []
     for relation in dataset.relations:
-        prompt_template = relation.prompt_templates[0]
+        if common_prompt_template is not None:
+            prompt_template = common_prompt_template
+        else:
+            prompt_template = relation.prompt_templates[0]
 
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
@@ -499,13 +509,28 @@ def filter_dataset_samples(
                 continue
             known_samples.append(sample)
 
-        if len(known_samples) < min_knowns:
+        if single_token_subject == False:
+            filtered_relation = relation.set(samples=known_samples)
+        else:
+            samples_with_single_token_subject = []
+            for sample in relation.samples:
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                if subj_single_token:
+                    samples_with_single_token_subject.append(sample)
+            filtered_relation = relation.set(samples=samples_with_single_token_subject)
+
+        if len(filtered_relation.samples) < min_knowns:
             logger.debug(
                 f'not enough known samples for relation "{relation.name}" '
                 f"({len(known_samples)} < {min_knowns})"
             )
             continue
-        relations.append(relation.set(samples=known_samples))
+        relations.append(filtered_relation)
 
     return data.RelationDataset(relations)
 

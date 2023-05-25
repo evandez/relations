@@ -20,7 +20,14 @@ def main(args: argparse.Namespace) -> None:
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
 
     with torch.device(device):
-        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
+        dataset = functional.filter_dataset_samples(
+            mt=mt,
+            dataset=dataset,
+            common_prompt_template=" {} :",
+            single_token_subject=True,
+        )
+        for relation in dataset.relations:
+            logger.info(f"{relation.name} has {len(relation.samples)} known samples")
         results = sweeps.sweep(
             mt=mt,
             dataset=dataset,

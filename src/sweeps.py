@@ -206,7 +206,8 @@ def sweep(
             relation_results.append(relation_result)
             continue
 
-        prompt_template = relation.prompt_templates[0]
+        # prompt_template = relation.prompt_templates[0]
+        prompt_template = " {} :"
 
         trial_results = []
         for trial in range(n_trials):
