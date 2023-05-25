@@ -1,8 +1,9 @@
 {
-    "relation_name": "work location",
-    "h_layer": 14,
-    "beta": 0.28333333631356555,
     "model_name": "gptj",
+    "relation_name": "work location",
+    "h_layer": 9,
+    "beta": 0.2666666656732559,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 3
 }
