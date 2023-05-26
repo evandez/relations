@@ -1,0 +1,9 @@
+{
+    "model_name": "gptj",
+    "relation_name": "characteristic gender",
+    "h_layer": 6,
+    "beta": 0.4999999950329463,
+    "rank": null,
+    "z_layer": -1,
+    "h_layer_edit": 2
+}

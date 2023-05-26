@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
-    "relation_name": "adjective superlative",
-    "h_layer": 9,
+    "relation_name": "name religion",
+    "h_layer": 11,
     "beta": 0.36666666467984516,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 9
+    "h_layer_edit": 0
 }

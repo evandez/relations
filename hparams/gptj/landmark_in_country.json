@@ -1,8 +1,9 @@
 {
+    "model_name": "gptj",
     "relation_name": "landmark in country",
     "h_layer": 18,
-    "beta": 0.1666666716337204,
-    "model_name": "gptj",
+    "beta": 0.21666666865348816,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 7
 }
