@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, NamedTuple, Sequence, overload
+from typing import Any, Literal, NamedTuple, Sequence, overload
 
 import baukit
 import torch
@@ -466,7 +466,7 @@ def filter_dataset_samples(
     n_trials: int = 3,
     min_knowns: int = 10,
     common_prompt_template: str | None = None,
-    single_token_subject: bool = False,
+    n_subj_tokens: Literal["single", "multi"] | None = None,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
 
@@ -508,10 +508,11 @@ def filter_dataset_samples(
                 continue
             known_samples.append(sample)
 
-        if single_token_subject == False:
+        if n_subj_tokens is None:
             filtered_relation = relation.set(samples=known_samples)
         else:
-            samples_with_single_token_subject = []
+            subject_filtered_samples = []
+            require_multi = n_subj_tokens == "multi"
             for sample in relation.samples:
                 subj_single_token = (
                     models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
@@ -519,9 +520,9 @@ def filter_dataset_samples(
                     .shape[0]
                     == 1
                 )
-                if subj_single_token:
-                    samples_with_single_token_subject.append(sample)
-            filtered_relation = relation.set(samples=samples_with_single_token_subject)
+                if require_multi != subj_single_token:
+                    subject_filtered_samples.append(sample)
+            filtered_relation = relation.set(samples=subject_filtered_samples)
 
         if len(filtered_relation.samples) < min_knowns:
             logger.debug(

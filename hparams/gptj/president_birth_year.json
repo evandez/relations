@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "president birth year",
-    "h_layer": 8,
-    "beta": 0.38333334028720856,
+    "h_layer": 1,
+    "beta": 0.2166666736205419,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": "emb"
+    "h_layer_edit": 2
 }

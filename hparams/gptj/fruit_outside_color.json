@@ -1,0 +1,9 @@
+{
+    "model_name": "gptj",
+    "relation_name": "fruit outside color",
+    "h_layer": 3,
+    "beta": 0.28333333631356555,
+    "rank": null,
+    "z_layer": -1,
+    "h_layer_edit": 12
+}

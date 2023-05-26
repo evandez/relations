@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "name birthplace",
-    "h_layer": 13,
-    "beta": 0.6833333273728689,
+    "h_layer": 17,
+    "beta": 0.23333333432674408,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 3
+    "h_layer_edit": 5
 }

@@ -2,8 +2,8 @@
     "model_name": "gptj",
     "relation_name": "country language",
     "h_layer": 7,
-    "beta": 0.36666667461395264,
+    "beta": 0.3333333432674408,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": "emb"
+    "h_layer_edit": 6
 }
