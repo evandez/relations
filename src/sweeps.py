@@ -85,6 +85,7 @@ class SweepLayerSummary(DataClassJsonMixin):
 @dataclass(frozen=True)
 class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
+    n_samples: int
     trials: list[SweepTrialResults]
 
     def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
@@ -352,7 +353,9 @@ def sweep(
             )
 
         relation_result = SweepRelationResults(
-            relation_name=relation.name, trials=trial_results
+            relation_name=relation.name,
+            n_samples=len(relation.samples),
+            trials=trial_results,
         )
         relation_result.summarize()
         experiment_utils.save_results_file(
