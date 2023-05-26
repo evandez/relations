@@ -2,9 +2,10 @@
 import argparse
 import logging
 
-import torch
 from src import data, functional, hparams, models, sweeps
 from src.utils import experiment_utils, logging_utils
+
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ def main(args: argparse.Namespace) -> None:
             mt=mt,
             dataset=dataset,
             common_prompt_template=" {} :",
-            n_subj_tokens="multi",
+            # n_subj_tokens="multi",
         )
         for relation in dataset.relations:
             logger.info(f"{relation.name} has {len(relation.samples)} known samples")

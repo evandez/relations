@@ -4,11 +4,12 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-import torch
-from dataclasses_json import DataClassJsonMixin
 from src import data, editors, functional, metrics, models, operators
 from src.utils import experiment_utils
 from src.utils.typing import Layer, PathLike
+
+import torch
+from dataclasses_json import DataClassJsonMixin
 
 logger = logging.getLogger(__name__)
 
@@ -225,8 +226,32 @@ def sweep(
             # ICL prompt examples.
             train_relation, test_relation = relation.split(n_train_samples)
             train_samples = train_relation.samples
+            test_samples = test_relation.samples
 
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
+
+            icl_prompt = functional.make_prompt(
+                mt=mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=train_samples,
+            )
+
+            test_prompts = [icl_prompt.format(subject) for subject in test_samples]
+            test_predictions = functional.predict_next_token(
+                mt=mt,
+                prompt=test_prompts,
+                batch_size=batch_size,
+            )
+            for sample, prediction in zip(test_samples, test_predictions):
+                flag = (
+                    "✓"
+                    if functional.is_nontrivial_prefix(
+                        prediction=prediction[0].token, target=sample.object
+                    )
+                    else "✗"
+                )
+                logger.info(f"({flag}) >> {sample} <> {prediction[0]}")
 
             # Precompute all the hs to speed things up.
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
