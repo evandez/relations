@@ -20,7 +20,6 @@ def main(args: argparse.Namespace) -> None:
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
 
     with torch.device(device):
-        dataset = functional.filter_dataset_samples(mt=mt, dataset=dataset)
         results = sweeps.sweep(
             mt=mt,
             dataset=dataset,
@@ -29,6 +28,7 @@ def main(args: argparse.Namespace) -> None:
             batch_size=args.batch_size,
             results_dir=experiment.results_dir,
             resume=args.resume,
+            subj_token_filter=args.subj_token_filter,
         )
         for relation in results.relations:
             best_by_f = relation.best_by_faithfulness()
@@ -70,6 +70,13 @@ if __name__ == "__main__":
         type=int,
         default=sweeps.DEFAULT_BATCH_SIZE,
         help="max batch size for lm",
+    )
+    parser.add_argument(
+        "--subj-token-filter",
+        type=str,
+        default="all",
+        choices=["all", "multi", "single"],
+        help="allows filtering out samples with multiple or single subj tokens. defaults to all",
     )
     args = parser.parse_args()
     main(args)

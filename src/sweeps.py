@@ -2,11 +2,11 @@
 import logging
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 from src import data, editors, functional, metrics, models, operators
 from src.utils import experiment_utils
-from src.utils.typing import PathLike
+from src.utils.typing import Layer, PathLike
 
 import torch
 from dataclasses_json import DataClassJsonMixin
@@ -23,12 +23,20 @@ DEFAULT_BATCH_SIZE = 64
 class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
+    faithfulness_successes: list[data.RelationSample]
+
+
+@dataclass(frozen=True)
+class EfficacyTestPair(DataClassJsonMixin):
+    source: data.RelationSample
+    target: data.RelationSample
 
 
 @dataclass(frozen=True)
 class SweepRankResults(DataClassJsonMixin):
     rank: int
     efficacy: float
+    efficacy_successes: list[EfficacyTestPair]
 
 
 @dataclass(frozen=True)
@@ -62,7 +70,7 @@ class SweepTrainResults(DataClassJsonMixin):
 
 @dataclass(frozen=True)
 class SweepLayerResults(DataClassJsonMixin):
-    layer: int
+    layer: Layer
     result: SweepTrainResults
 
 
@@ -71,11 +79,12 @@ class SweepTrialResults(DataClassJsonMixin):
     prompt_template: str
     train_samples: list[data.RelationSample]
     layers: list[SweepLayerResults]
+    n_test_samples: int
 
 
 @dataclass(frozen=True)
 class SweepLayerSummary(DataClassJsonMixin):
-    layer: int
+    layer: Layer
     beta: metrics.AggregateMetric
     recall: metrics.AggregateMetric
     rank: metrics.AggregateMetric
@@ -176,7 +185,7 @@ def sweep(
     *,
     mt: models.ModelAndTokenizer,
     dataset: data.RelationDataset,
-    h_layers: Sequence[int] | None = None,
+    h_layers: Sequence[Layer] | None = None,
     betas: Sequence[float] | None = None,
     ranks: Sequence[int] | None = None,
     n_trials: int = DEFAULT_N_TRIALS,
@@ -185,15 +194,19 @@ def sweep(
     batch_size: int = DEFAULT_BATCH_SIZE,
     results_dir: PathLike | None = None,
     resume: bool = False,
+    subj_token_filter: Literal["all", "single", "multi"] = "all",
     **kwargs: Any,
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if h_layers is None:
-        h_layers = models.determine_layers(mt)
+        emb_layer: Layer = "emb"
+        h_layers = [emb_layer] + list(models.determine_layers(mt))
+        h_layers = [10, 15, 20]  # <------ TODO: REMOVE
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
         ranks = range(0, 250, 10)
+        ranks = range(0, 250, 50)  # <------ TODO: REMOVE
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -213,7 +226,8 @@ def sweep(
             relation_results.append(relation_result)
             continue
 
-        prompt_template = relation.prompt_templates[0]
+        # prompt_template = relation.prompt_templates[0]
+        prompt_template = " {} :"
 
         trial_results = []
         for trial in range(n_trials):
@@ -234,11 +248,35 @@ def sweep(
 
             logger.info(f"will train using: {[str(x) for x in train_samples]}")
 
+            icl_prompt = functional.make_prompt(
+                mt=mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=train_samples,
+            )
+
+            test_relation = (
+                functional.filter_relation_samples_based_on_provided_fewshots(
+                    mt=mt,
+                    test_relation=test_relation,
+                    prompt_template=icl_prompt,
+                    subj_token_filter=subj_token_filter,
+                )
+            )
+
+            if len(test_relation.samples) <= n_train_samples:
+                logger.warning(
+                    f"Not enough samples ( < {n_train_samples}) to test for faithfulness and efficacy."
+                )
+                continue
+
+            test_samples = test_relation.samples
+
             # Precompute all the hs to speed things up.
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
-                subjects=[x.subject for x in relation.samples],
+                subjects=[x.subject for x in test_relation.samples],
                 h_layer=h_layers,
                 z_layer=-1,
                 batch_size=batch_size,
@@ -269,7 +307,6 @@ def sweep(
 
                 # Try all betas and record recall.
                 results_by_beta = []
-                recalls_by_beta = []
                 for beta in betas:
                     operator.bias[:] = bias * beta
 
@@ -284,8 +321,21 @@ def sweep(
 
                     recall = metrics.recall(pred_objects, test_objects)
                     logger.info(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
-                    recalls_by_beta.append(recall)
-                    results_by_beta.append(SweepBetaResults(beta=beta, recall=recall))
+
+                    faithfulness_successes = []
+                    for prediction, sample in zip(pred_objects, test_samples):
+                        if functional.is_nontrivial_prefix(
+                            prediction=prediction[0], target=sample.object
+                        ):
+                            faithfulness_successes.append(sample)
+
+                    results_by_beta.append(
+                        SweepBetaResults(
+                            beta=beta,
+                            recall=recall,
+                            faithfulness_successes=faithfulness_successes,
+                        )
+                    )
 
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
@@ -304,6 +354,7 @@ def sweep(
 
                     pred_objects = []
                     targ_objects = []
+                    efficacy_successes = []
                     for sample in test_samples:
                         target = test_targets.get(sample)
                         if target is None:
@@ -326,11 +377,26 @@ def sweep(
 
                         pred_objects.append([result.predicted_tokens[0].token])
                         targ_objects.append(target.object)
+                        if functional.is_nontrivial_prefix(
+                            prediction=result.predicted_tokens[0].token,
+                            target=target.object,
+                        ):
+                            efficacy_successes.append(
+                                EfficacyTestPair(
+                                    source=sample,
+                                    target=target,
+                                )
+                            )
 
                     [efficacy] = metrics.recall(pred_objects, targ_objects)
                     logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
+
                     results_by_rank.append(
-                        SweepRankResults(rank=rank, efficacy=efficacy)
+                        SweepRankResults(
+                            rank=rank,
+                            efficacy=efficacy,
+                            efficacy_successes=efficacy_successes,
+                        )
                     )
 
                 train_result = SweepTrainResults(
@@ -354,11 +420,13 @@ def sweep(
                     prompt_template=prompt_template,
                     train_samples=train_samples,
                     layers=layer_results,
+                    n_test_samples=len(test_samples),
                 )
             )
 
         relation_result = SweepRelationResults(
-            relation_name=relation.name, trials=trial_results
+            relation_name=relation.name,
+            trials=trial_results,
         )
         relation_result.summarize()
         experiment_utils.save_results_file(

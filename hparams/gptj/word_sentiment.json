@@ -1,8 +1,9 @@
 {
-    "relation_name": "word sentiment",
-    "h_layer": 7,
-    "beta": 0.1333333378036817,
     "model_name": "gptj",
+    "relation_name": "word sentiment",
+    "h_layer": 8,
+    "beta": 0.23333333432674408,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 0
 }

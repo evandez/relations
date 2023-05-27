@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, NamedTuple, Sequence, overload
+from typing import Any, Literal, NamedTuple, Sequence, overload
 
 import baukit
 import torch
@@ -455,6 +455,74 @@ def filter_relation_samples(
     return relation.set(samples=sorted(known_samples, key=lambda x: x.subject))
 
 
+def get_tick_marker(value: bool) -> str:
+    """Returns a tick or cross marker depending on the value."""
+    return "✓" if value else "✗"
+
+
+@torch.inference_mode()
+def filter_relation_samples_based_on_provided_fewshots(
+    *,
+    mt: models.ModelAndTokenizer,
+    test_relation: data.Relation,
+    prompt_template: str,
+    n_top_lm: int = DEFAULT_N_TOP_LM,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] = [],
+    subj_token_filter: Literal["all", "single", "multi"] = "all",
+) -> data.Relation:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all. We say the model
+    "knows" the sample if, given an ICL prompt for the relation, it predicts the
+    correct answer in the top-1 position.
+    """
+    if len(examples) > 0:
+        logger.debug("ICL examples: ", [str(sample) for sample in examples])
+        prompt_template = make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject="{}",
+            examples=examples,
+        )
+    logger.debug(f'filtering for knowns using prompt "{prompt_template}"')
+
+    test_prompts = [
+        prompt_template.format(sample.subject) for sample in test_relation.samples
+    ]
+    predictions = predict_next_token(
+        mt=mt, prompt=test_prompts, k=n_top_lm, batch_size=batch_size
+    )
+
+    # Helpful to see what the model predicted sometimes.
+    filtered_samples = []
+    for sample, prediction in zip(test_relation.samples, predictions):
+        known_flag = is_nontrivial_prefix(
+            prediction=prediction[0].token, target=sample.object
+        )
+        log_print = f"{sample.subject=}, {sample.object=}, predicted={prediction[0]}, known=({get_tick_marker(known_flag)})"
+        if known_flag:
+            if subj_token_filter == "all":
+                filtered_samples.append(sample)
+            else:
+                require_multi = subj_token_filter == "multi"
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                subj_token_flag = require_multi != subj_single_token
+                log_print += (
+                    f", {subj_token_filter}=({get_tick_marker(subj_token_flag)})"
+                )
+                if subj_token_flag:
+                    filtered_samples.append(sample)
+        logger.debug(log_print)
+
+    return test_relation.set(samples=sorted(filtered_samples, key=lambda x: x.subject))
+
+
 @torch.inference_mode()
 def filter_dataset_samples(
     *,
@@ -465,6 +533,8 @@ def filter_dataset_samples(
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
     min_knowns: int = 10,
+    common_prompt_template: str | None = None,
+    n_subj_tokens: Literal["single", "multi"] | None = None,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
 
@@ -474,9 +544,17 @@ def filter_dataset_samples(
     """
     logger.info("filtering dataset to knowns only...")
 
+    if common_prompt_template is not None:
+        assert (
+            "{}" in common_prompt_template
+        ), "common_prompt_template must contain {} to be filled with subject"
+
     relations = []
     for relation in dataset.relations:
-        prompt_template = relation.prompt_templates[0]
+        if common_prompt_template is not None:
+            prompt_template = common_prompt_template
+        else:
+            prompt_template = relation.prompt_templates[0]
 
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
@@ -498,13 +576,29 @@ def filter_dataset_samples(
                 continue
             known_samples.append(sample)
 
-        if len(known_samples) < min_knowns:
+        if n_subj_tokens is None:
+            filtered_relation = relation.set(samples=known_samples)
+        else:
+            subject_filtered_samples = []
+            require_multi = n_subj_tokens == "multi"
+            for sample in relation.samples:
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                if require_multi != subj_single_token:
+                    subject_filtered_samples.append(sample)
+            filtered_relation = relation.set(samples=subject_filtered_samples)
+
+        if len(filtered_relation.samples) < min_knowns:
             logger.debug(
                 f'not enough known samples for relation "{relation.name}" '
                 f"({len(known_samples)} < {min_knowns})"
             )
             continue
-        relations.append(relation.set(samples=known_samples))
+        relations.append(filtered_relation)
 
     return data.RelationDataset(relations)
 
@@ -616,6 +710,8 @@ def compute_hs_and_zs(
     """Precompute h for every subject at every layer."""
     if h_layer is None and z_layer is None:
         raise ValueError("Must specify at least one of h_layer and z_layer.")
+    if z_layer == -1:
+        z_layer = models.determine_layers(mt)[z_layer]
 
     prompts = [
         make_prompt(
@@ -634,17 +730,24 @@ def compute_hs_and_zs(
 
     z_by_subj = {}
     h_by_subj = {}
+    h_layers = [h_layer] if isinstance(h_layer, int) else h_layer
+    z_layers = [z_layer] if isinstance(z_layer, int) else z_layer
+
+    layer_idx_to_name = {
+        l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
+    }
+
     for batch_start in range(0, len(inputs.input_ids), batch_size):
-        with torch.inference_mode():
-            outputs = mt.model(
-                inputs.input_ids[batch_start : batch_start + batch_size],
-                attention_mask=inputs.attention_mask[
-                    batch_start : batch_start + batch_size
-                ],
-                output_hidden_states=True,
-                return_dict=True,
-            )
-        hidden_states = outputs.hidden_states[1:]
+        with torch.no_grad():
+            with baukit.TraceDict(
+                mt.model, layers=layer_idx_to_name.values()
+            ) as traces:
+                outputs = mt.model(
+                    inputs.input_ids[batch_start : batch_start + batch_size],
+                    attention_mask=inputs.attention_mask[
+                        batch_start : batch_start + batch_size
+                    ],
+                )
 
         for batch_index in range(batch_size):
             abs_index = batch_start + batch_index
@@ -659,18 +762,28 @@ def compute_hs_and_zs(
                 )
                 h_index -= 1
                 if isinstance(h_layer, int):
-                    h_by_subj[subject] = hidden_states[h_layer][batch_index, h_index]
+                    h_by_subj[subject] = untuple(
+                        traces[layer_idx_to_name[h_layer]].output
+                    )[batch_index, h_index]
                 else:
                     h_by_subj[subject] = {
-                        hl: hidden_states[hl][batch_index, h_index] for hl in h_layer
+                        hl: untuple(traces[layer_idx_to_name[hl]].output)[
+                            batch_index, h_index
+                        ]
+                        for hl in h_layer
                     }
 
             if z_layer is not None:
                 if isinstance(z_layer, int):
-                    z_by_subj[subject] = hidden_states[z_layer][batch_index, -1]
+                    z_by_subj[subject] = untuple(
+                        traces[layer_idx_to_name[z_layer]].output
+                    )[batch_index, -1]
                 else:
                     z_by_subj[subject] = {
-                        zl: hidden_states[zl][batch_index, -1] for zl in z_layer
+                        zl: untuple(traces[layer_idx_to_name[zl]].output)[
+                            batch_index, h_index
+                        ]
+                        for zl in z_layer
                     }
 
     return HZBySubject(h_by_subj, z_by_subj)
