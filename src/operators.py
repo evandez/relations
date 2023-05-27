@@ -383,13 +383,12 @@ class Word2VecIclEstimator(LinearRelationEstimator):
 
         deltas = []
         for sample in samples:
-            examples = [s for s in samples if s != sample]
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                 mt=self.mt,
                 prompt_template=prompt_template,
                 h_layer=self.h_layer,
                 z_layer=self.z_layer,
-                examples=examples,
+                examples=samples,
                 subjects=[sample.subject],
             )
             delta = (
