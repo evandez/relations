@@ -333,11 +333,8 @@ class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
                     subject=sample.subject,
                 )
 
-                with baukit.TraceDict(
-                    self.mt.model,
-                    [h_layer_name],
-                ) as traces:
-                    output = self.mt.model(**inputs)
+                with baukit.TraceDict(self.mt.model, [h_layer_name]) as traces:
+                    self.mt.model(**inputs)
 
                 H.append(
                     functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
@@ -454,10 +451,9 @@ class LearnedEstimator(LinearRelationEstimator):
             )
 
             with baukit.TraceDict(
-                self.mt.model,
-                [h_layer_name, z_layer_name],
+                self.mt.model, [h_layer_name, z_layer_name]
             ) as traces:
-                output = self.mt.model(**inputs)
+                self.mt.model(**inputs)
 
             H_stack.append(
                 functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
