@@ -278,7 +278,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True, kw_only=True)
-class CornerGdEstimator(LinearRelationEstimator):
+class CornerGDEstimator(LinearRelationEstimator):
     """Estimate a "corner" of LM's rep space where range is assigned equal prob."""
 
     h_layer: Layer
@@ -296,7 +296,7 @@ class CornerGdEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
+class LearnedEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     n_steps: int = 100
@@ -384,7 +384,7 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class OffsetEstimatorBaseline(LinearRelationEstimator):
+class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None
