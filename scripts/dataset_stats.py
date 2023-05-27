@@ -3,7 +3,7 @@ import statistics
 from pathlib import Path
 
 # Initial Dictionary to store the data
-data_summary = {
+data_summary: dict = {
     "total_files": 0,
     "total_samples": 0,
     "relations": {},
@@ -16,7 +16,7 @@ samples_per_relation_list = []
 
 
 # Function to update the summary dictionary based on each file's data
-def update_summary(data):
+def update_summary(data: dict) -> None:
     data_summary["total_samples"] += len(data["samples"])
 
     relation = data["properties"]["relation_type"]
@@ -36,7 +36,7 @@ def update_summary(data):
 
 
 # Recursive function to process all .json files in a directory (and subdirectories)
-def process_directory(directory: Path):
+def process_directory(directory: Path) -> None:
     for file in directory.iterdir():
         if file.is_file() and file.suffix == ".json":
             data_summary["total_files"] += 1
