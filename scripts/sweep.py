@@ -31,6 +31,13 @@ def main(args: argparse.Namespace) -> None:
             subj_token_filter=args.subj_token_filter,
         )
         for relation in results.relations:
+            log_msg = f"{relation.relation_name}"
+            if len(relation.trials) == 0:
+                log_msg += " (no trials). Not enough known samples. --> skipping"
+                logger.info(log_msg)
+                continue
+            log_msg += f" (n_trials={len(relation.trials)})"
+            logger.info(log_msg)
             best_by_f = relation.best_by_faithfulness()
             best_by_e = relation.best_by_efficacy()
             hparams.RelationHParams(

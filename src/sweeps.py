@@ -256,11 +256,15 @@ def sweep(
                 )
             )
 
+            logger.info(
+                f"filtered test relation to {len(test_relation.samples)} samples"
+            )
+
             if len(test_relation.samples) <= n_train_samples:
                 logger.warning(
                     f"Not enough samples ( < {n_train_samples}) to test for faithfulness and efficacy."
                 )
-                continue
+                break  # only write results for the relations that have enough test samples for all the trials.
 
             test_samples = test_relation.samples
 
