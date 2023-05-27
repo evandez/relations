@@ -89,13 +89,11 @@ class SweepLayerSummary(DataClassJsonMixin):
     recall: metrics.AggregateMetric
     rank: metrics.AggregateMetric
     efficacy: metrics.AggregateMetric
-    jh_norm: metrics.AggregateMetric
 
 
 @dataclass(frozen=True)
 class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
-    n_samples: int
     trials: list[SweepTrialResults]
 
     def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
@@ -112,7 +110,6 @@ class SweepRelationResults(DataClassJsonMixin):
                         best_beta.recall[k - 1],
                         best_rank.rank,
                         best_rank.efficacy,
-                        layer.result.jh_norm,
                     )
                 )
 
@@ -132,10 +129,6 @@ class SweepRelationResults(DataClassJsonMixin):
             layer: metrics.AggregateMetric.aggregate([x[4] for x in results])
             for layer, results in results_by_layer.items()
         }
-        jh_norms_by_layer = {
-            layer: metrics.AggregateMetric.aggregate([x[5] for x in results])
-            for layer, results in results_by_layer.items()
-        }
 
         return {
             layer: SweepLayerSummary(
@@ -144,7 +137,6 @@ class SweepRelationResults(DataClassJsonMixin):
                 recall=recalls_by_layer[layer],
                 rank=ranks_by_layer[layer],
                 efficacy=efficacies_by_layer[layer],
-                jh_norm=jh_norms_by_layer[layer],
             )
             for layer in recalls_by_layer
         }
@@ -201,12 +193,10 @@ def sweep(
     if h_layers is None:
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
-        h_layers = [10, 15, 20]  # <------ TODO: REMOVE
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
         ranks = range(0, 250, 10)
-        ranks = range(0, 250, 50)  # <------ TODO: REMOVE
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
