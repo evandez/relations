@@ -14,9 +14,10 @@ ESTIMATORS = {
     "j": operators.JacobianEstimator,
     "j-icl": operators.JacobianIclEstimator,
     "j-icl-mean": operators.JacobianIclMeanEstimator,
-    "corner-gd": operators.CornerGDEstimator,
+    "corner-gd": operators.CornerGdEstimator,
     "corner-mean": operators.CornerMeanEmbeddingEstimator,
     "learned": operators.LearnedEstimator,
+    "word2vec": operators.Word2VecIclEstimator,
 }
 EDITORS = {
     "bl-h": editors.HiddenBaselineEditor,
