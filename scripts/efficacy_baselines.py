@@ -216,8 +216,7 @@ def run_edit_baselines(
                 )
                 break  # only consider relations that have enough number of known test samples
 
-            # h_layers = [layer.layer for layer in trial_results.layers]
-            h_layers = [1, 3]
+            h_layers = [layer.layer for layer in trial_results.layers]
 
             logger.info("precomputing test hs and zs...")
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
