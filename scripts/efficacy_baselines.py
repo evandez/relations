@@ -152,8 +152,12 @@ def run_edit_baselines(
     save_dir: str = "results/efficacy_baselines/",
     device: str | None = None,
     batch_size: int = sweeps.DEFAULT_BATCH_SIZE,
+    experiment_name: str | None = None,
+    rel_names: list[str] | None = None,
 ) -> None:
     save_dir = f"{save_dir}/{model_name}"
+    if experiment_name is not None:
+        save_dir = f"{save_dir}/{experiment_name}"
     os.makedirs(save_dir, exist_ok=True)
     device = device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(name=model_name, device=device)
@@ -167,6 +171,9 @@ def run_edit_baselines(
 
     all_results: list[EfficacyBaselineRelationResult] = []
     for relation_name, sweep_result in tqdm(sweep_results.items()):
+        if rel_names is not None and relation_name not in rel_names:
+            logger.info("skipping %s", relation_name)
+            continue
         logger.info("relation: %s", relation_name)
         relation_results = parse_results(sweep_result)
         relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
@@ -209,7 +216,8 @@ def run_edit_baselines(
                 )
                 break  # only consider relations that have enough number of known test samples
 
-            h_layers = [layer.layer for layer in trial_results.layers]
+            # h_layers = [layer.layer for layer in trial_results.layers]
+            h_layers = [1, 3]
 
             logger.info("precomputing test hs and zs...")
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
@@ -349,9 +357,12 @@ def run_edit_baselines(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="sweep over hyperparameters")
+    parser = argparse.ArgumentParser(
+        description="calculate layerwise efficacy baselines"
+    )
     logging_utils.add_logging_args(parser)
     models.add_model_args(parser)
+    experiment_utils.add_experiment_args(parser)
     parser.add_argument(
         "--batch-size",
         type=int,
@@ -372,10 +383,15 @@ if __name__ == "__main__":
         default="results/efficacy_baselines/",
         help="directory to find sweep results",
     )
+    parser.add_argument(
+        "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
+    )
 
     args = parser.parse_args()
 
     logging_utils.configure(args)
+
+    logger.info(args)
 
     run_edit_baselines(
         model_name=args.model,
@@ -383,4 +399,6 @@ if __name__ == "__main__":
         save_dir=args.save_dir,
         device=args.device,
         batch_size=args.batch_size,
+        experiment_name=args.experiment_name,
+        rel_names=args.rel_names,
     )

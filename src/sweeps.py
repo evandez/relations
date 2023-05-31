@@ -217,7 +217,7 @@ def sweep(
             continue
 
         # prompt_template = relation.prompt_templates[0]
-        prompt_template = " {} :"
+        prompt_template = " {}"  # bare prompt
 
         trial_results = []
         for trial in range(n_trials):
