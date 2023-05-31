@@ -424,7 +424,9 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         range_tokenized = [t[0].item() for t in range_tokenized.input_ids]
 
         unembedding_rows = self.mt.lm_head[1].weight[range_tokenized]
-        unembedding_rows = torch.stack([row / row.norm() for row in unembedding_rows])
+        unembedding_rows = torch.stack(
+            [row / row.norm() for row in unembedding_rows]
+        )  # so that all of the embeddings are unit vectors
         offset = unembedding_rows.mean(dim=0)[None]
 
         if self.scaling_factor is None:

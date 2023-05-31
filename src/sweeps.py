@@ -96,7 +96,7 @@ class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
     trials: list[SweepTrialResults]
 
-    def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
+    def by_layer(self, k: int = 1) -> dict[Layer, SweepLayerSummary]:
         """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
@@ -217,7 +217,7 @@ def sweep(
             continue
 
         # prompt_template = relation.prompt_templates[0]
-        prompt_template = " {} :"
+        prompt_template = " {}"  # bare prompt
 
         trial_results = []
         for trial in range(n_trials):
@@ -254,11 +254,15 @@ def sweep(
                 )
             )
 
+            logger.info(
+                f"filtered test relation to {len(test_relation.samples)} samples"
+            )
+
             if len(test_relation.samples) <= n_train_samples:
                 logger.warning(
                     f"Not enough samples ( < {n_train_samples}) to test for faithfulness and efficacy."
                 )
-                continue
+                break  # only write results for the relations that have enough test samples for all the trials.
 
             test_samples = test_relation.samples
 
