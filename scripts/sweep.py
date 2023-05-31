@@ -32,8 +32,8 @@ def main(args: argparse.Namespace) -> None:
         )
         for relation in results.relations:
             log_msg = f"{relation.relation_name}"
-            if len(relation.trials) == 0:
-                log_msg += " (no trials). Not enough known samples. --> skipping"
+            if len(relation.trials) < sweeps.DEFAULT_N_TRIALS:
+                log_msg += f"not enough number of trials ({len(relation.trials)} < {sweeps.DEFAULT_N_TRIALS}) --> skipping"
                 logger.info(log_msg)
                 continue
             log_msg += f" (n_trials={len(relation.trials)})"

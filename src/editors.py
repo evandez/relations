@@ -278,6 +278,59 @@ class HiddenBaselineEditor(Editor):
 
 
 @dataclass(frozen=True, kw_only=True)
+class HiddenBaselineEditor_Obj(Editor):
+    """Edit the model by replacing h for the subject with the h of the target."""
+
+    mt: models.ModelAndTokenizer
+    prompt_template: str
+    h_layer: Layer
+
+    def __call__(
+        self,
+        subject: str,
+        target: str,
+        **kwargs: Any,
+    ) -> LinearRelationEditResult:
+        _check_no_extra_kwargs(kwargs)
+        inputs, subject_edit_index = _compute_inputs(
+            mt=self.mt,
+            prompt_template=self.prompt_template,
+            subject=subject,
+        )
+
+        target_inputs, target_subject_index = _compute_inputs(
+            mt=self.mt,
+            prompt_template=self.prompt_template,
+            subject=target,
+        )
+
+        z_layer = models.determine_layers(self.mt)[-1]
+        [[hiddens], *_] = functional.compute_hidden_states(
+            mt=self.mt,
+            layers=[z_layer],
+            inputs=target_inputs,
+        )
+        h_target = hiddens[0, target_subject_index, ..., None]
+
+        return _apply_edit(
+            mt=self.mt,
+            layer=self.h_layer,
+            index=subject_edit_index,
+            inputs=inputs,
+            delta=h_target,
+            assign=True,
+            n_top_tokens=self.n_top_tokens,
+            n_new_tokens=self.n_new_tokens,
+            n_samples=self.n_samples,
+        )
+
+    @staticmethod
+    def expects() -> Literal["subject", "object"]:
+        """Does this editor expect a target subject or target object as input?"""
+        return "object"
+
+
+@dataclass(frozen=True, kw_only=True)
 class EmbedBaselineEditor(Editor):
     """Edit the model by replacing h for the object embedding."""
 

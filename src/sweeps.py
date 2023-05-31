@@ -96,7 +96,7 @@ class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
     trials: list[SweepTrialResults]
 
-    def by_layer(self, k: int = 1) -> dict[int, SweepLayerSummary]:
+    def by_layer(self, k: int = 1) -> dict[Layer, SweepLayerSummary]:
         """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
@@ -193,12 +193,10 @@ def sweep(
     if h_layers is None:
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
-        h_layers = [10, 15, 20]  # <------ TODO: REMOVE
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
         ranks = range(0, 250, 10)
-        ranks = range(0, 250, 50)  # <------ TODO: REMOVE
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
