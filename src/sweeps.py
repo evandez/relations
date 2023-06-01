@@ -37,6 +37,7 @@ class SweepRankResults(DataClassJsonMixin):
     rank: int
     efficacy: float
     efficacy_successes: list[EfficacyTestPair]
+    efficacy_trials: list[EfficacyTestPair]
 
 
 @dataclass(frozen=True)
@@ -334,7 +335,6 @@ def sweep(
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
                 svd = torch.svd(operator.weight.float())
-
                 test_targets = functional.random_edit_targets(test_samples)
                 results_by_rank = []
                 for rank in ranks:
@@ -349,8 +349,11 @@ def sweep(
                     pred_objects = []
                     targ_objects = []
                     efficacy_successes = []
+                    efficacy_trials = []
                     for sample in test_samples:
                         target = test_targets.get(sample)
+                        assert target is not None
+                        efficacy_trials.append(EfficacyTestPair(sample, target))
                         if target is None:
                             logger.debug(f"cannot edit {target}, skipping")
                             continue
@@ -390,6 +393,7 @@ def sweep(
                             rank=rank,
                             efficacy=efficacy,
                             efficacy_successes=efficacy_successes,
+                            efficacy_trials=efficacy_trials,
                         )
                     )
 
