@@ -136,7 +136,9 @@ def get_icl_results(
     results["logit_lens"] = logit_lens_recall
 
     offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="icl")
-    offset_operator = offset_estimator(train)
+    offset_operator = offset_estimator(
+        train.set(samples=train.samples + test.samples)  # access to the full range
+    )
     offset_recall = evaluate(
         offset_operator, test, hs_by_subj=hs_by_subj, layer_name=h_layer_name
     )
@@ -244,7 +246,7 @@ def main(args: argparse.Namespace) -> None:
 
         for trial in range(N_TRIALS):
             print(f"trial {trial + 1}/{N_TRIALS}")
-            train, test = cur_relation_known.split(size=N_TRAINING)
+            train, test = cur_relation_known.split(train_size=N_TRAINING)
             print(f"train: {[str(sample) for sample in train.samples]}")
 
             icl_prompt = functional.make_prompt(
@@ -293,7 +295,7 @@ def main(args: argparse.Namespace) -> None:
             hs_by_subj_zs = {
                 sample.subject: get_h(
                     mt=mt,
-                    prompt_template=mt.tokenizer.eos_token + "{}",
+                    prompt_template=mt.tokenizer.eos_token + " {} :",
                     subject=sample.subject,
                     layer_names=models.determine_layer_paths(
                         mt, ["emb", hparams["h_layer"]]

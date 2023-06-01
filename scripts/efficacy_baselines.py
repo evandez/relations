@@ -39,6 +39,15 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
             train_samples=[RelationSample.from_dict(s) for s in trial["train_samples"]],
             layers=[],
             n_test_samples=trial["n_test_samples"],
+            efficacy_trials=[
+                EfficacyTestPair(
+                    source=RelationSample.from_dict(s["source"]),
+                    target=RelationSample.from_dict(s["target"]),
+                )
+                for s in trial["efficacy_trials"]
+            ]
+            if "efficacy_trials" in trial
+            else [],
         )
         for layer in trial["layers"]:
             train_results = SweepTrainResults(
@@ -131,7 +140,6 @@ class EfficacyBaselineLayerResult(DataClassJsonMixin):
 class EfficacyBaselineTrialResult(DataClassJsonMixin):
     train_samples: list[RelationSample]
     prompt_template: str
-    efficacy_test_pairs: list[EfficacyTestPair]
     layerwise_baseline_results: list[EfficacyBaselineLayerResult]
 
 
@@ -146,7 +154,7 @@ class EfficacyBaselineResults(DataClassJsonMixin):
     relations: list[EfficacyBaselineRelationResult]
 
 
-def run_edit_baselines(
+def run_causality_baselines(
     model_name: Literal["gptj", "gpt2-xl", "llama-13b"] = "gptj",
     sweep_results_dir: str = "results/sweep/",
     save_dir: str = "results/efficacy_baselines/",
@@ -176,6 +184,9 @@ def run_edit_baselines(
             continue
         logger.info("relation: %s", relation_name)
         relation_results = parse_results(sweep_result)
+        if len(relation_results.trials) < 3:
+            logger.info(f"skipping {relation_name}, not enough trials")
+            continue
         relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
         by_layer = relation_results.by_layer()
 
@@ -185,6 +196,7 @@ def run_edit_baselines(
             trial_results = relation_results.trials[n_trial]
             prompt_template = trial_results.prompt_template
             train_samples = trial_results.train_samples
+            efficacy_trials = trial_results.efficacy_trials
             icl_prompt = functional.make_prompt(
                 mt=mt,
                 prompt_template=prompt_template,
@@ -222,7 +234,7 @@ def run_edit_baselines(
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                 mt=mt,
                 prompt_template=prompt_template,
-                subjects=[x.subject for x in test_samples],
+                subjects=[x.subject for x in relation.samples],
                 h_layer=h_layers,
                 z_layer=-1,
                 batch_size=batch_size,
@@ -235,7 +247,8 @@ def run_edit_baselines(
                 if layer_no not in h_layers:
                     continue
                 efficacy = by_layer[layer.layer].efficacy
-                rank = int(np.floor(by_layer[layer.layer].rank.mean))
+                # rank = int(np.floor(by_layer[layer.layer].rank.mean))
+                rank = by_layer[layer.layer].rank.values[n_trial]
                 logger.info(
                     f"layer: {layer_no}, efficacy = {efficacy.mean} +/- {efficacy.stderr}, {rank=}"
                 )
@@ -252,7 +265,6 @@ def run_edit_baselines(
                 )
                 assert operator.weight is not None
                 svd = torch.svd(operator.weight.float())
-                test_targets = functional.random_edit_targets(test_samples)
 
                 baseline_results: dict[str, float] = {}
 
@@ -274,17 +286,15 @@ def run_edit_baselines(
 
                     pred_objects = []
                     target_objects = []
-                    for original in test_samples:
-                        target = test_targets.get(original)
-                        if target is None:
-                            logger.debug(f"cannot edit {target}, skipping")
-                            continue
+                    for efficacy_test_pair in efficacy_trials:
+                        original = efficacy_test_pair.source
+                        target = efficacy_test_pair.target
                         target_objects.append(target.object)
 
                         z_original = zs_by_subj[original.subject]
                         z_target = zs_by_subj[target.subject]
-                        h_original = hs_by_subj[original.subject][layer_no]
-                        h_target = hs_by_subj[target.subject][layer_no]
+                        # h_original = hs_by_subj[original.subject][layer_no]
+                        # h_target = hs_by_subj[target.subject][layer_no]
 
                         if editor.expects() == "object":
                             result = dataclasses_utils.call_with_optional_kwargs(
@@ -328,10 +338,6 @@ def run_edit_baselines(
                 EfficacyBaselineTrialResult(
                     train_samples=train_samples,
                     prompt_template=prompt_template,
-                    efficacy_test_pairs=[
-                        EfficacyTestPair(source=key, target=value)
-                        for key, value in test_targets.items()
-                    ],
                     layerwise_baseline_results=layerwise_baseline_results,
                 )
             )
@@ -372,14 +378,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep-results-dir",
         type=str,
-        default="results/sweep/",
+        default="results/sweep-test/",  # TODO: change to `sweep`
         help="directory to find sweep results",
     )
 
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/efficacy_baselines/",
+        default="results/efficacy_baselines-test/",  # TODO: change to `efficacy_baselines``
         help="directory to find sweep results",
     )
     parser.add_argument(
@@ -392,7 +398,7 @@ if __name__ == "__main__":
 
     logger.info(args)
 
-    run_edit_baselines(
+    run_causality_baselines(
         model_name=args.model,
         sweep_results_dir=args.sweep_results_dir,
         save_dir=args.save_dir,

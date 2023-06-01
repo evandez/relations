@@ -37,7 +37,6 @@ class SweepRankResults(DataClassJsonMixin):
     rank: int
     efficacy: float
     efficacy_successes: list[EfficacyTestPair]
-    efficacy_trials: list[EfficacyTestPair]
 
 
 @dataclass(frozen=True)
@@ -81,6 +80,7 @@ class SweepTrialResults(DataClassJsonMixin):
     train_samples: list[data.RelationSample]
     layers: list[SweepLayerResults]
     n_test_samples: int
+    efficacy_trials: list[EfficacyTestPair]
 
 
 @dataclass(frozen=True)
@@ -194,6 +194,7 @@ def sweep(
     if h_layers is None:
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
+        h_layers = h_layers[::3]  # <---- only every 3rd layer (REMOVE THIS)
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
@@ -218,7 +219,7 @@ def sweep(
             continue
 
         # prompt_template = relation.prompt_templates[0]
-        prompt_template = " {}"  # bare prompt
+        prompt_template = " {} :"  # bare prompt
 
         trial_results = []
         for trial in range(n_trials):
@@ -261,11 +262,16 @@ def sweep(
 
             if len(test_relation.samples) <= n_train_samples:
                 logger.warning(
-                    f"Not enough samples ( < {n_train_samples}) to test for faithfulness and efficacy."
+                    f"Not enough samples ({len(test_relation.samples)} < {n_train_samples}) to test for faithfulness and efficacy."
                 )
                 break  # only write results for the relations that have enough test samples for all the trials.
 
             test_samples = test_relation.samples
+            test_subjects = [x.subject for x in test_samples]
+            test_objects = [x.object for x in test_samples]
+            test_targets = functional.random_edit_targets(
+                test_samples
+            )  # for causal tests (editing)
 
             # Precompute all the hs to speed things up.
             hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
@@ -279,6 +285,7 @@ def sweep(
             )
 
             layer_results = []
+
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
@@ -295,10 +302,7 @@ def sweep(
                 assert operator.bias is not None
                 bias = operator.bias.clone()
 
-                test_samples = test_relation.samples
-                test_subjects = [x.subject for x in test_samples]
                 test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
-                test_objects = [x.object for x in test_samples]
 
                 # Try all betas and record recall.
                 results_by_beta = []
@@ -335,7 +339,6 @@ def sweep(
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
                 svd = torch.svd(operator.weight.float())
-                test_targets = functional.random_edit_targets(test_samples)
                 results_by_rank = []
                 for rank in ranks:
                     editor = editors.LowRankPInvEditor(
@@ -349,11 +352,9 @@ def sweep(
                     pred_objects = []
                     targ_objects = []
                     efficacy_successes = []
-                    efficacy_trials = []
                     for sample in test_samples:
                         target = test_targets.get(sample)
                         assert target is not None
-                        efficacy_trials.append(EfficacyTestPair(sample, target))
                         if target is None:
                             logger.debug(f"cannot edit {target}, skipping")
                             continue
@@ -393,7 +394,6 @@ def sweep(
                             rank=rank,
                             efficacy=efficacy,
                             efficacy_successes=efficacy_successes,
-                            efficacy_trials=efficacy_trials,
                         )
                     )
 
@@ -419,6 +419,13 @@ def sweep(
                     train_samples=train_samples,
                     layers=layer_results,
                     n_test_samples=len(test_samples),
+                    efficacy_trials=[
+                        EfficacyTestPair(
+                            source=sample,
+                            target=target,
+                        )
+                        for sample, target in test_targets.items()
+                    ],
                 )
             )
 
