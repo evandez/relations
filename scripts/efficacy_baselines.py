@@ -247,8 +247,10 @@ def run_causality_baselines(
                 if layer_no not in h_layers:
                     continue
                 efficacy = by_layer[layer.layer].efficacy
-                # rank = int(np.floor(by_layer[layer.layer].rank.mean))
-                rank = by_layer[layer.layer].rank.values[n_trial]
+                # rank = int(np.floor(by_layer[layer.layer].rank.mean)) # use the mean rank for each layer
+                rank = by_layer[layer.layer].rank.values[
+                    n_trial
+                ]  # use different best ranks for each trial
                 logger.info(
                     f"layer: {layer_no}, efficacy = {efficacy.mean} +/- {efficacy.stderr}, {rank=}"
                 )
@@ -316,7 +318,7 @@ def run_causality_baselines(
 
                         pred = str(result.predicted_tokens[0])
                         logger.debug(
-                            f"editing: {original.subject=} {target.subject=} {target.object=} {pred=}"
+                            f"editing: {original.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
                         )
 
                     [baseline_efficacy] = metrics.recall(pred_objects, target_objects)
@@ -378,14 +380,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep-results-dir",
         type=str,
-        default="results/sweep-test/",  # TODO: change to `sweep`
+        default="results/sweep",
         help="directory to find sweep results",
     )
 
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/efficacy_baselines-test/",  # TODO: change to `efficacy_baselines``
+        default="results/efficacy_baselines/",
         help="directory to find sweep results",
     )
     parser.add_argument(

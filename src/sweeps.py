@@ -194,7 +194,6 @@ def sweep(
     if h_layers is None:
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
-        h_layers = h_layers[::3]  # <---- only every 3rd layer (REMOVE THIS)
     if betas is None:
         betas = torch.linspace(0, 1, steps=21).tolist()
     if ranks is None:
@@ -219,7 +218,7 @@ def sweep(
             continue
 
         # prompt_template = relation.prompt_templates[0]
-        prompt_template = " {} :"  # bare prompt
+        prompt_template = " {} :"  # bare prompt with colon
 
         trial_results = []
         for trial in range(n_trials):
@@ -370,7 +369,7 @@ def sweep(
 
                         pred = str(result.predicted_tokens[0])
                         logger.debug(
-                            f"editing: {h_layer=} {rank=} {sample.subject=} {target.subject=} {pred=}"
+                            f"editing: {h_layer=} {rank=} {sample.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
                         )
 
                         pred_objects.append([result.predicted_tokens[0].token])
