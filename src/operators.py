@@ -411,7 +411,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
             samples=relation.samples, prompt_templates=relation.prompt_templates
         )
         _warn_gt_1(prompt_templates=relation.prompt_templates)
-        samples = relation.samples
+
         prompt_template = (
             self.mt.tokenizer.eos_token + " {}"
             if self.mode == "zs"
@@ -432,7 +432,11 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         if self.scaling_factor is None:
             H = []
             h_layer_name = models.determine_layer_paths(self.mt, [self.h_layer])[0]
-            for sample in samples:
+            training_samples = (
+                relation.samples if len(relation.samples) < 8 else relation.samples[:8]
+            )
+            for sample_idx in range(len(training_samples)):
+                sample = training_samples[sample_idx]
                 if self.mode == "zs":
                     prompt = prompt_template.format(sample.subject)
                 elif self.mode == "icl":
@@ -440,7 +444,8 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
                         mt=self.mt,
                         prompt_template=prompt_template,
                         subject=sample.subject,
-                        examples=samples,
+                        examples=training_samples[0:sample_idx]
+                        + training_samples[sample_idx + 1 :],
                     )
                 h_index, inputs = functional.find_subject_token_index(
                     mt=self.mt,
@@ -474,7 +479,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
                 mt=self.mt,
                 prompt_template=prompt_template,
                 subject="{}",
-                examples=samples,
+                examples=training_samples,
             )
 
         operator = LinearRelationOperator(

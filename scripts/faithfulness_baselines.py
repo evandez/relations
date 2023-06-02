@@ -196,6 +196,9 @@ def get_icl_results(
     }
 
 
+from scripts.efficacy_baselines import filter_not_in_train_samples
+
+
 def main(args: argparse.Namespace) -> None:
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
@@ -250,8 +253,18 @@ def main(args: argparse.Namespace) -> None:
 
         for trial in range(N_TRIALS):
             logger.info(f"trial {trial + 1}/{N_TRIALS}")
+            trial_results = relation_results.trials[trial]
 
-            train_relation, test_relation = relation.split(train_size=N_TRAINING)
+            train_samples = trial_results.train_samples
+            test_samples = [
+                sample
+                for sample in relation.samples
+                if filter_not_in_train_samples(sample, train_samples)
+            ]
+
+            train_relation = relation.set(samples=train_samples)
+            test_relation = relation.set(samples=test_samples)
+
             logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")
 
             icl_prompt = functional.make_prompt(
@@ -354,14 +367,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep-results-dir",
         type=str,
-        default="results/sweep",
+        default="results/sweep-colon",
         help="directory to find sweep results",
     )
 
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/faithfulness_baselines-test",
+        default="results/faithfulness_baselines",
         help="path to save results",
     )
 
