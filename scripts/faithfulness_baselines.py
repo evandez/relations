@@ -2,19 +2,22 @@ import argparse
 import json
 import logging
 import os
+from typing import Sequence
 
 from src import data, functional, metrics, models
 from src.operators import (
-    JacobianEstimator,
     JacobianIclMeanEstimator,
     LearnedLinearEstimatorBaseline,
     LinearRelationOperator,
     OffsetEstimatorBaseline,
 )
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
+from src.utils.sweep_utils import parse_results, read_sweep_results
+from src.utils.typing import Layer
 
 import baukit
 import torch
+from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +26,7 @@ def get_h(
     mt: models.ModelAndTokenizer,
     prompt_template: str,
     subject: str,
-    layer_names: list[str],
+    layer_names: Sequence[str],
 ) -> dict[str, torch.Tensor]:
     prompt = prompt_template.format(subject)
     device = models.determine_device(mt)
@@ -70,6 +73,9 @@ def evaluate(
                 operator.mt.model.device
             )
             preds = operator(subject=sample.subject, h=h, k=k)
+        logger.debug(
+            f"testing {str(sample)} | preds={[str(p) for p in preds.predictions[:3]]}"
+        )
         pred_objects.append([p.token for p in preds.predictions])
         subject_to_pred[sample.subject] = [p.token for p in preds.predictions]
     return {
@@ -80,7 +86,7 @@ def evaluate(
 
 def get_zero_shot_results(
     mt: models.ModelAndTokenizer,
-    h_layer: int,
+    h_layer: Layer,
     test: data.Relation,
     operators: dict[str, LinearRelationOperator],
     hs_by_subj: dict[str, dict[str, torch.Tensor]],
@@ -105,7 +111,7 @@ def get_zero_shot_results(
 
 def get_icl_results(
     mt: models.ModelAndTokenizer,
-    h_layer: int,
+    h_layer: Layer,
     beta: float,
     train: data.Relation,
     test: data.Relation,
@@ -190,81 +196,107 @@ def get_icl_results(
     }
 
 
-def main(args: argparse.Namespace) -> None:
-    logging_utils.configure(args=args)
+from scripts.efficacy_baselines import filter_not_in_train_samples
 
-    dataset = data.load_dataset_from_args(args)
+
+def main(args: argparse.Namespace) -> None:
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-    print(
+    logger.info(
         f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
     )
-
-    hparams_path = f"{args.hparams_path}/{mt.name}"
     save_dir = args.save_dir
     os.makedirs(save_dir, exist_ok=True)
     N_TRIALS = args.n_trials
     N_TRAINING = args.n_training
 
+    sweep_results_dir = f"{args.sweep_results_dir}/{args.model}"
+    sweep_results = read_sweep_results(sweep_results_dir)
+
+    logger.info("found %d relations", len(sweep_results))
+    logger.info(json.dumps(list(sweep_results.keys()), indent=4))
+
+    dataset = data.load_dataset()
+
     all_results = []
 
-    for relation_hparams in os.listdir(hparams_path):
-        with open(os.path.join(hparams_path, relation_hparams), "r") as f:
-            hparams = json.load(f)
-        print(
-            f"{hparams['relation_name']} | h_layer: {hparams['h_layer']} | beta: {hparams['beta']}"
-        )
-        result = {
-            "relation_name": hparams["relation_name"],
-            "h_layer": hparams["h_layer"],
-            "beta": hparams["beta"],
-        }
-        cur_relation_dataset = dataset.filter(
-            relation_names=[hparams["relation_name"]],
-        )
-        cur_relation_known_dataset = functional.filter_dataset_samples(
-            mt=mt, dataset=cur_relation_dataset, n_icl_lm=N_TRAINING
-        )
-        if len(cur_relation_known_dataset.relations) == 0:
-            print("Skipping relation with no known samples")
+    for relation_name, sweep_result in tqdm(sweep_results.items()):
+        if args.rel_names is not None and relation_name not in args.rel_names:
+            logger.info("skipping %s", relation_name)
             continue
-
-        cur_relation = cur_relation_dataset[0]
-        cur_relation_known = cur_relation_known_dataset[0]
-
-        print(
-            f"known samples: {len(cur_relation_known.samples)}/{len(cur_relation.samples)}"
+        logger.info("relation: %s", relation_name)
+        relation_results = parse_results(sweep_result)
+        if len(relation_results.trials) < 3:
+            logger.info(f"skipping {relation_name}, not enough trials")
+            continue
+        hparams = relation_results.best_by_faithfulness()
+        logger.info(
+            f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
         )
-        result["known_samples"] = len(cur_relation_known.samples)
-        result["total_samples"] = len(cur_relation.samples)
+        h_layer = hparams.layer
+        beta = hparams.beta.mean
+        result = {
+            "relation_name": relation_name,
+            "h_layer": h_layer,
+            "beta": beta,
+            "expected_recall": hparams.recall.mean,
+        }
+        # prompt_template = relation_known.prompt_templates[0]
+        prompt_template = " {} :"
+        relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
+
+        result["total_samples"] = len(relation.samples)
         result["trials"] = []
 
-        prompt_template = cur_relation_known.prompt_templates[0]
-        print(f"prompt template: {prompt_template}")
+        logger.info(f"prompt template: {prompt_template}")
         result["prompt_template"] = prompt_template
-        print("")
 
         for trial in range(N_TRIALS):
-            print(f"trial {trial + 1}/{N_TRIALS}")
-            train, test = cur_relation_known.split(train_size=N_TRAINING)
-            print(f"train: {[str(sample) for sample in train.samples]}")
+            logger.info(f"trial {trial + 1}/{N_TRIALS}")
+            trial_results = relation_results.trials[trial]
+
+            train_samples = trial_results.train_samples
+            test_samples = [
+                sample
+                for sample in relation.samples
+                if filter_not_in_train_samples(sample, train_samples)
+            ]
+
+            train_relation = relation.set(samples=train_samples)
+            test_relation = relation.set(samples=test_samples)
+
+            logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")
 
             icl_prompt = functional.make_prompt(
                 mt=mt,
                 prompt_template=prompt_template,
-                examples=train.samples,
+                examples=train_relation.samples,
                 subject="{}",
             )
-            print(icl_prompt)
+            logger.info(icl_prompt)
+
+            test_relation = (
+                functional.filter_relation_samples_based_on_provided_fewshots(
+                    mt=mt,
+                    test_relation=test_relation,
+                    prompt_template=icl_prompt,
+                    subj_token_filter="all",
+                )
+            )
+
+            logger.info(
+                f"known samples: {len(test_relation.samples)}/{len(relation.samples)}"
+            )
 
             trial_results = {
                 "icl_prompt": icl_prompt,
+                "known": len(test_relation.samples),
                 "train": [
                     {
                         "subject": sample.subject,
                         "object": sample.object,
                     }
-                    for sample in train.samples
+                    for sample in train_relation.samples
                 ],
                 "zero_shot": {},
                 "icl": {},
@@ -275,19 +307,17 @@ def main(args: argparse.Namespace) -> None:
                     mt=mt,
                     prompt_template=icl_prompt,
                     subject=sample.subject,
-                    layer_names=models.determine_layer_paths(
-                        mt, ["emb", hparams["h_layer"]]
-                    ),
+                    layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
                 )
-                for sample in test.samples
+                for sample in test_relation.samples
             }
 
             trial_results["icl"], operators = get_icl_results(
                 mt=mt,
-                h_layer=hparams["h_layer"],
-                beta=hparams["beta"],
-                train=train,
-                test=test,
+                h_layer=h_layer,
+                beta=beta,
+                train=train_relation,
+                test=test_relation,
                 icl_prompt=icl_prompt,
                 hs_by_subj=hs_by_subj_icl,
             )
@@ -297,17 +327,15 @@ def main(args: argparse.Namespace) -> None:
                     mt=mt,
                     prompt_template=mt.tokenizer.eos_token + " {} :",
                     subject=sample.subject,
-                    layer_names=models.determine_layer_paths(
-                        mt, ["emb", hparams["h_layer"]]
-                    ),
+                    layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
                 )
-                for sample in test.samples
+                for sample in test_relation.samples
             }
 
             trial_results["zero_shot"] = get_zero_shot_results(
                 mt=mt,
-                h_layer=hparams["h_layer"],
-                test=test,
+                h_layer=h_layer,
+                test=test_relation,
                 operators=operators,
                 hs_by_subj=hs_by_subj_zs,
             )
@@ -328,24 +356,25 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Run faithfulness baselines on optimum hparams"
+    )
 
-    data.add_data_args(parser)
     models.add_model_args(parser)
     logging_utils.add_logging_args(parser)
     experiment_utils.add_experiment_args(parser)
 
     parser.add_argument(
-        "--hparams-path",
+        "--sweep-results-dir",
         type=str,
-        default="hparams",
-        help="path to hparams",
+        default="results/sweep-colon",
+        help="directory to find sweep results",
     )
 
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/faithfulness_baselines_test",
+        default="results/faithfulness_baselines",
         help="path to save results",
     )
 
@@ -363,6 +392,12 @@ if __name__ == "__main__":
         help="number of training samples",
     )
 
+    parser.add_argument(
+        "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
+    )
+
     args = parser.parse_args()
+    logging_utils.configure(args=args)
+
     print(args)
     main(args)

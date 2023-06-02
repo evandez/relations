@@ -2,110 +2,17 @@ import argparse
 import json
 import logging
 import os
-from dataclasses import dataclass
 from typing import Literal
 
 from src import data, editors, functional, metrics, models, operators, sweeps
 from src.data import RelationSample
-from src.sweeps import (
-    EfficacyTestPair,
-    SweepBetaResults,
-    SweepLayerResults,
-    SweepRankResults,
-    SweepRelationResults,
-    SweepTrainResults,
-    SweepTrialResults,
-)
 from src.utils import dataclasses_utils, experiment_utils, logging_utils
-from src.utils.typing import Layer
+from src.utils.sweep_utils import parse_results, read_sweep_results
 
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
-from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
-
-
-def parse_results(sweep_result: dict) -> SweepRelationResults:
-    relation_results = SweepRelationResults(
-        relation_name=sweep_result["relation_name"], trials=[]
-    )
-
-    for trial in sweep_result["trials"]:
-        trial_results = SweepTrialResults(
-            prompt_template=trial["prompt_template"],
-            train_samples=[RelationSample.from_dict(s) for s in trial["train_samples"]],
-            layers=[],
-            n_test_samples=trial["n_test_samples"],
-            efficacy_trials=[
-                EfficacyTestPair(
-                    source=RelationSample.from_dict(s["source"]),
-                    target=RelationSample.from_dict(s["target"]),
-                )
-                for s in trial["efficacy_trials"]
-            ]
-            if "efficacy_trials" in trial
-            else [],
-        )
-        for layer in trial["layers"]:
-            train_results = SweepTrainResults(
-                samples=[
-                    RelationSample.from_dict(s) for s in layer["result"]["samples"]
-                ],
-                betas=[],
-                ranks=[],
-                jh_norm=layer["result"]["jh_norm"],
-            )
-            for beta in layer["result"]["betas"]:
-                beta_results = SweepBetaResults(
-                    beta=beta["beta"],
-                    recall=beta["recall"],
-                    faithfulness_successes=[
-                        RelationSample.from_dict(s)
-                        for s in beta["faithfulness_successes"]
-                    ],
-                )
-                train_results.betas.append(beta_results)
-
-            for rank in layer["result"]["ranks"]:
-                rank_results = SweepRankResults(
-                    rank=rank["rank"],
-                    efficacy=rank["efficacy"],
-                    efficacy_successes=[
-                        EfficacyTestPair(
-                            source=RelationSample.from_dict(s["source"]),
-                            target=RelationSample.from_dict(s["target"]),
-                        )
-                        for s in rank["efficacy_successes"]
-                    ],
-                )
-                train_results.ranks.append(rank_results)
-
-            layer_results = SweepLayerResults(
-                layer=layer["layer"], result=train_results
-            )
-
-            trial_results.layers.append(layer_results)
-        relation_results.trials.append(trial_results)
-    return relation_results
-
-
-def read_sweep_results(sweep_path: str) -> dict:
-    sweep_results = {}
-
-    for relation_folder in os.listdir(sweep_path):
-        cur_sweep = f"{sweep_path}/{relation_folder}"
-        if "results_all.json" not in os.listdir(cur_sweep):
-            continue
-        with open(f"{cur_sweep}/results_all.json") as f:
-            res = json.load(f)["relations"]
-            if len(res) == 0:
-                continue
-            res = res[0]
-            sweep_results[res["relation_name"]] = res
-    return sweep_results
 
 
 def filter_not_in_train_samples(
@@ -127,31 +34,12 @@ BASELINE_EDITOR_TYPES = {
     "hidden_baseline_z": editors.HiddenBaselineEditor_Obj,
 }
 
-
-@dataclass(frozen=True)
-class EfficacyBaselineLayerResult(DataClassJsonMixin):
-    layer: Layer
-    efficacy: float
-    rank: int
-    results: dict[str, float]
-
-
-@dataclass(frozen=True)
-class EfficacyBaselineTrialResult(DataClassJsonMixin):
-    train_samples: list[RelationSample]
-    prompt_template: str
-    layerwise_baseline_results: list[EfficacyBaselineLayerResult]
-
-
-@dataclass(frozen=True)
-class EfficacyBaselineRelationResult(DataClassJsonMixin):
-    relation_name: str
-    trials: list[EfficacyBaselineTrialResult]
-
-
-@dataclass(frozen=True)
-class EfficacyBaselineResults(DataClassJsonMixin):
-    relations: list[EfficacyBaselineRelationResult]
+from src.utils.sweep_utils import (
+    EfficacyBaselineLayerResult,
+    EfficacyBaselineRelationResult,
+    EfficacyBaselineResults,
+    EfficacyBaselineTrialResult,
+)
 
 
 def run_causality_baselines(
@@ -247,8 +135,10 @@ def run_causality_baselines(
                 if layer_no not in h_layers:
                     continue
                 efficacy = by_layer[layer.layer].efficacy
-                # rank = int(np.floor(by_layer[layer.layer].rank.mean))
-                rank = by_layer[layer.layer].rank.values[n_trial]
+                # rank = int(np.floor(by_layer[layer.layer].rank.mean)) # use the mean rank for each layer
+                rank = by_layer[layer.layer].rank.values[
+                    n_trial
+                ]  # use different best ranks for each trial
                 logger.info(
                     f"layer: {layer_no}, efficacy = {efficacy.mean} +/- {efficacy.stderr}, {rank=}"
                 )
@@ -316,7 +206,7 @@ def run_causality_baselines(
 
                         pred = str(result.predicted_tokens[0])
                         logger.debug(
-                            f"editing: {original.subject=} {target.subject=} {target.object=} {pred=}"
+                            f"editing: {original.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
                         )
 
                     [baseline_efficacy] = metrics.recall(pred_objects, target_objects)
@@ -326,6 +216,7 @@ def run_causality_baselines(
                     logger.debug("--------------------------------------------------")
                     baseline_results[editor_type] = baseline_efficacy
 
+                assert isinstance(rank, int)
                 layerwise_baseline_results.append(
                     EfficacyBaselineLayerResult(
                         layer=layer_no,
@@ -365,9 +256,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="calculate layerwise efficacy baselines"
     )
-    logging_utils.add_logging_args(parser)
+
     models.add_model_args(parser)
+    logging_utils.add_logging_args(parser)
     experiment_utils.add_experiment_args(parser)
+
     parser.add_argument(
         "--batch-size",
         type=int,
@@ -378,14 +271,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep-results-dir",
         type=str,
-        default="results/sweep-test/",  # TODO: change to `sweep`
+        default="results/sweep",
         help="directory to find sweep results",
     )
 
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/efficacy_baselines-test/",  # TODO: change to `efficacy_baselines``
+        default="results/efficacy_baselines/",
         help="directory to find sweep results",
     )
     parser.add_argument(
