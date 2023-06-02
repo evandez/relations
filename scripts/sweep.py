@@ -24,6 +24,8 @@ def main(args: argparse.Namespace) -> None:
             mt=mt,
             dataset=dataset,
             h_layers=args.h_layers,
+            n_trials=args.n_trials,
+            n_train_samples=args.n_train_samples,
             recall_k=args.recall_k,
             batch_size=args.batch_size,
             results_dir=experiment.results_dir,
@@ -84,6 +86,18 @@ if __name__ == "__main__":
         default="all",
         choices=["all", "multi", "single"],
         help="allows filtering out samples with multiple or single subj tokens. defaults to all",
+    )
+    parser.add_argument(
+        "--n-trials",
+        type=int,
+        default=sweeps.DEFAULT_N_TRIALS,
+        help="number of trials per relation",
+    )
+    parser.add_argument(
+        "--n-train-samples",
+        type=int,
+        default=sweeps.DEFAULT_N_TRAIN_SAMPLES,
+        help="number of train samples to use per trial",
     )
     args = parser.parse_args()
     main(args)
