@@ -280,7 +280,10 @@ def read_sweep_results(sweep_path: str) -> dict:
             if len(res) == 0:
                 continue
             res = res[0]
-            sweep_results[res["relation_name"]] = res
+            if res["relation_name"] not in sweep_results:
+                sweep_results[res["relation_name"]] = res
+            else:
+                sweep_results[res["relation_name"]]["trials"].extend(res["trials"])
     return sweep_results
 
 
