@@ -73,7 +73,10 @@ def sweep(
         # prompt_template = relation.prompt_templates[0]
         prompt_template = " {} :"  # bare prompt with colon
 
-        trial_results = []
+        relation_result = SweepRelationResults(
+            relation_name=relation.name,
+            trials=[],
+        )
         for trial in range(n_trials):
             logger.info(f"begin trial {trial + 1}/{n_trials}")
 
@@ -265,7 +268,7 @@ def sweep(
                     SweepLayerResults(layer=h_layer, result=train_result)
                 )
 
-            trial_results.append(
+            relation_result.trials.append(
                 SweepTrialResults(
                     prompt_template=prompt_template,
                     train_samples=train_samples,
@@ -280,16 +283,12 @@ def sweep(
                     ],
                 )
             )
-
-        relation_result = SweepRelationResults(
-            relation_name=relation.name,
-            trials=trial_results,
-        )
+            # Save results after each of the trials.
+            experiment_utils.save_results_file(
+                results_dir=results_dir,
+                results=relation_result,
+                name=relation.name,
+            )
         relation_result.summarize()
-        experiment_utils.save_results_file(
-            results_dir=results_dir,
-            results=relation_result,
-            name=relation.name,
-        )
         relation_results.append(relation_result)
     return SweepResuts(relation_results)
