@@ -119,7 +119,8 @@ def sweep(
                 logger.warning(
                     f"Not enough samples ({len(test_relation.samples)} < {n_train_samples}) to test for faithfulness and efficacy."
                 )
-                break  # only write results for the relations that have enough test samples for all the trials.
+                # break  # only write results for the relations that have enough test samples for all the trials.
+                continue  # only skip the trial that doesn't have enough test samples. continue otherwise
 
             test_samples = test_relation.samples
             test_subjects = [x.subject for x in test_samples]
