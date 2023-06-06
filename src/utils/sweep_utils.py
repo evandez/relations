@@ -30,7 +30,7 @@ class EfficacyTestPair(DataClassJsonMixin):
 @dataclass(frozen=True)
 class SweepRankResults(DataClassJsonMixin):
     rank: int
-    efficacy: float
+    efficacy: list[float]
     efficacy_successes: list[EfficacyTestPair]
 
 
@@ -45,10 +45,10 @@ class SweepTrainResults(DataClassJsonMixin):
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
-    def best_rank(self) -> SweepRankResults:
+    def best_rank(self, k: int = 1) -> SweepRankResults:
         """Return the best rank by efficacy."""
         assert self.ranks is not None
-        return max(self.ranks, key=lambda x: x.efficacy)
+        return max(self.ranks, key=lambda x: x.efficacy[k - 1])
 
     def summarize(self) -> None:
         """Sumarize results in debug logs."""
@@ -57,7 +57,7 @@ class SweepTrainResults(DataClassJsonMixin):
         logger.info(
             "layer finished | "
             f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} | "
-            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} | "
+            f"rank={best_rank.rank} | efficacy={best_rank.efficacy[0]:.2f} | "
             f"norm(Jh)={self.jh_norm:.2f} | "
             f"samples={[str(x) for x in self.samples]}"
         )
@@ -105,7 +105,7 @@ class SweepRelationResults(DataClassJsonMixin):
                         best_beta.beta,
                         best_beta.recall[k - 1],
                         best_rank.rank,
-                        best_rank.efficacy,
+                        best_rank.efficacy[k - 1],
                     )
                 )
 
@@ -145,9 +145,9 @@ class SweepRelationResults(DataClassJsonMixin):
         )
         return results_by_layer[best_layer]
 
-    def best_by_efficacy(self) -> SweepLayerSummary:
+    def best_by_efficacy(self, k: int = 1) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
-        results_by_layer = self.by_layer()
+        results_by_layer = self.by_layer(k=k)
         best_layer = max(
             results_by_layer, key=lambda x: results_by_layer[x].efficacy.mean
         )

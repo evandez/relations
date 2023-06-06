@@ -228,7 +228,7 @@ def sweep(
                             f"editing: {h_layer=} {rank=} {sample.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
                         )
 
-                        pred_objects.append([result.predicted_tokens[0].token])
+                        pred_objects.append([p.token for p in result.predicted_tokens])
                         targ_objects.append(target.object)
                         if functional.is_nontrivial_prefix(
                             prediction=result.predicted_tokens[0].token,
@@ -241,8 +241,8 @@ def sweep(
                                 )
                             )
 
-                    [efficacy] = metrics.recall(pred_objects, targ_objects)
-                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
+                    efficacy = metrics.recall(pred_objects, targ_objects)
+                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=}")
 
                     results_by_rank.append(
                         SweepRankResults(

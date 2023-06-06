@@ -13,7 +13,7 @@ import torch
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_N_TOP_TOKENS = 10
+DEFAULT_N_TOP_TOKENS = 3
 DEFAULT_N_SAMPLES = 1
 DEFAULT_N_NEW_TOKENS = 1
 
@@ -278,8 +278,8 @@ class HiddenBaselineEditor(Editor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselineEditor_Obj(Editor):
-    """Edit the model by replacing h for the subject with the h of the target."""
+class ObjectBaselineEditor(Editor):
+    """Edit the model by replacing h for the subject with the o of the target."""
 
     mt: models.ModelAndTokenizer
     prompt_template: str
