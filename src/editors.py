@@ -298,7 +298,7 @@ class ObjectBaselineEditor(Editor):
             subject=subject,
         )
 
-        target_inputs, target_subject_index = _compute_inputs(
+        target_inputs, target_object_index = _compute_inputs(
             mt=self.mt,
             prompt_template=self.prompt_template,
             subject=target,
@@ -310,7 +310,7 @@ class ObjectBaselineEditor(Editor):
             layers=[z_layer],
             inputs=target_inputs,
         )
-        h_target = hiddens[0, target_subject_index, ..., None]
+        h_target = hiddens[0, -1, ..., None]
 
         return _apply_edit(
             mt=self.mt,
@@ -327,7 +327,7 @@ class ObjectBaselineEditor(Editor):
     @staticmethod
     def expects() -> Literal["subject", "object"]:
         """Does this editor expect a target subject or target object as input?"""
-        return "object"
+        return "subject"
 
 
 @dataclass(frozen=True, kw_only=True)

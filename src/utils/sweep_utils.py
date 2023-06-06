@@ -248,7 +248,9 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
             for rank in layer["result"]["ranks"]:
                 rank_results = SweepRankResults(
                     rank=rank["rank"],
-                    efficacy=rank["efficacy"],
+                    efficacy=rank["efficacy"]
+                    if isinstance(rank["efficacy"], list)
+                    else [rank["efficacy"]],
                     efficacy_successes=[
                         EfficacyTestPair(
                             source=RelationSample.from_dict(s["source"]),
