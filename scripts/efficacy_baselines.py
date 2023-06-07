@@ -7,7 +7,7 @@ from typing import Literal
 from src import data, editors, functional, metrics, models, operators, sweeps
 from src.data import RelationSample
 from src.utils import dataclasses_utils, experiment_utils, logging_utils
-from src.utils.sweep_utils import parse_results, read_sweep_results
+from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 
 import torch
 from tqdm.auto import tqdm
@@ -71,7 +71,7 @@ def run_causality_baselines(
             logger.info("skipping %s", relation_name)
             continue
         logger.info("relation: %s", relation_name)
-        relation_results = parse_results(sweep_result)
+        relation_results = relation_from_dict(sweep_result)
         if len(relation_results.trials) < 3:
             logger.info(f"skipping {relation_name}, not enough trials")
             continue

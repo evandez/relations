@@ -12,7 +12,7 @@ from src.operators import (
     OffsetEstimatorBaseline,
 )
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
-from src.utils.sweep_utils import parse_results, read_sweep_results
+from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
 
 import baukit
@@ -225,7 +225,7 @@ def main(args: argparse.Namespace) -> None:
             logger.info("skipping %s", relation_name)
             continue
         logger.info("relation: %s", relation_name)
-        relation_results = parse_results(sweep_result)
+        relation_results = relation_from_dict(sweep_result)
         if len(relation_results.trials) < 3:
             logger.info(f"skipping {relation_name}, not enough trials")
             continue
