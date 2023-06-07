@@ -31,7 +31,7 @@ BASELINE_EDITOR_TYPES = {
     "hidden_baseline": editors.HiddenBaselineEditor,
     "embed_baseline": editors.EmbedBaselineEditor,
     "low_rank_pinv": editors.LowRankPInvEditor,
-    "hidden_baseline_z": editors.HiddenBaselineEditor_Obj,
+    "hidden_baseline_z": editors.ObjectBaselineEditor,
 }
 
 from src.utils.sweep_utils import (

@@ -73,7 +73,10 @@ def sweep(
         # prompt_template = relation.prompt_templates[0]
         prompt_template = " {} :"  # bare prompt with colon
 
-        trial_results = []
+        relation_result = SweepRelationResults(
+            relation_name=relation.name,
+            trials=[],
+        )
         for trial in range(n_trials):
             logger.info(f"begin trial {trial + 1}/{n_trials}")
 
@@ -116,7 +119,8 @@ def sweep(
                 logger.warning(
                     f"Not enough samples ({len(test_relation.samples)} < {n_train_samples}) to test for faithfulness and efficacy."
                 )
-                break  # only write results for the relations that have enough test samples for all the trials.
+                # break  # only write results for the relations that have enough test samples for all the trials.
+                continue  # only skip the trial that doesn't have enough test samples. continue otherwise
 
             test_samples = test_relation.samples
             test_subjects = [x.subject for x in test_samples]
@@ -225,7 +229,7 @@ def sweep(
                             f"editing: {h_layer=} {rank=} {sample.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
                         )
 
-                        pred_objects.append([result.predicted_tokens[0].token])
+                        pred_objects.append([p.token for p in result.predicted_tokens])
                         targ_objects.append(target.object)
                         if functional.is_nontrivial_prefix(
                             prediction=result.predicted_tokens[0].token,
@@ -238,8 +242,8 @@ def sweep(
                                 )
                             )
 
-                    [efficacy] = metrics.recall(pred_objects, targ_objects)
-                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=:.2f}")
+                    efficacy = metrics.recall(pred_objects, targ_objects)
+                    logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=}")
 
                     results_by_rank.append(
                         SweepRankResults(
@@ -265,7 +269,7 @@ def sweep(
                     SweepLayerResults(layer=h_layer, result=train_result)
                 )
 
-            trial_results.append(
+            relation_result.trials.append(
                 SweepTrialResults(
                     prompt_template=prompt_template,
                     train_samples=train_samples,
@@ -280,16 +284,12 @@ def sweep(
                     ],
                 )
             )
-
-        relation_result = SweepRelationResults(
-            relation_name=relation.name,
-            trials=trial_results,
-        )
+            # Save results after each of the trials.
+            experiment_utils.save_results_file(
+                results_dir=results_dir,
+                results=relation_result,
+                name=relation.name,
+            )
         relation_result.summarize()
-        experiment_utils.save_results_file(
-            results_dir=results_dir,
-            results=relation_result,
-            name=relation.name,
-        )
         relation_results.append(relation_result)
     return SweepResuts(relation_results)

@@ -30,7 +30,7 @@ class EfficacyTestPair(DataClassJsonMixin):
 @dataclass(frozen=True)
 class SweepRankResults(DataClassJsonMixin):
     rank: int
-    efficacy: float
+    efficacy: list[float]
     efficacy_successes: list[EfficacyTestPair]
 
 
@@ -45,10 +45,10 @@ class SweepTrainResults(DataClassJsonMixin):
         """Return the best beta by given recall position."""
         return max(self.betas, key=lambda x: x.recall[k - 1])
 
-    def best_rank(self) -> SweepRankResults:
+    def best_rank(self, k: int = 1) -> SweepRankResults:
         """Return the best rank by efficacy."""
         assert self.ranks is not None
-        return max(self.ranks, key=lambda x: x.efficacy)
+        return max(self.ranks, key=lambda x: x.efficacy[k - 1])
 
     def summarize(self) -> None:
         """Sumarize results in debug logs."""
@@ -57,7 +57,7 @@ class SweepTrainResults(DataClassJsonMixin):
         logger.info(
             "layer finished | "
             f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} | "
-            f"rank={best_rank.rank} | efficacy={best_rank.efficacy:.2f} | "
+            f"rank={best_rank.rank} | efficacy={best_rank.efficacy[0]:.2f} | "
             f"norm(Jh)={self.jh_norm:.2f} | "
             f"samples={[str(x) for x in self.samples]}"
         )
@@ -105,7 +105,7 @@ class SweepRelationResults(DataClassJsonMixin):
                         best_beta.beta,
                         best_beta.recall[k - 1],
                         best_rank.rank,
-                        best_rank.efficacy,
+                        best_rank.efficacy[k - 1],
                     )
                 )
 
@@ -145,9 +145,9 @@ class SweepRelationResults(DataClassJsonMixin):
         )
         return results_by_layer[best_layer]
 
-    def best_by_efficacy(self) -> SweepLayerSummary:
+    def best_by_efficacy(self, k: int = 1) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
-        results_by_layer = self.by_layer()
+        results_by_layer = self.by_layer(k=k)
         best_layer = max(
             results_by_layer, key=lambda x: results_by_layer[x].efficacy.mean
         )
@@ -248,7 +248,9 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
             for rank in layer["result"]["ranks"]:
                 rank_results = SweepRankResults(
                     rank=rank["rank"],
-                    efficacy=rank["efficacy"],
+                    efficacy=rank["efficacy"]
+                    if isinstance(rank["efficacy"], list)
+                    else [rank["efficacy"]],
                     efficacy_successes=[
                         EfficacyTestPair(
                             source=RelationSample.from_dict(s["source"]),
@@ -268,23 +270,21 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
     return relation_results
 
 
-def read_sweep_results(sweep_path: str) -> dict:
-    sweep_results = {}
-
-    for relation_folder in os.listdir(sweep_path):
-        cur_sweep = f"{sweep_path}/{relation_folder}"
-        if "results_all.json" not in os.listdir(cur_sweep):
-            continue
-        with open(f"{cur_sweep}/results_all.json") as f:
-            res = json.load(f)["relations"]
-            if len(res) == 0:
-                continue
-            res = res[0]
-            if res["relation_name"] not in sweep_results:
-                sweep_results[res["relation_name"]] = res
-            else:
-                sweep_results[res["relation_name"]]["trials"].extend(res["trials"])
-    return sweep_results
+def read_sweep_results(sweep_dir: str, results: dict = {}) -> dict:
+    for file in os.listdir(sweep_dir):
+        if os.path.isdir(f"{sweep_dir}/{file}"):
+            read_sweep_results(f"{sweep_dir}/{file}", results)
+        elif file.endswith(".json"):
+            with open(f"{sweep_dir}/{file}") as f:
+                res = json.load(f)
+                if isinstance(res, dict) and "relation_name" in res:
+                    if res["relation_name"] not in results:
+                        results[res["relation_name"]] = res
+                    else:
+                        results[res["relation_name"]]["trials"].extend(res["trials"])
+                else:
+                    continue
+    return results
 
 
 ####################### read and parse the sweep results #######################

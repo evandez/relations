@@ -13,7 +13,7 @@ import torch
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_N_TOP_TOKENS = 10
+DEFAULT_N_TOP_TOKENS = 3
 DEFAULT_N_SAMPLES = 1
 DEFAULT_N_NEW_TOKENS = 1
 
@@ -278,8 +278,8 @@ class HiddenBaselineEditor(Editor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class HiddenBaselineEditor_Obj(Editor):
-    """Edit the model by replacing h for the subject with the h of the target."""
+class ObjectBaselineEditor(Editor):
+    """Edit the model by replacing h for the subject with the o of the target."""
 
     mt: models.ModelAndTokenizer
     prompt_template: str
@@ -298,7 +298,7 @@ class HiddenBaselineEditor_Obj(Editor):
             subject=subject,
         )
 
-        target_inputs, target_subject_index = _compute_inputs(
+        target_inputs, target_object_index = _compute_inputs(
             mt=self.mt,
             prompt_template=self.prompt_template,
             subject=target,
@@ -310,7 +310,7 @@ class HiddenBaselineEditor_Obj(Editor):
             layers=[z_layer],
             inputs=target_inputs,
         )
-        h_target = hiddens[0, target_subject_index, ..., None]
+        h_target = hiddens[0, -1, ..., None]
 
         return _apply_edit(
             mt=self.mt,
@@ -327,7 +327,7 @@ class HiddenBaselineEditor_Obj(Editor):
     @staticmethod
     def expects() -> Literal["subject", "object"]:
         """Does this editor expect a target subject or target object as input?"""
-        return "object"
+        return "subject"
 
 
 @dataclass(frozen=True, kw_only=True)
