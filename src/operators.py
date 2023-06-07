@@ -1,5 +1,5 @@
 import logging
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from typing import Any
 
 from src import data, functional, models
@@ -296,7 +296,120 @@ class CornerGdEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
+class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
+    h_layer: Layer
+    z_layer: Layer | None = None
+    scaling_factor: float | None = None
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
+        samples = relation.samples
+        prompt_template = relation.prompt_templates[0]
+        range_tokenized = models.tokenize_words(
+            tokenizer=self.mt.tokenizer, words=list(relation.range)
+        )
+        range_tokenized = [t[0].item() for t in range_tokenized.input_ids]
+
+        unembedding_rows = self.mt.lm_head[1].weight[range_tokenized]
+        unembedding_rows = torch.stack([row / row.norm() for row in unembedding_rows])
+        offset = unembedding_rows.mean(dim=0)[None]
+
+        if self.scaling_factor is None:
+            H = []
+            h_layer_name = models.determine_layer_paths(self.mt, [self.h_layer])[0]
+            for sample in samples:
+                prompt = functional.make_prompt(
+                    mt=self.mt,
+                    prompt_template=prompt_template,
+                    subject=sample.subject,
+                    examples=samples,
+                )
+                h_index, inputs = functional.find_subject_token_index(
+                    mt=self.mt,
+                    prompt=prompt,
+                    subject=sample.subject,
+                )
+
+                with baukit.TraceDict(self.mt.model, [h_layer_name]) as traces:
+                    self.mt.model(**inputs)
+
+                H.append(
+                    functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
+                )
+
+            h_mean = torch.stack(H, dim=0).mean(dim=0)
+            scaling_factor = h_mean.norm() / offset.norm()
+            scaling_factor /= 2
+        else:
+            scaling_factor = self.scaling_factor
+
+        offset = offset * scaling_factor
+
+        if self.z_layer is None:
+            z_layer = models.determine_layers(self.mt)[-1]
+
+        operator = LinearRelationOperator(
+            mt=self.mt,
+            weight=None,
+            bias=offset,
+            h_layer=self.h_layer,
+            z_layer=z_layer,
+            prompt_template=prompt_template,
+        )
+
+        return operator
+
+
+@dataclass(frozen=True)
+class Word2VecIclEstimator(LinearRelationEstimator):
+    h_layer: Layer
+    z_layer: Layer | None = None
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
+
+        samples = relation.samples
+        prompt_template = relation.prompt_templates[0]
+
+        z_layer = self.z_layer
+        if z_layer is None:
+            z_layer = models.determine_layers(self.mt)[-1]
+
+        deltas = []
+        for sample in samples:
+            hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                h_layer=self.h_layer,
+                z_layer=self.z_layer,
+                examples=samples,
+                subjects=[sample.subject],
+            )
+            delta = (
+                zs_by_subj[sample.subject].squeeze()
+                - hs_by_subj[sample.subject].squeeze()
+            )
+            deltas.append(delta)
+
+        bias = torch.stack(deltas, dim=0).mean(dim=0)
+        return LinearRelationOperator(
+            mt=self.mt,
+            weight=None,
+            bias=bias,
+            h_layer=self.h_layer,
+            z_layer=z_layer,
+            prompt_template=prompt_template,
+        )
+
+
+@dataclass(frozen=True)
+class LearnedEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     n_steps: int = 100
@@ -337,10 +450,9 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
             )
 
             with baukit.TraceDict(
-                self.mt.model,
-                [h_layer_name, z_layer_name],
+                self.mt.model, [h_layer_name, z_layer_name]
             ) as traces:
-                output = self.mt.model(**inputs)
+                self.mt.model(**inputs)
 
             H_stack.append(
                 functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
@@ -375,77 +487,6 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
             mt=self.mt,
             weight=weight.detach().to(dtype).to(device),
             bias=bias.detach().to(dtype).to(device),
-            h_layer=self.h_layer,
-            z_layer=z_layer,
-            prompt_template=prompt_template,
-        )
-
-        return operator
-
-
-@dataclass(frozen=True)
-class OffsetEstimatorBaseline(LinearRelationEstimator):
-    h_layer: Layer
-    z_layer: Layer | None = None
-    scaling_factor: float | None = None
-
-    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
-        _check_nonempty(
-            samples=relation.samples, prompt_templates=relation.prompt_templates
-        )
-        _warn_gt_1(prompt_templates=relation.prompt_templates)
-        samples = relation.samples
-        prompt_template = relation.prompt_templates[0]
-        range_tokenized = models.tokenize_words(
-            tokenizer=self.mt.tokenizer, words=list(relation.range)
-        )
-        range_tokenized = [t[0].item() for t in range_tokenized.input_ids]
-
-        unembedding_rows = self.mt.lm_head[1].weight[range_tokenized]
-        unembedding_rows = torch.stack([row / row.norm() for row in unembedding_rows])
-        offset = unembedding_rows.mean(dim=0)[None]
-
-        if self.scaling_factor is None:
-            H = []
-            h_layer_name = models.determine_layer_paths(self.mt, [self.h_layer])[0]
-            for sample in samples:
-                prompt = functional.make_prompt(
-                    mt=self.mt,
-                    prompt_template=prompt_template,
-                    subject=sample.subject,
-                    examples=samples,
-                )
-                h_index, inputs = functional.find_subject_token_index(
-                    mt=self.mt,
-                    prompt=prompt,
-                    subject=sample.subject,
-                )
-
-                with baukit.TraceDict(
-                    self.mt.model,
-                    [h_layer_name],
-                ) as traces:
-                    output = self.mt.model(**inputs)
-
-                H.append(
-                    functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
-                )
-
-            h_mean = torch.stack(H, dim=0).mean(dim=0)
-            scaling_factor = h_mean.norm() / offset.norm()
-            scaling_factor /= 2
-        else:
-            scaling_factor = self.scaling_factor
-
-        offset = offset * scaling_factor
-
-        if self.z_layer is None:
-            z_layer = models.determine_layers(self.mt)[-1]
-
-        operator = LinearRelationOperator(
-            mt=self.mt,
-            weight=None,
-            bias=offset,
             h_layer=self.h_layer,
             z_layer=z_layer,
             prompt_template=prompt_template,

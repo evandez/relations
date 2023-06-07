@@ -10,7 +10,6 @@ from typing import Literal, Sequence
 from src.utils import env_utils
 from src.utils.typing import PathLike
 
-import numpy as np
 import torch.utils.data
 from dataclasses_json import DataClassJsonMixin
 
@@ -82,7 +81,9 @@ class Relation(DataClassJsonMixin):
         """Return a copy of this relation without a given sample."""
         return self.set(samples=[s for s in self.samples if s != sample])
 
-    def split(self, train_size: int, test_size: int | None = None) -> tuple["Relation", "Relation"]:
+    def split(
+        self, train_size: int, test_size: int | None = None
+    ) -> tuple["Relation", "Relation"]:
         """Break into a train/test split."""
         if train_size > len(self.samples):
             raise ValueError(f"size must be <= {len(self.samples)}, got: {train_size}")
@@ -116,7 +117,7 @@ class Relation(DataClassJsonMixin):
                     del samples_by_object[object]
 
         train_samples = max_coverage_samples[:train_size]
-        test_samples = max_coverage_samples[train_size:train_size + test_size]
+        test_samples = max_coverage_samples[train_size : train_size + test_size]
 
         return (
             Relation(
