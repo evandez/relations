@@ -1,0 +1,2753 @@
+[
+    {
+        "subject": "http://www.wikidata.org/entity/Q5599",
+        "subjectLabel": "Peter Paul Rubens",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "663"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5599",
+        "subjectLabel": "Peter Paul Rubens",
+        "object": "http://www.wikidata.org/entity/Q693380",
+        "objectLabel": "Old University of Leuven",
+        "outgoing": "663"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1744",
+        "subjectLabel": "Madonna",
+        "object": "http://www.wikidata.org/entity/Q7353940",
+        "objectLabel": "Rochester Adams High School",
+        "outgoing": "623"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1744",
+        "subjectLabel": "Madonna",
+        "object": "http://www.wikidata.org/entity/Q7895775",
+        "objectLabel": "University of Michigan School of Music, Theatre & Dance",
+        "outgoing": "623"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5593",
+        "subjectLabel": "Pablo Picasso",
+        "object": "http://www.wikidata.org/entity/Q1322403",
+        "objectLabel": "Real Academia de Bellas Artes de San Fernando",
+        "outgoing": "596"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5593",
+        "subjectLabel": "Pablo Picasso",
+        "object": "http://www.wikidata.org/entity/Q47537669",
+        "objectLabel": "Escola de Arte e Superior de Deseño Pablo Picasso",
+        "outgoing": "596"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q797078",
+        "objectLabel": "New York University Tisch School of the Arts",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q796480",
+        "objectLabel": "Convent of the Sacred Heart",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q861418",
+        "objectLabel": "Collaborative Arts Project 21",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q1542213",
+        "objectLabel": "Lee Strasberg Theatre and Film Institute",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q5059890",
+        "objectLabel": "Johns Hopkins Center for Talented Youth",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19848",
+        "subjectLabel": "Lady Gaga",
+        "object": "http://www.wikidata.org/entity/Q5121453",
+        "objectLabel": "Circle in the Square Theatre School",
+        "outgoing": "584"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5598",
+        "subjectLabel": "Rembrandt",
+        "object": "http://www.wikidata.org/entity/Q156598",
+        "objectLabel": "Leiden University",
+        "outgoing": "570"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5598",
+        "subjectLabel": "Rembrandt",
+        "object": "http://www.wikidata.org/entity/Q781124",
+        "objectLabel": "Stedelijk Gymnasium Leiden",
+        "outgoing": "570"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q27621",
+        "objectLabel": "Saint Petersburg State University",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q1978570",
+        "objectLabel": "Academy of Foreign Intelligence",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q2387574",
+        "objectLabel": "FSB Academy",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q2495829",
+        "objectLabel": "Saint Petersburg Mining University",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q4525174",
+        "objectLabel": "School 281",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q4534839",
+        "objectLabel": "Faculty of Law, Saint Petersburg State University",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q27430017",
+        "objectLabel": "School 193",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7747",
+        "subjectLabel": "Vladimir Putin",
+        "object": "http://www.wikidata.org/entity/Q103920735",
+        "objectLabel": "St. Petersburg Institute of the FSB of Russia",
+        "outgoing": "566"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2831",
+        "subjectLabel": "Michael Jackson",
+        "object": "http://www.wikidata.org/entity/Q6904590",
+        "objectLabel": "Montclair College Preparatory School",
+        "outgoing": "557"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q148475",
+        "subjectLabel": "Jean-Baptiste Camille Corot",
+        "object": "http://www.wikidata.org/entity/Q337473",
+        "objectLabel": "Académie Suisse",
+        "outgoing": "550"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q148475",
+        "subjectLabel": "Jean-Baptiste Camille Corot",
+        "object": "http://www.wikidata.org/entity/Q3268638",
+        "objectLabel": "Lycée Pierre-Corneille",
+        "outgoing": "550"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q692",
+        "subjectLabel": "William Shakespeare",
+        "object": "http://www.wikidata.org/entity/Q6411533",
+        "objectLabel": "King Edward VI School, Stratford-upon-Avon",
+        "outgoing": "549"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5582",
+        "subjectLabel": "Vincent van Gogh",
+        "object": "http://www.wikidata.org/entity/Q2746779",
+        "objectLabel": "Royal Academy of Fine Arts",
+        "outgoing": "539"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5582",
+        "subjectLabel": "Vincent van Gogh",
+        "object": "http://www.wikidata.org/entity/Q2822455",
+        "objectLabel": "Académie royale des Beaux-Arts",
+        "outgoing": "539"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q296",
+        "subjectLabel": "Claude Monet",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "537"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q125121",
+        "subjectLabel": "Aretha Franklin",
+        "object": "http://www.wikidata.org/entity/Q503246",
+        "objectLabel": "Juilliard School",
+        "outgoing": "532"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q125121",
+        "subjectLabel": "Aretha Franklin",
+        "object": "http://www.wikidata.org/entity/Q17039986",
+        "objectLabel": "Northern High School",
+        "outgoing": "532"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q39931",
+        "subjectLabel": "Pierre-Auguste Renoir",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "528"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q937",
+        "subjectLabel": "Albert Einstein",
+        "object": "http://www.wikidata.org/entity/Q11942",
+        "objectLabel": "ETH Zürich",
+        "outgoing": "526"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q937",
+        "subjectLabel": "Albert Einstein",
+        "object": "http://www.wikidata.org/entity/Q206702",
+        "objectLabel": "University of Zurich",
+        "outgoing": "526"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q937",
+        "subjectLabel": "Albert Einstein",
+        "object": "http://www.wikidata.org/entity/Q435651",
+        "objectLabel": "old Kantonsschule (Albert Einstein House)",
+        "outgoing": "526"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q937",
+        "subjectLabel": "Albert Einstein",
+        "object": "http://www.wikidata.org/entity/Q1876751",
+        "objectLabel": "Luitpold-Gymnasium",
+        "outgoing": "526"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8016",
+        "subjectLabel": "Winston Churchill",
+        "object": "http://www.wikidata.org/entity/Q1247373",
+        "objectLabel": "Harrow School",
+        "outgoing": "524"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8016",
+        "subjectLabel": "Winston Churchill",
+        "object": "http://www.wikidata.org/entity/Q7404745",
+        "objectLabel": "Salisbury Cathedral School",
+        "outgoing": "524"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8016",
+        "subjectLabel": "Winston Churchill",
+        "object": "http://www.wikidata.org/entity/Q7588167",
+        "objectLabel": "St George's School, Ascot",
+        "outgoing": "524"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8016",
+        "subjectLabel": "Winston Churchill",
+        "object": "http://www.wikidata.org/entity/Q7618444",
+        "objectLabel": "Stoke Brunswick School",
+        "outgoing": "524"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8016",
+        "subjectLabel": "Winston Churchill",
+        "object": "http://www.wikidata.org/entity/Q17020147",
+        "objectLabel": "Royal Military College, Sandhurst",
+        "outgoing": "524"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q352",
+        "subjectLabel": "Adolf Hitler",
+        "object": "http://www.wikidata.org/entity/Q315889",
+        "objectLabel": "Lambach Abbey",
+        "outgoing": "511"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q352",
+        "subjectLabel": "Adolf Hitler",
+        "object": "http://www.wikidata.org/entity/Q18734905",
+        "objectLabel": "Bundesrealgymnasium Linz Fadingerstraße",
+        "outgoing": "511"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q352",
+        "subjectLabel": "Adolf Hitler",
+        "object": "http://www.wikidata.org/entity/Q52307175",
+        "objectLabel": "Staats-Realschule of Linz",
+        "outgoing": "511"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5879",
+        "subjectLabel": "Johann Wolfgang von Goethe",
+        "object": "http://www.wikidata.org/entity/Q154804",
+        "objectLabel": "Leipzig University",
+        "outgoing": "509"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5879",
+        "subjectLabel": "Johann Wolfgang von Goethe",
+        "object": "http://www.wikidata.org/entity/Q157575",
+        "objectLabel": "University of Strasbourg",
+        "outgoing": "509"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q131814",
+        "subjectLabel": "Tina Turner",
+        "object": "http://www.wikidata.org/entity/Q7637977",
+        "objectLabel": "Sumner High School",
+        "outgoing": "496"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7243",
+        "subjectLabel": "Leo Tolstoy",
+        "object": "http://www.wikidata.org/entity/Q28482293",
+        "objectLabel": "Kazan Imperial University",
+        "outgoing": "494"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26876",
+        "subjectLabel": "Taylor Swift",
+        "object": "http://www.wikidata.org/entity/Q5522201",
+        "objectLabel": "Garden City Collegiate",
+        "outgoing": "486"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26876",
+        "subjectLabel": "Taylor Swift",
+        "object": "http://www.wikidata.org/entity/Q5713508",
+        "objectLabel": "Hendersonville High School",
+        "outgoing": "486"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26876",
+        "subjectLabel": "Taylor Swift",
+        "object": "http://www.wikidata.org/entity/Q8040423",
+        "objectLabel": "Wyomissing Area Junior/Senior High School",
+        "outgoing": "486"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34424",
+        "subjectLabel": "Shakira",
+        "object": "http://www.wikidata.org/entity/Q49117",
+        "objectLabel": "University of Pennsylvania",
+        "outgoing": "477"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34424",
+        "subjectLabel": "Shakira",
+        "object": "http://www.wikidata.org/entity/Q174710",
+        "objectLabel": "University of California, Los Angeles",
+        "outgoing": "477"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22686",
+        "subjectLabel": "Donald Trump",
+        "object": "http://www.wikidata.org/entity/Q49117",
+        "objectLabel": "University of Pennsylvania",
+        "outgoing": "476"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22686",
+        "subjectLabel": "Donald Trump",
+        "object": "http://www.wikidata.org/entity/Q130965",
+        "objectLabel": "Fordham University",
+        "outgoing": "476"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22686",
+        "subjectLabel": "Donald Trump",
+        "object": "http://www.wikidata.org/entity/Q1329269",
+        "objectLabel": "The Wharton School",
+        "outgoing": "476"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22686",
+        "subjectLabel": "Donald Trump",
+        "object": "http://www.wikidata.org/entity/Q7013764",
+        "objectLabel": "New York Military Academy",
+        "outgoing": "476"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22686",
+        "subjectLabel": "Donald Trump",
+        "object": "http://www.wikidata.org/entity/Q7744153",
+        "objectLabel": "The Kew-Forest School",
+        "outgoing": "476"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34618",
+        "subjectLabel": "Gustave Courbet",
+        "object": "http://www.wikidata.org/entity/Q337473",
+        "objectLabel": "Académie Suisse",
+        "outgoing": "475"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33477",
+        "subjectLabel": "Eugène Delacroix",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "471"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33477",
+        "subjectLabel": "Eugène Delacroix",
+        "object": "http://www.wikidata.org/entity/Q1059546",
+        "objectLabel": "Lycée Louis-le-Grand",
+        "outgoing": "471"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33477",
+        "subjectLabel": "Eugène Delacroix",
+        "object": "http://www.wikidata.org/entity/Q3268638",
+        "objectLabel": "Lycée Pierre-Corneille",
+        "outgoing": "471"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q517",
+        "subjectLabel": "Napoleon",
+        "object": "http://www.wikidata.org/entity/Q273480",
+        "objectLabel": "École Militaire",
+        "outgoing": "470"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q37693",
+        "subjectLabel": "Paul Gauguin",
+        "object": "http://www.wikidata.org/entity/Q3268894",
+        "objectLabel": "lycée Pothier",
+        "outgoing": "469"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q134741",
+        "subjectLabel": "Camille Pissarro",
+        "object": "http://www.wikidata.org/entity/Q337473",
+        "objectLabel": "Académie Suisse",
+        "outgoing": "464"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q535",
+        "subjectLabel": "Victor Hugo",
+        "object": "http://www.wikidata.org/entity/Q209842",
+        "objectLabel": "University of Paris",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36153",
+        "subjectLabel": "Beyoncé",
+        "object": "http://www.wikidata.org/entity/Q773447",
+        "objectLabel": "Kinder High School for the Performing and Visual Arts",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q535",
+        "subjectLabel": "Victor Hugo",
+        "object": "http://www.wikidata.org/entity/Q1059546",
+        "objectLabel": "Lycée Louis-le-Grand",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q535",
+        "subjectLabel": "Victor Hugo",
+        "object": "http://www.wikidata.org/entity/Q3268847",
+        "objectLabel": "Lycée Michelet, Vanves",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36153",
+        "subjectLabel": "Beyoncé",
+        "object": "http://www.wikidata.org/entity/Q4726384",
+        "objectLabel": "Alief Elsik High School",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36153",
+        "subjectLabel": "Beyoncé",
+        "object": "http://www.wikidata.org/entity/Q7721887",
+        "objectLabel": "The Center for Early Education",
+        "outgoing": "463"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q11975",
+        "subjectLabel": "Britney Spears",
+        "object": "http://www.wikidata.org/entity/Q7248009",
+        "objectLabel": "Professional Performing Arts School",
+        "outgoing": "459"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q11975",
+        "subjectLabel": "Britney Spears",
+        "object": "http://www.wikidata.org/entity/Q7895891",
+        "objectLabel": "University of Nebraska High School",
+        "outgoing": "459"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q11975",
+        "subjectLabel": "Britney Spears",
+        "object": "http://www.wikidata.org/entity/Q16896401",
+        "objectLabel": "Parklane Academy",
+        "outgoing": "459"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q13371",
+        "objectLabel": "Harvard University",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q49088",
+        "objectLabel": "Columbia University",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q49122",
+        "objectLabel": "Harvard Law School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q1036763",
+        "objectLabel": "University of Chicago Law School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q1346110",
+        "objectLabel": "Occidental College",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q3273124",
+        "objectLabel": "Punahou School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q4122998",
+        "objectLabel": "State Elementary School Menteng 01",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q5059051",
+        "objectLabel": "Centaurus High School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q12003",
+        "subjectLabel": "Cher",
+        "object": "http://www.wikidata.org/entity/Q5503182",
+        "objectLabel": "Fresno High School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q6411346",
+        "objectLabel": "King College Prep High School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q12003",
+        "subjectLabel": "Cher",
+        "object": "http://www.wikidata.org/entity/Q6904590",
+        "objectLabel": "Montclair College Preparatory School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q12003",
+        "subjectLabel": "Cher",
+        "object": "http://www.wikidata.org/entity/Q7721887",
+        "objectLabel": "The Center for Early Education",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q14875335",
+        "objectLabel": "Nelson High School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q76",
+        "subjectLabel": "Barack Obama",
+        "object": "http://www.wikidata.org/entity/Q15262435",
+        "objectLabel": "Noelani Elementary School",
+        "outgoing": "456"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q151097",
+        "subjectLabel": "Henry Moore",
+        "object": "http://www.wikidata.org/entity/Q1753535",
+        "objectLabel": "Royal College of Art",
+        "outgoing": "454"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q151097",
+        "subjectLabel": "Henry Moore",
+        "object": "http://www.wikidata.org/entity/Q3228965",
+        "objectLabel": "Leeds Arts University",
+        "outgoing": "454"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q151097",
+        "subjectLabel": "Henry Moore",
+        "object": "http://www.wikidata.org/entity/Q5050501",
+        "objectLabel": "Castleford Academy",
+        "outgoing": "454"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q302",
+        "subjectLabel": "Jesus",
+        "object": "http://www.wikidata.org/.well-known/genid/e574e460b69f92dcd0b5bbbc71b6eff0",
+        "objectLabel": "http://www.wikidata.org/.well-known/genid/e574e460b69f92dcd0b5bbbc71b6eff0",
+        "outgoing": "452"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5592",
+        "subjectLabel": "Michelangelo",
+        "object": "http://www.wikidata.org/entity/Q820887",
+        "objectLabel": "University of Florence",
+        "outgoing": "449"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5589",
+        "subjectLabel": "Henri Matisse",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "448"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5589",
+        "subjectLabel": "Henri Matisse",
+        "object": "http://www.wikidata.org/entity/Q337480",
+        "objectLabel": "Académie Julian",
+        "outgoing": "448"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4616",
+        "subjectLabel": "Marilyn Monroe",
+        "object": "http://www.wikidata.org/entity/Q174710",
+        "objectLabel": "University of California, Los Angeles",
+        "outgoing": "447"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4616",
+        "subjectLabel": "Marilyn Monroe",
+        "object": "http://www.wikidata.org/entity/Q216458",
+        "objectLabel": "Actors Studio",
+        "outgoing": "447"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4616",
+        "subjectLabel": "Marilyn Monroe",
+        "object": "http://www.wikidata.org/entity/Q4008476",
+        "objectLabel": "Van Nuys High School",
+        "outgoing": "447"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4616",
+        "subjectLabel": "Marilyn Monroe",
+        "object": "http://www.wikidata.org/entity/Q7894738",
+        "objectLabel": "University High School",
+        "outgoing": "447"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q42493",
+        "subjectLabel": "Katy Perry",
+        "object": "http://www.wikidata.org/entity/Q5299202",
+        "objectLabel": "Dos Pueblos High School",
+        "outgoing": "442"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q42493",
+        "subjectLabel": "Katy Perry",
+        "object": "http://www.wikidata.org/entity/Q7419214",
+        "objectLabel": "Santa Barbara City College",
+        "outgoing": "442"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1339",
+        "subjectLabel": "Johann Sebastian Bach",
+        "object": "http://www.wikidata.org/entity/Q1930161",
+        "objectLabel": "St. Michael's School",
+        "outgoing": "441"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1035",
+        "subjectLabel": "Charles Darwin",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "439"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1035",
+        "subjectLabel": "Charles Darwin",
+        "object": "http://www.wikidata.org/entity/Q160302",
+        "objectLabel": "University of Edinburgh",
+        "outgoing": "439"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1035",
+        "subjectLabel": "Charles Darwin",
+        "object": "http://www.wikidata.org/entity/Q714717",
+        "objectLabel": "Christ's College",
+        "outgoing": "439"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1035",
+        "subjectLabel": "Charles Darwin",
+        "object": "http://www.wikidata.org/entity/Q2280221",
+        "objectLabel": "Shrewsbury School",
+        "outgoing": "439"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1035",
+        "subjectLabel": "Charles Darwin",
+        "object": "http://www.wikidata.org/entity/Q2635089",
+        "objectLabel": "University of Edinburgh Medical School",
+        "outgoing": "439"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q93284",
+        "subjectLabel": "Marc Chagall",
+        "object": "http://www.wikidata.org/entity/Q4306208",
+        "objectLabel": "School Yehuda Pen in Vitebsk",
+        "outgoing": "438"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q93284",
+        "subjectLabel": "Marc Chagall",
+        "object": "http://www.wikidata.org/entity/Q16242504",
+        "objectLabel": "Académie de La Palette",
+        "outgoing": "438"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35548",
+        "subjectLabel": "Paul Cézanne",
+        "object": "http://www.wikidata.org/entity/Q337473",
+        "objectLabel": "Académie Suisse",
+        "outgoing": "434"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35548",
+        "subjectLabel": "Paul Cézanne",
+        "object": "http://www.wikidata.org/entity/Q1204304",
+        "objectLabel": "Paul Cézanne University",
+        "outgoing": "434"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35548",
+        "subjectLabel": "Paul Cézanne",
+        "object": "http://www.wikidata.org/entity/Q2302586",
+        "objectLabel": "Aix-Marseille University",
+        "outgoing": "434"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q11998",
+        "subjectLabel": "Kylie Minogue",
+        "object": "http://www.wikidata.org/entity/Q5025056",
+        "objectLabel": "Camberwell High School",
+        "outgoing": "430"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5432",
+        "subjectLabel": "Francisco de Goya",
+        "object": "http://www.wikidata.org/entity/Q8347695",
+        "objectLabel": "School of St. Thomas Aquinas of the Piarist Schools of Zaragoza",
+        "outgoing": "430"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9358",
+        "subjectLabel": "Friedrich Nietzsche",
+        "object": "http://www.wikidata.org/entity/Q152171",
+        "objectLabel": "University of Bonn",
+        "outgoing": "427"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9358",
+        "subjectLabel": "Friedrich Nietzsche",
+        "object": "http://www.wikidata.org/entity/Q154804",
+        "objectLabel": "Leipzig University",
+        "outgoing": "427"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9358",
+        "subjectLabel": "Friedrich Nietzsche",
+        "object": "http://www.wikidata.org/entity/Q162494",
+        "objectLabel": "Landesschule Pforta",
+        "outgoing": "427"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9358",
+        "subjectLabel": "Friedrich Nietzsche",
+        "object": "http://www.wikidata.org/entity/Q1237379",
+        "objectLabel": "Domgymnasium Naumburg",
+        "outgoing": "427"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9068",
+        "subjectLabel": "Voltaire",
+        "object": "http://www.wikidata.org/entity/Q1059546",
+        "objectLabel": "Lycée Louis-le-Grand",
+        "outgoing": "426"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q855",
+        "subjectLabel": "Joseph Stalin",
+        "object": "http://www.wikidata.org/entity/Q4144156",
+        "objectLabel": "Gori school",
+        "outgoing": "426"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q855",
+        "subjectLabel": "Joseph Stalin",
+        "object": "http://www.wikidata.org/entity/Q4453127",
+        "objectLabel": "Tbilisi Theological Seminary",
+        "outgoing": "426"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q161819",
+        "subjectLabel": "Julie Andrews",
+        "object": "http://www.wikidata.org/entity/Q4801470",
+        "objectLabel": "Arts Educational School",
+        "outgoing": "426"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q161819",
+        "subjectLabel": "Julie Andrews",
+        "object": "http://www.wikidata.org/entity/Q17035993",
+        "objectLabel": "Tring Park School for the Performing Arts",
+        "outgoing": "426"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5577",
+        "subjectLabel": "Salvador Dalí",
+        "object": "http://www.wikidata.org/entity/Q1322403",
+        "objectLabel": "Real Academia de Bellas Artes de San Fernando",
+        "outgoing": "424"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1203",
+        "subjectLabel": "John Lennon",
+        "object": "http://www.wikidata.org/entity/Q3835519",
+        "objectLabel": "Liverpool College of Art",
+        "outgoing": "423"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1203",
+        "subjectLabel": "John Lennon",
+        "object": "http://www.wikidata.org/entity/Q5019068",
+        "objectLabel": "Calderstones School",
+        "outgoing": "423"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1203",
+        "subjectLabel": "John Lennon",
+        "object": "http://www.wikidata.org/entity/Q66626470",
+        "objectLabel": "Dovedale Primary School",
+        "outgoing": "423"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5603",
+        "subjectLabel": "Andy Warhol",
+        "object": "http://www.wikidata.org/entity/Q190080",
+        "objectLabel": "Carnegie Mellon University",
+        "outgoing": "422"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5603",
+        "subjectLabel": "Andy Warhol",
+        "object": "http://www.wikidata.org/entity/Q5043953",
+        "objectLabel": "Carnegie Mellon School of Art",
+        "outgoing": "422"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5603",
+        "subjectLabel": "Andy Warhol",
+        "object": "http://www.wikidata.org/entity/Q7431174",
+        "objectLabel": "Schenley High School",
+        "outgoing": "422"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q131433",
+        "subjectLabel": "Shania Twain",
+        "object": "http://www.wikidata.org/entity/Q2979657",
+        "objectLabel": "The Royal Conservatory of Music",
+        "outgoing": "421"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q131433",
+        "subjectLabel": "Shania Twain",
+        "object": "http://www.wikidata.org/entity/Q7806802",
+        "objectLabel": "Timmins High and Vocational School",
+        "outgoing": "421"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q16867",
+        "subjectLabel": "Edgar Allan Poe",
+        "object": "http://www.wikidata.org/entity/Q9219",
+        "objectLabel": "United States Military Academy",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q38082",
+        "subjectLabel": "Lewis Carroll",
+        "object": "http://www.wikidata.org/entity/Q34433",
+        "objectLabel": "University of Oxford",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q16867",
+        "subjectLabel": "Edgar Allan Poe",
+        "object": "http://www.wikidata.org/entity/Q213439",
+        "objectLabel": "University of Virginia",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q38082",
+        "subjectLabel": "Lewis Carroll",
+        "object": "http://www.wikidata.org/entity/Q745967",
+        "objectLabel": "Christ Church",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q38082",
+        "subjectLabel": "Lewis Carroll",
+        "object": "http://www.wikidata.org/entity/Q1143281",
+        "objectLabel": "Rugby School",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q38082",
+        "subjectLabel": "Lewis Carroll",
+        "object": "http://www.wikidata.org/entity/Q7330984",
+        "objectLabel": "Richmond School",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34389",
+        "subjectLabel": "Whitney Houston",
+        "object": "http://www.wikidata.org/entity/Q14705776",
+        "objectLabel": "Mount Saint Dominic Academy",
+        "outgoing": "420"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q40599",
+        "subjectLabel": "Édouard Manet",
+        "object": "http://www.wikidata.org/entity/Q2983549",
+        "objectLabel": "Collège-lycée Jacques-Decour",
+        "outgoing": "419"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8704",
+        "subjectLabel": "Walt Disney",
+        "object": "http://www.wikidata.org/entity/Q6364655",
+        "objectLabel": "Kansas City Art Institute",
+        "outgoing": "419"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8704",
+        "subjectLabel": "Walt Disney",
+        "object": "http://www.wikidata.org/entity/Q14693524",
+        "objectLabel": "Central High School",
+        "outgoing": "419"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q8704",
+        "subjectLabel": "Walt Disney",
+        "object": "http://www.wikidata.org/entity/Q48976907",
+        "objectLabel": "McKinley High School",
+        "outgoing": "419"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26408",
+        "subjectLabel": "Pierre Bonnard",
+        "object": "http://www.wikidata.org/entity/Q337480",
+        "objectLabel": "Académie Julian",
+        "outgoing": "417"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26408",
+        "subjectLabel": "Pierre Bonnard",
+        "object": "http://www.wikidata.org/entity/Q926749",
+        "objectLabel": "Lycée Condorcet",
+        "outgoing": "417"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26408",
+        "subjectLabel": "Pierre Bonnard",
+        "object": "http://www.wikidata.org/entity/Q1059546",
+        "objectLabel": "Lycée Louis-le-Grand",
+        "outgoing": "417"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q26408",
+        "subjectLabel": "Pierre Bonnard",
+        "object": "http://www.wikidata.org/entity/Q3268847",
+        "objectLabel": "Lycée Michelet, Vanves",
+        "outgoing": "417"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13909",
+        "subjectLabel": "Angelina Jolie",
+        "object": "http://www.wikidata.org/entity/Q49210",
+        "objectLabel": "New York University",
+        "outgoing": "416"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13909",
+        "subjectLabel": "Angelina Jolie",
+        "object": "http://www.wikidata.org/entity/Q1185037",
+        "objectLabel": "Beverly Hills High School",
+        "outgoing": "416"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13909",
+        "subjectLabel": "Angelina Jolie",
+        "object": "http://www.wikidata.org/entity/Q1542213",
+        "objectLabel": "Lee Strasberg Theatre and Film Institute",
+        "outgoing": "416"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13909",
+        "subjectLabel": "Angelina Jolie",
+        "object": "http://www.wikidata.org/entity/Q7684761",
+        "objectLabel": "Tappan Zee High School",
+        "outgoing": "416"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41142",
+        "subjectLabel": "Jane Fonda",
+        "object": "http://www.wikidata.org/entity/Q705737",
+        "objectLabel": "Art Students League of New York",
+        "outgoing": "415"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41142",
+        "subjectLabel": "Jane Fonda",
+        "object": "http://www.wikidata.org/entity/Q2093794",
+        "objectLabel": "Vassar College",
+        "outgoing": "415"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41142",
+        "subjectLabel": "Jane Fonda",
+        "object": "http://www.wikidata.org/entity/Q6260553",
+        "objectLabel": "John Thomas Dye School",
+        "outgoing": "415"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q392",
+        "subjectLabel": "Bob Dylan",
+        "object": "http://www.wikidata.org/entity/Q3439758",
+        "objectLabel": "Sidwell Friends School",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5383",
+        "subjectLabel": "David Bowie",
+        "object": "http://www.wikidata.org/entity/Q5123283",
+        "objectLabel": "City Literary Institute",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5383",
+        "subjectLabel": "David Bowie",
+        "object": "http://www.wikidata.org/entity/Q7296488",
+        "objectLabel": "Ravens Wood School",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5383",
+        "subjectLabel": "David Bowie",
+        "object": "http://www.wikidata.org/entity/Q7296496",
+        "objectLabel": "Ravensbourne University London",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q392",
+        "subjectLabel": "Bob Dylan",
+        "object": "http://www.wikidata.org/entity/Q14552696",
+        "objectLabel": "University of Minnesota system",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q392",
+        "subjectLabel": "Bob Dylan",
+        "object": "http://www.wikidata.org/entity/Q14692643",
+        "objectLabel": "Hibbing High School",
+        "outgoing": "413"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41513",
+        "subjectLabel": "William Blake",
+        "object": "http://www.wikidata.org/entity/Q21579788",
+        "objectLabel": "Royal Academy Schools",
+        "outgoing": "412"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41513",
+        "subjectLabel": "William Blake",
+        "object": "http://www.wikidata.org/entity/Q23661719",
+        "objectLabel": "Henry Pars Drawing School",
+        "outgoing": "412"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1394",
+        "subjectLabel": "Vladimir Lenin",
+        "object": "http://www.wikidata.org/entity/Q4419529",
+        "objectLabel": "Simbirsk classical gymnasium",
+        "outgoing": "411"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1394",
+        "subjectLabel": "Vladimir Lenin",
+        "object": "http://www.wikidata.org/entity/Q4534839",
+        "objectLabel": "Faculty of Law, Saint Petersburg State University",
+        "outgoing": "411"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1394",
+        "subjectLabel": "Vladimir Lenin",
+        "object": "http://www.wikidata.org/entity/Q28482293",
+        "objectLabel": "Kazan Imperial University",
+        "outgoing": "411"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q181659",
+        "subjectLabel": "Ursula K. Le Guin",
+        "object": "http://www.wikidata.org/entity/Q13371",
+        "objectLabel": "Harvard University",
+        "outgoing": "409"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q181659",
+        "subjectLabel": "Ursula K. Le Guin",
+        "object": "http://www.wikidata.org/entity/Q49088",
+        "objectLabel": "Columbia University",
+        "outgoing": "409"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q181659",
+        "subjectLabel": "Ursula K. Le Guin",
+        "object": "http://www.wikidata.org/entity/Q49124",
+        "objectLabel": "Radcliffe College",
+        "outgoing": "409"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q181659",
+        "subjectLabel": "Ursula K. Le Guin",
+        "object": "http://www.wikidata.org/entity/Q4892030",
+        "objectLabel": "Berkeley High School",
+        "outgoing": "409"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q81087",
+        "objectLabel": "University College, Oxford",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q1244704",
+        "objectLabel": "Trinity Hall",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q7592273",
+        "objectLabel": "St Albans High School for Girls",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q7592283",
+        "objectLabel": "St Albans School",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q17714",
+        "subjectLabel": "Stephen Hawking",
+        "object": "http://www.wikidata.org/entity/Q97013303",
+        "objectLabel": "Byron House School",
+        "outgoing": "407"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q121507",
+        "subjectLabel": "Alicia Keys",
+        "object": "http://www.wikidata.org/entity/Q49088",
+        "objectLabel": "Columbia University",
+        "outgoing": "406"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9554",
+        "subjectLabel": "Martin Luther",
+        "object": "http://www.wikidata.org/entity/Q702524",
+        "objectLabel": "University of Erfurt",
+        "outgoing": "406"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q121507",
+        "subjectLabel": "Alicia Keys",
+        "object": "http://www.wikidata.org/entity/Q7248009",
+        "objectLabel": "Professional Performing Arts School",
+        "outgoing": "406"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9047",
+        "subjectLabel": "Gottfried Wilhelm Leibniz",
+        "object": "http://www.wikidata.org/entity/Q154561",
+        "objectLabel": "University of Jena",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9047",
+        "subjectLabel": "Gottfried Wilhelm Leibniz",
+        "object": "http://www.wikidata.org/entity/Q154804",
+        "objectLabel": "Leipzig University",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9047",
+        "subjectLabel": "Gottfried Wilhelm Leibniz",
+        "object": "http://www.wikidata.org/entity/Q436052",
+        "objectLabel": "Alte Nikolaischule (Leipzig)",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4612",
+        "subjectLabel": "Marlene Dietrich",
+        "object": "http://www.wikidata.org/entity/Q536163",
+        "objectLabel": "Hochschule für Musik Franz Liszt Weimar",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9047",
+        "subjectLabel": "Gottfried Wilhelm Leibniz",
+        "object": "http://www.wikidata.org/entity/Q699668",
+        "objectLabel": "Thomasschule zu Leipzig",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7200",
+        "subjectLabel": "Alexander Pushkin",
+        "object": "http://www.wikidata.org/entity/Q775909",
+        "objectLabel": "Tsarskoye Selo Lyceum",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9047",
+        "subjectLabel": "Gottfried Wilhelm Leibniz",
+        "object": "http://www.wikidata.org/entity/Q880228",
+        "objectLabel": "University of Altdorf",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4612",
+        "subjectLabel": "Marlene Dietrich",
+        "object": "http://www.wikidata.org/entity/Q895796",
+        "objectLabel": "Ernst Busch Academy of Dramatic Arts",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4612",
+        "subjectLabel": "Marlene Dietrich",
+        "object": "http://www.wikidata.org/entity/Q1534107",
+        "objectLabel": "Goethe Gymnasium",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q30449",
+        "subjectLabel": "Avril Lavigne",
+        "object": "http://www.wikidata.org/entity/Q6964831",
+        "objectLabel": "Napanee District Secondary School",
+        "outgoing": "405"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q61064",
+        "subjectLabel": "Wassily Kandinsky",
+        "object": "http://www.wikidata.org/entity/Q414052",
+        "objectLabel": "Academy of Fine Arts, Munich",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35610",
+        "subjectLabel": "Arthur Conan Doyle",
+        "object": "http://www.wikidata.org/entity/Q874457",
+        "objectLabel": "Stella Matutina",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35610",
+        "subjectLabel": "Arthur Conan Doyle",
+        "object": "http://www.wikidata.org/entity/Q2274271",
+        "objectLabel": "Stonyhurst College",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35610",
+        "subjectLabel": "Arthur Conan Doyle",
+        "object": "http://www.wikidata.org/entity/Q2635089",
+        "objectLabel": "University of Edinburgh Medical School",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q61064",
+        "subjectLabel": "Wassily Kandinsky",
+        "object": "http://www.wikidata.org/entity/Q3890936",
+        "objectLabel": "Moscow State University, Faculty of Law",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q61064",
+        "subjectLabel": "Wassily Kandinsky",
+        "object": "http://www.wikidata.org/entity/Q4331495",
+        "objectLabel": "Grekov Odesa Art school",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35610",
+        "subjectLabel": "Arthur Conan Doyle",
+        "object": "http://www.wikidata.org/entity/Q7619623",
+        "objectLabel": "Stonyhurst Saint Mary's Hall",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q383541",
+        "subjectLabel": "Basshunter",
+        "object": "http://www.wikidata.org/entity/Q10544437",
+        "objectLabel": "Kattegattgymnasiet",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q383541",
+        "subjectLabel": "Basshunter",
+        "object": "http://www.wikidata.org/entity/Q10682451",
+        "objectLabel": "Sturegymnasiet",
+        "outgoing": "402"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5673",
+        "subjectLabel": "Hans Christian Andersen",
+        "object": "http://www.wikidata.org/entity/Q186285",
+        "objectLabel": "University of Copenhagen",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q212499",
+        "subjectLabel": "Jean-Léon Gérôme",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34660",
+        "subjectLabel": "J. K. Rowling",
+        "object": "http://www.wikidata.org/entity/Q1414861",
+        "objectLabel": "University of Exeter",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q212499",
+        "subjectLabel": "Jean-Léon Gérôme",
+        "object": "http://www.wikidata.org/entity/Q2983585",
+        "objectLabel": "College Gérôme",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q28614",
+        "subjectLabel": "Garry Kasparov",
+        "object": "http://www.wikidata.org/entity/Q3701492",
+        "objectLabel": "Azerbaijan University of Languages",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34660",
+        "subjectLabel": "J. K. Rowling",
+        "object": "http://www.wikidata.org/entity/Q8039722",
+        "objectLabel": "Wyedean School",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5673",
+        "subjectLabel": "Hans Christian Andersen",
+        "object": "http://www.wikidata.org/entity/Q12335994",
+        "objectLabel": "Slagelse Gymnasium",
+        "outgoing": "401"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36844",
+        "subjectLabel": "Rihanna",
+        "object": "http://www.wikidata.org/entity/Q5150790",
+        "objectLabel": "Combermere School",
+        "outgoing": "399"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36844",
+        "subjectLabel": "Rihanna",
+        "object": "http://www.wikidata.org/entity/Q6818183",
+        "objectLabel": "Mercedes College",
+        "outgoing": "399"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9049",
+        "subjectLabel": "Noam Chomsky",
+        "object": "http://www.wikidata.org/entity/Q13371",
+        "objectLabel": "Harvard University",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9049",
+        "subjectLabel": "Noam Chomsky",
+        "object": "http://www.wikidata.org/entity/Q49108",
+        "objectLabel": "Massachusetts Institute of Technology",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9049",
+        "subjectLabel": "Noam Chomsky",
+        "object": "http://www.wikidata.org/entity/Q49117",
+        "objectLabel": "University of Pennsylvania",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2599",
+        "subjectLabel": "Paul McCartney",
+        "object": "http://www.wikidata.org/entity/Q1668871",
+        "objectLabel": "Liverpool Institute for Performing Arts",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9049",
+        "subjectLabel": "Noam Chomsky",
+        "object": "http://www.wikidata.org/entity/Q5061195",
+        "objectLabel": "Central High School",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9049",
+        "subjectLabel": "Noam Chomsky",
+        "object": "http://www.wikidata.org/entity/Q7073618",
+        "objectLabel": "Oak Lane Day School",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2599",
+        "subjectLabel": "Paul McCartney",
+        "object": "http://www.wikidata.org/entity/Q7985636",
+        "objectLabel": "West Kirby Grammar School",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2599",
+        "subjectLabel": "Paul McCartney",
+        "object": "http://www.wikidata.org/entity/Q15242531",
+        "objectLabel": "Liverpool Institute High School for Boys",
+        "outgoing": "397"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q25089",
+        "subjectLabel": "Woody Allen",
+        "object": "http://www.wikidata.org/entity/Q49210",
+        "objectLabel": "New York University",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q567",
+        "subjectLabel": "Angela Merkel",
+        "object": "http://www.wikidata.org/entity/Q49738",
+        "objectLabel": "Academy of Sciences of the GDR",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q567",
+        "subjectLabel": "Angela Merkel",
+        "object": "http://www.wikidata.org/entity/Q154804",
+        "objectLabel": "Leipzig University",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q157183",
+        "subjectLabel": "Fernand Léger",
+        "object": "http://www.wikidata.org/entity/Q337480",
+        "objectLabel": "Académie Julian",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q25089",
+        "subjectLabel": "Woody Allen",
+        "object": "http://www.wikidata.org/entity/Q797078",
+        "objectLabel": "New York University Tisch School of the Arts",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q157183",
+        "subjectLabel": "Fernand Léger",
+        "object": "http://www.wikidata.org/entity/Q1135990",
+        "objectLabel": "École nationale supérieure des arts décoratifs",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q25089",
+        "subjectLabel": "Woody Allen",
+        "object": "http://www.wikidata.org/entity/Q10749664",
+        "objectLabel": "Midwood High School",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q567",
+        "subjectLabel": "Angela Merkel",
+        "object": "http://www.wikidata.org/entity/Q56230681",
+        "objectLabel": "Polytechnic Secondary School Templin",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q567",
+        "subjectLabel": "Angela Merkel",
+        "object": "http://www.wikidata.org/entity/Q56230686",
+        "objectLabel": "Extended Secondary School Templin",
+        "outgoing": "396"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q989",
+        "subjectLabel": "John Paul II",
+        "object": "http://www.wikidata.org/entity/Q175529",
+        "objectLabel": "John Paul II Catholic University of Lublin",
+        "outgoing": "395"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q989",
+        "subjectLabel": "John Paul II",
+        "object": "http://www.wikidata.org/entity/Q246887",
+        "objectLabel": "Pontifical University of Saint Thomas Aquinas",
+        "outgoing": "395"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q989",
+        "subjectLabel": "John Paul II",
+        "object": "http://www.wikidata.org/entity/Q9379710",
+        "objectLabel": "Theology faculty of the Jagiellonian University",
+        "outgoing": "395"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2494",
+        "subjectLabel": "Benedict XVI",
+        "object": "http://www.wikidata.org/entity/Q55044",
+        "objectLabel": "Ludwig Maximilian University of Munich",
+        "outgoing": "394"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q140619",
+        "subjectLabel": "Nadia Boulanger",
+        "object": "http://www.wikidata.org/entity/Q463055",
+        "objectLabel": "Conservatoire de Paris",
+        "outgoing": "394"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2494",
+        "subjectLabel": "Benedict XVI",
+        "object": "http://www.wikidata.org/entity/Q533069",
+        "objectLabel": "Ducal Georgianum",
+        "outgoing": "394"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q83158",
+        "subjectLabel": "Jean Cocteau",
+        "object": "http://www.wikidata.org/entity/Q926749",
+        "objectLabel": "Lycée Condorcet",
+        "outgoing": "393"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q991",
+        "subjectLabel": "Fyodor Dostoyevsky",
+        "object": "http://www.wikidata.org/entity/Q1141929",
+        "objectLabel": "Military Engineering-Technical University",
+        "outgoing": "392"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q991",
+        "subjectLabel": "Fyodor Dostoyevsky",
+        "object": "http://www.wikidata.org/entity/Q16680888",
+        "objectLabel": "Nikolay engineering school",
+        "outgoing": "392"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q14441",
+        "subjectLabel": "Liza Minnelli",
+        "object": "http://www.wikidata.org/entity/Q3072747",
+        "objectLabel": "Fiorello H. LaGuardia High School",
+        "outgoing": "391"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q14441",
+        "subjectLabel": "Liza Minnelli",
+        "object": "http://www.wikidata.org/entity/Q5066529",
+        "objectLabel": "Chadwick School",
+        "outgoing": "391"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q14441",
+        "subjectLabel": "Liza Minnelli",
+        "object": "http://www.wikidata.org/entity/Q5629067",
+        "objectLabel": "HB Studio",
+        "outgoing": "391"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q14441",
+        "subjectLabel": "Liza Minnelli",
+        "object": "http://www.wikidata.org/entity/Q5756639",
+        "objectLabel": "High School of Performing Arts",
+        "outgoing": "391"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q14441",
+        "subjectLabel": "Liza Minnelli",
+        "object": "http://www.wikidata.org/entity/Q14707276",
+        "objectLabel": "Scarsdale High School",
+        "outgoing": "391"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q21578",
+        "objectLabel": "Princeton University",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q49123",
+        "objectLabel": "Harvard College",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q174570",
+        "objectLabel": "London School of Economics and Political Science",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q1413558",
+        "objectLabel": "Stanford Graduate School of Business",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q5033691",
+        "objectLabel": "Canterbury School",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q5103452",
+        "objectLabel": "Choate Rosemary Hall",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q5268443",
+        "objectLabel": "Dexter School",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q5342580",
+        "objectLabel": "Edward Devotion School",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q7045816",
+        "objectLabel": "Noble and Greenough School",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9696",
+        "subjectLabel": "John F. Kennedy",
+        "object": "http://www.wikidata.org/entity/Q7338137",
+        "objectLabel": "Riverdale Country School",
+        "outgoing": "388"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9191",
+        "subjectLabel": "René Descartes",
+        "object": "http://www.wikidata.org/entity/Q271",
+        "objectLabel": "Prytanée National Militaire",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q30875",
+        "subjectLabel": "Oscar Wilde",
+        "object": "http://www.wikidata.org/entity/Q81162",
+        "objectLabel": "Magdalen College",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9191",
+        "subjectLabel": "René Descartes",
+        "object": "http://www.wikidata.org/entity/Q156598",
+        "objectLabel": "Leiden University",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9191",
+        "subjectLabel": "René Descartes",
+        "object": "http://www.wikidata.org/entity/Q221653",
+        "objectLabel": "Utrecht University",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q30875",
+        "subjectLabel": "Oscar Wilde",
+        "object": "http://www.wikidata.org/entity/Q258464",
+        "objectLabel": "Trinity College Dublin",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q30755",
+        "subjectLabel": "Auguste Rodin",
+        "object": "http://www.wikidata.org/entity/Q1135990",
+        "objectLabel": "École nationale supérieure des arts décoratifs",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9191",
+        "subjectLabel": "René Descartes",
+        "object": "http://www.wikidata.org/entity/Q2983591",
+        "objectLabel": "collège Henri-IV de La Flèche",
+        "outgoing": "387"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q23559",
+        "subjectLabel": "Benito Mussolini",
+        "object": "http://www.wikidata.org/entity/Q658975",
+        "objectLabel": "University of Lausanne",
+        "outgoing": "386"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q131674",
+        "subjectLabel": "Anatoly Karpov",
+        "object": "http://www.wikidata.org/entity/Q4530466",
+        "objectLabel": "Sankt-Peterburgskiĭ gosudarstvennyĭ universitet. Ėkonomicheskiĭ fakulʹtet",
+        "outgoing": "386"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41594",
+        "subjectLabel": "Christina Aguilera",
+        "object": "http://www.wikidata.org/entity/Q7053694",
+        "objectLabel": "North Allegheny Intermediate High School",
+        "outgoing": "386"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1511",
+        "subjectLabel": "Richard Wagner",
+        "object": "http://www.wikidata.org/entity/Q154804",
+        "objectLabel": "Leipzig University",
+        "outgoing": "385"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q868",
+        "subjectLabel": "Aristotle",
+        "object": "http://www.wikidata.org/entity/Q193093",
+        "objectLabel": "Platonic Academy",
+        "outgoing": "385"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1511",
+        "subjectLabel": "Richard Wagner",
+        "object": "http://www.wikidata.org/entity/Q699668",
+        "objectLabel": "Thomasschule zu Leipzig",
+        "outgoing": "385"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1511",
+        "subjectLabel": "Richard Wagner",
+        "object": "http://www.wikidata.org/entity/Q1526368",
+        "objectLabel": "Kreuzschule",
+        "outgoing": "385"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q37459",
+        "subjectLabel": "Nicole Kidman",
+        "object": "http://www.wikidata.org/entity/Q7056912",
+        "objectLabel": "North Sydney Girls High School",
+        "outgoing": "385"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15897",
+        "subjectLabel": "Amy Winehouse",
+        "object": "http://www.wikidata.org/entity/Q653693",
+        "objectLabel": "Sylvia Young Theatre School",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15897",
+        "subjectLabel": "Amy Winehouse",
+        "object": "http://www.wikidata.org/entity/Q796940",
+        "objectLabel": "BRIT School for Performing Arts and Technology",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36233",
+        "subjectLabel": "Václav Havel",
+        "object": "http://www.wikidata.org/entity/Q1329478",
+        "objectLabel": "Czech Technical University in Prague",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36233",
+        "subjectLabel": "Václav Havel",
+        "object": "http://www.wikidata.org/entity/Q1466157",
+        "objectLabel": "Faculty of Theatre, Academy of Performing Arts in Prague",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15897",
+        "subjectLabel": "Amy Winehouse",
+        "object": "http://www.wikidata.org/entity/Q4805677",
+        "objectLabel": "Ashmole Academy",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15897",
+        "subjectLabel": "Amy Winehouse",
+        "object": "http://www.wikidata.org/entity/Q4950240",
+        "objectLabel": "Bourne Grammar School",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36233",
+        "subjectLabel": "Václav Havel",
+        "object": "http://www.wikidata.org/entity/Q10726782",
+        "objectLabel": "Akademické gymnázium Štěpánská",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15897",
+        "subjectLabel": "Amy Winehouse",
+        "object": "http://www.wikidata.org/entity/Q16901553",
+        "objectLabel": "The Mount, Mill Hill International",
+        "outgoing": "382"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9061",
+        "subjectLabel": "Karl Marx",
+        "object": "http://www.wikidata.org/entity/Q152087",
+        "objectLabel": "Humboldt University of Berlin",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9061",
+        "subjectLabel": "Karl Marx",
+        "object": "http://www.wikidata.org/entity/Q152171",
+        "objectLabel": "University of Bonn",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9061",
+        "subjectLabel": "Karl Marx",
+        "object": "http://www.wikidata.org/entity/Q154561",
+        "objectLabel": "University of Jena",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q159758",
+        "subjectLabel": "J. M. W. Turner",
+        "object": "http://www.wikidata.org/entity/Q270920",
+        "objectLabel": "Royal Academy of Arts",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q23380",
+        "subjectLabel": "Jean Auguste Dominique Ingres",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q23380",
+        "subjectLabel": "Jean Auguste Dominique Ingres",
+        "object": "http://www.wikidata.org/entity/Q337494",
+        "objectLabel": "French Academy in Rome",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q23380",
+        "subjectLabel": "Jean Auguste Dominique Ingres",
+        "object": "http://www.wikidata.org/entity/Q941853",
+        "objectLabel": "Institut supérieur des arts de Toulouse",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9061",
+        "subjectLabel": "Karl Marx",
+        "object": "http://www.wikidata.org/entity/Q1457868",
+        "objectLabel": "Gimnasium Real Frederick William III",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34436",
+        "subjectLabel": "Scarlett Johansson",
+        "object": "http://www.wikidata.org/entity/Q1542213",
+        "objectLabel": "Lee Strasberg Theatre and Film Institute",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34436",
+        "subjectLabel": "Scarlett Johansson",
+        "object": "http://www.wikidata.org/entity/Q7117077",
+        "objectLabel": "P.S. 41",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34436",
+        "subjectLabel": "Scarlett Johansson",
+        "object": "http://www.wikidata.org/entity/Q7247941",
+        "objectLabel": "Professional Children's School",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34851",
+        "subjectLabel": "Elizabeth Taylor",
+        "object": "http://www.wikidata.org/entity/Q97013303",
+        "objectLabel": "Byron House School",
+        "outgoing": "381"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q154842",
+        "subjectLabel": "Max Ernst",
+        "object": "http://www.wikidata.org/entity/Q152171",
+        "objectLabel": "University of Bonn",
+        "outgoing": "380"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q153793",
+        "subjectLabel": "Georges Braque",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "380"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q153793",
+        "subjectLabel": "Georges Braque",
+        "object": "http://www.wikidata.org/entity/Q21427194",
+        "objectLabel": "École supérieure d'art et design Le Havre-Rouen",
+        "outgoing": "380"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q892",
+        "subjectLabel": "J. R. R. Tolkien",
+        "object": "http://www.wikidata.org/entity/Q34433",
+        "objectLabel": "University of Oxford",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q37030",
+        "subjectLabel": "Thomas Mann",
+        "object": "http://www.wikidata.org/entity/Q55044",
+        "objectLabel": "Ludwig Maximilian University of Munich",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q892",
+        "subjectLabel": "J. R. R. Tolkien",
+        "object": "http://www.wikidata.org/entity/Q81173",
+        "objectLabel": "Exeter College",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q37030",
+        "subjectLabel": "Thomas Mann",
+        "object": "http://www.wikidata.org/entity/Q157808",
+        "objectLabel": "Technical University of Munich",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q37030",
+        "subjectLabel": "Thomas Mann",
+        "object": "http://www.wikidata.org/entity/Q454607",
+        "objectLabel": "Katharineum",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q892",
+        "subjectLabel": "J. R. R. Tolkien",
+        "object": "http://www.wikidata.org/entity/Q3197003",
+        "objectLabel": "King Edward's School",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q892",
+        "subjectLabel": "J. R. R. Tolkien",
+        "object": "http://www.wikidata.org/entity/Q7591528",
+        "objectLabel": "St. Philip's School",
+        "outgoing": "378"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1268",
+        "subjectLabel": "Frédéric Chopin",
+        "object": "http://www.wikidata.org/entity/Q144488",
+        "objectLabel": "University of Warsaw",
+        "outgoing": "377"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1268",
+        "subjectLabel": "Frédéric Chopin",
+        "object": "http://www.wikidata.org/entity/Q1340262",
+        "objectLabel": "Chopin University of Music",
+        "outgoing": "377"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q152384",
+        "subjectLabel": "Joan Miró",
+        "object": "http://www.wikidata.org/entity/Q4892714",
+        "objectLabel": "Cercle Artístic de Sant Lluc",
+        "outgoing": "377"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5679",
+        "subjectLabel": "Lord Byron",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5679",
+        "subjectLabel": "Lord Byron",
+        "object": "http://www.wikidata.org/entity/Q332342",
+        "objectLabel": "Trinity College",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5679",
+        "subjectLabel": "Lord Byron",
+        "object": "http://www.wikidata.org/entity/Q1247373",
+        "objectLabel": "Harrow School",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33977",
+        "subjectLabel": "Jules Verne",
+        "object": "http://www.wikidata.org/entity/Q3268696",
+        "objectLabel": "lycée Georges-Clemenceau",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33977",
+        "subjectLabel": "Jules Verne",
+        "object": "http://www.wikidata.org/entity/Q3268936",
+        "objectLabel": "lycée Saint-Stanislas",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5679",
+        "subjectLabel": "Lord Byron",
+        "object": "http://www.wikidata.org/entity/Q4666924",
+        "objectLabel": "Aberdeen Grammar School",
+        "outgoing": "376"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41309",
+        "subjectLabel": "Franz Liszt",
+        "object": "http://www.wikidata.org/entity/Q686522",
+        "objectLabel": "University of Music and Performing Arts Vienna",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q336977",
+        "subjectLabel": "Guido Gezelle",
+        "object": "http://www.wikidata.org/entity/Q1867263",
+        "objectLabel": "Klein Seminarie Roeselare",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q336977",
+        "subjectLabel": "Guido Gezelle",
+        "object": "http://www.wikidata.org/entity/Q2479554",
+        "objectLabel": "Bruges seminary",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q336977",
+        "subjectLabel": "Guido Gezelle",
+        "object": "http://www.wikidata.org/entity/Q2663876",
+        "objectLabel": "Sint-Lodewijkscollege",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q35064",
+        "subjectLabel": "Agatha Christie",
+        "object": "http://www.wikidata.org/entity/Q11248105",
+        "objectLabel": "private education",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q336977",
+        "subjectLabel": "Guido Gezelle",
+        "object": "http://www.wikidata.org/entity/Q118351827",
+        "objectLabel": "Episcopal College Our-Lady Ter Duinen",
+        "outgoing": "374"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q873",
+        "subjectLabel": "Meryl Streep",
+        "object": "http://www.wikidata.org/entity/Q49112",
+        "objectLabel": "Yale University",
+        "outgoing": "373"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q873",
+        "subjectLabel": "Meryl Streep",
+        "object": "http://www.wikidata.org/entity/Q2093794",
+        "objectLabel": "Vassar College",
+        "outgoing": "373"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q185165",
+        "subjectLabel": "Olivia Newton-John",
+        "object": "http://www.wikidata.org/entity/Q4005855",
+        "objectLabel": "University High School",
+        "outgoing": "373"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q873",
+        "subjectLabel": "Meryl Streep",
+        "object": "http://www.wikidata.org/entity/Q4893990",
+        "objectLabel": "Bernards High School",
+        "outgoing": "373"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q873",
+        "subjectLabel": "Meryl Streep",
+        "object": "http://www.wikidata.org/entity/Q8047423",
+        "objectLabel": "Yale School of Drama",
+        "outgoing": "373"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2695156",
+        "subjectLabel": "Batman",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9215",
+        "subjectLabel": "Sigmund Freud",
+        "object": "http://www.wikidata.org/entity/Q165980",
+        "objectLabel": "University of Vienna",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2695156",
+        "subjectLabel": "Batman",
+        "object": "http://www.wikidata.org/entity/Q209842",
+        "objectLabel": "University of Paris",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q214959",
+        "subjectLabel": "Harry Belafonte",
+        "object": "http://www.wikidata.org/entity/Q599316",
+        "objectLabel": "New School",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q6682",
+        "subjectLabel": "Gustave Doré",
+        "object": "http://www.wikidata.org/entity/Q748307",
+        "objectLabel": "Lycée Charlemagne",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q214959",
+        "subjectLabel": "Harry Belafonte",
+        "object": "http://www.wikidata.org/entity/Q5545975",
+        "objectLabel": "George Washington Educational Campus",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q214959",
+        "subjectLabel": "Harry Belafonte",
+        "object": "http://www.wikidata.org/entity/Q8030386",
+        "objectLabel": "Wolmer's Schools",
+        "outgoing": "371"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7245",
+        "subjectLabel": "Mark Twain",
+        "object": "http://www.wikidata.org/entity/Q5048217",
+        "objectLabel": "Cascadilla School (Ithaca)",
+        "outgoing": "370"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9960",
+        "subjectLabel": "Ronald Reagan",
+        "object": "http://www.wikidata.org/entity/Q5284951",
+        "objectLabel": "Dixon High School",
+        "outgoing": "370"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9960",
+        "subjectLabel": "Ronald Reagan",
+        "object": "http://www.wikidata.org/entity/Q5411163",
+        "objectLabel": "Eureka College",
+        "outgoing": "370"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q905",
+        "subjectLabel": "Franz Kafka",
+        "object": "http://www.wikidata.org/entity/Q31519",
+        "objectLabel": "Charles University",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q44007",
+        "subjectLabel": "Paul Klee",
+        "object": "http://www.wikidata.org/entity/Q414052",
+        "objectLabel": "Academy of Fine Arts, Munich",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q44007",
+        "subjectLabel": "Paul Klee",
+        "object": "http://www.wikidata.org/entity/Q568692",
+        "objectLabel": "State University of Music and Performing Arts Stuttgart",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q905",
+        "subjectLabel": "Franz Kafka",
+        "object": "http://www.wikidata.org/entity/Q1729754",
+        "objectLabel": "German University in Prague",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q122020",
+        "subjectLabel": "Hilary Duff",
+        "object": "http://www.wikidata.org/entity/Q8057887",
+        "objectLabel": "Young Actors Space",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q905",
+        "subjectLabel": "Franz Kafka",
+        "object": "http://www.wikidata.org/entity/Q102398072",
+        "objectLabel": "College of Philosophy of the Prague German University",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q905",
+        "subjectLabel": "Franz Kafka",
+        "object": "http://www.wikidata.org/entity/Q102398197",
+        "objectLabel": "Faculty of Law, German University in Prague",
+        "outgoing": "369"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1545",
+        "subjectLabel": "Cyndi Lauper",
+        "object": "http://www.wikidata.org/entity/Q1702480",
+        "objectLabel": "Johnson State College",
+        "outgoing": "368"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36290",
+        "subjectLabel": "Diana Ross",
+        "object": "http://www.wikidata.org/entity/Q5049183",
+        "objectLabel": "Cass Technical High School",
+        "outgoing": "368"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1545",
+        "subjectLabel": "Cyndi Lauper",
+        "object": "http://www.wikidata.org/entity/Q7330875",
+        "objectLabel": "Richmond Hill High School",
+        "outgoing": "368"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q6694",
+        "subjectLabel": "Alexander von Humboldt",
+        "object": "http://www.wikidata.org/entity/Q152838",
+        "objectLabel": "University of Göttingen",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q6694",
+        "subjectLabel": "Alexander von Humboldt",
+        "object": "http://www.wikidata.org/entity/Q154561",
+        "objectLabel": "University of Jena",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q6694",
+        "subjectLabel": "Alexander von Humboldt",
+        "object": "http://www.wikidata.org/entity/Q689854",
+        "objectLabel": "Freiberg University of Mining and Technology",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q6694",
+        "subjectLabel": "Alexander von Humboldt",
+        "object": "http://www.wikidata.org/entity/Q2649559",
+        "objectLabel": "Alma Mater Viadrina",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q11617",
+        "subjectLabel": "Aaliyah",
+        "object": "http://www.wikidata.org/entity/Q5266008",
+        "objectLabel": "Detroit School of Arts",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q151892",
+        "subjectLabel": "Ariana Grande",
+        "object": "http://www.wikidata.org/entity/Q7054313",
+        "objectLabel": "North Broward Preparatory School",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q151892",
+        "subjectLabel": "Ariana Grande",
+        "object": "http://www.wikidata.org/entity/Q7195122",
+        "objectLabel": "Pine Crest School",
+        "outgoing": "367"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q134456",
+        "subjectLabel": "Yukio Mishima",
+        "object": "http://www.wikidata.org/entity/Q11524677",
+        "objectLabel": "University of Tokyo Graduate School for Law and Politics",
+        "outgoing": "366"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q935",
+        "subjectLabel": "Isaac Newton",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "362"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q175130",
+        "subjectLabel": "Alfred Sisley",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "362"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q935",
+        "subjectLabel": "Isaac Newton",
+        "object": "http://www.wikidata.org/entity/Q332342",
+        "objectLabel": "Trinity College",
+        "outgoing": "362"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q935",
+        "subjectLabel": "Isaac Newton",
+        "object": "http://www.wikidata.org/entity/Q7744473",
+        "objectLabel": "The King's School, Grantham",
+        "outgoing": "362"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7724",
+        "subjectLabel": "August Strindberg",
+        "object": "http://www.wikidata.org/entity/Q185246",
+        "objectLabel": "Uppsala University",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9711",
+        "subjectLabel": "Honoré de Balzac",
+        "object": "http://www.wikidata.org/entity/Q209842",
+        "objectLabel": "University of Paris",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q319761",
+        "objectLabel": "Aberystwyth University",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q332342",
+        "objectLabel": "Trinity College",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36268",
+        "subjectLabel": "Brigitte Bardot",
+        "object": "http://www.wikidata.org/entity/Q463055",
+        "objectLabel": "Conservatoire de Paris",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9438",
+        "subjectLabel": "Thomas Aquinas",
+        "object": "http://www.wikidata.org/entity/Q691851",
+        "objectLabel": "University of Naples Federico II",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9711",
+        "subjectLabel": "Honoré de Balzac",
+        "object": "http://www.wikidata.org/entity/Q748307",
+        "objectLabel": "Lycée Charlemagne",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q1538148",
+        "objectLabel": "Gordonstoun",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q1795492",
+        "objectLabel": "Britannia Royal Naval College",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9438",
+        "subjectLabel": "Thomas Aquinas",
+        "object": "http://www.wikidata.org/entity/Q2845896",
+        "objectLabel": "University of Paris",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9711",
+        "subjectLabel": "Honoré de Balzac",
+        "object": "http://www.wikidata.org/entity/Q3064259",
+        "objectLabel": "Paris Law Faculty",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q36268",
+        "subjectLabel": "Brigitte Bardot",
+        "object": "http://www.wikidata.org/entity/Q3128334",
+        "objectLabel": "Cours Hattemer",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1033016",
+        "subjectLabel": "Halle Berry",
+        "object": "http://www.wikidata.org/entity/Q4879156",
+        "objectLabel": "Bedford High School",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q5088830",
+        "objectLabel": "Cheam School",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1033016",
+        "subjectLabel": "Halle Berry",
+        "object": "http://www.wikidata.org/entity/Q5197072",
+        "objectLabel": "Cuyahoga Community College",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q7373601",
+        "objectLabel": "Royal Air Force College Cranwell",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q14993395",
+        "objectLabel": "Hill House International Junior School",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q48814228",
+        "objectLabel": "Timbertop",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q43274",
+        "subjectLabel": "Charles III",
+        "object": "http://www.wikidata.org/entity/Q90866585",
+        "objectLabel": "Hill House School",
+        "outgoing": "361"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7241",
+        "subjectLabel": "Rabindranath Tagore",
+        "object": "http://www.wikidata.org/entity/Q193196",
+        "objectLabel": "University College London",
+        "outgoing": "360"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q239394",
+        "subjectLabel": "Édouard Vuillard",
+        "object": "http://www.wikidata.org/entity/Q273593",
+        "objectLabel": "Beaux-Arts de Paris",
+        "outgoing": "360"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q239394",
+        "subjectLabel": "Édouard Vuillard",
+        "object": "http://www.wikidata.org/entity/Q337480",
+        "objectLabel": "Académie Julian",
+        "outgoing": "360"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q239394",
+        "subjectLabel": "Édouard Vuillard",
+        "object": "http://www.wikidata.org/entity/Q926749",
+        "objectLabel": "Lycée Condorcet",
+        "outgoing": "360"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7241",
+        "subjectLabel": "Rabindranath Tagore",
+        "object": "http://www.wikidata.org/entity/Q2983685",
+        "objectLabel": "St. Xavier's Collegiate School",
+        "outgoing": "360"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7302",
+        "subjectLabel": "George Frideric Handel",
+        "object": "http://www.wikidata.org/entity/Q32120",
+        "objectLabel": "University of Halle-Wittenberg",
+        "outgoing": "359"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22670",
+        "subjectLabel": "Friedrich Schiller",
+        "object": "http://www.wikidata.org/entity/Q154561",
+        "objectLabel": "University of Jena",
+        "outgoing": "359"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q22670",
+        "subjectLabel": "Friedrich Schiller",
+        "object": "http://www.wikidata.org/entity/Q884150",
+        "objectLabel": "Karlsschule Stuttgart",
+        "outgoing": "359"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33760",
+        "subjectLabel": "Bertrand Russell",
+        "object": "http://www.wikidata.org/entity/Q35794",
+        "objectLabel": "University of Cambridge",
+        "outgoing": "358"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q33760",
+        "subjectLabel": "Bertrand Russell",
+        "object": "http://www.wikidata.org/entity/Q332342",
+        "objectLabel": "Trinity College",
+        "outgoing": "358"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q882",
+        "subjectLabel": "Charlie Chaplin",
+        "object": "http://www.wikidata.org/entity/Q4920058",
+        "objectLabel": "Black-Foxe Military Institute",
+        "outgoing": "358"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q882",
+        "subjectLabel": "Charlie Chaplin",
+        "object": "http://www.wikidata.org/entity/Q5192369",
+        "objectLabel": "Cuckoo Schools",
+        "outgoing": "358"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1001",
+        "subjectLabel": "Mahatma Gandhi",
+        "object": "http://www.wikidata.org/entity/Q193196",
+        "objectLabel": "University College London",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41406",
+        "subjectLabel": "Edvard Munch",
+        "object": "http://www.wikidata.org/entity/Q414052",
+        "objectLabel": "Academy of Fine Arts, Munich",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41406",
+        "subjectLabel": "Edvard Munch",
+        "object": "http://www.wikidata.org/entity/Q672095",
+        "objectLabel": "Oslo Cathedral School",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q34670",
+        "subjectLabel": "Albert Camus",
+        "object": "http://www.wikidata.org/entity/Q1190852",
+        "objectLabel": "Algiers 1 University",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1001",
+        "subjectLabel": "Mahatma Gandhi",
+        "object": "http://www.wikidata.org/entity/Q1233784",
+        "objectLabel": "Inner Temple",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q41406",
+        "subjectLabel": "Edvard Munch",
+        "object": "http://www.wikidata.org/entity/Q1772765",
+        "objectLabel": "Norwegian National Academy of Craft and Art Industry",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1001",
+        "subjectLabel": "Mahatma Gandhi",
+        "object": "http://www.wikidata.org/entity/Q4722851",
+        "objectLabel": "Alfred High School",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1001",
+        "subjectLabel": "Mahatma Gandhi",
+        "object": "http://www.wikidata.org/entity/Q100148173",
+        "objectLabel": "Samaldas Arts College",
+        "outgoing": "356"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1043",
+        "subjectLabel": "Carl Linnaeus",
+        "object": "http://www.wikidata.org/entity/Q185246",
+        "objectLabel": "Uppsala University",
+        "outgoing": "355"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1043",
+        "subjectLabel": "Carl Linnaeus",
+        "object": "http://www.wikidata.org/entity/Q218506",
+        "objectLabel": "Lund University",
+        "outgoing": "355"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1043",
+        "subjectLabel": "Carl Linnaeus",
+        "object": "http://www.wikidata.org/entity/Q1816221",
+        "objectLabel": "University of Harderwijk",
+        "outgoing": "355"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q19185",
+        "subjectLabel": "George Bernard Shaw",
+        "object": "http://www.wikidata.org/entity/Q523926",
+        "objectLabel": "Royal Academy of Dramatic Art",
+        "outgoing": "353"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q82445",
+        "subjectLabel": "Henri de Toulouse-Lautrec",
+        "object": "http://www.wikidata.org/entity/Q926749",
+        "objectLabel": "Lycée Condorcet",
+        "outgoing": "353"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q4235",
+        "subjectLabel": "Miley Cyrus",
+        "object": "http://www.wikidata.org/entity/Q55612493",
+        "objectLabel": "JMC Academy",
+        "outgoing": "353"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q194402",
+        "subjectLabel": "Joshua Reynolds",
+        "object": "http://www.wikidata.org/entity/Q5701694",
+        "objectLabel": "Hele's School",
+        "outgoing": "352"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q9439",
+        "subjectLabel": "Victoria",
+        "object": "http://www.wikidata.org/entity/Q8024265",
+        "objectLabel": "Windlesham House School",
+        "outgoing": "352"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q81447",
+        "subjectLabel": "Aldous Huxley",
+        "object": "http://www.wikidata.org/entity/Q192088",
+        "objectLabel": "Eton College",
+        "outgoing": "351"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q81447",
+        "subjectLabel": "Aldous Huxley",
+        "object": "http://www.wikidata.org/entity/Q805285",
+        "objectLabel": "Balliol College",
+        "outgoing": "351"
+    }
+]
