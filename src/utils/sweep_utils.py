@@ -270,20 +270,21 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
     return relation_results
 
 
-def read_sweep_results(sweep_path: str) -> dict:
-    sweep_results = {}
-
-    for relation_folder in os.listdir(sweep_path):
-        cur_sweep = f"{sweep_path}/{relation_folder}"
-        if "results_all.json" not in os.listdir(cur_sweep):
-            continue
-        with open(f"{cur_sweep}/results_all.json") as f:
-            res = json.load(f)["relations"]
-            if len(res) == 0:
-                continue
-            res = res[0]
-            sweep_results[res["relation_name"]] = res
-    return sweep_results
+def read_sweep_results(sweep_dir: str, results: dict = {}) -> dict:
+    for file in os.listdir(sweep_dir):
+        if os.path.isdir(f"{sweep_dir}/{file}"):
+            read_sweep_results(f"{sweep_dir}/{file}", results)
+        elif file.endswith(".json"):
+            with open(f"{sweep_dir}/{file}") as f:
+                res = json.load(f)
+                if isinstance(res, dict) and "relation_name" in res:
+                    if res["relation_name"] not in results:
+                        results[res["relation_name"]] = res
+                    else:
+                        results[res["relation_name"]]["trials"].extend(res["trials"])
+                else:
+                    continue
+    return results
 
 
 ####################### read and parse the sweep results #######################
