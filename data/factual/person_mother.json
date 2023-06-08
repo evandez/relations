@@ -1816,10 +1816,6 @@
             "object": "Agnes Keene"
         },
         {
-            "subject": "Horace",
-            "object": "http://www.wikidata.org/.well-known/genid/d29443387adb4ea2babd177c58552ca8"
-        },
-        {
             "subject": "William Makepeace Thackeray",
             "object": "Anne Becher"
         },
@@ -2396,10 +2392,6 @@
             "object": "Sara Meltzer"
         },
         {
-            "subject": "Plautus",
-            "object": "http://www.wikidata.org/.well-known/genid/a4359506d2f62aeb6f2b81d27b4d889d"
-        },
-        {
             "subject": "Albert, Prince Consort",
             "object": "Princess Louise of Saxe-Gotha-Altenburg"
         },
@@ -2434,10 +2426,6 @@
         {
             "subject": "Pearl S. Buck",
             "object": "Caroline Maude Stulting Sydenstricker"
-        },
-        {
-            "subject": "Lucretius",
-            "object": "http://www.wikidata.org/.well-known/genid/026bb6bd2ba0ccf8c0c358d3cb1e7ce1"
         },
         {
             "subject": "Germaine de Sta\u00ebl",
@@ -2888,10 +2876,6 @@
             "object": "Anastasia Codd"
         },
         {
-            "subject": "Cato the Elder",
-            "object": "http://www.wikidata.org/.well-known/genid/b28f394c04f2030f71e4381bc49bfb6f"
-        },
-        {
             "subject": "Peter the Great",
             "object": "Natalya Naryshkina"
         },
@@ -3234,10 +3218,6 @@
         {
             "subject": "Georg B\u00fcchner",
             "object": "Karoline Reuss"
-        },
-        {
-            "subject": "Sallust",
-            "object": "http://www.wikidata.org/.well-known/genid/be3197fd0079857dda00997baa0b65f4"
         },
         {
             "subject": "Philip IV of Spain",
@@ -3634,10 +3614,6 @@
         {
             "subject": "Daniel Nikolaus Chodowiecki",
             "object": "Henriette Ayrer"
-        },
-        {
-            "subject": "Cleopatra",
-            "object": "http://www.wikidata.org/.well-known/genid/58aa28af6290f47d9b6472764ab37ad9"
         },
         {
             "subject": "Hirohito",
