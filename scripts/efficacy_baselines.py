@@ -7,7 +7,7 @@ from typing import Literal
 from src import data, editors, functional, metrics, models, operators, sweeps
 from src.data import RelationSample
 from src.utils import dataclasses_utils, experiment_utils, logging_utils
-from src.utils.sweep_utils import parse_results, read_sweep_results
+from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 
 import torch
 from tqdm.auto import tqdm
@@ -44,7 +44,7 @@ from src.utils.sweep_utils import (
 
 def run_causality_baselines(
     model_name: Literal["gptj", "gpt2-xl", "llama-13b"] = "gptj",
-    sweep_results_dir: str = "results/sweep/",
+    sweep_results_dir: str = "results/sweep",
     save_dir: str = "results/efficacy_baselines/",
     device: str | None = None,
     batch_size: int = sweeps.DEFAULT_BATCH_SIZE,
@@ -71,14 +71,17 @@ def run_causality_baselines(
             logger.info("skipping %s", relation_name)
             continue
         logger.info("relation: %s", relation_name)
-        relation_results = parse_results(sweep_result)
+        relation_results = relation_from_dict(sweep_result)
         if len(relation_results.trials) < 3:
             logger.info(f"skipping {relation_name}, not enough trials")
             continue
         relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
         by_layer = relation_results.by_layer()
 
-        baseline_trial_results: list[EfficacyBaselineTrialResult] = []
+        efficacy_baseline_relation_result = EfficacyBaselineRelationResult(
+            relation_name=relation_name,
+            trials=[],
+        )
         for n_trial in range(len(relation_results.trials)):
             logger.info(f"trial: {n_trial+1}/{len(relation_results.trials)}")
             trial_results = relation_results.trials[n_trial]
@@ -225,7 +228,7 @@ def run_causality_baselines(
                         results=baseline_results,
                     )
                 )
-            baseline_trial_results.append(
+            efficacy_baseline_relation_result.trials.append(
                 EfficacyBaselineTrialResult(
                     train_samples=train_samples,
                     prompt_template=prompt_template,
@@ -233,15 +236,11 @@ def run_causality_baselines(
                 )
             )
 
-        efficacy_baseline_relation_result = EfficacyBaselineRelationResult(
-            relation_name=relation_name,
-            trials=baseline_trial_results,
-        )
-        experiment_utils.save_results_file(
-            results_dir=save_dir,
-            name=relation_results.relation_name,
-            results=efficacy_baseline_relation_result,
-        )
+            experiment_utils.save_results_file(
+                results_dir=save_dir,
+                name=relation_results.relation_name,
+                results=efficacy_baseline_relation_result,
+            )
 
         all_results.append(efficacy_baseline_relation_result)
 

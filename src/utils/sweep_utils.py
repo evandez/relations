@@ -204,7 +204,7 @@ class EfficacyBaselineResults(DataClassJsonMixin):
 
 
 ####################### read and parse the sweep results #######################
-def parse_results(sweep_result: dict) -> SweepRelationResults:
+def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
     relation_results = SweepRelationResults(
         relation_name=sweep_result["relation_name"], trials=[]
     )
@@ -270,20 +270,27 @@ def parse_results(sweep_result: dict) -> SweepRelationResults:
     return relation_results
 
 
-def read_sweep_results(sweep_dir: str, results: dict = {}) -> dict:
-    for file in os.listdir(sweep_dir):
-        if os.path.isdir(f"{sweep_dir}/{file}"):
-            read_sweep_results(f"{sweep_dir}/{file}", results)
-        elif file.endswith(".json"):
-            with open(f"{sweep_dir}/{file}") as f:
+def read_sweep_results(
+    sweep_dir: str, results: dict | None = None, depth: int = 0
+) -> dict:
+    logger.debug(f"{'    '*depth}--> {sweep_dir}")
+    if results is None:
+        results = {}
+    if os.path.isdir(sweep_dir):
+        for file in os.listdir(sweep_dir):
+            read_sweep_results(f"{sweep_dir}/{file}", results, depth + 1)
+    elif sweep_dir.endswith(".json"):
+        with open(sweep_dir) as f:
+            try:
                 res = json.load(f)
                 if isinstance(res, dict) and "relation_name" in res:
                     if res["relation_name"] not in results:
                         results[res["relation_name"]] = res
                     else:
                         results[res["relation_name"]]["trials"].extend(res["trials"])
-                else:
-                    continue
+            except Exception as e:
+                logger.debug(f"ERROR reading {sweep_dir}: {e}")
+                pass
     return results
 
 
