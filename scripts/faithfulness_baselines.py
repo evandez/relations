@@ -262,8 +262,12 @@ def main(args: argparse.Namespace) -> None:
                 if filter_not_in_train_samples(sample, train_samples)
             ]
 
-            train_relation = relation.set(samples=train_samples)
-            test_relation = relation.set(samples=test_samples)
+            train_relation = relation.set(
+                samples=train_samples, prompt_templates=[prompt_template]
+            )
+            test_relation = relation.set(
+                samples=test_samples, prompt_templates=[prompt_template]
+            )
 
             logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")
 
