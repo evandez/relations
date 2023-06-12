@@ -271,19 +271,29 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
 
 
 def read_sweep_results(
-    sweep_dir: str, results: dict | None = None, depth: int = 0
+    sweep_dir: str,
+    results: dict | None = None,
+    depth: int = 0,
+    filter_relations: list[str] | None = None,
 ) -> dict:
     logger.debug(f"{'    '*depth}--> {sweep_dir}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
         for file in os.listdir(sweep_dir):
-            read_sweep_results(f"{sweep_dir}/{file}", results, depth + 1)
+            read_sweep_results(
+                f"{sweep_dir}/{file}", results, depth + 1, filter_relations
+            )
     elif sweep_dir.endswith(".json"):
         with open(sweep_dir) as f:
             try:
                 res = json.load(f)
                 if isinstance(res, dict) and "relation_name" in res:
+                    if (
+                        filter_relations is not None
+                        and res["relation_name"] not in filter_relations
+                    ):
+                        return results
                     if res["relation_name"] not in results:
                         results[res["relation_name"]] = res
                     else:
