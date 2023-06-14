@@ -204,6 +204,9 @@ class JacobianIclEstimator(LinearRelationEstimator):
         ).estimate_for_subject(train.subject, prompt_template_icl)
 
 
+from src import lens
+
+
 @dataclass(frozen=True)
 class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: Layer
@@ -247,9 +250,23 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 inputs=inputs,
             )
             approxes.append(approx)
+            z_proj = approx.weight @ approx.h
+            o_pred = lens.logit_lens(mt=self.mt, h=z_proj, get_proba=True, k=3)
+            print(
+                f"{sample} | z_norm={approx.z.norm().item()} | z_proj={z_proj.norm().item()} || {o_pred=}"
+            )
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+
+        print()
+        print("projection with mean weight")
+        for sample, approx in zip(samples, approxes):
+            z_proj = weight @ approx.h
+            o_pred = lens.logit_lens(mt=self.mt, h=z_proj, get_proba=True, k=3)
+            print(
+                f"{sample} | z_norm={approx.z.norm().item()} | z_proj={z_proj.norm().item()} || {o_pred=}"
+            )
 
         # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
         # problem that the final prompt has N? Probably not, but should test.
@@ -271,7 +288,10 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             z_layer=approxes[0].z_layer,
             prompt_template=prompt_template_icl,
             beta=self.beta,
-            metadata={"Jh": [approx.metadata["Jh"].squeeze() for approx in approxes]},
+            metadata={
+                "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
+                "approxes": approxes,
+            },
         )
 
         return operator
@@ -404,7 +424,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None
-    mode: Literal["icl", "zs"] = "zs"
+    mode: Literal["icl", "zs"] = "icl"
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         _check_nonempty(
@@ -473,6 +493,8 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
         if self.z_layer is None:
             z_layer = models.determine_layers(self.mt)[-1]
+        else:
+            z_layer = self.z_layer
 
         if self.mode == "icl":
             prompt_template = functional.make_prompt(

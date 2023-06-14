@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 def interpret_logits(
     mt: ModelAndTokenizer,
     logits: torch.Tensor,
-    top_k: int = 10,
+    k: int = 10,
     get_proba: bool = False,
 ) -> list[tuple[str, float]]:
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
-    token_ids = logits.topk(dim=-1, k=top_k).indices.squeeze().tolist()
-    logit_values = logits.topk(dim=-1, k=top_k).values.squeeze().tolist()
+    token_ids = logits.topk(dim=-1, k=k).indices.squeeze().tolist()
+    logit_values = logits.topk(dim=-1, k=k).values.squeeze().tolist()
     return [
         (mt.tokenizer.decode(t), round(v, 3)) for t, v in zip(token_ids, logit_values)
     ]
@@ -31,10 +31,11 @@ def logit_lens(
     h: torch.Tensor,
     interested_tokens: list[int] = [],
     get_proba: bool = False,
+    k: int = 10,
 ) -> tuple[list[tuple[str, float]], dict]:
     logits = mt.lm_head(h)
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
-    candidates = interpret_logits(mt, logits)
+    candidates = interpret_logits(mt, logits, k=k)
     interested_logits = {
         t: (logits[t].item(), mt.tokenizer.decode(t)) for t in interested_tokens
     }
