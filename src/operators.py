@@ -252,21 +252,9 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             approxes.append(approx)
             z_proj = approx.weight @ approx.h
             o_pred = lens.logit_lens(mt=self.mt, h=z_proj, get_proba=True, k=3)
-            print(
-                f"{sample} | z_norm={approx.z.norm().item()} | z_proj={z_proj.norm().item()} || {o_pred=}"
-            )
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
-
-        print()
-        print("projection with mean weight")
-        for sample, approx in zip(samples, approxes):
-            z_proj = weight @ approx.h
-            o_pred = lens.logit_lens(mt=self.mt, h=z_proj, get_proba=True, k=3)
-            print(
-                f"{sample} | z_norm={approx.z.norm().item()} | z_proj={z_proj.norm().item()} || {o_pred=}"
-            )
 
         # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
         # problem that the final prompt has N? Probably not, but should test.
@@ -485,7 +473,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
             h_mean = torch.stack(H, dim=0).mean(dim=0)
             scaling_factor = h_mean.norm() / offset.norm()
-            scaling_factor /= 2
+            # scaling_factor /= 2
         else:
             scaling_factor = self.scaling_factor
 
