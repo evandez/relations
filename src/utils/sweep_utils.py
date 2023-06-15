@@ -92,12 +92,28 @@ class SweepRelationResults(DataClassJsonMixin):
     relation_name: str
     trials: list[SweepTrialResults]
 
-    def by_layer(self, k: int = 1) -> dict[Layer, SweepLayerSummary]:
+    def by_layer(
+        self, k: int = 1, beta: float | None = None
+    ) -> dict[Layer, SweepLayerSummary]:
         """Return best layer and average beta for that layer."""
         results_by_layer = defaultdict(list)
         for trial in self.trials:
             for layer in trial.layers:
-                best_beta = layer.result.best_beta()
+                if beta is None:
+                    best_beta = layer.result.best_beta()
+                else:
+                    beta_options = [
+                        beta_result.beta for beta_result in layer.result.betas
+                    ]
+                    assert (
+                        beta in beta_options
+                    ), f"beta={beta} not in beta options {beta_options}"
+                    best_beta = [
+                        beta_result
+                        for beta_result in layer.result.betas
+                        if beta_result.beta == beta
+                    ][0]
+                    best_beta
                 best_rank = layer.result.best_rank()
                 results_by_layer[layer.layer].append(
                     (
@@ -137,17 +153,21 @@ class SweepRelationResults(DataClassJsonMixin):
             for layer in recalls_by_layer
         }
 
-    def best_by_faithfulness(self, k: int = 1) -> SweepLayerSummary:
+    def best_by_faithfulness(
+        self, k: int = 1, beta: float | None = None
+    ) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
-        results_by_layer = self.by_layer(k=k)
+        results_by_layer = self.by_layer(k=k, beta=beta)
         best_layer = max(
             results_by_layer, key=lambda x: results_by_layer[x].recall.mean
         )
         return results_by_layer[best_layer]
 
-    def best_by_efficacy(self, k: int = 1) -> SweepLayerSummary:
+    def best_by_efficacy(
+        self, k: int = 1, beta: float | None = None
+    ) -> SweepLayerSummary:
         """Return the best layer and average beta for that layer."""
-        results_by_layer = self.by_layer(k=k)
+        results_by_layer = self.by_layer(k=k, beta=beta)
         best_layer = max(
             results_by_layer, key=lambda x: results_by_layer[x].efficacy.mean
         )
@@ -271,35 +291,25 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
 
 
 def read_sweep_results(
-    sweep_dir: str,
-    results: dict | None = None,
-    depth: int = 0,
-    filter_relations: list[str] | None = None,
+    sweep_dir: str, results: dict | None = None, depth: int = 0
 ) -> dict:
-    logger.debug(f"{'    '*depth}--> {sweep_dir}")
+    print(f"{'    '*depth}--> {sweep_dir}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
         for file in os.listdir(sweep_dir):
-            read_sweep_results(
-                f"{sweep_dir}/{file}", results, depth + 1, filter_relations
-            )
+            read_sweep_results(f"{sweep_dir}/{file}", results, depth + 1)
     elif sweep_dir.endswith(".json"):
         with open(sweep_dir) as f:
             try:
                 res = json.load(f)
                 if isinstance(res, dict) and "relation_name" in res:
-                    if (
-                        filter_relations is not None
-                        and res["relation_name"] not in filter_relations
-                    ):
-                        return results
                     if res["relation_name"] not in results:
                         results[res["relation_name"]] = res
                     else:
                         results[res["relation_name"]]["trials"].extend(res["trials"])
             except Exception as e:
-                logger.debug(f"ERROR reading {sweep_dir}: {e}")
+                print(f"ERROR reading {sweep_dir}: {e}")
                 pass
     return results
 

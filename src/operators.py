@@ -98,7 +98,8 @@ class LinearRelationOperator(RelationOperator):
                 bias = self.beta * bias
             z = z + bias
 
-        logits = self.mt.lm_head(z)
+        lm_head = self.mt.lm_head if not self.z_layer == "ln_f" else self.mt.lm_head[:1]
+        logits = lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
 
         topk = dist.topk(dim=-1, k=k)
@@ -250,11 +251,34 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 inputs=inputs,
             )
             approxes.append(approx)
-            z_proj = approx.weight @ approx.h
-            o_pred = lens.logit_lens(mt=self.mt, h=z_proj, get_proba=True, k=3)
+            # z_proj = approx.weight @ approx.h
+            # o_pred = lens.logit_lens(
+            #     mt=self.mt,
+            #     h=z_proj,
+            #     get_proba=True,
+            #     k=3,
+            #     after_layer_norm=self.z_layer == "ln_f",
+            # )
+            # print(
+            #     f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
+            # )
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+
+        # print("projection with mean weights")
+        # for sample, approx in zip(samples, approxes):
+        #     z_proj = weight @ approx.h
+        #     o_pred = lens.logit_lens(
+        #         mt=self.mt,
+        #         h=z_proj,
+        #         get_proba=True,
+        #         k=3,
+        #         after_layer_norm=self.z_layer == "ln_f",
+        #     )
+        #     print(
+        #         f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
+        #     )
 
         # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
         # problem that the final prompt has N? Probably not, but should test.
@@ -473,14 +497,14 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
             h_mean = torch.stack(H, dim=0).mean(dim=0)
             scaling_factor = h_mean.norm() / offset.norm()
-            # scaling_factor /= 2
+            scaling_factor /= 2
         else:
             scaling_factor = self.scaling_factor
 
         offset = offset * scaling_factor
 
         if self.z_layer is None:
-            z_layer = models.determine_layers(self.mt)[-1]
+            z_layer: Layer = models.determine_layers(self.mt)[-1]
         else:
             z_layer = self.z_layer
 

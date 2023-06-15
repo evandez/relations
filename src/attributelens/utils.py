@@ -26,10 +26,12 @@ def interpret_logits(
 def logit_lens(
     mt: ModelAndTokenizer,
     h: torch.Tensor,
+    after_layer_norm: bool = False,  # will not apply final layer norm if set to True
     interested_tokens: list = [],
     get_proba: bool = False,
 ) -> tuple[list[tuple[str, float]], dict[int, tuple[float, str]]]:
-    logits = mt.lm_head(h)
+    lm_head = mt.lm_head if not after_layer_norm else mt.lm_head[1:]
+    logits = lm_head(h)
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     candidates = interpret_logits(mt, logits)
     interested_logits = {
@@ -95,7 +97,7 @@ def get_info_for_plotting(
         "confidence_matrix": confidence_matrix,
         "token_matrix": token_matrix,
         "top_k": distribution_matrix_top_k,
-        "nextwords": att_info["nextwords"]
+        "nextwords": att_info["nextwords"],
     }
 
 
