@@ -472,7 +472,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
         offset = offset * scaling_factor
 
         if self.z_layer is None:
-            z_layer = models.determine_layers(self.mt)[-1]
+            z_layer: Layer = models.determine_layers(self.mt)[-1]
 
         if self.mode == "icl":
             prompt_template = functional.make_prompt(
