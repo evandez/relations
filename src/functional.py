@@ -62,6 +62,7 @@ def order_1_approx(
     prompt: str,
     h_layer: Layer,
     h_index: int,
+    h: torch.Tensor | None = None,
     z_layer: Layer | None = None,
     z_index: int | None = None,
     inputs: ModelInput | None = None,
@@ -76,6 +77,7 @@ def order_1_approx(
         prompt: Prompt to approximate.
         h_layer: Layer to take h from.
         h_index: Token index for h.
+        h: will calculate approximation based on this hidden state, if provided.
         z_layer: Layer to take z from.
         z_index: Token index for z.
         inputs: Precomputed tokenized inputs, recomputed if not set.
@@ -104,7 +106,22 @@ def order_1_approx(
 
     # Precompute initial h and z.
     [h_layer_name, z_layer_name] = models.determine_layer_paths(mt, [h_layer, z_layer])
-    with baukit.TraceDict(mt.model, (h_layer_name, z_layer_name)) as ret:
+
+    edit_output: function | None = None
+    if h is not None:
+
+        def edit_output(output: tuple, layer: str) -> tuple:
+            if layer != h_layer_name:
+                return output
+            untuple(output)[:, _h_index] = h
+            return output
+
+    else:
+        edit_output = None
+
+    with baukit.TraceDict(
+        mt.model, layers=(h_layer_name, z_layer_name), edit_output=edit_output
+    ) as ret:
         outputs = mt.model(
             input_ids=input_ids,
             use_cache=use_cache,
@@ -132,6 +149,7 @@ def order_1_approx(
             )
         return untuple(ret[z_layer_name].output)[0, -1]
 
+    assert h is not None
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
     approx = Order1ApproxOutput(
