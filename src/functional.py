@@ -729,8 +729,8 @@ def compute_hs_and_zs(
     """Precompute h for every subject at every layer."""
     if h_layer is None and z_layer is None:
         raise ValueError("Must specify at least one of h_layer and z_layer.")
-    if z_layer == -1:
-        z_layer = models.determine_layers(mt)[z_layer]
+    if z_layer == -1 or z_layer is None:
+        z_layer = models.determine_layers(mt)[-1]
 
     prompts = [
         make_prompt(

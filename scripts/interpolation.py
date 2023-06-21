@@ -54,7 +54,7 @@ def main(
         .filter(relation_names=[relation_name])[0]
         .set(prompt_templates=[" {}:"])
     )
-    train, test = relation.split(5)
+    train, test = relation.split(n_training)
     icl_prompt = functional.make_prompt(
         prompt_template=train.prompt_templates[0],
         subject="{}",

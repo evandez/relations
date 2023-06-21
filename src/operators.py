@@ -1,3 +1,4 @@
+import itertools
 import logging
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
@@ -248,6 +249,154 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 h_index=h_index,
                 z_layer=self.z_layer,
                 z_index=-1,
+                inputs=inputs,
+            )
+            approxes.append(approx)
+            # z_proj = approx.weight @ approx.h
+            # o_pred = lens.logit_lens(
+            #     mt=self.mt,
+            #     h=z_proj,
+            #     get_proba=True,
+            #     k=3,
+            #     after_layer_norm=self.z_layer == "ln_f",
+            # )
+            # print(
+            #     f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
+            # )
+
+        weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
+        bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+
+        # print("projection with mean weights")
+        # for sample, approx in zip(samples, approxes):
+        #     z_proj = weight @ approx.h
+        #     o_pred = lens.logit_lens(
+        #         mt=self.mt,
+        #         h=z_proj,
+        #         get_proba=True,
+        #         k=3,
+        #         after_layer_norm=self.z_layer == "ln_f",
+        #     )
+        #     print(
+        #         f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
+        #     )
+
+        # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
+        # problem that the final prompt has N? Probably not, but should test.
+        prompt_template_icl = functional.make_prompt(
+            mt=self.mt,
+            prompt_template=prompt_template,
+            examples=samples,
+            subject="{}",
+        )
+
+        if self.rank is not None:
+            weight = functional.low_rank_approx(matrix=weight, rank=self.rank)
+
+        operator = LinearRelationOperator(
+            mt=self.mt,
+            weight=weight,
+            bias=bias,
+            h_layer=self.h_layer,
+            z_layer=approxes[0].z_layer,
+            prompt_template=prompt_template_icl,
+            beta=self.beta,
+            metadata={
+                "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
+                "approxes": approxes,
+            },
+        )
+
+        return operator
+
+
+@dataclass(frozen=True)
+class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
+    h_layer: Layer
+    z_layer: Layer | None = None
+    beta: float | None = None
+    rank: int | None = None  # If None, don't do low rank approximation.
+    interpolate_on: int = 2  # number of examples to interpolate on to get imaginary h
+    n_trials: int = 5  # (maximum) number of trials to average over
+
+    assert (
+        interpolate_on >= 2
+    ), """need at least 2 examples to get imaginary latent. 
+    Call JacobianIclMeanEstimator to calculate on real h instead"""
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
+
+        samples = relation.samples
+        n_icl = len(samples) - self.interpolate_on
+        if n_icl < 3:
+            logger.warning(
+                f"Number of free examples is {n_icl}. It is recommended to have at least 3."
+            )
+        prompt_template = relation.prompt_templates[0]
+
+        approxes = []
+        candidate_combinations = list(
+            itertools.combinations(samples, self.interpolate_on)
+        )
+        for interpolation_candidates in candidate_combinations[
+            : min(self.n_trials, len(candidate_combinations))
+        ]:
+            logger.debug(
+                f"interpolation candidates: {', '.join([candidate.__str__() for candidate in interpolation_candidates])}"
+            )
+            # use all other examples as few-shot
+            icl_examples = list(set(samples) - set(interpolation_candidates))
+
+            prompt = functional.make_prompt(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=icl_examples,
+            )
+            logger.debug("estimating J for prompt:\n" + prompt)
+
+            # use the first subject to get h_index
+            s1 = interpolation_candidates[0].subject
+            h_index, inputs = functional.find_subject_token_index(
+                mt=self.mt,
+                prompt=prompt.format(s1),
+                subject=s1,
+            )
+            logger.debug(f"note that subject={s1}, h_index={h_index}")
+
+            candidate_hs = functional.compute_hs_and_zs(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subjects=[candidate.subject for candidate in interpolation_candidates],
+                h_layer=self.h_layer,
+                z_layer=self.z_layer,
+                examples=icl_examples,
+            ).h_by_subj
+
+            for subj, h in candidate_hs.items():
+                logger.debug(f"{subj=} | h_norm={h.norm().item()}")
+            h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
+            h_vocab = lens.logit_lens(
+                mt=self.mt,
+                h=h,
+                get_proba=False,
+                k=3,
+                after_layer_norm=self.h_layer == "ln_f",
+            )
+            logger.debug(f"mean_h_norm={h.norm().item()} | {h_vocab=}")
+
+            approx = functional.order_1_approx(
+                mt=self.mt,
+                prompt=prompt.format(s1),
+                h_layer=self.h_layer,
+                h_index=h_index,
+                z_layer=self.z_layer,
+                z_index=-1,
+                h=h,
                 inputs=inputs,
             )
             approxes.append(approx)
