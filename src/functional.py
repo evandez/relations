@@ -749,8 +749,9 @@ def compute_hs_and_zs(
 
     z_by_subj = {}
     h_by_subj = {}
-    h_layers = [h_layer] if isinstance(h_layer, int) else h_layer
-    z_layers = [z_layer] if isinstance(z_layer, int) else z_layer
+
+    h_layers = [h_layer] if (isinstance(h_layer, int) or h_layer == "emb") else h_layer
+    z_layers = [z_layer] if (isinstance(z_layer, int) or z_layer == "ln_f") else z_layer
 
     layer_idx_to_name = {
         l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
@@ -780,7 +781,7 @@ def compute_hs_and_zs(
                     prompt, subject, offset_mapping=offset_mapping[abs_index]
                 )
                 h_index -= 1
-                if isinstance(h_layer, int):
+                if isinstance(h_layer, int) or h_layer == "emb":
                     h_by_subj[subject] = untuple(
                         traces[layer_idx_to_name[h_layer]].output
                     )[batch_index, h_index]
