@@ -145,8 +145,15 @@ def sweep(
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
-                estimator = operators.JacobianIclMeanEstimator(
-                    mt=mt, h_layer=h_layer, **kwargs
+                # estimator = operators.JacobianIclMeanEstimator(
+                #     mt=mt, h_layer=h_layer, **kwargs
+                # )
+                estimator = operators.JacobianIclMeanEstimator_Imaginary(
+                    mt=mt,
+                    h_layer=h_layer,
+                    interpolate_on=5,  # interpolate on 5 real subjects
+                    n_trials=len(train_samples),
+                    **kwargs,
                 )
 
                 operator = estimator(

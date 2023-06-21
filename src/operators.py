@@ -303,7 +303,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             beta=self.beta,
             metadata={
                 "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
-                "approxes": approxes,
+                # "approxes": approxes,
             },
         )
 
@@ -380,14 +380,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
             for subj, h in candidate_hs.items():
                 logger.debug(f"{subj=} | h_norm={h.norm().item()}")
             h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
-            h_vocab = lens.logit_lens(
-                mt=self.mt,
-                h=h,
-                get_proba=False,
-                k=3,
-                after_layer_norm=self.h_layer == "ln_f",
-            )
-            logger.debug(f"mean_h_norm={h.norm().item()} | {h_vocab=}")
+            logger.debug(f"mean_h_norm={h.norm().item()}")
 
             approx = functional.order_1_approx(
                 mt=self.mt,
@@ -400,37 +393,10 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 inputs=inputs,
             )
             approxes.append(approx)
-            # z_proj = approx.weight @ approx.h
-            # o_pred = lens.logit_lens(
-            #     mt=self.mt,
-            #     h=z_proj,
-            #     get_proba=True,
-            #     k=3,
-            #     after_layer_norm=self.z_layer == "ln_f",
-            # )
-            # print(
-            #     f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
-            # )
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
 
-        # print("projection with mean weights")
-        # for sample, approx in zip(samples, approxes):
-        #     z_proj = weight @ approx.h
-        #     o_pred = lens.logit_lens(
-        #         mt=self.mt,
-        #         h=z_proj,
-        #         get_proba=True,
-        #         k=3,
-        #         after_layer_norm=self.z_layer == "ln_f",
-        #     )
-        #     print(
-        #         f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
-        #     )
-
-        # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
-        # problem that the final prompt has N? Probably not, but should test.
         prompt_template_icl = functional.make_prompt(
             mt=self.mt,
             prompt_template=prompt_template,
@@ -451,7 +417,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
             beta=self.beta,
             metadata={
                 "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
-                "approxes": approxes,
+                # "approxes": approxes,
             },
         )
 
