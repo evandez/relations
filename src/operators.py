@@ -252,34 +252,9 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
                 inputs=inputs,
             )
             approxes.append(approx)
-            # z_proj = approx.weight @ approx.h
-            # o_pred = lens.logit_lens(
-            #     mt=self.mt,
-            #     h=z_proj,
-            #     get_proba=True,
-            #     k=3,
-            #     after_layer_norm=self.z_layer == "ln_f",
-            # )
-            # print(
-            #     f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
-            # )
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
-
-        # print("projection with mean weights")
-        # for sample, approx in zip(samples, approxes):
-        #     z_proj = weight @ approx.h
-        #     o_pred = lens.logit_lens(
-        #         mt=self.mt,
-        #         h=z_proj,
-        #         get_proba=True,
-        #         k=3,
-        #         after_layer_norm=self.z_layer == "ln_f",
-        #     )
-        #     print(
-        #         f"{sample=} | z_proj={z_proj.norm().item()} | bias_norm={approx.bias.norm().item()} | {o_pred=}"
-        #     )
 
         # TODO(evan): J was trained on with N - 1 ICL examples. Is it a
         # problem that the final prompt has N? Probably not, but should test.
@@ -316,8 +291,9 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
     z_layer: Layer | None = None
     beta: float | None = None
     rank: int | None = None  # If None, don't do low rank approximation.
-    interpolate_on: int = 2  # number of examples to interpolate on to get imaginary h
+    interpolate_on: int = 2  # number of examples to average on to get the imaginary h
     n_trials: int = 5  # (maximum) number of trials to average over
+    average_on_sphere: bool = True  # will interpolate to make all latent vectors have the same norm (hence contribution?)
 
     assert (
         interpolate_on >= 2
@@ -377,10 +353,15 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 examples=icl_examples,
             ).h_by_subj
 
+            mean_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
+            logger.debug(f"mean_h_norm={mean_h.norm().item()}")
+            for subj in candidate_hs.keys():
+                candidate_hs[subj] = (
+                    candidate_hs[subj] * mean_h.norm()
+                ) / candidate_hs[subj].norm()
+
             for subj, h in candidate_hs.items():
                 logger.debug(f"{subj=} | h_norm={h.norm().item()}")
-            h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
-            logger.debug(f"mean_h_norm={h.norm().item()}")
 
             approx = functional.order_1_approx(
                 mt=self.mt,
