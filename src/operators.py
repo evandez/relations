@@ -1,5 +1,6 @@
 import itertools
 import logging
+import random
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
@@ -318,6 +319,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
         candidate_combinations = list(
             itertools.combinations(samples, self.interpolate_on)
         )
+        random.shuffle(candidate_combinations)
         for interpolation_candidates in candidate_combinations[
             : min(self.n_trials, len(candidate_combinations))
         ]:
@@ -353,15 +355,19 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 examples=icl_examples,
             ).h_by_subj
 
-            mean_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
-            logger.debug(f"mean_h_norm={mean_h.norm().item()}")
-            for subj in candidate_hs.keys():
-                candidate_hs[subj] = (
-                    candidate_hs[subj] * mean_h.norm()
-                ) / candidate_hs[subj].norm()
+            if self.average_on_sphere:
+                mean_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
+                logger.debug(f"mean_h_norm={mean_h.norm().item()}")
+                for subj in candidate_hs.keys():
+                    candidate_hs[subj] = (
+                        candidate_hs[subj] * mean_h.norm()
+                    ) / candidate_hs[subj].norm()
 
             for subj, h in candidate_hs.items():
                 logger.debug(f"{subj=} | h_norm={h.norm().item()}")
+
+            mythical_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
+            logger.debug(f"mythical_h_norm={mythical_h.norm().item()}")
 
             approx = functional.order_1_approx(
                 mt=self.mt,
@@ -370,7 +376,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 h_index=h_index,
                 z_layer=self.z_layer,
                 z_index=-1,
-                h=h,
+                h=mythical_h,
                 inputs=inputs,
             )
             approxes.append(approx)
