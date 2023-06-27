@@ -48,9 +48,9 @@ def sweep(
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
     if betas is None:
-        betas = torch.linspace(0, 1, steps=21).tolist()
+        betas = torch.linspace(0, 5, steps=21).tolist()
     if ranks is None:
-        ranks = range(0, 250, 10)
+        ranks = range(0, 320, 8)
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -145,18 +145,19 @@ def sweep(
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
-                # estimator = operators.JacobianIclMeanEstimator(
-                #     mt=mt, h_layer=h_layer, **kwargs
-                # )
-                estimator = operators.JacobianIclMeanEstimator_Imaginary(
-                    mt=mt,
-                    h_layer=h_layer,
-                    ##############################################################
-                    interpolate_on=4,  # interpolate on 5 real subjects
-                    ##############################################################
-                    n_trials=len(train_samples),
-                    **kwargs,
+                estimator = operators.JacobianIclMeanEstimator(
+                    mt=mt, h_layer=h_layer, **kwargs
                 )
+                # estimator = operators.JacobianIclMeanEstimator_Imaginary(
+                #     mt=mt,
+                #     h_layer=h_layer,
+                #     ##############################################################
+                #     interpolate_on=4,  # interpolate on 5 real subjects
+                #     magnitude_h=65.0,  # magnitude of h)
+                #     ##############################################################
+                #     n_trials=len(train_samples),
+                #     **kwargs,
+                # )
 
                 operator = estimator(
                     relation.set(
@@ -164,15 +165,15 @@ def sweep(
                         prompt_templates=[prompt_template],
                     )
                 )
-                assert operator.bias is not None
-                bias = operator.bias.clone()
+                assert operator.weight is not None
+                weight = operator.weight.clone()
 
                 test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
 
                 # Try all betas and record recall.
                 results_by_beta = []
                 for beta in betas:
-                    operator.bias[:] = bias * beta
+                    operator.weight[:] = weight * beta
 
                     pred_objects = []
                     for subj, h in zip(test_subjects, test_hs):

@@ -97,7 +97,7 @@ class LinearRelationOperator(RelationOperator):
         if self.bias is not None:
             bias = self.bias
             if self.beta is not None:
-                bias = self.beta * bias
+                z = z * self.beta  # scaling the contribution of Jh with beta
             z = z + bias
 
         lm_head = self.mt.lm_head if not self.z_layer == "ln_f" else self.mt.lm_head[:1]
@@ -295,7 +295,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
     interpolate_on: int = 2  # number of examples to average on to get the imaginary h
     n_trials: int = 5  # (maximum) number of trials to average over
     average_on_sphere: bool = True  # will interpolate to make all latent vectors have the same norm (hence contribution?)
-
+    magnitude_h: float | None = None  # ||h_myth||, if average_on_sphere is True. Shouldn't matter much, since `o` should be insensitive to `||h||` anyways
     assert (
         interpolate_on >= 2
     ), """need at least 2 examples to get imaginary latent. 
@@ -344,7 +344,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 prompt=prompt.format(s1),
                 subject=s1,
             )
-            logger.debug(f"note that subject={s1}, h_index={h_index}")
+            logger.info(f"note that subject={s1}, h_index={h_index}")
 
             candidate_hs = functional.compute_hs_and_zs(
                 mt=self.mt,
@@ -356,12 +356,19 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
             ).h_by_subj
 
             if self.average_on_sphere:
-                mean_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
-                logger.debug(f"mean_h_norm={mean_h.norm().item()}")
+                if self.magnitude_h is None:
+                    l2_norm = (
+                        torch.stack([h for h in candidate_hs.values()])
+                        .mean(dim=0)
+                        .norm()
+                    )
+                else:
+                    l2_norm = self.magnitude_h
+                logger.info(f"{l2_norm=:.3f}")
                 for subj in candidate_hs.keys():
-                    candidate_hs[subj] = (
-                        candidate_hs[subj] * mean_h.norm()
-                    ) / candidate_hs[subj].norm()
+                    candidate_hs[subj] = (candidate_hs[subj] * l2_norm) / candidate_hs[
+                        subj
+                    ].norm()
 
             for subj, h in candidate_hs.items():
                 logger.debug(f"{subj=} | h_norm={h.norm().item()}")
@@ -380,6 +387,7 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
                 inputs=inputs,
             )
             approxes.append(approx)
+            logger.debug("----------------------------------")
 
         weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
         bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)

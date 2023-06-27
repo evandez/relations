@@ -753,6 +753,8 @@ def compute_hs_and_zs(
     h_layers = [h_layer] if (isinstance(h_layer, int) or h_layer == "emb") else h_layer
     z_layers = [z_layer] if (isinstance(z_layer, int) or z_layer == "ln_f") else z_layer
 
+    assert isinstance(h_layers, list)
+    assert isinstance(z_layers, list)
     layer_idx_to_name = {
         l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
     }
