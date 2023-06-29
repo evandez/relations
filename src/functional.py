@@ -4,12 +4,13 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Literal, NamedTuple, Sequence, overload
 
-import baukit
-import torch
-from dataclasses_json import DataClassJsonMixin
 from src import data, models
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
+
+import baukit
+import torch
+from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -61,6 +62,7 @@ def order_1_approx(
     prompt: str,
     h_layer: Layer,
     h_index: int,
+    h: torch.Tensor | None = None,
     z_layer: Layer | None = None,
     z_index: int | None = None,
     inputs: ModelInput | None = None,
@@ -75,6 +77,7 @@ def order_1_approx(
         prompt: Prompt to approximate.
         h_layer: Layer to take h from.
         h_index: Token index for h.
+        h: will calculate approximation based on this hidden state, if provided.
         z_layer: Layer to take z from.
         z_index: Token index for z.
         inputs: Precomputed tokenized inputs, recomputed if not set.
@@ -103,7 +106,22 @@ def order_1_approx(
 
     # Precompute initial h and z.
     [h_layer_name, z_layer_name] = models.determine_layer_paths(mt, [h_layer, z_layer])
-    with baukit.TraceDict(mt.model, (h_layer_name, z_layer_name)) as ret:
+
+    edit_output: function | None = None
+    if h is not None:
+
+        def edit_output(output: tuple, layer: str) -> tuple:
+            if layer != h_layer_name:
+                return output
+            untuple(output)[:, _h_index] = h
+            return output
+
+    else:
+        edit_output = None
+
+    with baukit.TraceDict(
+        mt.model, layers=(h_layer_name, z_layer_name), edit_output=edit_output
+    ) as ret:
         outputs = mt.model(
             input_ids=input_ids,
             use_cache=use_cache,
@@ -131,6 +149,7 @@ def order_1_approx(
             )
         return untuple(ret[z_layer_name].output)[0, -1]
 
+    assert h is not None
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
     approx = Order1ApproxOutput(
@@ -710,8 +729,8 @@ def compute_hs_and_zs(
     """Precompute h for every subject at every layer."""
     if h_layer is None and z_layer is None:
         raise ValueError("Must specify at least one of h_layer and z_layer.")
-    if z_layer == -1:
-        z_layer = models.determine_layers(mt)[z_layer]
+    if z_layer == -1 or z_layer is None:
+        z_layer = models.determine_layers(mt)[-1]
 
     prompts = [
         make_prompt(
@@ -730,9 +749,12 @@ def compute_hs_and_zs(
 
     z_by_subj = {}
     h_by_subj = {}
-    h_layers = [h_layer] if isinstance(h_layer, int) else h_layer
-    z_layers = [z_layer] if isinstance(z_layer, int) else z_layer
 
+    h_layers = [h_layer] if (isinstance(h_layer, int) or h_layer == "emb") else h_layer
+    z_layers = [z_layer] if (isinstance(z_layer, int) or z_layer == "ln_f") else z_layer
+
+    assert isinstance(h_layers, list)
+    assert isinstance(z_layers, list)
     layer_idx_to_name = {
         l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
     }
@@ -761,7 +783,7 @@ def compute_hs_and_zs(
                     prompt, subject, offset_mapping=offset_mapping[abs_index]
                 )
                 h_index -= 1
-                if isinstance(h_layer, int):
+                if isinstance(h_layer, int) or h_layer == "emb":
                     h_by_subj[subject] = untuple(
                         traces[layer_idx_to_name[h_layer]].output
                     )[batch_index, h_index]

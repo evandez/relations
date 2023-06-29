@@ -1,4 +1,6 @@
+import itertools
 import logging
+import random
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal
 
@@ -95,10 +97,11 @@ class LinearRelationOperator(RelationOperator):
         if self.bias is not None:
             bias = self.bias
             if self.beta is not None:
-                bias = self.beta * bias
+                z = z * self.beta  # scaling the contribution of Jh with beta
             z = z + bias
 
-        logits = self.mt.lm_head(z)
+        lm_head = self.mt.lm_head if not self.z_layer == "ln_f" else self.mt.lm_head[:1]
+        logits = lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
 
         topk = dist.topk(dim=-1, k=k)
@@ -204,6 +207,9 @@ class JacobianIclEstimator(LinearRelationEstimator):
         ).estimate_for_subject(train.subject, prompt_template_icl)
 
 
+from src import lens
+
+
 @dataclass(frozen=True)
 class JacobianIclMeanEstimator(LinearRelationEstimator):
     h_layer: Layer
@@ -271,7 +277,143 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             z_layer=approxes[0].z_layer,
             prompt_template=prompt_template_icl,
             beta=self.beta,
-            metadata={"Jh": [approx.metadata["Jh"].squeeze() for approx in approxes]},
+            metadata={
+                "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
+                # "approxes": approxes,
+            },
+        )
+
+        return operator
+
+
+@dataclass(frozen=True)
+class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
+    h_layer: Layer
+    z_layer: Layer | None = None
+    beta: float | None = None
+    rank: int | None = None  # If None, don't do low rank approximation.
+    interpolate_on: int = 2  # number of examples to average on to get the imaginary h
+    n_trials: int = 5  # (maximum) number of trials to average over
+    average_on_sphere: bool = True  # will interpolate to make all latent vectors have the same norm (hence contribution?)
+    magnitude_h: float | None = None  # ||h_myth||, if average_on_sphere is True. Shouldn't matter much, since `o` should be insensitive to `||h||` anyways
+    assert (
+        interpolate_on >= 2
+    ), """need at least 2 examples to get imaginary latent. 
+    Call JacobianIclMeanEstimator to calculate on real h instead"""
+
+    def __call__(self, relation: data.Relation) -> LinearRelationOperator:
+        _check_nonempty(
+            samples=relation.samples, prompt_templates=relation.prompt_templates
+        )
+        _warn_gt_1(prompt_templates=relation.prompt_templates)
+
+        samples = relation.samples
+        n_icl = len(samples) - self.interpolate_on
+        if n_icl < 3:
+            logger.warning(
+                f"Number of free examples is {n_icl}. It is recommended to have at least 3."
+            )
+        prompt_template = relation.prompt_templates[0]
+
+        approxes = []
+        candidate_combinations = list(
+            itertools.combinations(samples, self.interpolate_on)
+        )
+        random.shuffle(candidate_combinations)
+        for interpolation_candidates in candidate_combinations[
+            : min(self.n_trials, len(candidate_combinations))
+        ]:
+            logger.debug(
+                f"interpolation candidates: {', '.join([candidate.__str__() for candidate in interpolation_candidates])}"
+            )
+            # use all other examples as few-shot
+            icl_examples = list(set(samples) - set(interpolation_candidates))
+
+            prompt = functional.make_prompt(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subject="{}",
+                examples=icl_examples,
+            )
+            logger.debug("estimating J for prompt:\n" + prompt)
+
+            # use the first subject to get h_index
+            s1 = interpolation_candidates[0].subject
+            h_index, inputs = functional.find_subject_token_index(
+                mt=self.mt,
+                prompt=prompt.format(s1),
+                subject=s1,
+            )
+            logger.info(f"note that subject={s1}, h_index={h_index}")
+
+            candidate_hs = functional.compute_hs_and_zs(
+                mt=self.mt,
+                prompt_template=prompt_template,
+                subjects=[candidate.subject for candidate in interpolation_candidates],
+                h_layer=self.h_layer,
+                z_layer=self.z_layer,
+                examples=icl_examples,
+            ).h_by_subj
+
+            if self.average_on_sphere:
+                if self.magnitude_h is None:
+                    l2_norm = (
+                        torch.stack([h for h in candidate_hs.values()])
+                        .mean(dim=0)
+                        .norm()
+                    )
+                else:
+                    l2_norm = self.magnitude_h
+                logger.info(f"{l2_norm=:.3f}")
+                for subj in candidate_hs.keys():
+                    candidate_hs[subj] = (candidate_hs[subj] * l2_norm) / candidate_hs[
+                        subj
+                    ].norm()
+
+            for subj, h in candidate_hs.items():
+                logger.debug(f"{subj=} | h_norm={h.norm().item()}")
+
+            mythical_h = torch.stack([h for h in candidate_hs.values()]).mean(dim=0)
+            logger.debug(f"mythical_h_norm={mythical_h.norm().item()}")
+
+            approx = functional.order_1_approx(
+                mt=self.mt,
+                prompt=prompt.format(s1),
+                h_layer=self.h_layer,
+                h_index=h_index,
+                z_layer=self.z_layer,
+                z_index=-1,
+                h=mythical_h,
+                inputs=inputs,
+            )
+            approxes.append(approx)
+            logger.debug("----------------------------------")
+
+        weight = torch.stack([approx.weight for approx in approxes]).mean(dim=0)
+        bias = torch.stack([approx.bias for approx in approxes]).mean(dim=0)
+
+        prompt_template_icl = functional.make_prompt(
+            mt=self.mt,
+            prompt_template=prompt_template,
+            examples=samples,
+            subject="{}",
+        )
+
+        if self.rank is not None:
+            weight = functional.low_rank_approx(matrix=weight, rank=self.rank)
+
+        operator = LinearRelationOperator(
+            mt=self.mt,
+            weight=weight,
+            bias=bias,
+            h_layer=self.h_layer,
+            z_layer=approxes[0].z_layer,
+            prompt_template=prompt_template_icl,
+            beta=self.beta,
+            metadata={
+                "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
+                # "approxes": approxes,
+            },
         )
 
         return operator
@@ -404,7 +546,7 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None
-    mode: Literal["icl", "zs"] = "zs"
+    mode: Literal["icl", "zs"] = "icl"
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         _check_nonempty(
@@ -473,6 +615,8 @@ class OffsetEstimatorBaseline(LinearRelationEstimator):
 
         if self.z_layer is None:
             z_layer: Layer = models.determine_layers(self.mt)[-1]
+        else:
+            z_layer = self.z_layer
 
         if self.mode == "icl":
             prompt_template = functional.make_prompt(

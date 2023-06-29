@@ -293,7 +293,7 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
 def read_sweep_results(
     sweep_dir: str, results: dict | None = None, depth: int = 0
 ) -> dict:
-    print(f"{'    '*depth}--> {sweep_dir}")
+    logger.debug(f"{'    '*depth}--> {sweep_dir}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
@@ -309,7 +309,7 @@ def read_sweep_results(
                     else:
                         results[res["relation_name"]]["trials"].extend(res["trials"])
             except Exception as e:
-                print(f"ERROR reading {sweep_dir}: {e}")
+                logger.error(f"ERROR reading {sweep_dir}: {e}")
                 pass
     return results
 

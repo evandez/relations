@@ -140,3 +140,6 @@ dmypy.json
 scan-for-best*
 *results*/
 *models*/
+
+# iframe stuffs
+*iframe*

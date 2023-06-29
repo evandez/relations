@@ -1,5 +1,6 @@
 from typing import Any, Sequence, TypeAlias
 
+from src.functional import is_nontrivial_prefix
 from src.models import ModelAndTokenizer
 
 import numpy as np
@@ -26,10 +27,12 @@ def interpret_logits(
 def logit_lens(
     mt: ModelAndTokenizer,
     h: torch.Tensor,
+    after_layer_norm: bool = False,  # will not apply final layer norm if set to True
     interested_tokens: list = [],
     get_proba: bool = False,
 ) -> tuple[list[tuple[str, float]], dict[int, tuple[float, str]]]:
-    logits = mt.lm_head(h)
+    lm_head = mt.lm_head if not after_layer_norm else mt.lm_head[1:]
+    logits = lm_head(h)
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     candidates = interpret_logits(mt, logits)
     interested_logits = {
@@ -75,7 +78,11 @@ def get_info_for_plotting(
             cur_tok = v_space_reprs[token_order][layer][0]
             confidence_arr.append(round(cur_tok[1], 4))
 
-            if cur_tok[0] in expected_answers:
+            is_prefix_to_expected_answer = any(
+                is_nontrivial_prefix(cur_tok[0], expected_answer)
+                for expected_answer in expected_answers
+            )
+            if is_prefix_to_expected_answer:
                 token_arr.append("<b><i>" + cur_tok[0] + "</i></b>")
             else:
                 token_arr.append(cur_tok[0])
@@ -95,7 +102,7 @@ def get_info_for_plotting(
         "confidence_matrix": confidence_matrix,
         "token_matrix": token_matrix,
         "top_k": distribution_matrix_top_k,
-        "nextwords": att_info["nextwords"]
+        "nextwords": att_info["nextwords"],
     }
 
 
@@ -115,7 +122,7 @@ def add_rectangle_patches(
     dx = [-0.5, 0, 0.5, 0]
 
     symbol = [142, 141, 142, 141]
-    marker_size = [25, 60] * 2
+    marker_size = [20, 62] * 2
 
     for i in range(4):
         fig.add_trace(
@@ -200,7 +207,7 @@ def plot_attribute_lens(
             side="bottom",
             tickvals=x,
             ticktext=x_tokens,
-            tickfont=dict(family="Courier New, Monospace", color="darkblue", size=15),
+            tickfont=dict(family="Courier New", color="darkblue", size=17),
         ),
     )
 

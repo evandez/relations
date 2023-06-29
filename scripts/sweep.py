@@ -100,4 +100,5 @@ if __name__ == "__main__":
         help="number of train samples to use per trial",
     )
     args = parser.parse_args()
+    logger.info(args)
     main(args)

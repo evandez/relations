@@ -1,0 +1,793 @@
+[
+    {
+        "subject": "http://www.wikidata.org/entity/Q848579",
+        "subjectLabel": "Upsilon Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "254"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q682966",
+        "subjectLabel": "Mu Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "225"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1327920",
+        "subjectLabel": "HR 8832",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "201"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q66477294",
+        "subjectLabel": "rho01 Cnc",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "199"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13605",
+        "subjectLabel": "Eta Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "199"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1326587",
+        "subjectLabel": "HD 10307",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "186"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2399790",
+        "subjectLabel": "HD 166",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "182"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1143156",
+        "subjectLabel": "GX Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "178"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1563271",
+        "subjectLabel": "HD 210277",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "178"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2460297",
+        "subjectLabel": "V987 Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "177"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q321",
+        "subjectLabel": "Milky Way",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "175"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q321",
+        "subjectLabel": "Milky Way",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "175"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q284836",
+        "subjectLabel": "91 Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "169"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2469",
+        "subjectLabel": "Andromeda",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "168"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q740780",
+        "subjectLabel": "Gliese 876",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "167"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2609100",
+        "subjectLabel": "Chi Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "164"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q536806",
+        "subjectLabel": "Epsilon Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "164"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q749234",
+        "subjectLabel": "Lambda Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "160"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15875723",
+        "subjectLabel": "GJ 28",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "160"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13039",
+        "subjectLabel": "Alpha Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "154"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q92086834",
+        "subjectLabel": "HD 219617",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "154"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q940004",
+        "subjectLabel": "14 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "153"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q749072",
+        "subjectLabel": "Ross 248",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "150"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q10849621",
+        "subjectLabel": "HD 222143",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "147"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2399753",
+        "subjectLabel": "11 Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "147"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13061",
+        "subjectLabel": "Delta Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "146"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3304278",
+        "subjectLabel": "Phi Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "144"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13108",
+        "subjectLabel": "Alpha Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "143"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13043",
+        "subjectLabel": "Beta Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "138"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5097587",
+        "subjectLabel": "Upsilon2 Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "134"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5097531",
+        "subjectLabel": "HR 244",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "132"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3780858",
+        "subjectLabel": "HD 225239",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "131"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q66613512",
+        "subjectLabel": "V453 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "131"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1202327",
+        "subjectLabel": "Zeta Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "130"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3781007",
+        "subjectLabel": "HD 400",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "130"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2403444",
+        "subjectLabel": "Psi2 Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "129"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q66491866",
+        "subjectLabel": "HD 18757",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "129"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q20069893",
+        "subjectLabel": "HD 15558",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "127"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q242272",
+        "subjectLabel": "51 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "126"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1200173",
+        "subjectLabel": "HD 222582",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "126"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q955530",
+        "subjectLabel": "Gliese 849",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "126"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13766",
+        "subjectLabel": "Beta Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "125"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3781670",
+        "subjectLabel": "HD 72945",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "124"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13594",
+        "subjectLabel": "Beta Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "124"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q84540015",
+        "subjectLabel": "HD 216777",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "124"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5174140",
+        "subjectLabel": "Mu2 Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "123"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q10849585",
+        "subjectLabel": "HD 219623",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "122"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5880906",
+        "subjectLabel": "Gliese 49",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "122"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q89986209",
+        "subjectLabel": "GQ Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "121"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2510094",
+        "subjectLabel": "HD 7924",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "121"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q92405410",
+        "subjectLabel": "HD 13783",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "121"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13243",
+        "subjectLabel": "Beta Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "121"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1051945",
+        "subjectLabel": "5 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "120"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13584",
+        "subjectLabel": "Navi",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "118"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2607823",
+        "subjectLabel": "94 Aquarii A",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "118"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2399549",
+        "subjectLabel": "6 Persei",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "117"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13246",
+        "subjectLabel": "Alpha Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "117"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q83813693",
+        "subjectLabel": "HD 209290",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "117"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15706",
+        "subjectLabel": "Delta Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "116"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2608450",
+        "subjectLabel": "Kappa Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "115"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q91421820",
+        "subjectLabel": "BD+38 4955",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "115"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q15875765",
+        "subjectLabel": "Gliese 90",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "115"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1347986",
+        "subjectLabel": "Pi Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "114"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13046",
+        "subjectLabel": "Gamma¹ Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "114"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2333595",
+        "subjectLabel": "Iota Cancri A",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "113"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q83807902",
+        "subjectLabel": "QSO B2134+0028",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "113"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3780832",
+        "subjectLabel": "HD 221356",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "112"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q10850428",
+        "subjectLabel": "HD 72946",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "111"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1208296",
+        "subjectLabel": "Omega Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "111"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q851182",
+        "subjectLabel": "Buna",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "111"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2607763",
+        "subjectLabel": "44 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "111"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1144120",
+        "subjectLabel": "HD 8673",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "110"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1187579",
+        "subjectLabel": "3 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "110"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q66610043",
+        "subjectLabel": "HD 221585",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "110"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5095048",
+        "subjectLabel": "Chi Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "110"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1051937",
+        "subjectLabel": "6 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "109"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2720509",
+        "subjectLabel": "28 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "109"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2663502",
+        "subjectLabel": "Zeta Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "109"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1194554",
+        "subjectLabel": "Pi Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "108"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q86704929",
+        "subjectLabel": "HZ Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "108"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q84748495",
+        "subjectLabel": "7C 082754.29+242103.00",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "107"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q86008340",
+        "subjectLabel": "HD 75767",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "107"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q574570",
+        "subjectLabel": "Kappa Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "107"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1749316",
+        "subjectLabel": "Sigma3 Cancri A",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3599937",
+        "subjectLabel": "81 Cancri AB",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q356632",
+        "subjectLabel": "Xi Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5853952",
+        "subjectLabel": "FF Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q98537993",
+        "subjectLabel": "GN Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q303684",
+        "subjectLabel": "Kappa Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q86987093",
+        "subjectLabel": "HD 202751",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "106"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1347977",
+        "subjectLabel": "Omicron Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "105"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q67856853",
+        "subjectLabel": "BD+47 612",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "105"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q13597",
+        "subjectLabel": "Delta Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "105"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1501569",
+        "subjectLabel": "Epsilon Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "105"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2403417",
+        "subjectLabel": "75 Cancri",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q66492209",
+        "subjectLabel": "HD 73344",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1150445",
+        "subjectLabel": "Mu Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2607799",
+        "subjectLabel": "1 Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q337846",
+        "subjectLabel": "Theta Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q24910866",
+        "subjectLabel": "HD 215152",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "104"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q7486342",
+        "subjectLabel": "HD 222155",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "103"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q91631895",
+        "subjectLabel": "BD+59 2723",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "103"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3280807",
+        "subjectLabel": "108 Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "103"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q87097894",
+        "subjectLabel": "BD+10 1857",
+        "object": "http://www.wikidata.org/entity/Q8849",
+        "objectLabel": "Cancer",
+        "outgoing": "102"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1209083",
+        "subjectLabel": "Psi Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "102"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1359139",
+        "subjectLabel": "Eta Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "102"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1747908",
+        "subjectLabel": "96 Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "102"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q1146408",
+        "subjectLabel": "Gamma Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "102"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2399764",
+        "subjectLabel": "12 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "101"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q2608909",
+        "subjectLabel": "56 Andromedae",
+        "object": "http://www.wikidata.org/entity/Q9256",
+        "objectLabel": "Andromeda",
+        "outgoing": "101"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q3304216",
+        "subjectLabel": "Omicron Cassiopeiae",
+        "object": "http://www.wikidata.org/entity/Q10464",
+        "objectLabel": "Cassiopeia",
+        "outgoing": "101"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q955526",
+        "subjectLabel": "EZ Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "101"
+    },
+    {
+        "subject": "http://www.wikidata.org/entity/Q5853994",
+        "subjectLabel": "FK Aquarii",
+        "object": "http://www.wikidata.org/entity/Q10576",
+        "objectLabel": "Aquarius",
+        "outgoing": "101"
+    }
+]
