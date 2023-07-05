@@ -204,6 +204,7 @@ def sweep(
 
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
+                operator.weight[:] = weight  # reset to original weight
                 svd = torch.svd(operator.weight.float())
                 results_by_rank = []
                 for rank in ranks:

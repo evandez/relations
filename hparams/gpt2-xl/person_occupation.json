@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "person occupation",
+    "h_layer": 22,
+    "beta": 0.45000000670552254,
+    "rank": null,
+    "z_layer": -1,
+    "h_layer_edit": 16
+}

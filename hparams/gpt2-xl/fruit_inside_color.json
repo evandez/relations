@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "fruit inside color",
+    "h_layer": 13,
+    "beta": 0.6833333571751913,
+    "rank": null,
+    "z_layer": -1,
+    "h_layer_edit": 11
+}

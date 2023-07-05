@@ -1,0 +1,9 @@
+{
+    "model_name": "llama",
+    "relation_name": "company hq",
+    "h_layer": 20,
+    "beta": 0.16250000521540642,
+    "rank": null,
+    "z_layer": -1,
+    "h_layer_edit": 11
+}

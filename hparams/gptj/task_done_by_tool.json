@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "task done by tool",
-    "h_layer": 10,
-    "beta": 0.23333334177732468,
+    "h_layer": 8,
+    "beta": 2.8125,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 10
+    "h_layer_edit": 5
 }
