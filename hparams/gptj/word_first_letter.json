@@ -2,8 +2,8 @@
     "model_name": "gptj",
     "relation_name": "word first letter",
     "h_layer": 12,
-    "beta": 0.31666667262713116,
+    "beta": 1.96875,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 8
+    "h_layer_edit": 7
 }

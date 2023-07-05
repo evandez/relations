@@ -4,6 +4,8 @@ import logging
 import os
 from typing import Sequence
 
+import baukit
+import torch
 from src import data, functional, metrics, models
 from src.operators import (
     JacobianIclMeanEstimator,
@@ -14,9 +16,6 @@ from src.operators import (
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
-
-import baukit
-import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -220,6 +219,12 @@ def main(args: argparse.Namespace) -> None:
 
     all_results = []
 
+    # these relations will go out of memory with large N_TRAINING is > 6
+    OOM_relations = [
+        "person father",
+        "person mother",
+    ]
+
     for relation_name, sweep_result in tqdm(sweep_results.items()):
         if args.rel_names is not None and relation_name not in args.rel_names:
             logger.info("skipping %s", relation_name)
@@ -244,6 +249,7 @@ def main(args: argparse.Namespace) -> None:
         # prompt_template = relation_known.prompt_templates[0]
         prompt_template = " {} :"
         relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
+        relation = relation.set(prompt_templates=[prompt_template])
 
         result["total_samples"] = len(relation.samples)
         result["trials"] = []
@@ -253,20 +259,27 @@ def main(args: argparse.Namespace) -> None:
 
         for trial in range(N_TRIALS):
             logger.info(f"trial {trial + 1}/{N_TRIALS}")
-            trial_results = relation_results.trials[trial]
 
-            train_samples = trial_results.train_samples
-            test_samples = [
-                sample
-                for sample in relation.samples
-                if filter_not_in_train_samples(sample, train_samples)
-            ]
+            # Runs the numbers with the exact same train/test split as the sweep
+            # sweep_trial = relation_results.trials[trial]
+            # train_samples = sweep_trial.train_samples
+            # test_samples = [
+            #     sample
+            #     for sample in relation.samples
+            #     if filter_not_in_train_samples(sample, train_samples)
+            # ]
+            # train_relation = relation.set(
+            #     samples=train_samples, prompt_templates=[prompt_template]
+            # )
+            # test_relation = relation.set(
+            #     samples=test_samples, prompt_templates=[prompt_template]
+            # )
 
-            train_relation = relation.set(
-                samples=train_samples, prompt_templates=[prompt_template]
-            )
-            test_relation = relation.set(
-                samples=test_samples, prompt_templates=[prompt_template]
+            # Runs the numbers with a new random train/test split for each trial
+            train_relation, test_relation = relation.split(
+                N_TRAINING
+                if (relation_name not in OOM_relations or N_TRAINING < 6)
+                else 6
             )
 
             logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")
@@ -360,9 +373,7 @@ def main(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Run faithfulness baselines on optimum hparams"
-    )
+    parser = argparse.ArgumentParser(description="Run faithfulness baselines")
 
     models.add_model_args(parser)
     logging_utils.add_logging_args(parser)
@@ -385,7 +396,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--n-trials",
         type=int,
-        default=3,
+        default=24,
         help="number of trials",
     )
 
@@ -403,5 +414,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging_utils.configure(args=args)
 
-    print(args)
+    logger.info(args)
     main(args)
