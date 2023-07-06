@@ -388,6 +388,10 @@ def load_model(
         tokenizer = transformers.AutoTokenizer.from_pretrained(name)
         tokenizer.pad_token = tokenizer.eos_token
 
+    logger.info(
+        f"dtype: {model.dtype}, device: {model.device}, memory: {model.get_memory_footprint()}"
+    )
+
     return ModelAndTokenizer(model, tokenizer)
 
 

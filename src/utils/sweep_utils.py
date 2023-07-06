@@ -290,15 +290,37 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
     return relation_results
 
 
+def skip_folder(folder: str, relation_names: list[str]) -> bool:
+    if folder.endswith(".json"):
+        return False
+    for relation in relation_names:
+        probable_folder_name = relation.replace(" ", "_").lower()
+        if probable_folder_name in folder:
+            return False
+    return True
+
+
 def read_sweep_results(
-    sweep_dir: str, results: dict | None = None, depth: int = 0
+    sweep_dir: str,
+    results: dict | None = None,
+    depth: int = 0,
+    relation_names: list[str] | None = None,
 ) -> dict:
-    logger.debug(f"{'    '*depth}--> {sweep_dir}")
+    logger.debug(f"{depth=} || {'    '*depth}--> {sweep_dir}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
+        if (
+            relation_names is not None
+            and depth > 0
+            and skip_folder(sweep_dir, relation_names)
+        ):
+            logger.debug(f"** skipping folder {sweep_dir} **")
+            return results
         for file in os.listdir(sweep_dir):
-            read_sweep_results(f"{sweep_dir}/{file}", results, depth + 1)
+            read_sweep_results(
+                f"{sweep_dir}/{file}", results, depth + 1, relation_names
+            )
     elif sweep_dir.endswith(".json"):
         with open(sweep_dir) as f:
             try:

@@ -4,8 +4,6 @@ import logging
 import os
 from typing import Sequence
 
-import baukit
-import torch
 from src import data, functional, metrics, models
 from src.operators import (
     JacobianIclMeanEstimator,
@@ -16,6 +14,9 @@ from src.operators import (
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
+
+import baukit
+import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,7 @@ def get_zero_shot_results(
     operators: dict[str, LinearRelationOperator],
     hs_by_subj: dict[str, dict[str, torch.Tensor]],
 ) -> dict:
-    print("------------ Zero Shot ------------")
+    logger.info("------------ Zero Shot ------------")
     results: dict = {
         "logit_lens": {},  # F(h) = h
         "corner": {},  # F(h) = h + b
@@ -103,7 +104,7 @@ def get_zero_shot_results(
         operator = operators[operator_name]
         layer_name = emb_layer_name if operator_name == "lre_emb" else h_layer_name
         recall = evaluate(operator, test, hs_by_subj=hs_by_subj, layer_name=layer_name)
-        print(f"{operator_name}: {recall['recall']}")
+        logger.info(f"{operator_name}: {recall['recall']}")
         results[operator_name] = recall
     return results
 
@@ -117,7 +118,7 @@ def get_icl_results(
     icl_prompt: str,
     hs_by_subj: dict[str, dict[str, torch.Tensor]],
 ) -> tuple[dict, dict]:
-    print("------------ ICL ------------")
+    logger.info("------------ ICL ------------")
     results: dict = {
         "logit_lens": {},  # F(h) = h
         "corner": {},  # F(h) = h + b
@@ -137,7 +138,7 @@ def get_icl_results(
     logit_lens_recall = evaluate(
         logit_lens_operator, test, hs_by_subj=hs_by_subj, layer_name=h_layer_name
     )
-    print(f"logit lens: {logit_lens_recall['recall']}")
+    logger.info(f"logit lens: {logit_lens_recall['recall']}")
     results["logit_lens"] = logit_lens_recall
 
     offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="icl")
@@ -147,7 +148,7 @@ def get_icl_results(
     offset_recall = evaluate(
         offset_operator, test, hs_by_subj=hs_by_subj, layer_name=h_layer_name
     )
-    print(f"corner: {offset_recall['recall']}")
+    logger.info(f"corner: {offset_recall['recall']}")
     results["corner"] = offset_recall
 
     learned_estimator = LearnedLinearEstimatorBaseline(
@@ -159,7 +160,7 @@ def get_icl_results(
     learned_recall = evaluate(
         learned_operator, test, hs_by_subj=hs_by_subj, layer_name=h_layer_name
     )
-    print(f"learned: {learned_recall['recall']}")
+    logger.info(f"learned: {learned_recall['recall']}")
     results["learned_linear"] = learned_recall
 
     lre_icl_emb_estimator = JacobianIclMeanEstimator(
@@ -171,7 +172,7 @@ def get_icl_results(
     lre_emb_recall = evaluate(
         lre_icl_emb_operator, test, hs_by_subj=hs_by_subj, layer_name=emb_layer_name
     )
-    print(f"LRE (emb): {lre_emb_recall['recall']}")
+    logger.info(f"LRE (emb): {lre_emb_recall['recall']}")
     results["lre_emb"] = lre_emb_recall
 
     lre_estimator = JacobianIclMeanEstimator(
@@ -183,7 +184,7 @@ def get_icl_results(
     mean_recall = evaluate(
         lre_operator, test, hs_by_subj=hs_by_subj, layer_name=h_layer_name
     )
-    print(f"LRE: {mean_recall['recall']}")
+    logger.info(f"LRE: {mean_recall['recall']}")
     results["lre"] = mean_recall
 
     return results, {
@@ -201,9 +202,7 @@ from scripts.efficacy_baselines import filter_not_in_train_samples
 def main(args: argparse.Namespace) -> None:
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-    logger.info(
-        f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
-    )
+
     save_dir = args.save_dir
     os.makedirs(save_dir, exist_ok=True)
     N_TRIALS = args.n_trials
@@ -357,14 +356,13 @@ def main(args: argparse.Namespace) -> None:
                 hs_by_subj=hs_by_subj_zs,
             )
 
-            print("")
-
             result["trials"].append(trial_results)
-            print("")
 
         all_results.append(result)
-        print("-----------------------------------------------------------------------")
-        print("\n\n")
+        logger.info(
+            "-----------------------------------------------------------------------"
+        )
+        logger.info("\n\n")
 
         with open(f"{save_dir}/{mt.name}.json", "w") as f:
             json.dump(all_results, f, indent=4)
@@ -382,7 +380,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sweep-results-dir",
         type=str,
-        default="results/sweep-colon",
+        default="results/sweep",
         help="directory to find sweep results",
     )
 
