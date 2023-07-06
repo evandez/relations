@@ -2,14 +2,14 @@
 from invoke import task
 
 
-def _maybe_add_device(cmd, device=None):
+def _maybe_add_device(cmd, device=None):  # type: ignore
     if device is not None:
         cmd = cmd.rstrip() + f" --device {device}"
     return cmd
 
 
 @task
-def faithfulness(c, device=None):
+def faithfulness(c, device=None):  # type: ignore
     """Run faithfulness experiment."""
     cmd = f"python -m scripts.evaluate -b faithfulness -n faithfulness"
     cmd = _maybe_add_device(cmd, device=device)
@@ -17,7 +17,7 @@ def faithfulness(c, device=None):
 
 
 @task
-def reconstruction(c, device=None):
+def reconstruction(c, device=None):  # type: ignore
     """Run reconstruction experiment."""
     cmd = f"python -m scripts.evaluate -b reconstruction -n reconstruction"
     cmd = _maybe_add_device(cmd, device=device)
@@ -25,7 +25,7 @@ def reconstruction(c, device=None):
 
 
 @task
-def causality(c, device=None):
+def causality(c, device=None):  # type: ignore
     """Run causality experiment."""
     cmd = f"python -m scripts.evaluate -b causality -n causality"
     cmd = _maybe_add_device(cmd, device=device)

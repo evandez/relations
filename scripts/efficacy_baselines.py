@@ -139,9 +139,9 @@ def run_causality_baselines(
                     continue
                 efficacy = by_layer[layer.layer].efficacy
                 # rank = int(np.floor(by_layer[layer.layer].rank.mean)) # use the mean rank for each layer
-                rank = by_layer[layer.layer].rank.values[
-                    n_trial
-                ]  # use different best ranks for each trial
+
+                # use different best ranks for each trial
+                rank = by_layer[layer.layer].rank.values[n_trial]  # type: ignore
                 logger.info(
                     f"layer: {layer_no}, efficacy = {efficacy.mean} +/- {efficacy.stderr}, {rank=}"
                 )
