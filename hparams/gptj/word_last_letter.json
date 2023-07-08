@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "word last letter",
-    "h_layer": 6,
-    "beta": 2.533333333333333,
-    "rank": 98,
+    "h_layer": 10,
+    "beta": 2.5,
+    "rank": 80,
     "z_layer": -1,
-    "h_layer_edit": 6
+    "h_layer_edit": 10
 }

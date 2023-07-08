@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "task person type",
-    "h_layer": 8,
-    "beta": 2.8333333333333335,
-    "rank": 141,
+    "h_layer": 12,
+    "beta": 2.5,
+    "rank": 85,
     "z_layer": -1,
-    "h_layer_edit": 8
+    "h_layer_edit": 12
 }

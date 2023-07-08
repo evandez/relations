@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "person father",
-    "h_layer": 6,
-    "beta": 1.6875,
-    "rank": 243,
+    "h_layer": 15,
+    "beta": 2.5,
+    "rank": 169,
     "z_layer": -1,
-    "h_layer_edit": 6
+    "h_layer_edit": 15
 }

@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "country currency",
-    "h_layer": 1,
-    "beta": 2.6458333333333335,
-    "rank": 81,
+    "h_layer": 3,
+    "beta": 2.5,
+    "rank": 71,
     "z_layer": -1,
-    "h_layer_edit": 1
+    "h_layer_edit": 3
 }
