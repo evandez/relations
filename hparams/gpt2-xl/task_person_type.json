@@ -1,8 +1,0 @@
-{
-    "relation_name": "task person type",
-    "h_layer": 19,
-    "beta": 0.26666667064030963,
-    "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
-}

@@ -1,8 +1,0 @@
-{
-    "relation_name": "fruit outside color",
-    "h_layer": 12,
-    "beta": 0.1333333378036817,
-    "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
-}

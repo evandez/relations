@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "pokemon evolution",
-    "h_layer": 16,
-    "beta": 2.59375,
-    "rank": null,
+    "h_layer": 7,
+    "beta": 2.09375,
+    "rank": 209,
     "z_layer": -1,
     "h_layer_edit": 7
 }

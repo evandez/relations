@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "person occupation",
-    "h_layer": 12,
-    "beta": 2.15625,
-    "rank": null,
+    "h_layer": 8,
+    "beta": 2.2395833333333335,
+    "rank": 178,
     "z_layer": -1,
     "h_layer_edit": 8
 }

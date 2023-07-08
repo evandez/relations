@@ -1,8 +1,0 @@
-{
-    "relation_name": "word first letter",
-    "h_layer": 19,
-    "beta": 0.18333333730697632,
-    "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
-}

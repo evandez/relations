@@ -1,8 +1,0 @@
-{
-    "relation_name": "characteristic gender",
-    "h_layer": 12,
-    "beta": 0.18333333482344946,
-    "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
-}

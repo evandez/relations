@@ -1,8 +1,0 @@
-{
-    "relation_name": "adjective antonym",
-    "h_layer": 22,
-    "beta": 0.3333333383003871,
-    "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
-}

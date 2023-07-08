@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "company CEO",
-    "h_layer": 14,
-    "beta": 2.8125,
-    "rank": null,
+    "h_layer": 5,
+    "beta": 2.3958333333333335,
+    "rank": 169,
     "z_layer": -1,
-    "h_layer_edit": 4
+    "h_layer_edit": 5
 }

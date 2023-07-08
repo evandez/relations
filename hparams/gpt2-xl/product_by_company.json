@@ -1,8 +1,0 @@
-{
-    "relation_name": "product by company",
-    "h_layer": 29,
-    "beta": 0.3000000019868215,
-    "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
-}

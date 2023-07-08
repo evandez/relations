@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "city in country",
-    "h_layer": 7,
-    "beta": 2.71875,
-    "rank": null,
+    "h_layer": 1,
+    "beta": 3.0208333333333335,
+    "rank": 127,
     "z_layer": -1,
     "h_layer_edit": 1
 }

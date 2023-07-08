@@ -1,9 +1,9 @@
 {
     "model_name": "gptj",
     "relation_name": "plays pro sport",
-    "h_layer": 18,
-    "beta": 2.875,
-    "rank": null,
+    "h_layer": 6,
+    "beta": 2.3020833333333335,
+    "rank": 98,
     "z_layer": -1,
-    "h_layer_edit": 5
+    "h_layer_edit": 6
 }

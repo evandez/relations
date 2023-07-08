@@ -1,8 +1,0 @@
-{
-    "relation_name": "task done by tool",
-    "h_layer": 19,
-    "beta": 0.06666666766007741,
-    "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
-}

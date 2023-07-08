@@ -1,8 +1,0 @@
-{
-    "relation_name": "object superclass",
-    "h_layer": 28,
-    "beta": 0.5,
-    "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
-}

@@ -1,8 +1,9 @@
 {
-    "relation_name": "person native language",
-    "h_layer": 18,
-    "beta": 0.38333333532015484,
     "model_name": "gptj",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "person native language",
+    "h_layer": 3,
+    "beta": 3.0416666666666665,
+    "rank": 121,
+    "z_layer": -1,
+    "h_layer_edit": 3
 }
