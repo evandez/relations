@@ -465,7 +465,7 @@ def faithfulness(
             estimator_type,
             mt=mt,
             h_layer=relation_hparams.layer,
-            beta=relation_hparams.beta,
+            beta=relation_hparams.beta.mean,
         )
 
         trials = []
