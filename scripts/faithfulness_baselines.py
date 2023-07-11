@@ -209,57 +209,69 @@ def main(args: argparse.Namespace) -> None:
     N_TRAINING = args.n_training
 
     sweep_results_dir = f"{args.sweep_results_dir}/{args.model}"
-    sweep_results = read_sweep_results(sweep_results_dir)
+    sweep_results = read_sweep_results(sweep_results_dir, relation_names=args.rel_names)
 
     logger.info("found %d relations", len(sweep_results))
     logger.info(json.dumps(list(sweep_results.keys()), indent=4))
 
     dataset = data.load_dataset()
 
-    all_results = []
+    all_relation_results = {}
 
     # these relations will go out of memory with large N_TRAINING is > 6
     OOM_relations = [
         "person father",
         "person mother",
     ]
-
-    for relation_name, sweep_result in tqdm(sweep_results.items()):
-        if args.rel_names is not None and relation_name not in args.rel_names:
-            logger.info("skipping %s", relation_name)
-            continue
-        logger.info("relation: %s", relation_name)
-        relation_results = relation_from_dict(sweep_result)
-        if len(relation_results.trials) < 3:
-            logger.info(f"skipping {relation_name}, not enough trials")
-            continue
-        hparams = relation_results.best_by_faithfulness()
+    relation_sweeps = {}
+    for trial in range(N_TRIALS):
         logger.info(
-            f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
+            "################################################################################"
         )
-        h_layer = hparams.layer
-        beta = hparams.beta.mean
-        result = {
-            "relation_name": relation_name,
-            "h_layer": h_layer,
-            "beta": beta,
-            "expected_recall": hparams.recall.mean,
-        }
-        # prompt_template = relation_known.prompt_templates[0]
-        prompt_template = " {} :"
-        relation = dataset.filter(relation_names=[relation_results.relation_name])[0]
-        relation = relation.set(prompt_templates=[prompt_template])
+        logger.info(f"trial {trial + 1}/{N_TRIALS}")
+        logger.info(
+            "################################################################################"
+        )
+        for relation_name, sweep_result in tqdm(sweep_results.items()):
+            if args.rel_names is not None and relation_name not in args.rel_names:
+                logger.info("skipping %s", relation_name)
+                continue
+            logger.info("relation: %s", relation_name)
+            if relation_name not in relation_sweeps:
+                relation_sweeps[relation_name] = relation_from_dict(sweep_result)
+            relation_sweep = relation_sweeps[relation_name]
+            if len(relation_sweep.trials) < 3:
+                logger.info(f"skipping {relation_name}, not enough trials")
+                continue
+            hparams = relation_sweep.best_by_faithfulness()
+            logger.info(
+                f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
+            )
+            h_layer = hparams.layer
+            beta = hparams.beta.mean
+            # prompt_template = relation_known.prompt_templates[0]
+            prompt_template = " {} :"
+            relation = dataset.filter(relation_names=[relation_sweep.relation_name])[0]
+            relation = relation.set(prompt_templates=[prompt_template])
 
-        result["total_samples"] = len(relation.samples)
-        result["trials"] = []
+            logger.info(
+                f"total samples = {len(relation.samples)}, prompt template: {prompt_template}"
+            )
 
-        logger.info(f"prompt template: {prompt_template}")
-        result["prompt_template"] = prompt_template
+            if relation_name not in all_relation_results:
+                all_relation_results[relation_name] = {
+                    "relation_name": relation_name,
+                    "total_samples": len(relation.samples),
+                    "prompt_template": prompt_template,
+                    "h_layer": h_layer,
+                    "beta": beta,
+                    "expected_recall": hparams.recall.mean,
+                    "trials": [],
+                }
 
-        for trial in range(N_TRIALS):
-            logger.info(f"trial {trial + 1}/{N_TRIALS}")
+            relation_result = all_relation_results[relation_name]
 
-            # Runs the numbers with the exact same train/test split as the sweep
+            # Runs the numbers with the exact same train/test split as the n'th trial of the sweep
             # sweep_trial = relation_results.trials[trial]
             # train_samples = sweep_trial.train_samples
             # test_samples = [
@@ -274,7 +286,7 @@ def main(args: argparse.Namespace) -> None:
             #     samples=test_samples, prompt_templates=[prompt_template]
             # )
 
-            # Runs the numbers with a new random train/test split for each trial
+            # sample random train/test split for each trial
             train_relation, test_relation = relation.split(
                 N_TRAINING
                 if (relation_name not in OOM_relations or N_TRAINING < 6)
@@ -356,16 +368,15 @@ def main(args: argparse.Namespace) -> None:
                 hs_by_subj=hs_by_subj_zs,
             )
 
-            result["trials"].append(trial_results)
+            relation_result["trials"].append(trial_results)
 
-        all_results.append(result)
         logger.info(
             "-----------------------------------------------------------------------"
         )
         logger.info("\n\n")
 
         with open(f"{save_dir}/{mt.name}.json", "w") as f:
-            json.dump(all_results, f, indent=4)
+            json.dump(list(all_relation_results.values()), f, indent=4)
 
         # break
 
