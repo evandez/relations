@@ -19,6 +19,7 @@ class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
     faithfulness_successes: list[data.RelationSample]
+    rank: int | None = None
 
 
 @dataclass(frozen=True)

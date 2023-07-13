@@ -3,6 +3,7 @@ import logging
 from typing import Any, Literal, Sequence
 
 from src import data, editors, functional, metrics, models, operators
+from src.functional import low_rank_approx
 from src.utils import experiment_utils
 from src.utils.typing import Layer, PathLike
 
@@ -41,6 +42,8 @@ def sweep(
     results_dir: PathLike | None = None,
     resume: bool = False,
     subj_token_filter: Literal["all", "single", "multi"] = "all",
+    consider_rank_for_recall: bool = False,
+    limit_test_samples: int | None = None,
     **kwargs: Any,
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
@@ -122,6 +125,11 @@ def sweep(
                 # break  # only write results for the relations that have enough test samples for all the trials.
                 continue  # only skip the trial that doesn't have enough test samples. continue otherwise
 
+            if limit_test_samples is not None:
+                test_relation = test_relation.set(
+                    samples=test_relation.samples[:limit_test_samples]
+                )
+
             test_samples = test_relation.samples
             test_subjects = [x.subject for x in test_samples]
             test_objects = [x.object for x in test_samples]
@@ -145,6 +153,9 @@ def sweep(
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
+                # precompute the hs for the test samples
+                test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
+
                 estimator = operators.JacobianIclMeanEstimator(
                     mt=mt, h_layer=h_layer, **kwargs
                 )
@@ -167,45 +178,56 @@ def sweep(
                 )
                 assert operator.weight is not None
                 weight = operator.weight.clone()
-
-                test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
+                svd = torch.svd(weight.float())
 
                 # Try all betas and record recall.
                 results_by_beta = []
-                for beta in betas:
-                    operator.weight[:] = weight * beta
+                recall_ranks = [None] if consider_rank_for_recall is None else ranks  # type: ignore
 
-                    pred_objects = []
-                    for subj, h in zip(test_subjects, test_hs):
-                        preds = operator(subj, h=h, k=recall_k)
-
-                        pred = str(preds.predictions[0])
-                        logger.debug(f"reading {h_layer=} {beta=} {subj=} {pred=}")
-
-                        pred_objects.append([p.token for p in preds.predictions])
-
-                    recall = metrics.recall(pred_objects, test_objects)
-                    logger.info(f"reading finished {h_layer=} {beta=} {recall[0]=:.2f}")
-
-                    faithfulness_successes = []
-                    for prediction, sample in zip(pred_objects, test_samples):
-                        if functional.is_nontrivial_prefix(
-                            prediction=prediction[0], target=sample.object
-                        ):
-                            faithfulness_successes.append(sample)
-
-                    results_by_beta.append(
-                        SweepBetaResults(
-                            beta=beta,
-                            recall=recall,
-                            faithfulness_successes=faithfulness_successes,
+                for rank in recall_ranks:
+                    for beta in betas:
+                        operator.weight[:] = (
+                            low_rank_approx(matrix=weight, rank=rank, svd=svd) * beta
+                            if consider_rank_for_recall is not None
+                            else weight * beta
                         )
-                    )
+
+                        pred_objects = []
+                        for subj, h in zip(test_subjects, test_hs):
+                            preds = operator(subj, h=h, k=recall_k)
+
+                            pred = str(preds.predictions[0])
+                            logger.debug(f"reading {h_layer=} {beta=} {subj=} {pred=}")
+
+                            pred_objects.append([p.token for p in preds.predictions])
+
+                        recall = metrics.recall(pred_objects, test_objects)
+                        cur_hparams_info = f"{h_layer=} {beta=}"
+                        cur_hparams_info += f" {rank=}" if rank is not None else ""
+                        logger.info(
+                            f"reading finished, {cur_hparams_info} <> {recall[0]=:.2f}"
+                        )
+
+                        faithfulness_successes = []
+                        for prediction, sample in zip(pred_objects, test_samples):
+                            if functional.is_nontrivial_prefix(
+                                prediction=prediction[0], target=sample.object
+                            ):
+                                faithfulness_successes.append(sample)
+
+                        results_by_beta.append(
+                            SweepBetaResults(
+                                beta=beta,
+                                recall=recall,
+                                faithfulness_successes=faithfulness_successes,
+                                rank=rank,
+                            )
+                        )
 
                 # Try all ranks and record efficacy.
                 assert operator.weight is not None
                 operator.weight[:] = weight  # reset to original weight
-                svd = torch.svd(operator.weight.float())
+
                 results_by_rank = []
                 for rank in ranks:
                     editor = editors.LowRankPInvEditor(
