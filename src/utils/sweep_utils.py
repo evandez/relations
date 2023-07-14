@@ -19,6 +19,7 @@ class SweepBetaResults(DataClassJsonMixin):
     beta: float
     recall: list[float]
     faithfulness_successes: list[data.RelationSample]
+    rank: int | None = None
 
 
 @dataclass(frozen=True)
@@ -306,7 +307,7 @@ def read_sweep_results(
     depth: int = 0,
     relation_names: list[str] | None = None,
 ) -> dict:
-    logger.debug(f"{depth=} || {'    '*depth}--> {sweep_dir}")
+    logger.debug(f"{'    '*depth}--> {sweep_dir}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
