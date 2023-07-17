@@ -263,6 +263,7 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
                         RelationSample.from_dict(s)
                         for s in beta["faithfulness_successes"]
                     ],
+                    rank=beta["rank"] if "rank" in beta else None,
                 )
                 train_results.betas.append(beta_results)
 
@@ -326,7 +327,8 @@ def read_sweep_results(
         with open(sweep_dir) as f:
             try:
                 res = json.load(f)
-                if isinstance(res, dict) and "relation_name" in res:
+                if isinstance(res, dict) and "trials" in res:
+                    # print(len(res["trials"]))
                     if res["relation_name"] not in results:
                         results[res["relation_name"]] = res
                     else:
