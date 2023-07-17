@@ -53,7 +53,8 @@ def sweep(
     if betas is None:
         betas = torch.linspace(0, 5, steps=21).tolist()
     if ranks is None:
-        ranks = range(0, 320, 8)
+        low_rank_upper_limit = 320 if mt.name is not "llama" else 512
+        ranks = range(0, low_rank_upper_limit, 8)
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -73,8 +74,8 @@ def sweep(
             relation_results.append(relation_result)
             continue
 
-        # prompt_template = relation.prompt_templates[0]
-        prompt_template = " {} :"  # bare prompt with colon
+        prompt_template = relation.prompt_templates[0]
+        # prompt_template = " {} :"  # bare prompt with colon
 
         relation_result = SweepRelationResults(
             relation_name=relation.name,

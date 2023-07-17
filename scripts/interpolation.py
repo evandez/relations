@@ -49,11 +49,11 @@ def main(
     n_trials: int = 10,
 ) -> None:
     mt = models.load_model(name="gptj", fp16=True, device="cuda")
-    relation = (
-        data.load_dataset()
-        .filter(relation_names=[relation_name])[0]
-        .set(prompt_templates=[" {}:"])
-    )
+    relation = data.load_dataset().filter(relation_names=[relation_name])[0]
+    prompt_template = relation.prompt_templates[0]
+    # prompt_template = " {} :"  # bare prompt with colon
+    relation = relation.set(prompt_templates=[prompt_template])
+
     train, test = relation.split(n_training)
     icl_prompt = functional.make_prompt(
         prompt_template=train.prompt_templates[0],
@@ -84,7 +84,7 @@ def main(
         H: list[torch.Tensor] = []
         for alpha in np.linspace(0, 1, interpolation_steps):
             H.append(h1 * (1 - alpha) + h2 * alpha)
-        H = torch.stack(H)
+        H = torch.stack(H)  # type: ignore
         h_index, inputs = functional.find_subject_token_index(
             mt=mt, prompt=icl_prompt.format(s1), subject=s1
         )

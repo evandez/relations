@@ -42,7 +42,8 @@ def perform_trial(
     n_train_samples: int = 5,
     recall_k: int = 3,
 ) -> TrialResult:
-    prompt_template = " {} :"  # bare prompt with colon
+    prompt_template = relation.prompt_templates[0]
+    # prompt_template = " {} :"  # bare prompt with colon
     relation = relation.set(prompt_templates=[prompt_template])
     train_relation, test_relation = relation.split(n_train_samples)
     train_samples = train_relation.samples
@@ -150,7 +151,7 @@ def main(args: argparse.Namespace) -> None:
 
     sweep_results_dir = f"{args.sweep_results_dir}/{args.model}"
     sweep_results = read_sweep_results(
-        sweep_dir=sweep_results_dir, filter_relations=[relation_name]
+        sweep_dir=sweep_results_dir, relation_names=[relation_name]
     )
 
     relation_results = relation_from_dict(sweep_results[relation_name])
