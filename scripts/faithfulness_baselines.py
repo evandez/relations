@@ -289,8 +289,8 @@ def main(args: argparse.Namespace) -> None:
             # sample random train/test split for each trial
             train_relation, test_relation = relation.split(
                 N_TRAINING
-                if (relation_name not in OOM_relations or N_TRAINING < 6)
-                else 6
+                if (relation_name not in OOM_relations or N_TRAINING < 5)
+                else 5
             )
 
             logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")

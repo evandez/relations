@@ -263,6 +263,7 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
                         RelationSample.from_dict(s)
                         for s in beta["faithfulness_successes"]
                     ],
+                    rank=beta["rank"] if "rank" in beta else None,
                 )
                 train_results.betas.append(beta_results)
 
