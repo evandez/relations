@@ -2,12 +2,11 @@
 import logging
 from typing import Any, Literal, Sequence
 
+import torch
 from src import data, editors, functional, metrics, models, operators
 from src.functional import low_rank_approx
 from src.utils import experiment_utils
 from src.utils.typing import Layer, PathLike
-
-import torch
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +50,8 @@ def sweep(
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
     if betas is None:
-        betas = torch.linspace(0, 5, steps=21).tolist()
+        beta_upper_limit = 5.0 if mt.name is not "llama" else 10.0
+        betas = torch.linspace(0, beta_upper_limit, steps=21).tolist()
     if ranks is None:
         low_rank_upper_limit = 320 if mt.name is not "llama" else 512
         ranks = range(0, low_rank_upper_limit, 8)
@@ -83,6 +83,7 @@ def sweep(
         )
         for trial in range(n_trials):
             logger.info(f"begin trial {trial + 1}/{n_trials}")
+            exit_trial = False
 
             if len(relation.samples) <= n_train_samples:
                 logger.warning(
@@ -106,14 +107,33 @@ def sweep(
                 examples=train_samples,
             )
 
-            test_relation = (
-                functional.filter_relation_samples_based_on_provided_fewshots(
-                    mt=mt,
-                    test_relation=test_relation,
-                    prompt_template=icl_prompt,
-                    subj_token_filter=subj_token_filter,
+            try:
+                test_relation = (
+                    functional.filter_relation_samples_based_on_provided_fewshots(
+                        mt=mt,
+                        test_relation=test_relation,
+                        prompt_template=icl_prompt,
+                        subj_token_filter=subj_token_filter,
+                    )
                 )
-            )
+
+                # Precompute all the hs to speed things up.
+                hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
+                    mt=mt,
+                    prompt_template=prompt_template,
+                    subjects=[x.subject for x in test_relation.samples],
+                    h_layer=h_layers,
+                    z_layer=-1,
+                    batch_size=batch_size,
+                    examples=train_samples,
+                )
+            except RuntimeError as e:
+                if "out of memory" in str(e):
+                    logger.error(
+                        f"OOM while filtering on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                    )
+                    exit_trial = True
+                    continue
 
             logger.info(
                 f"filtered test relation to {len(test_relation.samples)} samples"
@@ -134,23 +154,9 @@ def sweep(
             test_samples = test_relation.samples
             test_subjects = [x.subject for x in test_samples]
             test_objects = [x.object for x in test_samples]
-            test_targets = functional.random_edit_targets(
-                test_samples
-            )  # for causal tests (editing)
-
-            # Precompute all the hs to speed things up.
-            hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
-                mt=mt,
-                prompt_template=prompt_template,
-                subjects=[x.subject for x in test_relation.samples],
-                h_layer=h_layers,
-                z_layer=-1,
-                batch_size=batch_size,
-                examples=train_samples,
-            )
+            test_targets = functional.random_edit_targets(test_samples)
 
             layer_results = []
-
             for h_layer in h_layers:
                 logger.info(f"begin layer: {h_layer}")
 
@@ -170,26 +176,35 @@ def sweep(
                 #     n_trials=len(train_samples),
                 #     **kwargs,
                 # )
-
-                operator = estimator(
-                    relation.set(
-                        samples=train_samples,
-                        prompt_templates=[prompt_template],
+                try:
+                    operator = estimator(
+                        relation.set(
+                            samples=train_samples,
+                            prompt_templates=[prompt_template],
+                        )
                     )
-                )
+                except RuntimeError as e:
+                    if "out of memory" in str(e):
+                        logger.error(
+                            f"OOM while LRE calculation on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                        )
+                        exit_trial = True
+                        break
+                    else:
+                        raise e
                 assert operator.weight is not None
                 weight = operator.weight.clone()
                 svd = torch.svd(weight.float())
 
                 # Try all betas and record recall.
                 results_by_beta = []
-                recall_ranks = [None] if consider_rank_for_recall is None else ranks  # type: ignore
+                recall_ranks = [models.determine_hidden_size(mt)] if consider_rank_for_recall is False else ranks  # type: ignore
 
                 for rank in recall_ranks:
                     for beta in betas:
                         operator.weight[:] = (
                             low_rank_approx(matrix=weight, rank=rank, svd=svd) * beta
-                            if consider_rank_for_recall is not None
+                            if consider_rank_for_recall is True
                             else weight * beta
                         )
 
@@ -302,6 +317,9 @@ def sweep(
                 layer_results.append(
                     SweepLayerResults(layer=h_layer, result=train_result)
                 )
+
+            if exit_trial:
+                continue
 
             relation_result.trials.append(
                 SweepTrialResults(

@@ -2,10 +2,9 @@
 import argparse
 import logging
 
+import torch
 from src import data, functional, hparams, models, sweeps
 from src.utils import experiment_utils, logging_utils
-
-import torch
 
 logger = logging.getLogger(__name__)
 
