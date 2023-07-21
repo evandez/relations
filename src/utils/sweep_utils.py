@@ -4,10 +4,11 @@ import os
 from collections import defaultdict
 from dataclasses import dataclass
 
-from dataclasses_json import DataClassJsonMixin
 from src import data, metrics
 from src.data import RelationSample
 from src.utils.typing import Layer
+
+from dataclasses_json import DataClassJsonMixin
 
 logger = logging.getLogger(__name__)
 
