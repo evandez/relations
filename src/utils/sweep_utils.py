@@ -114,7 +114,6 @@ class SweepRelationResults(DataClassJsonMixin):
                         for beta_result in layer.result.betas
                         if beta_result.beta == beta
                     ][0]
-                    best_beta
                 best_rank = layer.result.best_rank()
                 results_by_layer[layer.layer].append(
                     (
@@ -302,13 +301,25 @@ def skip_folder(folder: str, relation_names: list[str]) -> bool:
     return True
 
 
+def economize(relation_dict: dict) -> None:
+    for trial in relation_dict["trials"]:
+        for layer in trial["layers"]:
+            layer["result"]["samples"] = []
+            for beta in layer["result"]["betas"]:
+                beta["faithfulness_successes"] = []
+            for rank in layer["result"]["ranks"]:
+                rank["efficacy_successes"] = []
+
+
 def read_sweep_results(
     sweep_dir: str,
     results: dict | None = None,
     depth: int = 0,
     relation_names: list[str] | None = None,
+    economy: bool = True,  # won't keep faithfulness and efficacy succsses, which are mainly used for debugging purposes
+    parent_dir: str = "",
 ) -> dict:
-    logger.debug(f"{'    '*depth}--> {sweep_dir}")
+    logger.debug(f"{'    '*depth}--> {sweep_dir[len(parent_dir):]}")
     if results is None:
         results = {}
     if os.path.isdir(sweep_dir):
@@ -317,18 +328,23 @@ def read_sweep_results(
             and depth > 0
             and skip_folder(sweep_dir, relation_names)
         ):
-            logger.debug(f"** skipping folder {sweep_dir} **")
+            logger.debug(f"** skipping folder {sweep_dir[len(parent_dir):]} **")
             return results
         for file in os.listdir(sweep_dir):
             read_sweep_results(
-                f"{sweep_dir}/{file}", results, depth + 1, relation_names
+                sweep_dir=f"{sweep_dir}/{file}",
+                results=results,
+                depth=depth + 1,
+                relation_names=relation_names,
+                economy=economy,
+                parent_dir=sweep_dir,
             )
-    elif sweep_dir.endswith(".json"):
+    elif sweep_dir.endswith(".json") and "results_all" not in sweep_dir:
         with open(sweep_dir) as f:
             try:
                 res = json.load(f)
                 if isinstance(res, dict) and "trials" in res:
-                    # print(len(res["trials"]))
+                    economize(res) if economy else None
                     if res["relation_name"] not in results:
                         results[res["relation_name"]] = res
                     else:
