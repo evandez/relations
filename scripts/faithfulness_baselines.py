@@ -4,6 +4,8 @@ import logging
 import os
 from typing import Sequence
 
+import baukit
+import torch
 from src import data, functional, metrics, models
 from src.operators import (
     JacobianIclMeanEstimator,
@@ -14,9 +16,6 @@ from src.operators import (
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
-
-import baukit
-import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -249,9 +248,9 @@ def main(args: argparse.Namespace) -> None:
             )
             h_layer = hparams.layer
             beta = hparams.beta.mean
-            # prompt_template = relation_known.prompt_templates[0]
-            prompt_template = " {} :"
             relation = dataset.filter(relation_names=[relation_sweep.relation_name])[0]
+            prompt_template = relation.prompt_templates[0]
+            # prompt_template = " {} :"
             relation = relation.set(prompt_templates=[prompt_template])
 
             logger.info(
