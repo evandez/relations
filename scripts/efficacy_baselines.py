@@ -4,12 +4,11 @@ import logging
 import os
 from typing import Literal
 
+import torch
 from src import data, editors, functional, metrics, models, operators, sweeps
 from src.data import RelationSample
 from src.utils import dataclasses_utils, experiment_utils, logging_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
-
-import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ def run_causality_baselines(
     device = device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(name=model_name, device=device)
     sweep_results_dir = f"{sweep_results_dir}/{model_name}"
-    sweep_results = read_sweep_results(sweep_results_dir)
+    sweep_results = read_sweep_results(sweep_results_dir, relation_names=args.rel_names)
 
     logger.info("found %d relations", len(sweep_results))
     logger.info(json.dumps(list(sweep_results.keys()), indent=4))
