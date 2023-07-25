@@ -217,7 +217,7 @@ def main(args: argparse.Namespace) -> None:
 
     all_relation_results = {}
 
-    # these relations will go out of memory with large N_TRAINING is > 6
+    # these relations will go out of memory with large N_TRAINING is > 5
     OOM_relations = [
         "person father",
         "person mother",
@@ -232,142 +232,169 @@ def main(args: argparse.Namespace) -> None:
             "################################################################################"
         )
         for relation_name, sweep_result in tqdm(sweep_results.items()):
-            if args.rel_names is not None and relation_name not in args.rel_names:
-                logger.info("skipping %s", relation_name)
-                continue
-            logger.info("relation: %s", relation_name)
-            if relation_name not in relation_sweeps:
-                relation_sweeps[relation_name] = relation_from_dict(sweep_result)
-            relation_sweep = relation_sweeps[relation_name]
-            if len(relation_sweep.trials) < 3:
-                logger.info(f"skipping {relation_name}, not enough trials")
-                continue
-            hparams = relation_sweep.best_by_faithfulness()
-            logger.info(
-                f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
-            )
-            h_layer = hparams.layer
-            beta = hparams.beta.mean
-            relation = dataset.filter(relation_names=[relation_sweep.relation_name])[0]
-            prompt_template = relation.prompt_templates[0]
-            # prompt_template = " {} :"
-            relation = relation.set(prompt_templates=[prompt_template])
+            trial_successful = False
+            maximum_tries = 5
+            while not trial_successful and maximum_tries > 0:
+                try:
+                    if (
+                        args.rel_names is not None
+                        and relation_name not in args.rel_names
+                    ):
+                        logger.info("skipping %s", relation_name)
+                        continue
+                    logger.info("relation: %s", relation_name)
+                    if relation_name not in relation_sweeps:
+                        relation_sweeps[relation_name] = relation_from_dict(
+                            sweep_result
+                        )
+                    relation_sweep = relation_sweeps[relation_name]
+                    if len(relation_sweep.trials) < 3:
+                        logger.info(f"skipping {relation_name}, not enough trials")
+                        continue
+                    hparams = relation_sweep.best_by_faithfulness()
+                    logger.info(
+                        f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
+                    )
+                    h_layer = hparams.layer
+                    beta = hparams.beta.mean
+                    relation = dataset.filter(
+                        relation_names=[relation_sweep.relation_name]
+                    )[0]
+                    prompt_template = relation.prompt_templates[0]
+                    # prompt_template = " {} :"
+                    relation = relation.set(prompt_templates=[prompt_template])
 
-            logger.info(
-                f"total samples = {len(relation.samples)}, prompt template: {prompt_template}"
-            )
+                    logger.info(
+                        f"total samples = {len(relation.samples)}, prompt template: {prompt_template}"
+                    )
 
-            if relation_name not in all_relation_results:
-                all_relation_results[relation_name] = {
-                    "relation_name": relation_name,
-                    "total_samples": len(relation.samples),
-                    "prompt_template": prompt_template,
-                    "h_layer": h_layer,
-                    "beta": beta,
-                    "expected_recall": hparams.recall.mean,
-                    "trials": [],
-                }
+                    if relation_name not in all_relation_results:
+                        all_relation_results[relation_name] = {
+                            "relation_name": relation_name,
+                            "total_samples": len(relation.samples),
+                            "prompt_template": prompt_template,
+                            "h_layer": h_layer,
+                            "beta": beta,
+                            "expected_recall": hparams.recall.mean,
+                            "trials": [],
+                        }
 
-            relation_result = all_relation_results[relation_name]
+                    relation_result = all_relation_results[relation_name]
 
-            # Runs the numbers with the exact same train/test split as the n'th trial of the sweep
-            # sweep_trial = relation_results.trials[trial]
-            # train_samples = sweep_trial.train_samples
-            # test_samples = [
-            #     sample
-            #     for sample in relation.samples
-            #     if filter_not_in_train_samples(sample, train_samples)
-            # ]
-            # train_relation = relation.set(
-            #     samples=train_samples, prompt_templates=[prompt_template]
-            # )
-            # test_relation = relation.set(
-            #     samples=test_samples, prompt_templates=[prompt_template]
-            # )
+                    # Runs the numbers with the exact same train/test split as the n'th trial of the sweep
+                    # sweep_trial = relation_results.trials[trial]
+                    # train_samples = sweep_trial.train_samples
+                    # test_samples = [
+                    #     sample
+                    #     for sample in relation.samples
+                    #     if filter_not_in_train_samples(sample, train_samples)
+                    # ]
+                    # train_relation = relation.set(
+                    #     samples=train_samples, prompt_templates=[prompt_template]
+                    # )
+                    # test_relation = relation.set(
+                    #     samples=test_samples, prompt_templates=[prompt_template]
+                    # )
 
-            # sample random train/test split for each trial
-            train_relation, test_relation = relation.split(
-                N_TRAINING
-                if (relation_name not in OOM_relations or N_TRAINING < 5)
-                else 5
-            )
+                    # sample random train/test split for each trial
+                    train_relation, test_relation = relation.split(
+                        N_TRAINING
+                        if (relation_name not in OOM_relations or N_TRAINING < 5)
+                        else 5
+                    )
 
-            logger.info(f"train: {[str(sample) for sample in train_relation.samples]}")
+                    logger.info(
+                        f"train: {[str(sample) for sample in train_relation.samples]}"
+                    )
 
-            icl_prompt = functional.make_prompt(
-                mt=mt,
-                prompt_template=prompt_template,
-                examples=train_relation.samples,
-                subject="{}",
-            )
-            logger.info(icl_prompt)
+                    icl_prompt = functional.make_prompt(
+                        mt=mt,
+                        prompt_template=prompt_template,
+                        examples=train_relation.samples,
+                        subject="{}",
+                    )
+                    logger.info(icl_prompt)
 
-            test_relation = (
-                functional.filter_relation_samples_based_on_provided_fewshots(
-                    mt=mt,
-                    test_relation=test_relation,
-                    prompt_template=icl_prompt,
-                    subj_token_filter="all",
-                )
-            )
+                    test_relation = (
+                        functional.filter_relation_samples_based_on_provided_fewshots(
+                            mt=mt,
+                            test_relation=test_relation,
+                            prompt_template=icl_prompt,
+                            subj_token_filter="all",
+                        )
+                    )
 
-            logger.info(
-                f"known samples: {len(test_relation.samples)}/{len(relation.samples)}"
-            )
+                    logger.info(
+                        f"known samples: {len(test_relation.samples)}/{len(relation.samples)}"
+                    )
 
-            trial_results = {
-                "icl_prompt": icl_prompt,
-                "known": len(test_relation.samples),
-                "train": [
-                    {
-                        "subject": sample.subject,
-                        "object": sample.object,
+                    trial_results = {
+                        "icl_prompt": icl_prompt,
+                        "known": len(test_relation.samples),
+                        "train": [
+                            {
+                                "subject": sample.subject,
+                                "object": sample.object,
+                            }
+                            for sample in train_relation.samples
+                        ],
+                        "zero_shot": {},
+                        "icl": {},
                     }
-                    for sample in train_relation.samples
-                ],
-                "zero_shot": {},
-                "icl": {},
-            }
 
-            hs_by_subj_icl = {
-                sample.subject: get_h(
-                    mt=mt,
-                    prompt_template=icl_prompt,
-                    subject=sample.subject,
-                    layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
-                )
-                for sample in test_relation.samples
-            }
+                    hs_by_subj_icl = {
+                        sample.subject: get_h(
+                            mt=mt,
+                            prompt_template=icl_prompt,
+                            subject=sample.subject,
+                            layer_names=models.determine_layer_paths(
+                                mt, ["emb", h_layer]
+                            ),
+                        )
+                        for sample in test_relation.samples
+                    }
 
-            trial_results["icl"], operators = get_icl_results(
-                mt=mt,
-                h_layer=h_layer,
-                beta=beta,
-                train=train_relation,
-                test=test_relation,
-                icl_prompt=icl_prompt,
-                hs_by_subj=hs_by_subj_icl,
-            )
+                    trial_results["icl"], operators = get_icl_results(
+                        mt=mt,
+                        h_layer=h_layer,
+                        beta=beta,
+                        train=train_relation,
+                        test=test_relation,
+                        icl_prompt=icl_prompt,
+                        hs_by_subj=hs_by_subj_icl,
+                    )
 
-            hs_by_subj_zs = {
-                sample.subject: get_h(
-                    mt=mt,
-                    prompt_template=mt.tokenizer.eos_token + " {} :",
-                    subject=sample.subject,
-                    layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
-                )
-                for sample in test_relation.samples
-            }
+                    hs_by_subj_zs = {
+                        sample.subject: get_h(
+                            mt=mt,
+                            prompt_template=mt.tokenizer.eos_token + " {} :",
+                            subject=sample.subject,
+                            layer_names=models.determine_layer_paths(
+                                mt, ["emb", h_layer]
+                            ),
+                        )
+                        for sample in test_relation.samples
+                    }
 
-            trial_results["zero_shot"] = get_zero_shot_results(
-                mt=mt,
-                h_layer=h_layer,
-                test=test_relation,
-                operators=operators,
-                hs_by_subj=hs_by_subj_zs,
-            )
+                    trial_results["zero_shot"] = get_zero_shot_results(
+                        mt=mt,
+                        h_layer=h_layer,
+                        test=test_relation,
+                        operators=operators,
+                        hs_by_subj=hs_by_subj_zs,
+                    )
 
-            relation_result["trials"].append(trial_results)
+                    relation_result["trials"].append(trial_results)
+                    trial_successful = True
+                except Exception as e:
+                    if "out of memory" in str(e):
+                        logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+                        maximum_tries -= 1
+                        logger.error(
+                            f"CUDA out of memory, retrying {maximum_tries} more times"
+                        )
+                        logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+                        continue
 
         logger.info(
             "-----------------------------------------------------------------------"
