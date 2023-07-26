@@ -232,55 +232,54 @@ def main(args: argparse.Namespace) -> None:
             "################################################################################"
         )
         for relation_name, sweep_result in tqdm(sweep_results.items()):
+            if (
+                args.rel_names is not None
+                and relation_name not in args.rel_names
+            ):
+                logger.info("skipping %s", relation_name)
+                continue
+            logger.info("relation: %s", relation_name)
+            if relation_name not in relation_sweeps:
+                relation_sweeps[relation_name] = relation_from_dict(
+                    sweep_result
+                )
+            relation_sweep = relation_sweeps[relation_name]
+            if len(relation_sweep.trials) < 3:
+                logger.info(f"skipping {relation_name}, not enough trials")
+                continue
+            hparams = relation_sweep.best_by_faithfulness()
+            logger.info(
+                f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
+            )
+            h_layer = hparams.layer
+            beta = hparams.beta.mean
+            relation = dataset.filter(
+                relation_names=[relation_sweep.relation_name]
+            )[0]
+            prompt_template = relation.prompt_templates[0]
+            # prompt_template = " {} :"
+            relation = relation.set(prompt_templates=[prompt_template])
+
+            logger.info(
+                f"total samples = {len(relation.samples)}, prompt template: {prompt_template}"
+            )
+
+            if relation_name not in all_relation_results:
+                all_relation_results[relation_name] = {
+                    "relation_name": relation_name,
+                    "total_samples": len(relation.samples),
+                    "prompt_template": prompt_template,
+                    "h_layer": h_layer,
+                    "beta": beta,
+                    "expected_recall": hparams.recall.mean,
+                    "trials": [],
+                }
+            relation_result = all_relation_results[relation_name]
+
             trial_successful = False
             maximum_tries = 5
             while not trial_successful and maximum_tries > 0:
                 try:
-                    if (
-                        args.rel_names is not None
-                        and relation_name not in args.rel_names
-                    ):
-                        logger.info("skipping %s", relation_name)
-                        continue
-                    logger.info("relation: %s", relation_name)
-                    if relation_name not in relation_sweeps:
-                        relation_sweeps[relation_name] = relation_from_dict(
-                            sweep_result
-                        )
-                    relation_sweep = relation_sweeps[relation_name]
-                    if len(relation_sweep.trials) < 3:
-                        logger.info(f"skipping {relation_name}, not enough trials")
-                        continue
-                    hparams = relation_sweep.best_by_faithfulness()
-                    logger.info(
-                        f"{relation_name} | h_layer: {hparams.layer} | beta: {hparams.beta.mean} +/- {hparams.beta.stderr} |>> expected lre recall: {hparams.recall.mean} +/- {hparams.recall.stderr}"
-                    )
-                    h_layer = hparams.layer
-                    beta = hparams.beta.mean
-                    relation = dataset.filter(
-                        relation_names=[relation_sweep.relation_name]
-                    )[0]
-                    prompt_template = relation.prompt_templates[0]
-                    # prompt_template = " {} :"
-                    relation = relation.set(prompt_templates=[prompt_template])
-
-                    logger.info(
-                        f"total samples = {len(relation.samples)}, prompt template: {prompt_template}"
-                    )
-
-                    if relation_name not in all_relation_results:
-                        all_relation_results[relation_name] = {
-                            "relation_name": relation_name,
-                            "total_samples": len(relation.samples),
-                            "prompt_template": prompt_template,
-                            "h_layer": h_layer,
-                            "beta": beta,
-                            "expected_recall": hparams.recall.mean,
-                            "trials": [],
-                        }
-
-                    relation_result = all_relation_results[relation_name]
-
                     # Runs the numbers with the exact same train/test split as the n'th trial of the sweep
                     # sweep_trial = relation_results.trials[trial]
                     # train_samples = sweep_trial.train_samples
@@ -391,10 +390,12 @@ def main(args: argparse.Namespace) -> None:
                         logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                         maximum_tries -= 1
                         logger.error(
-                            f"CUDA out of memory, retrying {maximum_tries} more times"
+                            f"CUDA out of memory, tries left: {maximum_tries}"
                         )
                         logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                         continue
+                    else:
+                        raise e
 
         logger.info(
             "-----------------------------------------------------------------------"
