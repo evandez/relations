@@ -41,6 +41,11 @@ def save_order_1_approx(
     np.savez(f"{path}/{file_name}", **detached)
 
 
+def normalize_on_sphere(h: torch.Tensor, scale: float | None = None) -> torch.Tensor:
+    lh = (h - h.mean(dim=0)) / h.std(dim=0)
+    return scale * lh / lh.norm(dim=0) if scale is not None else lh
+
+
 def main(
     relation_name: str,
     h_layer: int = 8,
@@ -95,7 +100,7 @@ def main(
                 prompt=icl_prompt.format(s1),
                 h_layer=h_layer,
                 h_index=h_index,
-                h=h,
+                h=normalize_on_sphere(h, scale=60.0),
             )
             save_order_1_approx(
                 approx,
