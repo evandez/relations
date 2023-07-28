@@ -43,6 +43,7 @@ def sweep(
     subj_token_filter: Literal["all", "single", "multi"] = "all",
     consider_rank_for_recall: bool = False,
     limit_test_samples: int | None = None,
+    use_bare_prompt: bool = False,
     **kwargs: Any,
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
@@ -50,11 +51,17 @@ def sweep(
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
     if betas is None:
-        beta_upper_limit = 5.0 if mt.name is not "llama" else 10.0
+        beta_upper_limit = 5.0 if mt.name != "llama" else 10.0
         betas = torch.linspace(0, beta_upper_limit, steps=21).tolist()
     if ranks is None:
-        low_rank_upper_limit = 320 if mt.name is not "llama" else 512
+        low_rank_upper_limit = 320 if mt.name != "llama" else 512
         ranks = range(0, low_rank_upper_limit, 8)
+    limit_test_samples = (
+        200
+        if (mt.name == "llama" and limit_test_samples is None)
+        else limit_test_samples
+    )
+
     logger.info("begin sweeping faithfulness")
 
     relation_results = []
@@ -74,8 +81,11 @@ def sweep(
             relation_results.append(relation_result)
             continue
 
-        prompt_template = relation.prompt_templates[0]
-        # prompt_template = " {} :"  # bare prompt with colon
+        if use_bare_prompt:
+            prompt_template = " {}"  # bare prompt
+        else:
+            prompt_template = relation.prompt_templates[0]
+            # prompt_template = " {} :"  # bare prompt with colon
 
         relation_result = SweepRelationResults(
             relation_name=relation.name,
@@ -147,6 +157,7 @@ def sweep(
                 continue  # only skip the trial that doesn't have enough test samples. continue otherwise
 
             if limit_test_samples is not None:
+                logger.info(f"limiting test samples to {limit_test_samples}")
                 test_relation = test_relation.set(
                     samples=test_relation.samples[:limit_test_samples]
                 )

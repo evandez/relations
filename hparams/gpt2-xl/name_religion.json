@@ -1,8 +1,9 @@
 {
-    "relation_name": "name religion",
-    "h_layer": 15,
-    "beta": 0.15000000596046448,
     "model_name": "gpt2-xl",
+    "relation_name": "name religion",
+    "h_layer": 18,
+    "beta": 2.75,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 11
 }

@@ -1,8 +1,9 @@
 {
-    "relation_name": "city in country",
-    "h_layer": 17,
-    "beta": 0.16666666915019354,
     "model_name": "llama",
+    "relation_name": "city in country",
+    "h_layer": 18,
+    "beta": 5.25,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 4
 }

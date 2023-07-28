@@ -232,17 +232,12 @@ def main(args: argparse.Namespace) -> None:
             "################################################################################"
         )
         for relation_name, sweep_result in tqdm(sweep_results.items()):
-            if (
-                args.rel_names is not None
-                and relation_name not in args.rel_names
-            ):
+            if args.rel_names is not None and relation_name not in args.rel_names:
                 logger.info("skipping %s", relation_name)
                 continue
             logger.info("relation: %s", relation_name)
             if relation_name not in relation_sweeps:
-                relation_sweeps[relation_name] = relation_from_dict(
-                    sweep_result
-                )
+                relation_sweeps[relation_name] = relation_from_dict(sweep_result)
             relation_sweep = relation_sweeps[relation_name]
             if len(relation_sweep.trials) < 3:
                 logger.info(f"skipping {relation_name}, not enough trials")
@@ -253,9 +248,7 @@ def main(args: argparse.Namespace) -> None:
             )
             h_layer = hparams.layer
             beta = hparams.beta.mean
-            relation = dataset.filter(
-                relation_names=[relation_sweep.relation_name]
-            )[0]
+            relation = dataset.filter(relation_names=[relation_sweep.relation_name])[0]
             prompt_template = relation.prompt_templates[0]
             # prompt_template = " {} :"
             relation = relation.set(prompt_templates=[prompt_template])
@@ -389,9 +382,7 @@ def main(args: argparse.Namespace) -> None:
                     if "out of memory" in str(e):
                         logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                         maximum_tries -= 1
-                        logger.error(
-                            f"CUDA out of memory, tries left: {maximum_tries}"
-                        )
+                        logger.error(f"CUDA out of memory, tries left: {maximum_tries}")
                         logger.info("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                         continue
                     else:

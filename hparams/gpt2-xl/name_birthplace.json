@@ -1,8 +1,9 @@
 {
-    "relation_name": "name birthplace",
-    "h_layer": 24,
-    "beta": 0.30000001192092896,
     "model_name": "gpt2-xl",
+    "relation_name": "name birthplace",
+    "h_layer": 27,
+    "beta": 2.6875,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 20
 }

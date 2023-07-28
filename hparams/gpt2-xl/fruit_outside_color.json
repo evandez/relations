@@ -1,9 +1,9 @@
 {
     "model_name": "gpt2-xl",
-    "relation_name": "company hq",
+    "relation_name": "fruit outside color",
     "h_layer": 22,
-    "beta": 3.96875,
+    "beta": 1.3125,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 20
+    "h_layer_edit": 11
 }

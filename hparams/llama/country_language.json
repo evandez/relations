@@ -1,8 +1,9 @@
 {
-    "relation_name": "country language",
-    "h_layer": 15,
-    "beta": 0.2666666656732559,
     "model_name": "llama",
+    "relation_name": "country language",
+    "h_layer": 13,
+    "beta": 4.3125,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 7
 }

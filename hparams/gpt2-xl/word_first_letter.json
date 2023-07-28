@@ -1,8 +1,9 @@
 {
-    "relation_name": "word first letter",
-    "h_layer": 29,
-    "beta": 0.11666666964689891,
     "model_name": "gpt2-xl",
+    "relation_name": "word first letter",
+    "h_layer": 27,
+    "beta": 4.4375,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 14
 }

@@ -1,8 +1,9 @@
 {
-    "relation_name": "occupation gender",
-    "h_layer": 12,
-    "beta": 0.40000000844399136,
     "model_name": "llama",
+    "relation_name": "occupation gender",
+    "h_layer": 11,
+    "beta": 2.375,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 2
 }

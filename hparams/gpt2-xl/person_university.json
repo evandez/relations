@@ -1,9 +1,9 @@
 {
     "model_name": "gpt2-xl",
     "relation_name": "person university",
-    "h_layer": 18,
-    "beta": 0.612500011920929,
+    "h_layer": "emb",
+    "beta": 1.0,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 14
+    "h_layer_edit": "emb"
 }

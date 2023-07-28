@@ -1,8 +1,9 @@
 {
+    "model_name": "llama",
     "relation_name": "person lead singer of band",
     "h_layer": 12,
-    "beta": 0.18333333482344946,
-    "model_name": "llama",
+    "beta": 3.5,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 3
 }

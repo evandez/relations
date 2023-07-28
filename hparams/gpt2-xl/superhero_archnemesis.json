@@ -1,9 +1,9 @@
 {
     "model_name": "gpt2-xl",
     "relation_name": "superhero archnemesis",
-    "h_layer": 18,
-    "beta": 0.6625000014901161,
+    "h_layer": 26,
+    "beta": 1.0625,
     "rank": null,
     "z_layer": -1,
-    "h_layer_edit": 25
+    "h_layer_edit": 14
 }

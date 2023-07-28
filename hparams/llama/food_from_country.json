@@ -1,8 +1,9 @@
 {
+    "model_name": "llama",
     "relation_name": "food from country",
     "h_layer": 18,
-    "beta": 0.13333333532015482,
-    "model_name": "llama",
+    "beta": 3.5,
     "rank": null,
-    "z_layer": -1
+    "z_layer": -1,
+    "h_layer_edit": 8
 }
