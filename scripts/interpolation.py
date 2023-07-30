@@ -50,7 +50,7 @@ def main(
     relation_name: str,
     h_layer: int = 8,
     interpolation_steps: int = 100,
-    n_training: int = 5,
+    n_few_shot: int = 5,  # filter known samples from test set with n_few_shot examples
     n_trials: int = 10,
 ) -> None:
     mt = models.load_model(name="gptj", fp16=True, device="cuda")
@@ -59,7 +59,7 @@ def main(
     # prompt_template = " {} :"  # bare prompt with colon
     relation = relation.set(prompt_templates=[prompt_template])
 
-    train, test = relation.split(n_training)
+    train, test = relation.split(n_few_shot)
     icl_prompt = functional.make_prompt(
         prompt_template=train.prompt_templates[0],
         subject="{}",
@@ -100,12 +100,14 @@ def main(
                 prompt=icl_prompt.format(s1),
                 h_layer=h_layer,
                 h_index=h_index,
-                h=normalize_on_sphere(h, scale=60.0),
+                h=normalize_on_sphere(
+                    h, scale=60.0  # scale is selected by eyeballing some examples
+                ),
             )
             save_order_1_approx(
                 approx,
                 file_name=f"approx_{idx+1}",
-                path=f"results/interpolation/{s1}-{s2}",
+                path=f"results/interpolation/{relation_name}/{s1}-{s2}",
             )
             w_norm = approx.weight.norm()
             b_norm = approx.bias.norm()
@@ -119,4 +121,7 @@ def main(
 
 
 if __name__ == "__main__":
-    main(relation_name="country capital city")
+    main(
+        relation_name="country capital city",
+        h_layer=5,
+    )
