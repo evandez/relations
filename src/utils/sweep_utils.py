@@ -6,7 +6,8 @@ from dataclasses import dataclass
 
 from src import data, metrics
 from src.data import RelationSample
-from src.utils.typing import Layer
+from src.metrics import AggregateMetric
+from src.utils.typing import Layer, PathLike
 
 from dataclasses_json import DataClassJsonMixin
 
@@ -356,3 +357,49 @@ def read_sweep_results(
 
 
 ####################### read and parse the sweep results #######################
+
+
+####################### read and parse the causality-baseline sweep results #######################
+
+
+def read_efficacy_baseline_results(sweep_path: PathLike) -> dict:
+    efficacy_baseline_results = {}
+
+    for relation_folder in os.listdir(sweep_path):
+        cur_sweep = f"{sweep_path}/{relation_folder}"
+        if "results_all.json" not in os.listdir(cur_sweep):
+            continue
+        with open(f"{cur_sweep}/results_all.json") as f:
+            res = json.load(f)["relations"]
+            if len(res) == 0 or len(res[0]["trials"]) == 0:
+                continue
+            res = res[0]
+            efficacy_baseline_results[res["relation_name"]] = res
+    return efficacy_baseline_results
+
+
+def format_efficacy_baseline_results(efficacy_result: dict) -> dict:
+    layerwise_results = {}  # type: ignore
+    for trial in efficacy_result["trials"]:
+        for layer in trial["layerwise_baseline_results"]:
+            layer_name = layer["layer"]
+            if layer_name not in layerwise_results:
+                layerwise_results[layer_name] = {
+                    edit_type: [] for edit_type in layer["results"].keys()
+                }
+                layerwise_results[layer_name]
+            for edit_type in layer["results"].keys():
+                layerwise_results[layer_name][edit_type].append(
+                    layer["results"][edit_type]
+                )
+
+    for layer_name in layerwise_results.keys():
+        for edit_type in layerwise_results[layer_name].keys():
+            layerwise_results[layer_name][edit_type] = AggregateMetric.aggregate(
+                layerwise_results[layer_name][edit_type]
+            )
+
+    return {
+        "relation_name": efficacy_result["relation_name"],
+        "layerwise_result": layerwise_results,
+    }
