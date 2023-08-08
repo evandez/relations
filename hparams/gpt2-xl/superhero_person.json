@@ -1,9 +1,0 @@
-{
-    "model_name": "gpt2-xl",
-    "relation_name": "superhero person",
-    "h_layer": 20,
-    "beta": 1.6875,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 14
-}

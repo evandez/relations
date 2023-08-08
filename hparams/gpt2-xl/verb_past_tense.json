@@ -1,9 +1,0 @@
-{
-    "model_name": "gpt2-xl",
-    "relation_name": "verb past tense",
-    "h_layer": 14,
-    "beta": 2.84375,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 12
-}

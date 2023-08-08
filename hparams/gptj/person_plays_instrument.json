@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "person plays instrument",
-    "h_layer": 17,
-    "beta": 3.21875,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 9
-}

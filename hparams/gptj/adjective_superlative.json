@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "adjective superlative",
-    "h_layer": 8,
-    "beta": 2.65625,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 6
-}

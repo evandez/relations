@@ -1,9 +1,0 @@
-{
-    "model_name": "gpt2-xl",
-    "relation_name": "food from country",
-    "h_layer": 26,
-    "beta": 2.6875,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 20
-}

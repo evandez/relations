@@ -1,9 +1,0 @@
-{
-    "model_name": "gpt2-xl",
-    "relation_name": "word sentiment",
-    "h_layer": 15,
-    "beta": 3.0,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 6
-}

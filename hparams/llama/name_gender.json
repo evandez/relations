@@ -1,9 +1,0 @@
-{
-    "model_name": "llama",
-    "relation_name": "name gender",
-    "h_layer": 7,
-    "beta": 0.6875,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": "emb"
-}

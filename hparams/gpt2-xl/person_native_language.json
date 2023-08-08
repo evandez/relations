@@ -1,8 +1,0 @@
-{
-    "relation_name": "person native language",
-    "h_layer": 41,
-    "beta": 0.05000000074505806,
-    "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
-}

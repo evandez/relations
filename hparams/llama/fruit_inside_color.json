@@ -1,9 +1,0 @@
-{
-    "model_name": "llama",
-    "relation_name": "fruit inside color",
-    "h_layer": 10,
-    "beta": 3.5625,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 4
-}

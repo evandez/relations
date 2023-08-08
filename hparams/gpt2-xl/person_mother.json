@@ -1,9 +1,0 @@
-{
-    "model_name": "gpt2-xl",
-    "relation_name": "person mother",
-    "h_layer": 26,
-    "beta": 1.09375,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 13
-}

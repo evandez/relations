@@ -1,9 +1,0 @@
-{
-    "model_name": "llama",
-    "relation_name": "superhero archnemesis",
-    "h_layer": 11,
-    "beta": 3.0,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 3
-}

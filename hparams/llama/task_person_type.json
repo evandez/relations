@@ -1,8 +1,0 @@
-{
-    "relation_name": "task person type",
-    "h_layer": 17,
-    "beta": 0.08333333457509677,
-    "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
-}

@@ -1,9 +1,0 @@
-{
-    "model_name": "llama",
-    "relation_name": "occupation age",
-    "h_layer": 15,
-    "beta": 3.9375,
-    "rank": null,
-    "z_layer": -1,
-    "h_layer_edit": 2
-}
