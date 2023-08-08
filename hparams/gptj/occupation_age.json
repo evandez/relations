@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "occupation age",
-    "h_layer": 2,
-    "beta": 2.5,
-    "rank": 24,
-    "z_layer": -1,
-    "h_layer_edit": 2
-}

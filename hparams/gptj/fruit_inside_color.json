@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "fruit inside color",
-    "h_layer": 17,
-    "beta": 2.5,
-    "rank": 51,
-    "z_layer": -1,
-    "h_layer_edit": 17
-}

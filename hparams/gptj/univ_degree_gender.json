@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "univ degree gender",
-    "h_layer": 7,
-    "beta": 2.5,
-    "rank": 126,
-    "z_layer": -1,
-    "h_layer_edit": 7
-}

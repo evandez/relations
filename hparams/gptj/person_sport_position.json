@@ -1,9 +1,0 @@
-{
-    "model_name": "gptj",
-    "relation_name": "person sport position",
-    "h_layer": 13,
-    "beta": 2.5,
-    "rank": 32,
-    "z_layer": -1,
-    "h_layer_edit": 13
-}
