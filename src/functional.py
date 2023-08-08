@@ -803,7 +803,7 @@ def compute_hs_and_zs(
                 else:
                     z_by_subj[subject] = {
                         zl: untuple(traces[layer_idx_to_name[zl]].output)[
-                            batch_index, h_index
+                            batch_index, -1
                         ]
                         for zl in z_layer
                     }

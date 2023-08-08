@@ -4,21 +4,24 @@ import logging
 import os
 from typing import Sequence
 
-import baukit
-import torch
 from src import data, functional, metrics, models
 from src.operators import (
+    CornerTranslationBaseline,
     JacobianIclMeanEstimator,
     LearnedLinearEstimatorBaseline,
     LinearRelationOperator,
-    OffsetEstimatorBaseline,
 )
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
+
+import baukit
+import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
+
+########################### Utils ###########################
 
 
 def get_h(
@@ -52,6 +55,38 @@ def get_h(
         .cpu()
         for layer_name in layer_names
     }
+
+
+def load_raw_results(model_name: str, results_path: str) -> dict:
+    if model_name != "llama-13b":
+        results_file = f"{results_path}/{model_name}.json"
+        with open(results_file, "r") as f:
+            results_raw = json.load(f)
+    else:
+
+        def merge_results(target: dict | None, update: dict) -> dict:
+            if target is None:
+                return update
+            for relation_upd in update:
+                updated = False
+                for relation_targ in target:
+                    if relation_upd["relation_name"] == relation_targ["relation_name"]:
+                        relation_targ["trials"].extend(relation_upd["trials"])
+                        updated = True
+                        break
+                assert updated, f"{relation_upd['relation_name']} not found in target"
+            return target
+
+        results_raw = None
+        model_path = f"{results_path}/{model_name}"
+        for file in os.listdir(model_path):
+            with open(f"{model_path}/{file}", "r") as f:
+                segment_results = json.load(f)
+                results_raw = merge_results(results_raw, segment_results)
+    return results_raw
+
+
+########################### Main ###########################
 
 
 def evaluate(
@@ -120,7 +155,7 @@ def get_icl_results(
     logger.info("------------ ICL ------------")
     results: dict = {
         "logit_lens": {},  # F(h) = h
-        "corner": {},  # F(h) = h + b
+        "corner": {},  # F(h) = h + b, where b is the corner
         "learned_linear": {},  # F(h) = Wh + b, W is learned with linear regression
         "lre_emb": {},  # ICL-Mean but h set to embedding
         "lre": {},  # ICL, don't do mean as it's zero shot
@@ -140,7 +175,7 @@ def get_icl_results(
     logger.info(f"logit lens: {logit_lens_recall['recall']}")
     results["logit_lens"] = logit_lens_recall
 
-    offset_estimator = OffsetEstimatorBaseline(mt=mt, h_layer=h_layer, mode="icl")
+    offset_estimator = CornerTranslationBaseline(mt=mt, h_layer=h_layer, mode="icl")
     offset_operator = offset_estimator(
         train.set(samples=train.samples + test.samples)  # access to the full range
     )
@@ -352,7 +387,7 @@ def main(args: argparse.Namespace) -> None:
             hs_by_subj_zs = {
                 sample.subject: get_h(
                     mt=mt,
-                    prompt_template=mt.tokenizer.eos_token + " {} :",
+                    prompt_template=mt.tokenizer.eos_token + " " + prompt_template,
                     subject=sample.subject,
                     layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
                 )
