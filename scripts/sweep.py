@@ -31,6 +31,7 @@ def main(args: argparse.Namespace) -> None:
             results_dir=experiment.results_dir,
             resume=args.resume,
             subj_token_filter=args.subj_token_filter,
+            use_bare_prompt=args.use_bare_prompt,
         )
         for relation in results.relations:
             log_msg = f"{relation.relation_name}"
@@ -98,6 +99,12 @@ if __name__ == "__main__":
         type=int,
         default=sweeps.DEFAULT_N_TRAIN_SAMPLES,
         help="number of train samples to use per trial",
+    )
+    parser.add_argument(
+        "--use-bare-prompt",
+        action="store_true",
+        default=False,
+        help='will use bare prompt "{subj} {obj}"',
     )
     args = parser.parse_args()
     logger.info(args)
