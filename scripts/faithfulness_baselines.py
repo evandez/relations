@@ -391,15 +391,19 @@ def main(args: argparse.Namespace) -> None:
                         hs_by_subj=hs_by_subj_icl,
                     )
 
-            hs_by_subj_zs = {
-                sample.subject: get_h(
-                    mt=mt,
-                    prompt_template=mt.tokenizer.eos_token + " " + prompt_template,
-                    subject=sample.subject,
-                    layer_names=models.determine_layer_paths(mt, ["emb", h_layer]),
-                )
-                for sample in test_relation.samples
-            }
+                    hs_by_subj_zs = {
+                        sample.subject: get_h(
+                            mt=mt,
+                            prompt_template=mt.tokenizer.eos_token
+                            + " "
+                            + prompt_template,
+                            subject=sample.subject,
+                            layer_names=models.determine_layer_paths(
+                                mt, ["emb", h_layer]
+                            ),
+                        )
+                        for sample in test_relation.samples
+                    }
 
                     trial_results["zero_shot"] = get_zero_shot_results(
                         mt=mt,

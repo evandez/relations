@@ -2,11 +2,12 @@
 import logging
 from typing import Any, Literal, Sequence
 
-import torch
 from src import data, editors, functional, metrics, models, operators
 from src.functional import low_rank_approx
 from src.utils import experiment_utils
 from src.utils.typing import Layer, PathLike
+
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,7 @@ def sweep(
     if ranks is None:
         low_rank_upper_limit = 320 if mt.name != "llama" else 512
         ranks = range(0, low_rank_upper_limit, 8)
+        # ranks = range(0, models.determine_hidden_size(mt), 64)
     limit_test_samples = (
         200
         if (mt.name == "llama" and limit_test_samples is None)
