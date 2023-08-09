@@ -57,32 +57,34 @@ def get_h(
     }
 
 
-def load_raw_results(model_name: str, results_path: str) -> dict:
-    if model_name != "llama-13b":
+def load_raw_results(
+    model_name: str, results_path: str, multiple_files: bool = False
+) -> dict:
+    if not multiple_files:
         results_file = f"{results_path}/{model_name}.json"
         with open(results_file, "r") as f:
             results_raw = json.load(f)
-    else:
+        return results_raw
 
-        def merge_results(target: dict | None, update: dict) -> dict:
-            if target is None:
-                return update
-            for relation_upd in update:
-                updated = False
-                for relation_targ in target:
-                    if relation_upd["relation_name"] == relation_targ["relation_name"]:
-                        relation_targ["trials"].extend(relation_upd["trials"])
-                        updated = True
-                        break
-                assert updated, f"{relation_upd['relation_name']} not found in target"
-            return target
+    def merge_results(target: dict | None, update: dict) -> dict:
+        if target is None:
+            return update
+        for relation_upd in update:
+            updated = False
+            for relation_targ in target:
+                if relation_upd["relation_name"] == relation_targ["relation_name"]:
+                    relation_targ["trials"].extend(relation_upd["trials"])
+                    updated = True
+                    break
+            assert updated, f"{relation_upd['relation_name']} not found in target"
+        return target
 
-        results_raw = None
-        model_path = f"{results_path}/{model_name}"
-        for file in os.listdir(model_path):
-            with open(f"{model_path}/{file}", "r") as f:
-                segment_results = json.load(f)
-                results_raw = merge_results(results_raw, segment_results)
+    results_raw = None
+    model_path = f"{results_path}/{model_name}"
+    for file in os.listdir(model_path):
+        with open(f"{model_path}/{file}", "r") as f:
+            segment_results = json.load(f)
+            results_raw = merge_results(results_raw, segment_results)
     return results_raw
 
 

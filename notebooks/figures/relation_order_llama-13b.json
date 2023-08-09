@@ -1,0 +1,186 @@
+[
+    {
+        "relation": "company CEO",
+        "recall@1": 0.022582101654301898
+    },
+    {
+        "relation": "person father",
+        "recall@1": 0.023711837289324304
+    },
+    {
+        "relation": "person mother",
+        "recall@1": 0.013825123545353101
+    },
+    {
+        "relation": "pokemon evolution",
+        "recall@1": 0.07351190476190476
+    },
+    {
+        "relation": "company hq",
+        "recall@1": 0.30333333333333334
+    },
+    {
+        "relation": "task done by tool",
+        "recall@1": 0.26933733427299605
+    },
+    {
+        "relation": "superhero archnemesis",
+        "recall@1": 0.15807039618015226
+    },
+    {
+        "relation": "product by company",
+        "recall@1": 0.5862574237390135
+    },
+    {
+        "relation": "landmark in country",
+        "recall@1": 0.62
+    },
+    {
+        "relation": "star constellation name",
+        "recall@1": 0.07750000000000001
+    },
+    {
+        "relation": "person sport position",
+        "recall@1": 0.6349999999999999
+    },
+    {
+        "relation": "superhero person",
+        "recall@1": 0.3056488911532957
+    },
+    {
+        "relation": "city in country",
+        "recall@1": 0.5517644192179796
+    },
+    {
+        "relation": "task person type",
+        "recall@1": 0.4484018941724807
+    },
+    {
+        "relation": "person occupation",
+        "recall@1": 0.6045108029703667
+    },
+    {
+        "relation": "food from country",
+        "recall@1": 0.7096413931069504
+    },
+    {
+        "relation": "president election year",
+        "recall@1": 0
+    },
+    {
+        "relation": "president birth year",
+        "recall@1": 0
+    },
+    {
+        "relation": "work location",
+        "recall@1": 0.5666900396972862
+    },
+    {
+        "relation": "landmark on continent",
+        "recall@1": 0.6875
+    },
+    {
+        "relation": "word last letter",
+        "recall@1": 0.3910506361556899
+    },
+    {
+        "relation": "country currency",
+        "recall@1": 0.32007575757575757
+    },
+    {
+        "relation": "word first letter",
+        "recall@1": 0.853719599427754
+    },
+    {
+        "relation": "person plays instrument",
+        "recall@1": 0.4076474203023983
+    },
+    {
+        "relation": "word sentiment",
+        "recall@1": 0.5064854187680274
+    },
+    {
+        "relation": "person lead singer of band",
+        "recall@1": 0.6794871794871794
+    },
+    {
+        "relation": "person university",
+        "recall@1": 0.1910044270878767
+    },
+    {
+        "relation": "fruit inside color",
+        "recall@1": 0.6159761126672891
+    },
+    {
+        "relation": "person native language",
+        "recall@1": 0.8825000000000001
+    },
+    {
+        "relation": "occupation age",
+        "recall@1": 0.7732381958774402
+    },
+    {
+        "relation": "adjective antonym",
+        "recall@1": 0.4509443347220372
+    },
+    {
+        "relation": "plays pro sport",
+        "recall@1": 0.8412340797949307
+    },
+    {
+        "relation": "characteristic gender",
+        "recall@1": 0.8333021073926646
+    },
+    {
+        "relation": "fruit outside color",
+        "recall@1": 0.751223021259786
+    },
+    {
+        "relation": "name gender",
+        "recall@1": 0.6178030303030303
+    },
+    {
+        "relation": "name religion",
+        "recall@1": 0.7952664929781634
+    },
+    {
+        "relation": "object superclass",
+        "recall@1": 0.4342781201346842
+    },
+    {
+        "relation": "substance phase of matter",
+        "recall@1": 0.7204408371786419
+    },
+    {
+        "relation": "country capital city",
+        "recall@1": 0.6501736111111112
+    },
+    {
+        "relation": "country language",
+        "recall@1": 0.88125
+    },
+    {
+        "relation": "name birthplace",
+        "recall@1": 0.88508284187632
+    },
+    {
+        "relation": "country largest city",
+        "recall@1": 0.5812499999999999
+    },
+    {
+        "relation": "adjective superlative",
+        "recall@1": 0.831516393044256
+    },
+    {
+        "relation": "verb past tense",
+        "recall@1": 0.918938859553914
+    },
+    {
+        "relation": "adjective comparative",
+        "recall@1": 0.8957038606403014
+    },
+    {
+        "relation": "occupation gender",
+        "recall@1": 0.6522727272727272
+    }
+]
