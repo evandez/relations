@@ -8,7 +8,7 @@
         "What language does {} speak? They speak"
     ],
     "properties": {
-        "relation_type": "bias",
+        "relation_type": "factual",
         "domain_name": "person",
         "range_name": "language",
         "symmetric": false
