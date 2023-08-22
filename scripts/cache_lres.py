@@ -87,19 +87,24 @@ if __name__ == "__main__":
         help="number of few-shot examples to provide",
     )
 
-    parser.add_argument(
-        "--rel-names", "-r", nargs="+", type=str, help="filter by relation name"
-    )
+    parser.add_argument("--rel-name", type=str, help="filter by relation name")
     args = parser.parse_args()
     logging_utils.configure(args=args)
     experiment = experiment_utils.setup_experiment(args)
 
     logger.info(args)
 
-    for relation_name in args.rel_names:
-        logger.info(f"#################### {relation_name} ####################")
+    if args.rel_name is not None:
         main(
-            relation_name=relation_name,
+            relation_name=args.rel_name,
             n_few_shot=args.n_icl,
         )
-        logger.info("------------------------------------------------------")
+    else:
+        dataset = data.load_dataset()
+        for relation in dataset.relations:
+            logger.info(f"#################### {relation.name} ####################")
+            main(
+                relation_name=relation.name,
+                n_few_shot=args.n_icl,
+            )
+            logger.info("------------------------------------------------------")
