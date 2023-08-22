@@ -479,6 +479,11 @@ def get_tick_marker(value: bool) -> str:
     return "✓" if value else "✗"
 
 
+def format_whitespace(s: str) -> str:
+    """Format whitespace in a string for printing."""
+    return s.replace("\n", "\\n").replace("\t", "\\t")
+
+
 @torch.inference_mode()
 def filter_relation_samples_based_on_provided_fewshots(
     *,

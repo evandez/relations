@@ -18,13 +18,15 @@ logger = logging.getLogger(__name__)
 
 
 def save_order_1_approx(
-    approx: functional.Order1ApproxOutput,
+    approx: functional.Order1ApproxOutput | operators.LinearRelationOperator,
     file_name: str = "order_1_approx",
     path: str = "../results/interpolation",
 ) -> None:
     os.makedirs(path, exist_ok=True)
     detached = {}
     for k, v in approx.__dict__.items():
+        if k == "mt":  # will save the whole model and weights otherwise
+            continue
         if isinstance(v, torch.Tensor):
             detached[k] = v.detach().cpu().numpy()
         else:
