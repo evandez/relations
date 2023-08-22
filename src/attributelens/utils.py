@@ -246,8 +246,8 @@ def visualize_attribute_lens(
     colorscale: str = "blues",
     patch_color: str = "black",
 ) -> plotly.graph_objects.Figure:
-    print("must_have_layers: ", must_have_layers)
-    print("expected_answers: ", expected_answers)
+    # print("must_have_layers: ", must_have_layers)
+    # print("expected_answers: ", expected_answers)
     plotting_info = get_info_for_plotting(
         att_info, layer_skip, must_have_layers, expected_answers
     )

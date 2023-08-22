@@ -296,7 +296,7 @@ def skip_folder(folder: str, relation_names: list[str]) -> bool:
     if folder.endswith(".json"):
         return False
     for relation in relation_names:
-        probable_folder_name = relation.replace(" ", "_").lower()
+        probable_folder_name = relation.replace(" ", "_")
         if probable_folder_name in folder:
             return False
     return True

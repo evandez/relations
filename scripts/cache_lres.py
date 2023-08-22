@@ -83,7 +83,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--n-icl",
         type=int,
-        default=10,
+        default=8,
         help="number of few-shot examples to provide",
     )
 
