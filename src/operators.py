@@ -539,8 +539,12 @@ class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
 
 @dataclass(frozen=True)
 class Word2VecIclEstimator(LinearRelationEstimator):
+    """Estimates a relation operator by translating the subject with a bias. Much like Word2Vec."""
+
     h_layer: Layer
     z_layer: Layer | None = None
+    scaling_factor: float | None = None
+    mode: Literal["icl", "zs"] = "icl"
 
     def __call__(self, relation: data.Relation) -> LinearRelationOperator:
         _check_nonempty(
@@ -548,38 +552,70 @@ class Word2VecIclEstimator(LinearRelationEstimator):
         )
         _warn_gt_1(prompt_templates=relation.prompt_templates)
 
-        samples = relation.samples
-        prompt_template = relation.prompt_templates[0]
+        prompt_template = (
+            self.mt.tokenizer.eos_token + " {}"
+            if self.mode == "zs"
+            else relation.prompt_templates[0]
+        )
 
-        z_layer = self.z_layer
-        if z_layer is None:
-            z_layer = models.determine_layers(self.mt)[-1]
+        h_layer_name = models.determine_layer_paths(self.mt, [self.h_layer])[0]
+        if self.z_layer is None:
+            z_layer: Layer = models.determine_layers(self.mt)[-1]
+        else:
+            z_layer = self.z_layer
+        z_layer_name = models.determine_layer_paths(self.mt, [z_layer])[0]
 
-        deltas = []
-        for sample in samples:
-            hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
+        training_samples = relation.samples
+
+        offsets = []
+        for sample_idx in range(len(training_samples)):
+            sample = training_samples[sample_idx]
+            if self.mode == "zs":
+                prompt = prompt_template.format(sample.subject)
+            elif self.mode == "icl":
+                prompt = functional.make_prompt(
+                    mt=self.mt,
+                    prompt_template=prompt_template,
+                    subject=sample.subject,
+                    examples=training_samples[0:sample_idx]
+                    + training_samples[sample_idx + 1 :],
+                )
+            h_index, inputs = functional.find_subject_token_index(
+                mt=self.mt,
+                prompt=prompt,
+                subject=sample.subject,
+            )
+
+            with baukit.TraceDict(
+                self.mt.model,
+                [h_layer_name, z_layer_name],
+            ) as traces:
+                self.mt.model(**inputs)
+
+            h = functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
+            z = functional.untuple(traces[z_layer_name].output)[0][-1].detach()
+            offsets.append(z - h)
+
+        offset = torch.stack(offsets).mean(dim=0)
+
+        if self.mode == "icl":
+            prompt_template = functional.make_prompt(
                 mt=self.mt,
                 prompt_template=prompt_template,
-                h_layer=self.h_layer,
-                z_layer=self.z_layer,
-                examples=samples,
-                subjects=[sample.subject],
+                subject="{}",
+                examples=training_samples,
             )
-            delta = (
-                zs_by_subj[sample.subject].squeeze()
-                - hs_by_subj[sample.subject].squeeze()
-            )
-            deltas.append(delta)
 
-        bias = torch.stack(deltas, dim=0).mean(dim=0)
-        return LinearRelationOperator(
+        operator = LinearRelationOperator(
             mt=self.mt,
             weight=None,
-            bias=bias,
+            bias=offset,
             h_layer=self.h_layer,
             z_layer=z_layer,
             prompt_template=prompt_template,
         )
+
+        return operator
 
 
 @dataclass(frozen=True)
