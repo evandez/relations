@@ -1,7 +1,8 @@
-import copy
+# ! Caution ! This is an obsolete class. Only used in some of the initial experiments.
+# Check the `CornerGdEstimator` and `CornerMeanEmbeddingEstimator` in the `operators.py` file instead.
+
 from typing import Any, List, Sequence, TypeAlias
 
-import baukit
 import matplotlib.pyplot as plt
 import torch
 import torch.autograd.functional
