@@ -231,7 +231,7 @@ def get_icl_results(
     }
 
 
-# from scripts.efficacy_baselines import filter_not_in_train_samples
+# from scripts.baselines.efficacy_baselines import filter_not_in_train_samples
 
 
 def main(args: argparse.Namespace) -> None:
