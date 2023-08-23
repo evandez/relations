@@ -1,12 +1,11 @@
 import logging
 from typing import Callable, Literal
 
+import baukit
 import src.functional as F
+import torch
 from src import models
 from src.models import ModelAndTokenizer
-
-import baukit
-import torch
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +14,12 @@ logger = logging.getLogger(__name__)
 def interpret_logits(
     mt: ModelAndTokenizer,
     logits: torch.Tensor,
-    top_k: int = 10,
+    k: int = 10,
     get_proba: bool = False,
 ) -> list[tuple[str, float]]:
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
-    token_ids = logits.topk(dim=-1, k=top_k).indices.squeeze().tolist()
-    logit_values = logits.topk(dim=-1, k=top_k).values.squeeze().tolist()
+    token_ids = logits.topk(dim=-1, k=k).indices.squeeze().tolist()
+    logit_values = logits.topk(dim=-1, k=k).values.squeeze().tolist()
     return [
         (mt.tokenizer.decode(t), round(v, 3)) for t, v in zip(token_ids, logit_values)
     ]
@@ -29,12 +28,15 @@ def interpret_logits(
 def logit_lens(
     mt: ModelAndTokenizer,
     h: torch.Tensor,
+    after_layer_norm: bool = False,
     interested_tokens: list[int] = [],
     get_proba: bool = False,
+    k: int = 10,
 ) -> tuple[list[tuple[str, float]], dict]:
-    logits = mt.lm_head(h)
+    lm_head = mt.lm_head if not after_layer_norm else mt.lm_head[1:]
+    logits = lm_head(h)
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
-    candidates = interpret_logits(mt, logits)
+    candidates = interpret_logits(mt, logits, k=k)
     interested_logits = {
         t: (logits[t].item(), mt.tokenizer.decode(t)) for t in interested_tokens
     }
@@ -69,7 +71,7 @@ def layer_c_measure(
     prev_score = 0
     for layer in models.determine_layer_paths(mt):
         h = F.untuple(traces[layer].output)[0][-1]
-        _, interested_logits = logit_lens(mt, h, [object_id], get_proba=True)
+        _, interested_logits = logit_lens(mt, h, [object_id], get_proba=True)  # type: ignore
         layer_score = interested_logits[object_id][0]
         sub_score = base_score if measure == "completeness" else prev_score
         cur_layer_contribution = (layer_score - sub_score) / base_score
@@ -149,7 +151,7 @@ def causal_tracing(
             )
 
         z = F.untuple(traces_i[layer_names[-1]].output)[0][-1]
-        _, interested = logit_lens(mt, z, [answer_t], get_proba=True)
+        _, interested = logit_lens(mt, z, [answer_t], get_proba=True)  # type: ignore
         layer_p = interested[answer_t][0]
 
         logger.debug(f"intervention_layer={intervention_layer}, layer_p={layer_p}")
