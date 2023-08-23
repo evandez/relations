@@ -473,6 +473,79 @@ def filter_relation_samples(
     return relation.set(samples=sorted(known_samples, key=lambda x: x.subject))
 
 
+def get_tick_marker(value: bool) -> str:
+    """Returns a tick or cross marker depending on the value."""
+    return "✓" if value else "✗"
+
+
+def format_whitespace(s: str) -> str:
+    """Format whitespace in a string for printing."""
+    return s.replace("\n", "\\n").replace("\t", "\\t")
+
+
+@torch.inference_mode()
+def filter_relation_samples_based_on_provided_fewshots(
+    *,
+    mt: models.ModelAndTokenizer,
+    test_relation: data.Relation,
+    prompt_template: str,
+    n_top_lm: int = DEFAULT_N_TOP_LM,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] = [],
+    subj_token_filter: Literal["all", "single", "multi"] = "all",
+) -> data.Relation:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all. We say the model
+    "knows" the sample if, given an ICL prompt for the relation, it predicts the
+    correct answer in the top-1 position.
+    """
+    if len(examples) > 0:
+        logger.debug("ICL examples: ", [str(sample) for sample in examples])
+        prompt_template = make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject="{}",
+            examples=examples,
+        )
+    logger.debug(f'filtering for knowns using prompt "{prompt_template}"')
+
+    test_prompts = [
+        prompt_template.format(sample.subject) for sample in test_relation.samples
+    ]
+    predictions = predict_next_token(
+        mt=mt, prompt=test_prompts, k=n_top_lm, batch_size=batch_size
+    )
+
+    # Helpful to see what the model predicted sometimes.
+    filtered_samples = []
+    for sample, prediction in zip(test_relation.samples, predictions):
+        known_flag = is_nontrivial_prefix(
+            prediction=prediction[0].token, target=sample.object
+        )
+        log_print = f"{sample.subject=}, {sample.object=}, predicted={prediction[0]}, known=({get_tick_marker(known_flag)})"
+        if known_flag:
+            if subj_token_filter == "all":
+                filtered_samples.append(sample)
+            else:
+                require_multi = subj_token_filter == "multi"
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                subj_token_flag = require_multi != subj_single_token
+                log_print += (
+                    f", {subj_token_filter}=({get_tick_marker(subj_token_flag)})"
+                )
+                if subj_token_flag:
+                    filtered_samples.append(sample)
+        logger.debug(log_print)
+
+    return test_relation.set(samples=sorted(filtered_samples, key=lambda x: x.subject))
+
+
 @torch.inference_mode()
 def filter_dataset_samples(
     *,
