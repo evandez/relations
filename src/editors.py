@@ -278,7 +278,7 @@ class InsertSubjectHEditor(Editor):
 
 
 @dataclass(frozen=True, kw_only=True)
-class ObjectBaselineEditor(Editor):
+class InsertObjectZEditor(Editor):
     """Edit the model by replacing h for the subject with the o of the target."""
 
     mt: models.ModelAndTokenizer
