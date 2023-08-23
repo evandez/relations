@@ -6,9 +6,9 @@ from typing import Sequence
 
 from src import data, functional, metrics, models
 from src.operators import (
-    CornerTranslationBaseline,
+    CornerMeanEmbeddingEstimator,
     JacobianIclMeanEstimator,
-    LearnedLinearEstimatorBaseline,
+    LearnedLinearEstimator,
     LinearRelationOperator,
 )
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
@@ -177,7 +177,7 @@ def get_icl_results(
     logger.info(f"logit lens: {logit_lens_recall['recall']}")
     results["logit_lens"] = logit_lens_recall
 
-    offset_estimator = CornerTranslationBaseline(mt=mt, h_layer=h_layer, mode="icl")
+    offset_estimator = CornerMeanEmbeddingEstimator(mt=mt, h_layer=h_layer, mode="icl")
     offset_operator = offset_estimator(
         train.set(samples=train.samples + test.samples)  # access to the full range
     )
@@ -187,7 +187,7 @@ def get_icl_results(
     logger.info(f"corner: {offset_recall['recall']}")
     results["corner"] = offset_recall
 
-    learned_estimator = LearnedLinearEstimatorBaseline(
+    learned_estimator = LearnedLinearEstimator(
         mt=mt,
         h_layer=h_layer,
         mode="icl",

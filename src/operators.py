@@ -1,7 +1,7 @@
 import itertools
 import logging
 import random
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from src import data, functional, models
@@ -438,7 +438,7 @@ class CornerGdEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
+class LearnedLinearEstimator(LinearRelationEstimator):
     h_layer: Layer
     z_layer: Layer | None = None
     mode: Literal["zs", "icl"] = "zs"
@@ -542,7 +542,12 @@ class LearnedLinearEstimatorBaseline(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class CornerTranslationBaseline(LinearRelationEstimator):
+class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
+    """
+    Estimates a relation operator by translating the subject with a corner.
+    All the rows corresponding to the range tokens are averaged and used as the corner.
+    """
+
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None
@@ -640,6 +645,8 @@ class CornerTranslationBaseline(LinearRelationEstimator):
 
 @dataclass(frozen=True)
 class TranslationBaseline(LinearRelationEstimator):
+    """Estimates a relation operator by translating the subject with a bias. Much like Word2Vec."""
+
     h_layer: Layer
     z_layer: Layer | None = None
     scaling_factor: float | None = None

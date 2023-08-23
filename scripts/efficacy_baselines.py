@@ -4,11 +4,12 @@ import logging
 import os
 from typing import Literal
 
-import torch
 from src import data, editors, functional, metrics, models, operators, sweeps
 from src.data import RelationSample
 from src.utils import dataclasses_utils, experiment_utils, logging_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
+
+import torch
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -27,8 +28,8 @@ def filter_not_in_train_samples(
 
 
 BASELINE_EDITOR_TYPES = {
-    "hidden_baseline": editors.HiddenBaselineEditor,
-    "embed_baseline": editors.EmbedBaselineEditor,
+    "hidden_baseline": editors.InsertSubjectHEditor,
+    "embed_baseline": editors.InsertObjectEmbeddingEditor,
     "low_rank_pinv": editors.LowRankPInvEditor,
     "hidden_baseline_z": editors.ObjectBaselineEditor,
 }
