@@ -2,11 +2,10 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from src import data, functional, models
-from src.utils.typing import Layer
-
 import baukit
 import torch
+from src import data, functional, models
+from src.utils.typing import Layer
 
 logger = logging.getLogger(__name__)
 
@@ -95,10 +94,11 @@ class LinearRelationOperator(RelationOperator):
         if self.bias is not None:
             bias = self.bias
             if self.beta is not None:
-                bias = self.beta * bias
+                z = z * self.beta  # scaling the contribution of Jh with beta
             z = z + bias
 
-        logits = self.mt.lm_head(z)
+        lm_head = self.mt.lm_head if not self.z_layer == "ln_f" else self.mt.lm_head[:1]
+        logits = lm_head(z)
         dist = torch.softmax(logits.float(), dim=-1)
 
         topk = dist.topk(dim=-1, k=k)
