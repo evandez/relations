@@ -15,6 +15,7 @@ sentencepiece
 tqdm
 transformers
 torch
+plotly
 
 # dev dependencies
 black
