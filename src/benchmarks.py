@@ -4,12 +4,11 @@ from collections import defaultdict
 from dataclasses import dataclass, replace
 from typing import Sequence, cast
 
+import torch
+from dataclasses_json import DataClassJsonMixin
 from src import data, editors, functional, hparams, metrics, models, operators
 from src.utils import dataclasses_utils, experiment_utils
 from src.utils.typing import PathLike
-
-import torch
-from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
@@ -372,6 +371,9 @@ class FaithfulnessBenchmarkResults(DataClassJsonMixin):
     metrics: FaithfulnessBenchmarkMetrics
 
 
+from src.utils.sweep_utils import read_sweep_results, relation_from_dict
+
+
 def faithfulness(
     *,
     mt: models.ModelAndTokenizer,
@@ -383,6 +385,7 @@ def faithfulness(
     desc: str | None = None,
     results_dir: PathLike | None = None,
     resume: bool = False,
+    sweep_dir: str = "results/sweep-24-trials/gptj",
 ) -> FaithfulnessBenchmarkResults:
     """Measure how faithful the LREs are to the true relation.
 
@@ -422,6 +425,12 @@ def faithfulness(
     recalls_rdlens_by_zs_correct = defaultdict(list)
     counts_by_zs_correct: dict[bool, int] = defaultdict(int)
     progress = tqdm(dataset.relations, desc=desc)
+
+    relation_names = [relation.name for relation in dataset.relations]
+    sweep_results = read_sweep_results(
+        sweep_dir=sweep_dir, relation_names=relation_names
+    )
+
     for relation in progress:
         progress.set_description(relation.name)
 
@@ -435,16 +444,27 @@ def faithfulness(
             results_by_relation.append(relation_results)
             continue
 
-        relation_hparams = hparams.get(mt, relation)
-        if relation_hparams is None:
-            logger.info(f"no hparams for {relation.name}; skipping")
+        # relation_hparams = hparams.get(mt, relation)
+        if relation.name not in sweep_results:
+            logger.info(
+                f"sweep results not found for {relation.name}, can't get hparams >> skipping"
+            )
             continue
+
+        relation_from_sweep = relation_from_dict(sweep_results[relation.name])
+        relation_hparams = relation_from_sweep.best_by_faithfulness()
+
+        logger.info("--------------------------------------------------------")
+        logger.info(
+            f"{relation.name} | layer={relation_hparams.layer}, beta={relation_hparams.beta.mean}"
+        )
+        logger.info("--------------------------------------------------------")
+
         estimator = dataclasses_utils.create_with_optional_kwargs(
             estimator_type,
             mt=mt,
-            h_layer=relation_hparams.h_layer,
-            z_layer=relation_hparams.z_layer,
-            beta=relation_hparams.beta,
+            h_layer=relation_hparams.layer,
+            beta=relation_hparams.beta.mean,
         )
 
         trials = []
