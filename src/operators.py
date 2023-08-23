@@ -490,7 +490,7 @@ class LearnedLinearEstimator(LinearRelationEstimator):
                 self.mt.model,
                 [h_layer_name, z_layer_name],
             ) as traces:
-                output = self.mt.model(**inputs)
+                self.mt.model(**inputs)
 
             H_stack.append(
                 functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
@@ -604,7 +604,7 @@ class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
                     self.mt.model,
                     [h_layer_name],
                 ) as traces:
-                    output = self.mt.model(**inputs)
+                    self.mt.model(**inputs)
 
                 H.append(
                     functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
@@ -696,7 +696,7 @@ class TranslationBaseline(LinearRelationEstimator):
                 self.mt.model,
                 [h_layer_name, z_layer_name],
             ) as traces:
-                output = self.mt.model(**inputs)
+                self.mt.model(**inputs)
 
             h = functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
             z = functional.untuple(traces[z_layer_name].output)[0][-1].detach()
