@@ -644,7 +644,7 @@ class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
 
 
 @dataclass(frozen=True)
-class TranslationBaseline(LinearRelationEstimator):
+class Word2VecIclEstimator(LinearRelationEstimator):
     """Estimates a relation operator by translating the subject with a bias. Much like Word2Vec."""
 
     h_layer: Layer

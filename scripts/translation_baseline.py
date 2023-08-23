@@ -6,7 +6,7 @@ from typing import Sequence
 
 from scripts.faithfulness_baselines import evaluate, get_h, load_raw_results
 from src import data, functional, models
-from src.operators import TranslationBaseline
+from src.operators import Word2VecIclEstimator
 from src.utils import experiment_utils, logging_utils, tokenizer_utils
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 from src.utils.typing import Layer
@@ -62,7 +62,7 @@ def main(args: argparse.Namespace) -> None:
             test = functional.filter_relation_samples_based_on_provided_fewshots(
                 mt=mt, test_relation=test, prompt_template=icl_prompt
             )
-            translation_estimator = TranslationBaseline(
+            translation_estimator = Word2VecIclEstimator(
                 mt=mt, h_layer=h_layer, mode="icl"
             )
             translation_operator = translation_estimator(train)
