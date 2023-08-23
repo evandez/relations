@@ -11,11 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
-from src.utils import env_utils, tokenizer_utils
-from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
-
 import torch
 import transformers
+from src.utils import env_utils, tokenizer_utils
+from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +104,16 @@ def determine_embedding_layer_path(model: ModelAndTokenizer | Model) -> str:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
 
+def determine_final_layer_norm_path(model: ModelAndTokenizer | Model) -> str:
+    model = unwrap_model(model)
+    if is_gpt_variant(model):
+        return "transformer.ln_f"
+    elif isinstance(model, transformers.LlamaForCausalLM):
+        return "model.norm"
+    else:
+        raise ValueError(f"unknown model type: {type(model).__name__}")
+
+
 def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
     """Return all hidden layer names for the given model."""
     model = unwrap_model(model)
@@ -172,6 +181,9 @@ def determine_layer_paths(
     for layer in layers:
         if layer == "emb":
             layer_paths[layer] = determine_embedding_layer_path(model)
+            continue
+        if layer == "ln_f":
+            layer_paths[layer] = determine_final_layer_norm_path(model)
             continue
 
         layer_index = layer
@@ -374,6 +386,10 @@ def load_model(
     else:
         tokenizer = transformers.AutoTokenizer.from_pretrained(name)
         tokenizer.pad_token = tokenizer.eos_token
+
+    logger.info(
+        f"dtype: {model.dtype}, device: {model.device}, memory: {model.get_memory_footprint()}"
+    )
 
     return ModelAndTokenizer(model, tokenizer)
 

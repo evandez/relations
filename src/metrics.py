@@ -2,11 +2,10 @@
 from dataclasses import dataclass
 from typing import Sequence
 
-from src import functional
-from src.utils.typing import ArrayLike, StrSequence
-
 import numpy as np
 from dataclasses_json import DataClassJsonMixin
+from src import functional
+from src.utils.typing import ArrayLike, StrSequence
 
 
 @dataclass(frozen=True)
@@ -53,7 +52,7 @@ def recall(predictions: Sequence[StrSequence], targets: StrSequence) -> list[flo
     """
     _validate_same_length(predictions=predictions, targets=targets)
     if len(predictions) == 0:
-        return None
+        return None  # type: ignore
 
     k = max(map(len, predictions))
     recalls = [0.0] * k
