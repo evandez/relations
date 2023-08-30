@@ -2,10 +2,11 @@
 from dataclasses import dataclass
 from typing import Sequence
 
-import numpy as np
-from dataclasses_json import DataClassJsonMixin
 from src import functional
 from src.utils.typing import ArrayLike, StrSequence
+
+import numpy as np
+from dataclasses_json import DataClassJsonMixin
 
 
 @dataclass(frozen=True)

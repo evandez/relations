@@ -4,10 +4,11 @@ import random
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-import baukit
-import torch
 from src import data, functional, models
 from src.utils.typing import Layer
+
+import baukit
+import torch
 
 logger = logging.getLogger(__name__)
 

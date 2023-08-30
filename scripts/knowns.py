@@ -4,9 +4,10 @@ This script is mostly used for testing and data curation.
 """
 import argparse
 
-import torch
 from src import data, functional, models
 from src.utils import logging_utils
+
+import torch
 
 KEPT_MARKER = "✅"
 REMOVED_MARKER = "❌"

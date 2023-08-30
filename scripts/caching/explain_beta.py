@@ -4,8 +4,6 @@ import logging
 import os
 from dataclasses import dataclass
 
-import torch
-from dataclasses_json import DataClassJsonMixin
 from src import data, editors, functional, metrics, models, operators
 from src.data import RelationSample
 from src.utils import experiment_utils, logging_utils
@@ -14,6 +12,9 @@ from src.utils.sweep_utils import (
     read_sweep_results,
     relation_from_dict,
 )
+
+import torch
+from dataclasses_json import DataClassJsonMixin
 
 logger = logging.getLogger(__name__)
 

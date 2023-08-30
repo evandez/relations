@@ -2,11 +2,12 @@ import argparse
 import logging
 import os
 
-import numpy as np
-import torch
 from src import data, functional, lens, models, operators
 from src.utils import experiment_utils, logging_utils, typing
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
+
+import numpy as np
+import torch
 
 logger = logging.getLogger(__name__)
 

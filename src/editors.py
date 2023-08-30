@@ -4,11 +4,12 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Any, Literal
 
-import baukit
-import torch
 from src import functional, models, operators
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput
+
+import baukit
+import torch
 
 logger = logging.getLogger(__name__)
 

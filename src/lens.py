@@ -1,11 +1,12 @@
 import logging
 from typing import Callable, Literal
 
-import baukit
 import src.functional as F
-import torch
 from src import models
 from src.models import ModelAndTokenizer
+
+import baukit
+import torch
 
 logger = logging.getLogger(__name__)
 

@@ -4,12 +4,13 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Literal, NamedTuple, Sequence
 
-import baukit
-import torch
-from dataclasses_json import DataClassJsonMixin
 from src import data, models
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
+
+import baukit
+import torch
+from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)

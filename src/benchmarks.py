@@ -4,11 +4,12 @@ from collections import defaultdict
 from dataclasses import dataclass, replace
 from typing import Sequence, cast
 
-import torch
-from dataclasses_json import DataClassJsonMixin
 from src import data, editors, functional, hparams, metrics, models, operators
 from src.utils import dataclasses_utils, experiment_utils
 from src.utils.typing import PathLike
+
+import torch
+from dataclasses_json import DataClassJsonMixin
 from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)

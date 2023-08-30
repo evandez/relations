@@ -1,13 +1,14 @@
 import logging
 from typing import Any, Sequence, TypeAlias
 
+from src.functional import is_nontrivial_prefix
+from src.models import ModelAndTokenizer
+
 import numpy as np
 import plotly
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 import torch
-from src.functional import is_nontrivial_prefix
-from src.models import ModelAndTokenizer
 
 logger = logging.getLogger(__name__)
 

@@ -2,9 +2,10 @@ import argparse
 import logging
 from typing import Any
 
-import torch
 from src import benchmarks, data, editors, functional, models, operators
 from src.utils import experiment_utils, logging_utils
+
+import torch
 
 logger = logging.getLogger(__name__)
 
