@@ -2,7 +2,7 @@ import logging
 import random
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Any, NamedTuple, Sequence, overload
+from typing import Any, Literal, NamedTuple, Sequence
 
 from src import data, models
 from src.utils import tokenizer_utils
@@ -62,6 +62,7 @@ def order_1_approx(
     prompt: str,
     h_layer: Layer,
     h_index: int,
+    h: torch.Tensor | None = None,
     z_layer: Layer | None = None,
     z_index: int | None = None,
     inputs: ModelInput | None = None,
@@ -76,6 +77,7 @@ def order_1_approx(
         prompt: Prompt to approximate.
         h_layer: Layer to take h from.
         h_index: Token index for h.
+        h: will calculate approximation based on this hidden state, if provided.
         z_layer: Layer to take z from.
         z_index: Token index for z.
         inputs: Precomputed tokenized inputs, recomputed if not set.
@@ -104,7 +106,22 @@ def order_1_approx(
 
     # Precompute initial h and z.
     [h_layer_name, z_layer_name] = models.determine_layer_paths(mt, [h_layer, z_layer])
-    with baukit.TraceDict(mt.model, (h_layer_name, z_layer_name)) as ret:
+
+    edit_output: function | None = None
+    if h is not None:
+
+        def edit_output(output: tuple, layer: str) -> tuple:
+            if layer != h_layer_name:
+                return output
+            untuple(output)[:, _h_index] = h
+            return output
+
+    else:
+        edit_output = None
+
+    with baukit.TraceDict(
+        mt.model, layers=(h_layer_name, z_layer_name), edit_output=edit_output
+    ) as ret:
         outputs = mt.model(
             input_ids=input_ids,
             use_cache=use_cache,
@@ -132,6 +149,7 @@ def order_1_approx(
             )
         return untuple(ret[z_layer_name].output)[0, -1]
 
+    assert h is not None
     weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
     bias = z[None] - h[None].mm(weight.t())
     approx = Order1ApproxOutput(
@@ -456,6 +474,79 @@ def filter_relation_samples(
     return relation.set(samples=sorted(known_samples, key=lambda x: x.subject))
 
 
+def get_tick_marker(value: bool) -> str:
+    """Returns a tick or cross marker depending on the value."""
+    return "✓" if value else "✗"
+
+
+def format_whitespace(s: str) -> str:
+    """Format whitespace in a string for printing."""
+    return s.replace("\n", "\\n").replace("\t", "\\t")
+
+
+@torch.inference_mode()
+def filter_relation_samples_based_on_provided_fewshots(
+    *,
+    mt: models.ModelAndTokenizer,
+    test_relation: data.Relation,
+    prompt_template: str,
+    n_top_lm: int = DEFAULT_N_TOP_LM,
+    batch_size: int = DEFAULT_BATCH_SIZE,
+    examples: Sequence[data.RelationSample] = [],
+    subj_token_filter: Literal["all", "single", "multi"] = "all",
+) -> data.Relation:
+    """Filter samples down to only those that model knows.
+
+    Most benchmarks rely on model knowing the relation at all. We say the model
+    "knows" the sample if, given an ICL prompt for the relation, it predicts the
+    correct answer in the top-1 position.
+    """
+    if len(examples) > 0:
+        logger.debug("ICL examples: ", [str(sample) for sample in examples])
+        prompt_template = make_prompt(
+            mt=mt,
+            prompt_template=prompt_template,
+            subject="{}",
+            examples=examples,
+        )
+    logger.debug(f'filtering for knowns using prompt "{prompt_template}"')
+
+    test_prompts = [
+        prompt_template.format(sample.subject) for sample in test_relation.samples
+    ]
+    predictions = predict_next_token(
+        mt=mt, prompt=test_prompts, k=n_top_lm, batch_size=batch_size
+    )
+
+    # Helpful to see what the model predicted sometimes.
+    filtered_samples = []
+    for sample, prediction in zip(test_relation.samples, predictions):
+        known_flag = is_nontrivial_prefix(
+            prediction=prediction[0].token, target=sample.object
+        )
+        log_print = f"{sample.subject=}, {sample.object=}, predicted={prediction[0]}, known=({get_tick_marker(known_flag)})"
+        if known_flag:
+            if subj_token_filter == "all":
+                filtered_samples.append(sample)
+            else:
+                require_multi = subj_token_filter == "multi"
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                subj_token_flag = require_multi != subj_single_token
+                log_print += (
+                    f", {subj_token_filter}=({get_tick_marker(subj_token_flag)})"
+                )
+                if subj_token_flag:
+                    filtered_samples.append(sample)
+        logger.debug(log_print)
+
+    return test_relation.set(samples=sorted(filtered_samples, key=lambda x: x.subject))
+
+
 @torch.inference_mode()
 def filter_dataset_samples(
     *,
@@ -466,6 +557,8 @@ def filter_dataset_samples(
     n_top_lm: int = DEFAULT_N_TOP_LM,
     n_trials: int = 3,
     min_knowns: int = 10,
+    common_prompt_template: str | None = None,
+    n_subj_tokens: Literal["single", "multi"] | None = None,
 ) -> data.RelationDataset:
     """Filter samples down to only those that model knows.
 
@@ -475,9 +568,17 @@ def filter_dataset_samples(
     """
     logger.info("filtering dataset to knowns only...")
 
+    if common_prompt_template is not None:
+        assert (
+            "{}" in common_prompt_template
+        ), "common_prompt_template must contain {} to be filled with subject"
+
     relations = []
     for relation in dataset.relations:
-        prompt_template = relation.prompt_templates[0]
+        if common_prompt_template is not None:
+            prompt_template = common_prompt_template
+        else:
+            prompt_template = relation.prompt_templates[0]
 
         counts: dict[data.RelationSample, int] = defaultdict(int)
         for _ in range(n_trials):
@@ -499,13 +600,29 @@ def filter_dataset_samples(
                 continue
             known_samples.append(sample)
 
-        if len(known_samples) < min_knowns:
+        if n_subj_tokens is None:
+            filtered_relation = relation.set(samples=known_samples)
+        else:
+            subject_filtered_samples = []
+            require_multi = n_subj_tokens == "multi"
+            for sample in relation.samples:
+                subj_single_token = (
+                    models.tokenize_words(mt.tokenizer, sample.subject, spaces=True)
+                    .input_ids[0]
+                    .shape[0]
+                    == 1
+                )
+                if require_multi != subj_single_token:
+                    subject_filtered_samples.append(sample)
+            filtered_relation = relation.set(samples=subject_filtered_samples)
+
+        if len(filtered_relation.samples) < min_knowns:
             logger.debug(
                 f'not enough known samples for relation "{relation.name}" '
                 f"({len(known_samples)} < {min_knowns})"
             )
             continue
-        relations.append(relation.set(samples=known_samples))
+        relations.append(filtered_relation)
 
     return data.RelationDataset(relations)
 
@@ -522,7 +639,8 @@ def find_subject_token_index(
         mt.model.device
     )
     offset_mapping = inputs.pop("offset_mapping")
-
+    if "token_type_ids" in inputs:  # llama tokenizer has this annoying field
+        inputs.pop("token_type_ids")
     # Find the last occurrence of the subject
     subject_i, subject_j = tokenizer_utils.find_token_range(
         prompt, subject, offset_mapping=offset_mapping[0], occurrence=-1
@@ -610,14 +728,14 @@ def compute_hs_and_zs(
     subjects: StrSequence,
     h_layer: Layer | Sequence[Layer] | None = None,
     z_layer: Layer | Sequence[Layer] | None = None,
-    batch_size: int = 8,
+    batch_size: int = DEFAULT_BATCH_SIZE,
     examples: Sequence[data.RelationSample] | None = None,
 ) -> HZBySubject:
     """Precompute h for every subject at every layer."""
     if h_layer is None and z_layer is None:
         raise ValueError("Must specify at least one of h_layer and z_layer.")
-    if z_layer == -1:
-        z_layer = models.determine_layers(mt)[z_layer]
+    if z_layer == -1 or z_layer is None:
+        z_layer = models.determine_layers(mt)[-1]
 
     prompts = [
         make_prompt(
@@ -636,9 +754,12 @@ def compute_hs_and_zs(
 
     z_by_subj = {}
     h_by_subj = {}
-    h_layers = [h_layer] if isinstance(h_layer, int) else h_layer
-    z_layers = [z_layer] if isinstance(z_layer, int) else z_layer
 
+    h_layers = [h_layer] if (isinstance(h_layer, int) or h_layer == "emb") else h_layer
+    z_layers = [z_layer] if (isinstance(z_layer, int) or z_layer == "ln_f") else z_layer
+
+    assert isinstance(h_layers, list)
+    assert isinstance(z_layers, list)
     layer_idx_to_name = {
         l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
     }
@@ -667,7 +788,7 @@ def compute_hs_and_zs(
                     prompt, subject, offset_mapping=offset_mapping[abs_index]
                 )
                 h_index -= 1
-                if isinstance(h_layer, int):
+                if isinstance(h_layer, int) or h_layer == "emb":
                     h_by_subj[subject] = untuple(
                         traces[layer_idx_to_name[h_layer]].output
                     )[batch_index, h_index]
@@ -687,7 +808,7 @@ def compute_hs_and_zs(
                 else:
                     z_by_subj[subject] = {
                         zl: untuple(traces[layer_idx_to_name[zl]].output)[
-                            batch_index, h_index
+                            batch_index, -1
                         ]
                         for zl in z_layer
                     }

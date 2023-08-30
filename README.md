@@ -1,6 +1,8 @@
-# Relations in Transformer LMs
+# Linearity of Relation Decoding in Transformer LMs
 
-This repository houses ongoing experiments that study how transformer LM implement relations.
+This repository contains the code used for the experiments in the paper [Linearity of Relation Decoding in Transformer LMs](https://arxiv.org/abs/2308.09124). Please check [lre.baulab.info](https://lre.baulab.info/) for further information.
+
+
 
 ## Setup
 

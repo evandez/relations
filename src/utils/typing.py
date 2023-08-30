@@ -24,7 +24,7 @@ ModelInput = transformers.BatchEncoding
 ModelOutput = transformers.modeling_outputs.CausalLMOutput
 ModelGenerateOutput = transformers.generation.utils.GenerateOutput | torch.LongTensor
 
-Layer = int | Literal["emb"]
+Layer = int | Literal["emb"] | Literal["ln_f"]
 
 # All strings are also Sequence[str], so we have to distinguish that we
 # mean lists or tuples of strings, or sets of strings, not other strings.

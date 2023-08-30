@@ -2183,10 +2183,6 @@
             "object": "John Locke"
         },
         {
-            "subject": "Horace",
-            "object": "http://www.wikidata.org/.well-known/genid/3ec748328a68e897abcad6335fa8a30d"
-        },
-        {
             "subject": "Henry Fuseli",
             "object": "Johann Caspar F\u00fcssli"
         },
@@ -2887,10 +2883,6 @@
             "object": "Harry Danielovitch"
         },
         {
-            "subject": "Plautus",
-            "object": "http://www.wikidata.org/.well-known/genid/d3ea76e0f622ad5c67bff18f5c7b48ef"
-        },
-        {
             "subject": "John Frederick William Herschel",
             "object": "William Herschel"
         },
@@ -2933,10 +2925,6 @@
         {
             "subject": "Antoine-Jean Gros",
             "object": "Jean-Antoine Gros"
-        },
-        {
-            "subject": "Lucretius",
-            "object": "http://www.wikidata.org/.well-known/genid/fabae55ca504b009a802f39ce5368136"
         },
         {
             "subject": "Germaine de Sta\u00ebl",
@@ -3239,10 +3227,6 @@
             "object": "Stephen Michael Swank"
         },
         {
-            "subject": "Pliny the Younger",
-            "object": "http://www.wikidata.org/.well-known/genid/a1e6f06c74b0e0e808b71b732a29dd49"
-        },
-        {
             "subject": "Henry IV of France",
             "object": "Antoine of Navarre"
         },
@@ -3355,14 +3339,6 @@
             "object": "Wilhelm Bombast von Hohenheim"
         },
         {
-            "subject": "Volodymyr Zelenskyy",
-            "object": "Oleksandr Zelenskyy"
-        },
-        {
-            "subject": "Adam Smith",
-            "object": "http://www.wikidata.org/.well-known/genid/2848ad3a38822840735bda8ecfeaaab4"
-        },
-        {
             "subject": "Gustaf VI Adolf of Sweden",
             "object": "Gustaf V of Sweden"
         },
@@ -3409,10 +3385,6 @@
         {
             "subject": "Keanu Reeves",
             "object": "Samuel Nowlin Reeves, Jr."
-        },
-        {
-            "subject": "Justinian I",
-            "object": "http://www.wikidata.org/.well-known/genid/13f0ede79b6e7ea04d7764d46155958c"
         },
         {
             "subject": "Serena Williams",
@@ -3497,10 +3469,6 @@
         {
             "subject": "Ed Sheeran",
             "object": "John Sheeran"
-        },
-        {
-            "subject": "Cato the Elder",
-            "object": "http://www.wikidata.org/.well-known/genid/cec3187b54c438e99e89883ce6775905"
         },
         {
             "subject": "Peter the Great",
@@ -3953,10 +3921,6 @@
         {
             "subject": "Georg B\u00fcchner",
             "object": "Ernst B\u00fcchner"
-        },
-        {
-            "subject": "Sallust",
-            "object": "http://www.wikidata.org/.well-known/genid/5cce38811d5ff76bc0b63b9fb90c787a"
         },
         {
             "subject": "Philip IV of Spain",
