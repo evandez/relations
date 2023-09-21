@@ -160,8 +160,8 @@ def order_1_approx(
         z=z,
         z_layer=z_layer,
         z_index=z_index,
-        weight=weight,
-        bias=bias,
+        weight=weight.detach().clone(),
+        bias=bias.detach().clone(),
         inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
         metadata={
