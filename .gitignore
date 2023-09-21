@@ -143,3 +143,6 @@ scan-for-best*
 
 # iframe stuffs
 *iframe*
+
+# debug outputs
+*.out
