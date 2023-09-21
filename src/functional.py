@@ -1,3 +1,4 @@
+import gc
 import logging
 import random
 from collections import defaultdict
@@ -576,6 +577,7 @@ def filter_dataset_samples(
 
     relations = []
     for relation in dataset.relations:
+        logger.debug(f"filtering samples for relation {relation.name}...")
         if common_prompt_template is not None:
             prompt_template = common_prompt_template
         else:
@@ -616,6 +618,13 @@ def filter_dataset_samples(
                 if require_multi != subj_single_token:
                     subject_filtered_samples.append(sample)
             filtered_relation = relation.set(samples=subject_filtered_samples)
+
+        if "cuda" in str(mt.model.device):
+            logger.debug(
+                f"clearing cuda cache after filtering samples for -> {relation.name}"
+            )
+            torch.cuda.empty_cache()
+            gc.collect()
 
         if len(filtered_relation.samples) < min_knowns:
             logger.debug(
