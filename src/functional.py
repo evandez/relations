@@ -380,26 +380,27 @@ def predict_next_token(
             mt.model.device
         )
     with torch.inference_mode():
-        batched_logits = []
+        predictions = []
         for i in range(0, len(inputs.input_ids), batch_size):
             batch_outputs = mt.model(
                 input_ids=inputs.input_ids[i : i + batch_size],
                 attention_mask=inputs.attention_mask[i : i + batch_size],
             )
-            batched_logits.append(batch_outputs.logits)
-        logits = torch.cat(batched_logits, dim=0)
 
-    next_token_probs = logits[:, -1].float().softmax(dim=-1)
-    next_token_topk = next_token_probs.topk(dim=-1, k=k)
+            next_token_probs = batch_outputs.logits[:, -1].float().softmax(dim=-1)
+            next_token_topk = next_token_probs.topk(dim=-1, k=k)
 
-    predictions = []
-    for token_ids, token_probs in zip(next_token_topk.indices, next_token_topk.values):
-        predictions.append(
-            [
-                PredictedToken(token=mt.tokenizer.decode(token_id), prob=prob.item())
-                for token_id, prob in zip(token_ids, token_probs)
-            ]
-        )
+            for token_ids, token_probs in zip(
+                next_token_topk.indices, next_token_topk.values
+            ):
+                predictions.append(
+                    [
+                        PredictedToken(
+                            token=mt.tokenizer.decode(token_id), prob=prob.item()
+                        )
+                        for token_id, prob in zip(token_ids, token_probs)
+                    ]
+                )
     return predictions
 
 
