@@ -165,7 +165,7 @@ def order_1_approx(
         inputs=inputs.to("cpu"),
         logits=outputs.logits.cpu(),
         metadata={
-            "Jh": weight @ h,
+            "Jh": (weight @ h).detach().clone(),
         },
     )
 
