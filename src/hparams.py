@@ -6,7 +6,7 @@ from typing import TypeVar
 
 from src import data, models
 from src.utils import env_utils
-from src.utils.typing import PathLike
+from src.utils.typing import Layer, PathLike
 
 from dataclasses_json import DataClassJsonMixin
 
@@ -37,11 +37,11 @@ RelationHParamsT = TypeVar("RelationHParamsT", bound="RelationHParams")
 class RelationHParams(HParams):
     model_name: str
     relation_name: str
-    h_layer: int
+    h_layer: Layer
     beta: float
     rank: int | None = None
     z_layer: int | None = None
-    h_layer_edit: int | None = None
+    h_layer_edit: Layer | None = None
 
     def save(self, file: PathLike | None = None) -> None:
         if file is None:
