@@ -1,8 +1,9 @@
 {
-    "relation_name": "city in country",
-    "h_layer": 27,
-    "beta": 0.28333333631356555,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "city in country",
+    "h_layer": 19,
+    "beta": 2.25,
+    "rank": 77,
+    "z_layer": -1,
+    "h_layer_edit": 15
 }

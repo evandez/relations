@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "person university",
+    "h_layer": 42,
+    "beta": 2.25,
+    "rank": 89,
+    "z_layer": -1,
+    "h_layer_edit": "emb"
+}

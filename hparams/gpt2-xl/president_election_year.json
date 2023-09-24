@@ -1,8 +1,9 @@
 {
-    "relation_name": "president election year",
-    "h_layer": 30,
-    "beta": 0.3333333333333333,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "president election year",
+    "h_layer": 26,
+    "beta": 2.25,
+    "rank": 62,
+    "z_layer": -1,
+    "h_layer_edit": 11
 }

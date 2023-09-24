@@ -1,8 +1,9 @@
 {
-    "relation_name": "person university",
-    "h_layer": 6,
-    "beta": 0.0833333358168602,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "person university",
+    "h_layer": "emb",
+    "beta": 8.0,
+    "rank": 146,
+    "z_layer": -1,
+    "h_layer_edit": 9
 }

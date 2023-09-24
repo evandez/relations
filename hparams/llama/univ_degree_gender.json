@@ -1,8 +1,9 @@
 {
-    "relation_name": "univ degree gender",
-    "h_layer": 13,
-    "beta": 0.1333333378036817,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "univ degree gender",
+    "h_layer": 14,
+    "beta": 8.0,
+    "rank": 27,
+    "z_layer": -1,
+    "h_layer_edit": 3
 }

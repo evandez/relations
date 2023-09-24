@@ -1,8 +1,9 @@
 {
-    "relation_name": "occupation gender",
-    "h_layer": 26,
-    "beta": 0.1333333378036817,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "occupation gender",
+    "h_layer": 17,
+    "beta": 2.25,
+    "rank": 21,
+    "z_layer": -1,
+    "h_layer_edit": 9
 }

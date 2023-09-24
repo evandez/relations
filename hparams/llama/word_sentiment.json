@@ -1,8 +1,9 @@
 {
-    "relation_name": "word sentiment",
-    "h_layer": 11,
-    "beta": 0.1333333378036817,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "word sentiment",
+    "h_layer": 8,
+    "beta": 8.0,
+    "rank": 45,
+    "z_layer": -1,
+    "h_layer_edit": 2
 }

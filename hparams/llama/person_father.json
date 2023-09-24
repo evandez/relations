@@ -1,8 +1,9 @@
 {
-    "relation_name": "person father",
-    "h_layer": 18,
-    "beta": 0.10000000273187955,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "person father",
+    "h_layer": 31,
+    "beta": 8.0,
+    "rank": 240,
+    "z_layer": -1,
+    "h_layer_edit": 10
 }

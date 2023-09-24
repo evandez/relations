@@ -1,8 +1,9 @@
 {
-    "relation_name": "star constellation name",
-    "h_layer": 9,
-    "beta": 0.5166666706403097,
     "model_name": "gptj",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "star constellation name",
+    "h_layer": 12,
+    "beta": 2.25,
+    "rank": 152,
+    "z_layer": -1,
+    "h_layer_edit": 8
 }

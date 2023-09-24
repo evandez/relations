@@ -1,0 +1,9 @@
+{
+    "model_name": "llama",
+    "relation_name": "landmark in country",
+    "h_layer": 20,
+    "beta": 8.0,
+    "rank": 160,
+    "z_layer": -1,
+    "h_layer_edit": 12
+}

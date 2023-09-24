@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "word last letter",
+    "h_layer": 21,
+    "beta": 2.25,
+    "rank": 142,
+    "z_layer": -1,
+    "h_layer_edit": 14
+}

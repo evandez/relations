@@ -1,8 +1,9 @@
 {
-    "relation_name": "name religion",
-    "h_layer": 10,
-    "beta": 0.23333333929379782,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "name religion",
+    "h_layer": 4,
+    "beta": 8.0,
+    "rank": 68,
+    "z_layer": -1,
+    "h_layer_edit": 2
 }

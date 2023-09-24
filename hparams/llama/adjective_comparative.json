@@ -1,8 +1,9 @@
 {
-    "relation_name": "adjective comparative",
-    "h_layer": 20,
-    "beta": 0.15000000347693762,
     "model_name": "llama",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "adjective comparative",
+    "h_layer": 21,
+    "beta": 8.0,
+    "rank": 208,
+    "z_layer": -1,
+    "h_layer_edit": 11
 }

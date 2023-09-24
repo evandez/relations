@@ -1,0 +1,9 @@
+{
+    "model_name": "llama",
+    "relation_name": "person native language",
+    "h_layer": 22,
+    "beta": 8.0,
+    "rank": 160,
+    "z_layer": -1,
+    "h_layer_edit": 12
+}

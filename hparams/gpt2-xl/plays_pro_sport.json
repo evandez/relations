@@ -1,8 +1,9 @@
 {
-    "relation_name": "plays pro sport",
-    "h_layer": 31,
-    "beta": 0.1666666716337204,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "plays pro sport",
+    "h_layer": 22,
+    "beta": 2.25,
+    "rank": 46,
+    "z_layer": -1,
+    "h_layer_edit": 16
 }

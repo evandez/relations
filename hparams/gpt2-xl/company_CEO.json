@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "company CEO",
+    "h_layer": 20,
+    "beta": 2.25,
+    "rank": 67,
+    "z_layer": -1,
+    "h_layer_edit": 17
+}

@@ -1,0 +1,9 @@
+{
+    "model_name": "gpt2-xl",
+    "relation_name": "star constellation name",
+    "h_layer": 22,
+    "beta": 2.25,
+    "rank": 233,
+    "z_layer": -1,
+    "h_layer_edit": 21
+}

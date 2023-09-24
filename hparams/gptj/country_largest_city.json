@@ -1,8 +1,9 @@
 {
-    "relation_name": "country largest city",
-    "h_layer": 6,
-    "beta": 0.18333333730697632,
     "model_name": "gptj",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "country largest city",
+    "h_layer": 10,
+    "beta": 2.25,
+    "rank": 74,
+    "z_layer": -1,
+    "h_layer_edit": 10
 }

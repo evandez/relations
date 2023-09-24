@@ -1,8 +1,9 @@
 {
-    "relation_name": "task done by tool",
-    "h_layer": 21,
-    "beta": 0.23333334177732468,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "task done by tool",
+    "h_layer": 22,
+    "beta": 2.25,
+    "rank": 103,
+    "z_layer": -1,
+    "h_layer_edit": 14
 }

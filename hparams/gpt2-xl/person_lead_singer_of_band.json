@@ -1,8 +1,9 @@
 {
-    "relation_name": "person lead singer of band",
-    "h_layer": 28,
-    "beta": 0.700000007947286,
     "model_name": "gpt2-xl",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "person lead singer of band",
+    "h_layer": 19,
+    "beta": 2.25,
+    "rank": 100,
+    "z_layer": -1,
+    "h_layer_edit": 22
 }

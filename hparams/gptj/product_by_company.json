@@ -1,8 +1,9 @@
 {
-    "relation_name": "product by company",
-    "h_layer": 14,
-    "beta": 0.4333333373069763,
     "model_name": "gptj",
-    "rank": null,
-    "z_layer": -1
+    "relation_name": "product by company",
+    "h_layer": 12,
+    "beta": 2.25,
+    "rank": 158,
+    "z_layer": -1,
+    "h_layer_edit": 4
 }
