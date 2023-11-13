@@ -45,6 +45,7 @@ def sweep(
     consider_rank_for_recall: bool = False,
     limit_test_samples: int | None = None,
     use_bare_prompt: bool = False,
+    prompt_template: str | None = None,
     **kwargs: Any,
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
@@ -86,7 +87,11 @@ def sweep(
         if use_bare_prompt:
             prompt_template = " {}"  # bare prompt
         else:
-            prompt_template = relation.prompt_templates[0]
+            prompt_template = (
+                relation.prompt_templates[0]
+                if prompt_template is None
+                else prompt_template
+            )
             # prompt_template = " {} :"  # bare prompt with colon
 
         relation_result = SweepRelationResults(
