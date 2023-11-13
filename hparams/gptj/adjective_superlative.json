@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "adjective superlative",
-    "h_layer": 9,
+    "h_layer": 10,
     "beta": 2.25,
     "rank": 143,
     "z_layer": -1,

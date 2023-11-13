@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "person sport position",
-    "h_layer": 13,
+    "h_layer": 5,
     "beta": 2.25,
     "rank": 97,
     "z_layer": -1,

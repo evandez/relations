@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "person plays instrument",
-    "h_layer": 17,
+    "h_layer": 9,
     "beta": 2.25,
     "rank": 198,
     "z_layer": -1,

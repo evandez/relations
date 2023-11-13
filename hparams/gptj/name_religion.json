@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "name religion",
-    "h_layer": 13,
+    "h_layer": 4,
     "beta": 2.25,
     "rank": 57,
     "z_layer": -1,
