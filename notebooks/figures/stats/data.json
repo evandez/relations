@@ -1,0 +1,378 @@
+{
+  "characteristic gender": {
+    "name": "characteristic gender",
+    "category": "bias",
+    "num_samples": 30,
+    "gpt2-xl": "15.76 \\pm 2.16",
+    "gptj": "15.88 \\pm 2.71",
+    "llama-13b": "19.67 \\pm 1.18"
+  },
+  "univ degree gender": {
+    "name": "univ degree gender",
+    "category": "bias",
+    "num_samples": 38,
+    "gpt2-xl": "21.50 \\pm 2.38",
+    "gptj": "--",
+    "llama-13b": "24.17 \\pm 2.41"
+  },
+  "name birthplace": {
+    "name": "name birthplace",
+    "category": "bias",
+    "num_samples": 31,
+    "gpt2-xl": "18.04 \\pm 1.43",
+    "gptj": "17.09 \\pm 2.59",
+    "llama-13b": "21.38 \\pm 1.11"
+  },
+  "name gender": {
+    "name": "name gender",
+    "category": "bias",
+    "num_samples": 19,
+    "gpt2-xl": "10.71 \\pm 0.61",
+    "gptj": "11.00 \\pm 0.00",
+    "llama-13b": "10.79 \\pm 0.41"
+  },
+  "name religion": {
+    "name": "name religion",
+    "category": "bias",
+    "num_samples": 31,
+    "gpt2-xl": "15.08 \\pm 2.23",
+    "gptj": "16.96 \\pm 2.26",
+    "llama-13b": "19.83 \\pm 1.49"
+  },
+  "occupation age": {
+    "name": "occupation age",
+    "category": "bias",
+    "num_samples": 45,
+    "gpt2-xl": "22.88 \\pm 3.82",
+    "gptj": "25.67 \\pm 2.62",
+    "llama-13b": "32.79 \\pm 2.63"
+  },
+  "occupation gender": {
+    "name": "occupation gender",
+    "category": "bias",
+    "num_samples": 19,
+    "gpt2-xl": "9.78 \\pm 0.66",
+    "gptj": "9.60 \\pm 0.80",
+    "llama-13b": "10.79 \\pm 0.41"
+  },
+  "fruit inside color": {
+    "name": "fruit inside color",
+    "category": "commonsense",
+    "num_samples": 36,
+    "gpt2-xl": "9.00 \\pm 0.00",
+    "gptj": "10.25 \\pm 1.03",
+    "llama-13b": "17.33 \\pm 1.62"
+  },
+  "fruit outside color": {
+    "name": "fruit outside color",
+    "category": "commonsense",
+    "num_samples": 30,
+    "gpt2-xl": "9.57 \\pm 0.73",
+    "gptj": "11.70 \\pm 2.14",
+    "llama-13b": "14.62 \\pm 1.44"
+  },
+  "object superclass": {
+    "name": "object superclass",
+    "category": "commonsense",
+    "num_samples": 76,
+    "gpt2-xl": "51.54 \\pm 2.25",
+    "gptj": "52.71 \\pm 1.49",
+    "llama-13b": "54.42 \\pm 1.66"
+  },
+  "substance phase of matter": {
+    "name": "substance phase of matter",
+    "category": "commonsense",
+    "num_samples": 50,
+    "gpt2-xl": "34.17 \\pm 3.29",
+    "gptj": "30.42 \\pm 6.85",
+    "llama-13b": "40.50 \\pm 1.91"
+  },
+  "task person type": {
+    "name": "task person type",
+    "category": "commonsense",
+    "num_samples": 32,
+    "gpt2-xl": "16.08 \\pm 1.50",
+    "gptj": "18.00 \\pm 1.19",
+    "llama-13b": "19.25 \\pm 2.15"
+  },
+  "task done by tool": {
+    "name": "task done by tool",
+    "category": "commonsense",
+    "num_samples": 52,
+    "gpt2-xl": "25.75 \\pm 1.88",
+    "gptj": "30.62 \\pm 1.52",
+    "llama-13b": "33.67 \\pm 1.77"
+  },
+  "word sentiment": {
+    "name": "word sentiment",
+    "category": "commonsense",
+    "num_samples": 60,
+    "gpt2-xl": "42.79 \\pm 5.14",
+    "gptj": "47.25 \\pm 4.11",
+    "llama-13b": "50.54 \\pm 2.04"
+  },
+  "work location": {
+    "name": "work location",
+    "category": "commonsense",
+    "num_samples": 38,
+    "gpt2-xl": "19.67 \\pm 2.59",
+    "gptj": "18.21 \\pm 2.61",
+    "llama-13b": "24.67 \\pm 2.27"
+  },
+  "city in country": {
+    "name": "city in country",
+    "category": "factual",
+    "num_samples": 27,
+    "gpt2-xl": "17.96 \\pm 1.10",
+    "gptj": "18.00 \\pm 0.87",
+    "llama-13b": "18.12 \\pm 0.67"
+  },
+  "company CEO": {
+    "name": "company CEO",
+    "category": "factual",
+    "num_samples": 298,
+    "gpt2-xl": "15.37 \\pm 6.12",
+    "gptj": "90.17 \\pm 7.19",
+    "llama-13b": "155.50 \\pm 4.72"
+  },
+  "company hq": {
+    "name": "company hq",
+    "category": "factual",
+    "num_samples": 674,
+    "gpt2-xl": "148.79 \\pm 36.63",
+    "gptj": "316.00 \\pm 10.38",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "country capital city": {
+    "name": "country capital city",
+    "category": "factual",
+    "num_samples": 24,
+    "gpt2-xl": "15.50 \\pm 0.58",
+    "gptj": "16.00 \\pm 0.00",
+    "llama-13b": "15.33 \\pm 0.47"
+  },
+  "country currency": {
+    "name": "country currency",
+    "category": "factual",
+    "num_samples": 30,
+    "gpt2-xl": "20.17 \\pm 0.80",
+    "gptj": "19.42 \\pm 0.86",
+    "llama-13b": "22.00 \\pm 0.00"
+  },
+  "country language": {
+    "name": "country language",
+    "category": "factual",
+    "num_samples": 24,
+    "gpt2-xl": "14.92 \\pm 0.64",
+    "gptj": "15.38 \\pm 0.56",
+    "llama-13b": "15.79 \\pm 0.41"
+  },
+  "country largest city": {
+    "name": "country largest city",
+    "category": "factual",
+    "num_samples": 24,
+    "gpt2-xl": "13.96 \\pm 0.79",
+    "gptj": "15.50 \\pm 0.50",
+    "llama-13b": "15.33 \\pm 0.47"
+  },
+  "food from country": {
+    "name": "food from country",
+    "category": "factual",
+    "num_samples": 30,
+    "gpt2-xl": "11.22 \\pm 1.44",
+    "gptj": "16.42 \\pm 1.08",
+    "llama-13b": "18.79 \\pm 1.35"
+  },
+  "landmark in country": {
+    "name": "landmark in country",
+    "category": "factual",
+    "num_samples": 836,
+    "gpt2-xl": "274.13 \\pm 58.17",
+    "gptj": "565.22 \\pm 14.24",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "landmark on continent": {
+    "name": "landmark on continent",
+    "category": "factual",
+    "num_samples": 947,
+    "gpt2-xl": "421.90 \\pm 85.31",
+    "gptj": "797.50 \\pm 74.66",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "person lead singer of band": {
+    "name": "person lead singer of band",
+    "category": "factual",
+    "num_samples": 21,
+    "gpt2-xl": "10.10 \\pm 0.87",
+    "gptj": "12.96 \\pm 0.20",
+    "llama-13b": "13.00 \\pm 0.00"
+  },
+  "person father": {
+    "name": "person father",
+    "category": "factual",
+    "num_samples": 991,
+    "gpt2-xl": "109.21 \\pm 6.12",
+    "gptj": "206.08 \\pm 7.59",
+    "llama-13b": "675.50 \\pm 5.50"
+  },
+  "person mother": {
+    "name": "person mother",
+    "category": "factual",
+    "num_samples": 994,
+    "gpt2-xl": "83.50 \\pm 12.33",
+    "gptj": "182.75 \\pm 5.80",
+    "llama-13b": "613.50 \\pm 1.50"
+  },
+  "person native language": {
+    "name": "person native language",
+    "category": "factual",
+    "num_samples": 919,
+    "gpt2-xl": "697.33 \\pm 16.05",
+    "gptj": "720.17 \\pm 31.29",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "person occupation": {
+    "name": "person occupation",
+    "category": "factual",
+    "num_samples": 821,
+    "gpt2-xl": "41.96 \\pm 10.30",
+    "gptj": "131.46 \\pm 28.52",
+    "llama-13b": "404.00 \\pm 25.47"
+  },
+  "person plays instrument": {
+    "name": "person plays instrument",
+    "category": "factual",
+    "num_samples": 513,
+    "gpt2-xl": "144.17 \\pm 27.56",
+    "gptj": "237.58 \\pm 30.67",
+    "llama-13b": "249.04 \\pm 67.73"
+  },
+  "person sport position": {
+    "name": "person sport position",
+    "category": "factual",
+    "num_samples": 952,
+    "gpt2-xl": "199.90 \\pm 67.94",
+    "gptj": "243.33 \\pm 94.08",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "plays pro sport": {
+    "name": "plays pro sport",
+    "category": "factual",
+    "num_samples": 318,
+    "gpt2-xl": "195.14 \\pm 13.05",
+    "gptj": "244.17 \\pm 10.85",
+    "llama-13b": "294.80 \\pm 1.17"
+  },
+  "person university": {
+    "name": "person university",
+    "category": "factual",
+    "num_samples": 91,
+    "gpt2-xl": "35.42 \\pm 1.91",
+    "gptj": "40.96 \\pm 1.62",
+    "llama-13b": "44.77 \\pm 2.23"
+  },
+  "pokemon evolution": {
+    "name": "pokemon evolution",
+    "category": "factual",
+    "num_samples": 44,
+    "gpt2-xl": "30.33 \\pm 1.07",
+    "gptj": "28.67 \\pm 3.92",
+    "llama-13b": "35.67 \\pm 0.47"
+  },
+  "president birth year": {
+    "name": "president birth year",
+    "category": "factual",
+    "num_samples": 19,
+    "gpt2-xl": "--",
+    "gptj": "11.00 \\pm 0.00",
+    "llama-13b": "--"
+  },
+  "president election year": {
+    "name": "president election year",
+    "category": "factual",
+    "num_samples": 19,
+    "gpt2-xl": "9.87 \\pm 0.61",
+    "gptj": "9.46 \\pm 0.50",
+    "llama-13b": "--"
+  },
+  "product by company": {
+    "name": "product by company",
+    "category": "factual",
+    "num_samples": 522,
+    "gpt2-xl": "262.38 \\pm 23.80",
+    "gptj": "366.44 \\pm 8.13",
+    "llama-13b": "421.33 \\pm 6.24"
+  },
+  "star constellation name": {
+    "name": "star constellation name",
+    "category": "factual",
+    "num_samples": 362,
+    "gpt2-xl": "210.33 \\pm 16.67",
+    "gptj": "276.29 \\pm 3.35",
+    "llama-13b": "200.00 \\pm 0.00"
+  },
+  "superhero archnemesis": {
+    "name": "superhero archnemesis",
+    "category": "factual",
+    "num_samples": 96,
+    "gpt2-xl": "12.65 \\pm 2.16",
+    "gptj": "21.54 \\pm 2.65",
+    "llama-13b": "40.83 \\pm 2.67"
+  },
+  "superhero person": {
+    "name": "superhero person",
+    "category": "factual",
+    "num_samples": 100,
+    "gpt2-xl": "36.62 \\pm 2.39",
+    "gptj": "49.83 \\pm 2.05",
+    "llama-13b": "71.88 \\pm 2.28"
+  },
+  "adjective antonym": {
+    "name": "adjective antonym",
+    "category": "linguistic",
+    "num_samples": 100,
+    "gpt2-xl": "57.54 \\pm 2.36",
+    "gptj": "64.00 \\pm 2.33",
+    "llama-13b": "68.54 \\pm 1.50"
+  },
+  "adjective comparative": {
+    "name": "adjective comparative",
+    "category": "linguistic",
+    "num_samples": 68,
+    "gpt2-xl": "57.58 \\pm 0.95",
+    "gptj": "59.54 \\pm 0.58",
+    "llama-13b": "59.96 \\pm 0.20"
+  },
+  "adjective superlative": {
+    "name": "adjective superlative",
+    "category": "linguistic",
+    "num_samples": 80,
+    "gpt2-xl": "64.38 \\pm 3.33",
+    "gptj": "70.50 \\pm 0.87",
+    "llama-13b": "70.50 \\pm 0.65"
+  },
+  "verb past tense": {
+    "name": "verb past tense",
+    "category": "linguistic",
+    "num_samples": 76,
+    "gpt2-xl": "54.04 \\pm 3.02",
+    "gptj": "60.96 \\pm 4.60",
+    "llama-13b": "65.83 \\pm 3.86"
+  },
+  "word first letter": {
+    "name": "word first letter",
+    "category": "linguistic",
+    "num_samples": 241,
+    "gpt2-xl": "199.09 \\pm 9.79",
+    "gptj": "223.92 \\pm 4.47",
+    "llama-13b": "233.00 \\pm 0.00"
+  },
+  "word last letter": {
+    "name": "word last letter",
+    "category": "linguistic",
+    "num_samples": 241,
+    "gpt2-xl": "21.25 \\pm 5.27",
+    "gptj": "28.21 \\pm 8.23",
+    "llama-13b": "188.27 \\pm 6.74"
+  }
+}
