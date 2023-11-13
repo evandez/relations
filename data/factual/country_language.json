@@ -6,7 +6,7 @@
         "In {}, the primary language is"
     ],
     "prompt_templates_zs": [
-	"{}, where most people speak",
+        "{}, where most people speak",
         "In {}, people speak the language of",
         "People in {} speak the language of"
     ],

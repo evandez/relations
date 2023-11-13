@@ -51,7 +51,10 @@ def main(args: argparse.Namespace) -> None:
     )
 
     relation = dataset[0]
-    if len(relation.prompt_templates) < 2:
+    prompt_templates = list(
+        set(relation.prompt_templates + relation.prompt_templates_zs)
+    )
+    if len(prompt_templates) < 2:
         logger.error(
             f"Relation {args.relation_name} has less than 2 prompt templates -- can't check performance with different templates"
         )
@@ -59,7 +62,7 @@ def main(args: argparse.Namespace) -> None:
 
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
 
-    for idx, template in enumerate(relation.prompt_templates):
+    for idx, template in enumerate(prompt_templates):
         logger.info("###############################################")
         logger.info(f"({idx+1}) template={template}")
         logger.info("###############################################")
