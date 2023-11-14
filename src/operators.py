@@ -274,7 +274,11 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             z_layer=approxes[0].z_layer,
             prompt_template=prompt_template_icl,
             beta=self.beta,
-            metadata={"Jh": [approx.metadata["Jh"].squeeze() for approx in approxes]},
+            metadata={
+                "Jh": [approx.metadata["Jh"].squeeze() for approx in approxes],
+                "|w|": [approx.weight.norm().item() for approx in approxes],
+                "|b|": [approx.bias.norm().item() for approx in approxes],
+            },
         )
 
         return operator

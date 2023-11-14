@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from src import data, metrics
 from src.data import RelationSample
@@ -41,7 +41,7 @@ class SweepTrainResults(DataClassJsonMixin):
     samples: list[data.RelationSample]
     betas: list[SweepBetaResults]
     ranks: list[SweepRankResults]
-    jh_norm: float
+    lre_stats: dict = field(default_factory=dict)
 
     def best_beta(self, k: int = 1) -> SweepBetaResults:
         """Return the best beta by given recall position."""
@@ -60,7 +60,6 @@ class SweepTrainResults(DataClassJsonMixin):
             "layer finished | "
             f"beta={best_beta.beta:.2f} | recall@1={best_beta.recall[0]:.2f} | "
             f"rank={best_rank.rank} | efficacy={best_rank.efficacy[0]:.2f} | "
-            f"norm(Jh)={self.jh_norm:.2f} | "
             f"samples={[str(x) for x in self.samples]}"
         )
 
@@ -253,7 +252,7 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
                 ],
                 betas=[],
                 ranks=[],
-                jh_norm=layer["result"]["jh_norm"],
+                lre_stats=layer["result"]["lre_stats"] if "lre_stats" in layer else {},
             )
             for beta in layer["result"]["betas"]:
                 beta_results = SweepBetaResults(

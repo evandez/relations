@@ -328,12 +328,16 @@ def sweep(
                     samples=train_samples,
                     betas=results_by_beta,
                     ranks=results_by_rank,
-                    jh_norm=torch.stack(operator.metadata["Jh"])
-                    .float()
-                    .view(len(train_samples), models.determine_hidden_size(mt))
-                    .norm(dim=-1)
-                    .mean(dim=0)
-                    .item(),
+                    lre_stats={
+                        "|jh|": torch.stack(operator.metadata["Jh"])
+                        .float()
+                        .view(len(train_samples), models.determine_hidden_size(mt))
+                        .norm(dim=-1)
+                        .mean(dim=0)
+                        .item(),
+                        "|weight|": operator.metadata["|w|"],
+                        "|bias|": operator.metadata["|b|"],
+                    },
                 )
                 train_result.summarize()
                 layer_results.append(

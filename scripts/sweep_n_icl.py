@@ -52,7 +52,7 @@ def main(args: argparse.Namespace) -> None:
 
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
 
-    for n_train in range(3, 12):
+    for n_train in range(args.n_train_from, args.n_train_to + 1):
         logger.info("###############################################")
         logger.info(f"n_train={n_train}")
         logger.info("###############################################")
@@ -118,6 +118,18 @@ if __name__ == "__main__":
         type=str,
         default="results/num_train",
         help="directory to find sweep results",
+    )
+    parser.add_argument(
+        "--n-train-from",
+        type=int,
+        default=3,
+        help="number of train samples to start from",
+    )
+    parser.add_argument(
+        "--n-train-to",
+        type=int,
+        default=12,
+        help="number of train samples to end at",
     )
     args = parser.parse_args()
     logger.info(args)
