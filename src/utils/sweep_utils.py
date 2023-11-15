@@ -252,7 +252,9 @@ def relation_from_dict(sweep_result: dict) -> SweepRelationResults:
                 ],
                 betas=[],
                 ranks=[],
-                lre_stats=layer["result"]["lre_stats"] if "lre_stats" in layer else {},
+                lre_stats=layer["result"]["lre_stats"]
+                if "lre_stats" in layer["result"]
+                else {},
             )
             for beta in layer["result"]["betas"]:
                 beta_results = SweepBetaResults(

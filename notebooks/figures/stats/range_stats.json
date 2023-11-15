@@ -1,0 +1,425 @@
+{
+  "characteristic gender": {
+    "name": "characteristic gender",
+    "category": "bias",
+    "num_samples": 30,
+    "|range|": 2,
+    "gptj": 2,
+    "gpt2-xl": 2,
+    "llama": 2
+  },
+  "univ degree gender": {
+    "name": "univ degree gender",
+    "category": "bias",
+    "num_samples": 38,
+    "|range|": 2,
+    "gptj": 2,
+    "gpt2-xl": 2,
+    "llama": 2
+  },
+  "name birthplace": {
+    "name": "name birthplace",
+    "category": "bias",
+    "num_samples": 31,
+    "|range|": 8,
+    "gptj": 8,
+    "gpt2-xl": 8,
+    "llama": 8
+  },
+  "name gender": {
+    "name": "name gender",
+    "category": "bias",
+    "num_samples": 19,
+    "|range|": 2,
+    "gptj": 2,
+    "gpt2-xl": 2,
+    "llama": 2
+  },
+  "name religion": {
+    "name": "name religion",
+    "category": "bias",
+    "num_samples": 31,
+    "|range|": 5,
+    "gptj": 5,
+    "gpt2-xl": 5,
+    "llama": 5
+  },
+  "occupation age": {
+    "name": "occupation age",
+    "category": "bias",
+    "num_samples": 45,
+    "|range|": 2,
+    "gptj": 2,
+    "gpt2-xl": 2,
+    "llama": 2
+  },
+  "occupation gender": {
+    "name": "occupation gender",
+    "category": "bias",
+    "num_samples": 19,
+    "|range|": 2,
+    "gptj": 2,
+    "gpt2-xl": 2,
+    "llama": 2
+  },
+  "fruit inside color": {
+    "name": "fruit inside color",
+    "category": "commonsense",
+    "num_samples": 36,
+    "|range|": 6,
+    "gptj": 6,
+    "gpt2-xl": 6,
+    "llama": 6
+  },
+  "fruit outside color": {
+    "name": "fruit outside color",
+    "category": "commonsense",
+    "num_samples": 30,
+    "|range|": 9,
+    "gptj": 9,
+    "gpt2-xl": 9,
+    "llama": 9
+  },
+  "object superclass": {
+    "name": "object superclass",
+    "category": "commonsense",
+    "num_samples": 76,
+    "|range|": 10,
+    "gptj": 10,
+    "gpt2-xl": 10,
+    "llama": 10
+  },
+  "substance phase of matter": {
+    "name": "substance phase of matter",
+    "category": "commonsense",
+    "num_samples": 50,
+    "|range|": 3,
+    "gptj": 3,
+    "gpt2-xl": 3,
+    "llama": 3
+  },
+  "task person type": {
+    "name": "task person type",
+    "category": "commonsense",
+    "num_samples": 32,
+    "|range|": 32,
+    "gptj": 32,
+    "gpt2-xl": 32,
+    "llama": 32
+  },
+  "task done by tool": {
+    "name": "task done by tool",
+    "category": "commonsense",
+    "num_samples": 52,
+    "|range|": 51,
+    "gptj": 50,
+    "gpt2-xl": 50,
+    "llama": 46
+  },
+  "word sentiment": {
+    "name": "word sentiment",
+    "category": "commonsense",
+    "num_samples": 60,
+    "|range|": 3,
+    "gptj": 3,
+    "gpt2-xl": 3,
+    "llama": 3
+  },
+  "work location": {
+    "name": "work location",
+    "category": "commonsense",
+    "num_samples": 38,
+    "|range|": 24,
+    "gptj": 24,
+    "gpt2-xl": 24,
+    "llama": 24
+  },
+  "city in country": {
+    "name": "city in country",
+    "category": "factual",
+    "num_samples": 27,
+    "|range|": 21,
+    "gptj": 20,
+    "gpt2-xl": 20,
+    "llama": 20
+  },
+  "company CEO": {
+    "name": "company CEO",
+    "category": "factual",
+    "num_samples": 298,
+    "|range|": 287,
+    "gptj": 208,
+    "gpt2-xl": 208,
+    "llama": 194
+  },
+  "company hq": {
+    "name": "company hq",
+    "category": "factual",
+    "num_samples": 674,
+    "|range|": 163,
+    "gptj": 163,
+    "gpt2-xl": 163,
+    "llama": 152
+  },
+  "country capital city": {
+    "name": "country capital city",
+    "category": "factual",
+    "num_samples": 24,
+    "|range|": 24,
+    "gptj": 24,
+    "gpt2-xl": 24,
+    "llama": 24
+  },
+  "country currency": {
+    "name": "country currency",
+    "category": "factual",
+    "num_samples": 30,
+    "|range|": 23,
+    "gptj": 23,
+    "gpt2-xl": 23,
+    "llama": 21
+  },
+  "country language": {
+    "name": "country language",
+    "category": "factual",
+    "num_samples": 24,
+    "|range|": 14,
+    "gptj": 14,
+    "gpt2-xl": 14,
+    "llama": 14
+  },
+  "country largest city": {
+    "name": "country largest city",
+    "category": "factual",
+    "num_samples": 24,
+    "|range|": 24,
+    "gptj": 24,
+    "gpt2-xl": 24,
+    "llama": 24
+  },
+  "food from country": {
+    "name": "food from country",
+    "category": "factual",
+    "num_samples": 30,
+    "|range|": 26,
+    "gptj": 26,
+    "gpt2-xl": 26,
+    "llama": 26
+  },
+  "landmark in country": {
+    "name": "landmark in country",
+    "category": "factual",
+    "num_samples": 836,
+    "|range|": 91,
+    "gptj": 91,
+    "gpt2-xl": 91,
+    "llama": 89
+  },
+  "landmark on continent": {
+    "name": "landmark on continent",
+    "category": "factual",
+    "num_samples": 947,
+    "|range|": 5,
+    "gptj": 5,
+    "gpt2-xl": 5,
+    "llama": 5
+  },
+  "person lead singer of band": {
+    "name": "person lead singer of band",
+    "category": "factual",
+    "num_samples": 21,
+    "|range|": 21,
+    "gptj": 18,
+    "gpt2-xl": 18,
+    "llama": 18
+  },
+  "person father": {
+    "name": "person father",
+    "category": "factual",
+    "num_samples": 991,
+    "|range|": 968,
+    "gptj": 400,
+    "gpt2-xl": 400,
+    "llama": 377
+  },
+  "person mother": {
+    "name": "person mother",
+    "category": "factual",
+    "num_samples": 994,
+    "|range|": 962,
+    "gptj": 380,
+    "gpt2-xl": 380,
+    "llama": 307
+  },
+  "person native language": {
+    "name": "person native language",
+    "category": "factual",
+    "num_samples": 919,
+    "|range|": 30,
+    "gptj": 30,
+    "gpt2-xl": 30,
+    "llama": 30
+  },
+  "person occupation": {
+    "name": "person occupation",
+    "category": "factual",
+    "num_samples": 821,
+    "|range|": 31,
+    "gptj": 31,
+    "gpt2-xl": 31,
+    "llama": 29
+  },
+  "person plays instrument": {
+    "name": "person plays instrument",
+    "category": "factual",
+    "num_samples": 513,
+    "|range|": 6,
+    "gptj": 6,
+    "gpt2-xl": 6,
+    "llama": 6
+  },
+  "person sport position": {
+    "name": "person sport position",
+    "category": "factual",
+    "num_samples": 952,
+    "|range|": 14,
+    "gptj": 14,
+    "gpt2-xl": 14,
+    "llama": 14
+  },
+  "plays pro sport": {
+    "name": "plays pro sport",
+    "category": "factual",
+    "num_samples": 318,
+    "|range|": 5,
+    "gptj": 5,
+    "gpt2-xl": 5,
+    "llama": 5
+  },
+  "person university": {
+    "name": "person university",
+    "category": "factual",
+    "num_samples": 91,
+    "|range|": 69,
+    "gptj": 37,
+    "gpt2-xl": 37,
+    "llama": 35
+  },
+  "pokemon evolution": {
+    "name": "pokemon evolution",
+    "category": "factual",
+    "num_samples": 44,
+    "|range|": 44,
+    "gptj": 40,
+    "gpt2-xl": 40,
+    "llama": 36
+  },
+  "president birth year": {
+    "name": "president birth year",
+    "category": "factual",
+    "num_samples": 19,
+    "|range|": 15,
+    "gptj": 9,
+    "gpt2-xl": 9,
+    "llama": 1
+  },
+  "president election year": {
+    "name": "president election year",
+    "category": "factual",
+    "num_samples": 19,
+    "|range|": 18,
+    "gptj": 14,
+    "gpt2-xl": 14,
+    "llama": 2
+  },
+  "product by company": {
+    "name": "product by company",
+    "category": "factual",
+    "num_samples": 522,
+    "|range|": 30,
+    "gptj": 30,
+    "gpt2-xl": 30,
+    "llama": 26
+  },
+  "star constellation name": {
+    "name": "star constellation name",
+    "category": "factual",
+    "num_samples": 362,
+    "|range|": 31,
+    "gptj": 29,
+    "gpt2-xl": 29,
+    "llama": 27
+  },
+  "superhero archnemesis": {
+    "name": "superhero archnemesis",
+    "category": "factual",
+    "num_samples": 96,
+    "|range|": 90,
+    "gptj": 76,
+    "gpt2-xl": 76,
+    "llama": 73
+  },
+  "superhero person": {
+    "name": "superhero person",
+    "category": "factual",
+    "num_samples": 100,
+    "|range|": 100,
+    "gptj": 89,
+    "gpt2-xl": 89,
+    "llama": 84
+  },
+  "adjective antonym": {
+    "name": "adjective antonym",
+    "category": "linguistic",
+    "num_samples": 100,
+    "|range|": 95,
+    "gptj": 95,
+    "gpt2-xl": 95,
+    "llama": 94
+  },
+  "adjective comparative": {
+    "name": "adjective comparative",
+    "category": "linguistic",
+    "num_samples": 68,
+    "|range|": 57,
+    "gptj": 57,
+    "gpt2-xl": 57,
+    "llama": 53
+  },
+  "adjective superlative": {
+    "name": "adjective superlative",
+    "category": "linguistic",
+    "num_samples": 80,
+    "|range|": 79,
+    "gptj": 77,
+    "gpt2-xl": 77,
+    "llama": 78
+  },
+  "verb past tense": {
+    "name": "verb past tense",
+    "category": "linguistic",
+    "num_samples": 76,
+    "|range|": 76,
+    "gptj": 76,
+    "gpt2-xl": 76,
+    "llama": 76
+  },
+  "word first letter": {
+    "name": "word first letter",
+    "category": "linguistic",
+    "num_samples": 241,
+    "|range|": 25,
+    "gptj": 25,
+    "gpt2-xl": 25,
+    "llama": 25
+  },
+  "word last letter": {
+    "name": "word last letter",
+    "category": "linguistic",
+    "num_samples": 241,
+    "|range|": 18,
+    "gptj": 18,
+    "gpt2-xl": 18,
+    "llama": 18
+  }
+}
