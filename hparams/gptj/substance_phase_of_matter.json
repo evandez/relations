@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "substance phase of matter",
-    "h_layer": 7,
+    "h_layer": 9,
     "beta": 2.25,
     "rank": 60,
     "z_layer": -1,

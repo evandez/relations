@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "food from country",
-    "h_layer": 3,
+    "h_layer": 17,
     "beta": 2.25,
     "rank": 113,
     "z_layer": -1,

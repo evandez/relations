@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "occupation gender",
-    "h_layer": 4,
+    "h_layer": 9,
     "beta": 2.25,
     "rank": 34,
     "z_layer": -1,

@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "company CEO",
-    "h_layer": 6,
+    "h_layer": 15,
     "beta": 2.25,
     "rank": 173,
     "z_layer": -1,

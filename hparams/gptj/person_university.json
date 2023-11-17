@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "person university",
-    "h_layer": 4,
+    "h_layer": 17,
     "beta": 2.25,
     "rank": 153,
     "z_layer": -1,

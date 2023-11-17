@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "president election year",
-    "h_layer": "emb",
+    "h_layer": 10,
     "beta": 2.25,
     "rank": 84,
     "z_layer": -1,

@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "verb past tense",
-    "h_layer": 11,
+    "h_layer": 9,
     "beta": 2.25,
     "rank": 182,
     "z_layer": -1,

@@ -1,7 +1,7 @@
 {
     "model_name": "gptj",
     "relation_name": "adjective comparative",
-    "h_layer": 10,
+    "h_layer": 12,
     "beta": 2.25,
     "rank": 121,
     "z_layer": -1,
