@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
+from mamba_minimal.model import Mamba
 from src.utils import env_utils, tokenizer_utils
 from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
 
@@ -29,7 +30,10 @@ LLAMA_13B_NAME = "llama-13b"
 LLAMA_30B_NAME = "llama-30b"
 LLAMA_NAME_SHORT = "llama"
 
-DOWNLOADABLE_MODELS = frozenset({GPT_J_NAME, GPT_NEO_X_NAME, "gpt2-xl"})
+MAMBA_3B_NAME = "state-spaces/mamba-2.8b-slimpj"
+MAMBA_3B_SHORT = "mamba-3b"
+
+DOWNLOADABLE_MODELS = frozenset({GPT_J_NAME, GPT_NEO_X_NAME, "gpt2-xl", MAMBA_3B_NAME})
 
 
 @dataclass(frozen=True)
@@ -68,6 +72,8 @@ class ModelAndTokenizer:
             return GPT_J_NAME_SHORT
         elif isinstance(self.model, transformers.GPT2LMHeadModel):
             return "gpt2-xl"
+        elif isinstance(self.model, Mamba):
+            return MAMBA_3B_SHORT
         else:
             # TODO(evan): Can probably do better than failing.
             raise ValueError(f"unknown model name: {type(self.model).__name__}")
@@ -101,6 +107,8 @@ def determine_embedding_layer_path(model: ModelAndTokenizer | Model) -> str:
         return "transformer.wte"
     elif isinstance(model, transformers.LlamaForCausalLM):
         return "model.embed_tokens"
+    elif isinstance(model, Mamba):
+        return "embedding"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
@@ -111,6 +119,8 @@ def determine_final_layer_norm_path(model: ModelAndTokenizer | Model) -> str:
         return "transformer.ln_f"
     elif isinstance(model, transformers.LlamaForCausalLM):
         return "model.norm"
+    elif isinstance(model, Mamba):
+        return "norm_f"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
@@ -124,6 +134,8 @@ def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
         model, transformers.GPTNeoXForCausalLM | transformers.LlamaForCausalLM
     ):
         n_layer = model.config.num_hidden_layers
+    elif isinstance(model, Mamba):
+        n_layer = len(model.layers)
     else:
         n_layer = model.config.n_layer
 
@@ -195,6 +207,8 @@ def determine_layer_paths(
             layer_path = f"gpt_neox.layers.{layer_index}"
         elif isinstance(model, transformers.LlamaForCausalLM):
             layer_path = f"model.layers.{layer_index}"
+        elif isinstance(model, Mamba):
+            layer_path = f"layers.{layer_index}"
         else:
             layer_path = f"transformer.h.{layer_index}"
         layer_paths[layer] = layer_path
@@ -205,7 +219,11 @@ def determine_layer_paths(
 def determine_hidden_size(model: ModelAndTokenizer | Model) -> int:
     """Determine hidden rep size for the model."""
     model = unwrap_model(model)
-    return model.config.hidden_size
+    return (
+        model.embedding.weight.shape[-1]
+        if isinstance(model, Mamba)
+        else model.config.hidden_size
+    )
 
 
 def determine_device(model: ModelAndTokenizer | Model) -> torch.device | None:
@@ -249,10 +267,10 @@ def tokenize_words(
 def maybe_prefix_eos(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> str:
     """Prefix prompt with EOS token if model has no special start token."""
     tokenizer = unwrap_tokenizer(tokenizer)
-    if is_gpt_variant(tokenizer):
+    if hasattr(tokenizer, "eos_token"):
         prefix = tokenizer.eos_token
         if not prompt.startswith(prefix):
-            prompt = prefix + prompt
+            prompt = prefix + " " + prompt
     return prompt
 
 
@@ -342,6 +360,8 @@ def load_model(
         name = GPT_NEO_X_NAME
     elif name == LLAMA_NAME_SHORT:
         name = LLAMA_13B_NAME
+    elif name == MAMBA_3B_SHORT:
+        name = MAMBA_3B_NAME
 
     # I usually save randomly initialized variants under the short name of the
     # corresponding real model (e.g. gptj_random, neox_random), so check here
@@ -351,6 +371,7 @@ def load_model(
     is_llama_variant = (
         name in {LLAMA_13B_NAME, LLAMA_30B_NAME} or LLAMA_NAME_SHORT in name
     )
+    is_mamba_variant = "mamba" in name.lower()
 
     if fp16 is None:
         fp16 = is_gpt_j_variant or is_neo_x_variant or is_llama_variant
@@ -375,7 +396,10 @@ def load_model(
 
     logger.info(f"loading {name} (device={device}, fp16={fp16})")
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(name, **kwargs)
+    if is_mamba_variant:
+        model = Mamba.from_pretrained(name)
+    else:
+        model = transformers.AutoModelForCausalLM.from_pretrained(name, **kwargs)
     model.to(torch_dtype)
     model.to(device)
     model.eval()
@@ -385,14 +409,34 @@ def load_model(
         tokenizer.pad_token = tokenizer.eos_token = "</s>"
         tokenizer.pad_token_id = tokenizer.eos_token_id = 2
     else:
-        tokenizer = transformers.AutoTokenizer.from_pretrained(name)
+        if is_mamba_variant:
+            tokenizer = transformers.AutoTokenizer.from_pretrained(
+                "EleutherAI/gpt-neox-20b",  # Mamba was trained on the Pile with this exact tokenizer
+            )
+        else:
+            tokenizer = transformers.AutoTokenizer.from_pretrained(name)
         tokenizer.pad_token = tokenizer.eos_token
 
     logger.info(
-        f"dtype: {model.dtype}, device: {model.device}, memory: {model.get_memory_footprint()}"
+        f"dtype: {determine_dtype(model)}, device: {determine_device(model)}, memory: {get_model_size(model, 'GB') :.2f} GB"
     )
 
     return ModelAndTokenizer(model, tokenizer)
+
+
+def get_model_size(
+    model: torch.nn.Module, unit: Literal["B", "KB", "MB", "GB"] = "MB"
+) -> float:
+    param_size = 0
+    for param in model.parameters():
+        param_size += param.nelement() * param.element_size()
+    buffer_size = 0
+    for buffer in model.buffers():
+        buffer_size += buffer.nelement() * buffer.element_size()
+
+    size_all = param_size + buffer_size
+    denom = {"B": 1, "KB": 2**10, "MB": 2**20, "GB": 2**30}[unit]
+    return size_all / denom
 
 
 def add_model_args(parser: argparse.ArgumentParser) -> None:
