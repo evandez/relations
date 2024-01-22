@@ -1,6 +1,7 @@
 import logging
 from collections import defaultdict
 
+from src import models
 from src.functional import compute_hidden_states
 from src.models import ModelAndTokenizer, determine_layer_paths
 from src.operators import LinearRelationOperator
@@ -36,7 +37,9 @@ class Attribute_Lens:
                 prompt_template="{}",
             )
 
-        inputs = self.mt.tokenizer(prompt, return_tensors="pt").to(self.mt.model.device)
+        inputs = self.mt.tokenizer(prompt, return_tensors="pt").to(
+            models.determine_device(self.mt.model)
+        )
 
         subject_start, subject_end = 0, inputs["input_ids"].size(1)
         prompt_tokenized = [self.mt.tokenizer.decode(t) for t in inputs.input_ids[0]]

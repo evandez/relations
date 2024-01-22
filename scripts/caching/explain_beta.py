@@ -142,9 +142,7 @@ def main(args: argparse.Namespace) -> None:
 
     device = args.device or "cuda" if torch.cuda.is_available() else "cpu"
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-    logger.info(
-        f"dtype: {mt.model.dtype}, device: {mt.model.device}, memory: {mt.model.get_memory_footprint()}"
-    )
+
     relation_name = args.rel_name
     save_dir = f'{args.save_dir}/{args.model}/{relation_name.replace(" ", "_")}/{args.n_training}'
     os.makedirs(save_dir, exist_ok=True)

@@ -41,7 +41,7 @@ def get_h(
     ).to(device)
 
     with baukit.TraceDict(mt.model, layers=layer_names) as traces:
-        outputs = mt.model(
+        outputs = mt(
             inputs.input_ids,
             attention_mask=inputs.attention_mask,
         )
@@ -106,7 +106,7 @@ def evaluate(
             preds = operator(subject=sample.subject, k=k)
         else:
             h = hs_by_subj[sample.subject][layer_name][None].to(
-                operator.mt.model.device
+                models.determine_device(operator.mt)
             )
             preds = operator(subject=sample.subject, h=h, k=k)
         logger.debug(

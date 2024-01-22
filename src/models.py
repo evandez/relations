@@ -86,6 +86,14 @@ class ModelAndTokenizer:
         """Set model to eval mode."""
         self.model.eval()
 
+    def __call__(self, *args, **kwargs) -> Any:
+        """Call the model."""
+        if isinstance(self.model, Mamba):  # Mamba can only handle input_ids
+            for k in list(kwargs.keys()):
+                if k.startswith("input") == False:
+                    kwargs.pop(k)
+        return self.model(*args, **kwargs)
+
 
 def unwrap_model(value: Model | ModelAndTokenizer) -> Model:
     """Unwrap the model if necessary."""

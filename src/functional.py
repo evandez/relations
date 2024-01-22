@@ -5,6 +5,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Literal, NamedTuple, Sequence
 
+from mamba_minimal.model import Mamba
 from src import data, models
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
@@ -92,17 +93,20 @@ def order_1_approx(
     if z_index is None:
         z_index = -1
     if inputs is None:
-        inputs = mt.tokenizer(prompt, return_tensors="pt").to(mt.model.device)
+        inputs = mt.tokenizer(prompt, return_tensors="pt").to(
+            models.determine_device(mt)
+        )
 
     # Precompute everything up to the subject, if there is anything before it.
     past_key_values = None
     input_ids = inputs.input_ids
     _h_index = h_index
-    if _h_index > 0:
-        outputs = mt.model(input_ids=input_ids[:, :_h_index], use_cache=True)
-        past_key_values = outputs.past_key_values
-        input_ids = input_ids[:, _h_index:]
-        _h_index = 0
+    if isinstance(mt.model, Mamba) == False:
+        if _h_index > 0:
+            outputs = mt(input_ids=input_ids[:, :_h_index], use_cache=True)
+            past_key_values = outputs.past_key_values
+            input_ids = input_ids[:, _h_index:]
+            _h_index = 0
     use_cache = past_key_values is not None
 
     # Precompute initial h and z.
@@ -123,7 +127,7 @@ def order_1_approx(
     with baukit.TraceDict(
         mt.model, layers=(h_layer_name, z_layer_name), edit_output=edit_output
     ) as ret:
-        outputs = mt.model(
+        outputs = mt(
             input_ids=input_ids,
             use_cache=use_cache,
             past_key_values=past_key_values,
@@ -143,7 +147,7 @@ def order_1_approx(
         with baukit.TraceDict(
             mt.model, (h_layer_name, z_layer_name), edit_output=insert_h
         ) as ret:
-            mt.model(
+            mt(
                 input_ids=input_ids,
                 past_key_values=past_key_values,
                 use_cache=use_cache,
@@ -337,7 +341,7 @@ def compute_hidden_states(
     if inputs is None:
         assert prompt is not None
         inputs = mt.tokenizer(prompt, return_tensors="pt", padding="longest").to(
-            mt.model.device
+            models.determine_device(mt)
         )
 
     layer_paths = models.determine_layer_paths(mt, layers=layers, return_dict=True)
@@ -378,12 +382,12 @@ def predict_next_token(
         prompt = [prompt]
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(prompt, return_tensors="pt", padding="longest").to(
-            mt.model.device
+            models.determine_device(mt)
         )
     with torch.inference_mode():
         predictions = []
         for i in range(0, len(inputs.input_ids), batch_size):
-            batch_outputs = mt.model(
+            batch_outputs = mt(
                 input_ids=inputs.input_ids[i : i + batch_size],
                 attention_mask=inputs.attention_mask[i : i + batch_size],
             )
@@ -619,7 +623,7 @@ def filter_dataset_samples(
                     subject_filtered_samples.append(sample)
             filtered_relation = relation.set(samples=subject_filtered_samples)
 
-        if "cuda" in str(mt.model.device):
+        if "cuda" in str(models.determine_device(mt)):
             logger.debug(
                 f"clearing cuda cache after filtering samples for -> {relation.name}"
             )
@@ -646,7 +650,7 @@ def find_subject_token_index(
 ) -> tuple[int, ModelInput]:
     """Determine index of a specific subject token in prompt."""
     inputs = mt.tokenizer(prompt, return_tensors="pt", return_offsets_mapping=True).to(
-        mt.model.device
+        models.determine_device(mt)
     )
     offset_mapping = inputs.pop("offset_mapping")
     if "token_type_ids" in inputs:  # llama tokenizer has this annoying field
@@ -759,7 +763,7 @@ def compute_hs_and_zs(
     with models.set_padding_side(mt, padding_side="left"):
         inputs = mt.tokenizer(
             prompts, return_tensors="pt", padding="longest", return_offsets_mapping=True
-        ).to(mt.model.device)
+        ).to(models.determine_device(mt))
     offset_mapping = inputs.pop("offset_mapping")
 
     z_by_subj = {}

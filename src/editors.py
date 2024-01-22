@@ -122,7 +122,7 @@ class LowRankPInvEditor(LinearRelationEditor):
                 return_tensors="pt",
                 padding="longest",
                 return_offsets_mapping=True,
-            ).to(self.mt.model.device)
+            ).to(models.determine_device(self.mt))
 
         offset_mapping = inputs.pop("offset_mapping")
         _, subject_edit_index = tokenizer_utils.find_token_range(
@@ -396,7 +396,7 @@ def _compute_inputs(
         prompt_subject,
         return_tensors="pt",
         return_offsets_mapping=True,
-    ).to(mt.model.device)
+    ).to(models.determine_device(mt))
     assert len(inputs.input_ids) == 1, inputs.input_ids.shape
 
     offset_mapping = inputs.pop("offset_mapping")

@@ -53,9 +53,9 @@ def layer_c_measure(
 ) -> dict:
     tokenized = relation_prompt.format(subject)
     with baukit.TraceDict(mt.model, layers=models.determine_layer_paths(mt)) as traces:
-        output = mt.model(
+        output = mt(
             **mt.tokenizer(tokenized, return_tensors="pt", padding=True).to(
-                mt.model.device
+                models.determine_device(mt.model)
             )
         )
 
@@ -123,11 +123,13 @@ def causal_tracing(
 
     layer_names = models.determine_layer_paths(mt)
     with baukit.TraceDict(mt.model, layer_names) as traces_o:
-        output_o = mt.model(**tokenized_orig)
+        output_o = mt(**tokenized_orig)
 
     answer, p_answer = interpret_logits(mt, output_o.logits[0][-1], get_proba=True)[0]
     answer_t = (
-        mt.tokenizer(answer, return_tensors="pt").to(mt.model.device).input_ids[0]
+        mt.tokenizer(answer, return_tensors="pt")
+        .to(models.determine_device(mt))
+        .input_ids[0]
     )
 
     logger.debug(f"answer: {answer}[{answer_t.item()}], p(answer): {p_answer:.3f}")
@@ -148,7 +150,7 @@ def causal_tracing(
             mt.model(
                 **mt.tokenizer(
                     prompt_template.format(subject_corruption), return_tensors="pt"
-                ).to(mt.model.device)
+                ).to(models.determine_device(mt))
             )
 
         z = F.untuple(traces_i[layer_names[-1]].output)[0][-1]

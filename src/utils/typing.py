@@ -2,6 +2,8 @@
 import pathlib
 from typing import Literal, Sequence
 
+from mamba_minimal.model import Mamba
+
 import numpy
 import torch
 import transformers
@@ -17,6 +19,7 @@ Model = (
     | transformers.GPTJForCausalLM
     | transformers.GPTNeoXForCausalLM
     | transformers.LlamaForCausalLM
+    | Mamba
 )
 Tokenizer = transformers.PreTrainedTokenizerFast
 TokenizerOffsetMapping = Sequence[tuple[int, int]]
