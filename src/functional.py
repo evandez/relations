@@ -1,3 +1,4 @@
+import copy
 import gc
 import logging
 import random
@@ -5,10 +6,9 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Literal, NamedTuple, Sequence
 
-from mamba_minimal.model import Mamba
 from src import data, models
 from src.utils import tokenizer_utils
-from src.utils.typing import Layer, ModelInput, ModelOutput, StrSequence
+from src.utils.typing import Layer, Mamba, ModelInput, ModelOutput, StrSequence
 
 import baukit
 import torch
@@ -154,8 +154,28 @@ def order_1_approx(
             )
         return untuple(ret[z_layer_name].output)[0, -1]
 
+    def calculate_jacobian(function, h):
+        h = h.to(models.determine_device(mt))
+        print(f"{h.shape=} | {h.requires_grad=}")
+        # h.requires_grad = True
+        h.retain_grad()
+        z_est = function(h)
+        jacobian = []
+        print("Calculating Jacobians ...")
+        for idx in tqdm(range(h.shape[0])):
+            mt.model.zero_grad()
+            z_est[idx].backward(retain_graph=True)
+            jacobian.append(copy.deepcopy(h.grad))
+            h.grad.zero_()
+        return torch.stack(jacobian)
+
     assert h is not None
-    weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
+
+    if isinstance(mt.model, Mamba):
+        weight = calculate_jacobian(compute_z_from_h, h)
+    else:
+        weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
+
     bias = z[None] - h[None].mm(weight.t())
     approx = Order1ApproxOutput(
         h=h,

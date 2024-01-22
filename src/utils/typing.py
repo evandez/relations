@@ -2,6 +2,8 @@
 import pathlib
 from typing import Literal, Sequence
 
+# from mamba_ssm.models.mixer_seq_simple import MambaLMHeadModel as Mamba
+# use `mamba-simple`, the official implementation is to messy
 from mamba_minimal.model import Mamba
 
 import numpy
