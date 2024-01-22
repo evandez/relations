@@ -187,9 +187,9 @@ def order_1_approx(
         weight=weight,
         bias=bias,
         inputs=inputs.to("cpu"),
-        logits=outputs.logits.cpu(),
+        logits=outputs.logits.cpu() if hasattr(outputs, "logits") else outputs.cpu(),
         metadata={
-            "Jh": weight @ h,
+            "Jh": (weight @ h).detach().cpu(),
         },
     )
 
@@ -366,7 +366,7 @@ def compute_hidden_states(
 
     layer_paths = models.determine_layer_paths(mt, layers=layers, return_dict=True)
     with baukit.TraceDict(mt.model, layer_paths.values()) as ret:
-        outputs = mt.model(
+        outputs = mt(
             input_ids=inputs.input_ids, attention_mask=inputs.attention_mask, **kwargs
         )
 

@@ -11,10 +11,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator, Literal, Optional, Sequence, overload
 
-from mamba_minimal.model import Mamba
 from src.utils import env_utils, tokenizer_utils
-from src.utils.typing import Device, Layer, Model, ModelInput, Tokenizer
+from src.utils.typing import Device, Layer, Mamba, Model, ModelInput, Tokenizer
 
+import baukit
 import torch
 import transformers
 
@@ -46,19 +46,9 @@ class ModelAndTokenizer:
     @property
     def lm_head(self) -> torch.nn.Sequential:
         """Return the LM head."""
-        if isinstance(
-            self.model, transformers.GPT2LMHeadModel | transformers.GPTJForCausalLM
-        ):
-            return torch.nn.Sequential(self.model.transformer.ln_f, self.model.lm_head)
-        elif isinstance(self.model, transformers.GPTNeoXForCausalLM):
-            return torch.nn.Sequential(
-                self.model.gpt_neox.final_layer_norm,
-                self.model.embed_out,
-            )
-        elif isinstance(self.model, transformers.LlamaForCausalLM):
-            return torch.nn.Sequential(self.model.model.norm, self.model.lm_head)
-        else:
-            raise ValueError(f"unknown model type: {type(self.model).__name__}")
+        ln_f = baukit.get_module(self.model, determine_final_layer_norm_path(self))
+        lm_head = baukit.get_module(self.model, determine_lm_head_path(self))
+        return torch.nn.Sequential(ln_f, lm_head)
 
     @property
     def name(self) -> str:
@@ -116,7 +106,8 @@ def determine_embedding_layer_path(model: ModelAndTokenizer | Model) -> str:
     elif isinstance(model, transformers.LlamaForCausalLM):
         return "model.embed_tokens"
     elif isinstance(model, Mamba):
-        return "embedding"
+        prefix = "backbone." if hasattr(model, "backbone") else ""
+        return prefix + "embedding"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
@@ -128,9 +119,20 @@ def determine_final_layer_norm_path(model: ModelAndTokenizer | Model) -> str:
     elif isinstance(model, transformers.LlamaForCausalLM):
         return "model.norm"
     elif isinstance(model, Mamba):
-        return "norm_f"
+        prefix = "backbone." if hasattr(model, "backbone") else ""
+        return prefix + "norm_f"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
+
+
+def determine_lm_head_path(model: ModelAndTokenizer | Model) -> str:
+    model = unwrap_model(model)
+    if is_gpt_variant(model):
+        return "transformer.lm_head"
+    elif isinstance(model, transformers.LlamaForCausalLM):
+        return "model.lm_head"
+    elif isinstance(model, Mamba):
+        return "lm_head"
 
 
 def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
@@ -143,7 +145,11 @@ def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
     ):
         n_layer = model.config.num_hidden_layers
     elif isinstance(model, Mamba):
-        n_layer = len(model.layers)
+        n_layer = (
+            len(model.backbone.layers)
+            if hasattr(model, "backbone")
+            else len(model.layers)
+        )
     else:
         n_layer = model.config.n_layer
 
@@ -216,7 +222,8 @@ def determine_layer_paths(
         elif isinstance(model, transformers.LlamaForCausalLM):
             layer_path = f"model.layers.{layer_index}"
         elif isinstance(model, Mamba):
-            layer_path = f"layers.{layer_index}"
+            prefix = "backbone." if hasattr(model, "backbone") else ""
+            layer_path = prefix + f"layers.{layer_index}"
         else:
             layer_path = f"transformer.h.{layer_index}"
         layer_paths[layer] = layer_path
@@ -227,11 +234,13 @@ def determine_layer_paths(
 def determine_hidden_size(model: ModelAndTokenizer | Model) -> int:
     """Determine hidden rep size for the model."""
     model = unwrap_model(model)
-    return (
-        model.embedding.weight.shape[-1]
-        if isinstance(model, Mamba)
-        else model.config.hidden_size
-    )
+
+    if isinstance(model, Mamba):
+        prefix = "backbone." if hasattr(model, "backbone") else ""
+        embed = getattr(model, prefix + "embedding")
+        return embed.weight.shape[-1]
+
+    return model.config.hidden_size
 
 
 def determine_device(model: ModelAndTokenizer | Model) -> torch.device | None:
