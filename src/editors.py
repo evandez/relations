@@ -410,6 +410,9 @@ def _compute_inputs(
     return inputs, subject_index
 
 
+from src.utils.typing import Mamba
+
+
 def _apply_edit(
     *,
     mt: models.ModelAndTokenizer,
@@ -440,6 +443,19 @@ def _apply_edit(
     generate_kwargs = models.determine_generate_kwargs(mt)
 
     [layer_name] = models.determine_layer_paths(mt, layers=[layer])
+
+    # NB(arnab): Mamba models are not supported by the HuggingFace API. Call custom `generate` function
+    if isinstance(mt.model, Mamba):
+        return functional.mamba_generate(
+            mt=mt,
+            input_ids=inputs.input_ids[:1].expand(n_samples, -1),
+            max_new_tokens=n_new_tokens,
+            edit_config=functional.EditConfig(
+                layers=[layer_name],
+                intervention=edit_output,
+            ),
+        )
+
     with baukit.Trace(mt.model, layer_name, edit_output=edit_output):
         outputs = mt.model.generate(
             # NB(evan): Only ever apply edit to first input.

@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from src import data, functional, models
-from src.utils.typing import Layer
+from src.utils.typing import Layer, Mamba
 
 import baukit
 import torch
@@ -225,11 +225,19 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
 
         approxes = []
         for sample in samples:
+            # Mamba goes into recursive mode during inference. Takes too long to compute Jacobian for all examples
+            cur_samples = (
+                random.choices(
+                    list(set(samples) - {sample}), k=min(2, len(samples) - 1)
+                )
+                if isinstance(self.mt.model, Mamba)
+                else samples
+            )
             prompt = functional.make_prompt(
                 mt=self.mt,
                 prompt_template=prompt_template,
                 subject=sample.subject,
-                examples=samples,
+                examples=cur_samples,
             )
             logger.debug("estimating J for prompt:\n" + prompt)
 

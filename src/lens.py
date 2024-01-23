@@ -35,7 +35,7 @@ def logit_lens(
     k: int = 10,
 ) -> tuple[list[tuple[str, float]], dict]:
     lm_head = mt.lm_head if not after_layer_norm else mt.lm_head[1:]
-    logits = lm_head(h)
+    logits = lm_head(h.to(models.determine_device(mt.model)))
     logits = torch.nn.functional.softmax(logits, dim=-1) if get_proba else logits
     candidates = interpret_logits(mt, logits, k=k)
     interested_logits = {
