@@ -128,7 +128,7 @@ def determine_final_layer_norm_path(model: ModelAndTokenizer | Model) -> str:
 def determine_lm_head_path(model: ModelAndTokenizer | Model) -> str:
     model = unwrap_model(model)
     if is_gpt_variant(model):
-        return "transformer.lm_head"
+        return "lm_head"
     elif isinstance(model, transformers.LlamaForCausalLM):
         return "model.lm_head"
     elif isinstance(model, Mamba):

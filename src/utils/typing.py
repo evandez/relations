@@ -2,15 +2,14 @@
 import pathlib
 from typing import Literal, Sequence
 
-# use `mamba-simple`, the official implementation is too complicated
-from mamba_minimal.model import Mamba
-
 import numpy
 import torch
 import transformers
 import transformers.modeling_outputs
+from mamba_ssm.models.mixer_seq_simple import MambaLMHeadModel as Mamba
 
-# from mamba_ssm.models.mixer_seq_simple import MambaLMHeadModel as Mamba
+# use `mamba-simple`, the official implementation is too complicated
+# from mamba_minimal.model import Mamba
 
 
 ArrayLike = list | tuple | numpy.ndarray | torch.Tensor

@@ -50,7 +50,7 @@ def get_h(
     )
     h_index -= 1
     return {
-        layer_name: functional.untuple(traces[layer_name].output)[0][h_index]
+        layer_name: functional.untuple_residual(traces[layer_name].output)[0][h_index]
         .detach()
         .cpu()
         for layer_name in layer_names

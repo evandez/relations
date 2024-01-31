@@ -5,6 +5,7 @@ from functools import cached_property
 from typing import Any, Literal
 
 from src import functional, models, operators
+from src.functional import untuple_residual
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput
 
@@ -425,14 +426,12 @@ def _apply_edit(
     n_new_tokens: int = DEFAULT_N_NEW_TOKENS,
     n_samples: int = DEFAULT_N_SAMPLES,
 ) -> LinearRelationEditResult:
-    def edit_output(output):  # type: ignore
-        h = output
-        if isinstance(h, tuple):
-            h = output[0]
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
 
+    def edit_output(output):  # type: ignore
+        h = untuple_residual(output, is_mamba_fast=is_mamba_fast)
         if h.shape[1] == 1:
             return output
-
         if assign:
             h[:, index] = delta.squeeze()
         else:

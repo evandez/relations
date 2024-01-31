@@ -514,7 +514,9 @@ class CornerMeanEmbeddingEstimator(LinearRelationEstimator):
                     self.mt(**inputs)
 
                 H.append(
-                    functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
+                    functional.untuple_residual(traces[h_layer_name].output)[0][
+                        h_index
+                    ].detach()
                 )
 
             h_mean = torch.stack(H, dim=0).mean(dim=0)
@@ -605,8 +607,10 @@ class Word2VecIclEstimator(LinearRelationEstimator):
             ) as traces:
                 self.mt.model(**inputs)
 
-            h = functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
-            z = functional.untuple(traces[z_layer_name].output)[0][-1].detach()
+            h = functional.untuple_residual(traces[h_layer_name].output)[0][
+                h_index
+            ].detach()
+            z = functional.untuple_residual(traces[z_layer_name].output)[0][-1].detach()
             offsets.append(z - h)
 
         offset = torch.stack(offsets).mean(dim=0)
@@ -687,10 +691,12 @@ class LearnedLinearEstimator(LinearRelationEstimator):
                 self.mt(**inputs)
 
             H_stack.append(
-                functional.untuple(traces[h_layer_name].output)[0][h_index].detach()
+                functional.untuple_residual(traces[h_layer_name].output)[0][
+                    h_index
+                ].detach()
             )
             Z_stack.append(
-                functional.untuple(traces[z_layer_name].output)[0][-1].detach()
+                functional.untuple_residual(traces[z_layer_name].output)[0][-1].detach()
             )
 
         H = torch.stack(H_stack, dim=0).to(torch.float32)

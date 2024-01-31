@@ -97,6 +97,8 @@ def order_1_approx(
             models.determine_device(mt)
         )
 
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
+
     # Precompute everything up to the subject, if there is anything before it.
     past_key_values = None
     input_ids = inputs.input_ids
@@ -118,7 +120,7 @@ def order_1_approx(
         def edit_output(output: tuple, layer: str) -> tuple:
             if layer != h_layer_name:
                 return output
-            untuple(output)[:, _h_index] = h
+            untuple_residual(output, is_mamba_fast=is_mamba_fast)[:, _h_index] = h
             return output
 
     else:
@@ -132,17 +134,34 @@ def order_1_approx(
             use_cache=use_cache,
             past_key_values=past_key_values,
         )
-    h = untuple(ret[h_layer_name].output)[0, _h_index]
-    z = untuple(ret[z_layer_name].output)[0, z_index]
+    h = untuple_residual(ret[h_layer_name].output, is_mamba_fast=is_mamba_fast)[
+        0, _h_index
+    ]
+    z = untuple_residual(ret[z_layer_name].output, is_mamba_fast=is_mamba_fast)[
+        0, z_index
+    ]
 
     # Now compute J and b.
     def compute_z_from_h(h: torch.Tensor) -> torch.Tensor:
         def insert_h(output: tuple, layer: str) -> tuple:
-            hs = untuple(output)
+            hs = untuple_residual(output, is_mamba_fast=is_mamba_fast)
             if layer != h_layer_name:
                 return output
-            hs[0, _h_index] = h
-            return output
+            print(
+                f"============> {h.shape=}  |  {hs[0, _h_index].shape=}  |  {hs.shape=}"
+            )
+            print(torch.allclose(h, hs[0, _h_index]))
+            print(f"{hs[0, _h_index]=}")
+            print(f"{hs=}")
+            # hs[0, _h_index] += 1
+            # hs[0, _h_index] = h
+            new_hs = hs.clone()
+            print(new_hs.shape, new_hs.requires_grad)
+            new_hs[0, _h_index] = h
+            print(f"{h=}")
+            print(f"{new_hs[0, _h_index]=}")
+            # return output
+            return (output[0], new_hs)
 
         with baukit.TraceDict(
             mt.model, (h_layer_name, z_layer_name), edit_output=insert_h
@@ -152,7 +171,9 @@ def order_1_approx(
                 past_key_values=past_key_values,
                 use_cache=use_cache,
             )
-        return untuple(ret[z_layer_name].output)[0, -1]
+        return untuple_residual(ret[z_layer_name].output, is_mamba_fast=is_mamba_fast)[
+            0, -1
+        ]
 
     def calculate_jacobian(function, h):
         h = h.to(models.determine_device(mt))
@@ -171,7 +192,7 @@ def order_1_approx(
 
     assert h is not None
 
-    if isinstance(mt.model, Mamba):
+    if isinstance(mt.model, Mamba) or True:
         weight = calculate_jacobian(compute_z_from_h, h)
     else:
         weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
@@ -370,9 +391,13 @@ def compute_hidden_states(
             input_ids=inputs.input_ids, attention_mask=inputs.attention_mask, **kwargs
         )
 
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
+
     hiddens = []
     for layer in layers:
-        h = untuple(ret[layer_paths[layer]].output)
+        h = untuple_residual(
+            ret[layer_paths[layer]].output, is_mamba_fast=is_mamba_fast
+        )
         hiddens.append(h)
 
     return ComputeHiddenStatesOutput(hiddens=hiddens, outputs=outputs)
@@ -803,6 +828,8 @@ def compute_hs_and_zs(
         l: models.determine_layer_paths(mt, [l])[0] for l in h_layers + z_layers
     }
 
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
+
     for batch_start in range(0, len(inputs.input_ids), batch_size):
         with torch.no_grad():
             with baukit.TraceDict(
@@ -828,31 +855,45 @@ def compute_hs_and_zs(
                 )
                 h_index -= 1
                 if isinstance(h_layer, int) or h_layer == "emb":
-                    h_by_subj[subject] = untuple(
-                        traces[layer_idx_to_name[h_layer]].output
+                    h_by_subj[subject] = untuple_residual(
+                        traces[layer_idx_to_name[h_layer]].output,
+                        is_mamba_fast=is_mamba_fast,
                     )[batch_index, h_index]
                 else:
                     h_by_subj[subject] = {
-                        hl: untuple(traces[layer_idx_to_name[hl]].output)[
-                            batch_index, h_index
-                        ]
+                        hl: untuple_residual(
+                            traces[layer_idx_to_name[hl]].output,
+                            is_mamba_fast=is_mamba_fast,
+                        )[batch_index, h_index]
                         for hl in h_layer
                     }
 
             if z_layer is not None:
                 if isinstance(z_layer, int):
-                    z_by_subj[subject] = untuple(
-                        traces[layer_idx_to_name[z_layer]].output
+                    z_by_subj[subject] = untuple_residual(
+                        traces[layer_idx_to_name[z_layer]].output,
+                        is_mamba_fast=is_mamba_fast,
                     )[batch_index, -1]
                 else:
                     z_by_subj[subject] = {
-                        zl: untuple(traces[layer_idx_to_name[zl]].output)[
-                            batch_index, -1
-                        ]
+                        zl: untuple_residual(
+                            traces[layer_idx_to_name[zl]].output,
+                            is_mamba_fast=is_mamba_fast,
+                        )[batch_index, -1]
                         for zl in z_layer
                     }
 
     return HZBySubject(h_by_subj, z_by_subj)
+
+
+def untuple_residual(x: Any, is_mamba_fast: bool) -> Any:
+    """untuples the residual stream from attention output (in transformers) and block contribution (in mamba official implementation)"""
+    assert is_mamba_fast == True
+    if isinstance(x, tuple):
+        return (
+            x[0] if not is_mamba_fast else x[-1]
+        )  # residual stream is the last element in mamba fast implementation
+    return x
 
 
 def untuple(x: Any) -> Any:

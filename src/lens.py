@@ -4,6 +4,7 @@ from typing import Callable, Literal
 import src.functional as F
 from src import models
 from src.models import ModelAndTokenizer
+from src.utils.typing import Mamba
 
 import baukit
 import torch
@@ -70,8 +71,11 @@ def layer_c_measure(
     layer_contributions = {}
 
     prev_score = 0
+
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
+
     for layer in models.determine_layer_paths(mt):
-        h = F.untuple(traces[layer].output)[0][-1]
+        h = F.untuple_residual(traces[layer].output, is_mamba_fast=is_mamba_fast)[0][-1]
         _, interested_logits = logit_lens(mt, h, [object_id], get_proba=True)  # type: ignore
         layer_score = interested_logits[object_id][0]
         sub_score = base_score if measure == "completeness" else prev_score
@@ -95,7 +99,9 @@ def get_replace_intervention(
     ) -> tuple[torch.Tensor, torch.Tensor] | torch.Tensor:
         if layer != intervention_layer:
             return output
-        output[0][0][intervention_tok_idx] = h_intervention
+        output[0][0][
+            intervention_tok_idx
+        ] = h_intervention  # ! this will give faulty results for mamba fast implementation
         return output
 
     return intervention
@@ -107,6 +113,8 @@ def causal_tracing(
     subject_original: str,
     subject_corruption: str,
 ) -> dict:
+    is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
+
     h_idx_orig, tokenized_orig = F.find_subject_token_index(
         mt=mt,
         prompt=prompt_template.format(subject_original),
@@ -142,9 +150,10 @@ def causal_tracing(
             edit_output=get_replace_intervention(
                 intervention_layer=intervention_layer,
                 intervention_tok_idx=h_idx_corr,
-                h_intervention=F.untuple(traces_o[intervention_layer].output)[0][
-                    h_idx_orig
-                ],
+                h_intervention=F.untuple_residual(
+                    traces_o[intervention_layer].output,
+                    is_mamba_fast=is_mamba_fast,
+                )[0][h_idx_orig],
             ),
         ) as traces_i:
             mt.model(
@@ -153,7 +162,9 @@ def causal_tracing(
                 ).to(models.determine_device(mt))
             )
 
-        z = F.untuple(traces_i[layer_names[-1]].output)[0][-1]
+        z = F.untuple_residual(
+            traces_i[layer_names[-1]].output, is_mamba_fast=is_mamba_fast
+        )[0][-1]
         _, interested = logit_lens(mt, z, [answer_t], get_proba=True)  # type: ignore
         layer_p = interested[answer_t][0]
 
