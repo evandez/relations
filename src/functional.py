@@ -147,21 +147,15 @@ def order_1_approx(
             hs = untuple_residual(output, is_mamba_fast=is_mamba_fast)
             if layer != h_layer_name:
                 return output
-            print(
-                f"============> {h.shape=}  |  {hs[0, _h_index].shape=}  |  {hs.shape=}"
-            )
-            print(torch.allclose(h, hs[0, _h_index]))
-            print(f"{hs[0, _h_index]=}")
-            print(f"{hs=}")
-            # hs[0, _h_index] += 1
-            # hs[0, _h_index] = h
-            new_hs = hs.clone()
-            print(new_hs.shape, new_hs.requires_grad)
-            new_hs[0, _h_index] = h
-            print(f"{h=}")
-            print(f"{new_hs[0, _h_index]=}")
-            # return output
-            return (output[0], new_hs)
+
+            # fast implementation of mamba returns a view, in place operation not allowed
+            hs = hs.clone() if is_mamba_fast else hs
+            hs[0, _h_index] = h
+
+            if is_mamba_fast:
+                # because the residual stream is decoupled in this case the update will not be in place
+                return (hs, output[1])
+            return output
 
         with baukit.TraceDict(
             mt.model, (h_layer_name, z_layer_name), edit_output=insert_h
@@ -192,7 +186,7 @@ def order_1_approx(
 
     assert h is not None
 
-    if isinstance(mt.model, Mamba) or True:
+    if isinstance(mt.model, Mamba):
         weight = calculate_jacobian(compute_z_from_h, h)
     else:
         weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
@@ -890,9 +884,19 @@ def untuple_residual(x: Any, is_mamba_fast: bool) -> Any:
     """untuples the residual stream from attention output (in transformers) and block contribution (in mamba official implementation)"""
     assert is_mamba_fast == True
     if isinstance(x, tuple):
-        return (
-            x[0] if not is_mamba_fast else x[-1]
-        )  # residual stream is the last element in mamba fast implementation
+        if is_mamba_fast:
+            # residual stream is the last element in mamba fast implementation
+            block_output, residual = x[0], x[1]
+            return residual
+            # contribution of currect block is added to the residual stream when the norm is applied in the **next** block
+            # weird! because of fast implementation with `fused_add_norm`
+            # ! This should be the proper way of getting residual after a block. But `causality` fails miserably
+            # ! even when the edit considers the unedited block contribution.
+            # ! The current implementation will basically ignore the last block
+            # TODO(arnab): how to fix this?
+            # return block_output + residual
+        return x[0]
+
     return x
 
 

@@ -237,7 +237,7 @@ def determine_hidden_size(model: ModelAndTokenizer | Model) -> int:
 
     if isinstance(model, Mamba):
         prefix = "backbone." if hasattr(model, "backbone") else ""
-        embed = getattr(model, prefix + "embedding")
+        embed = baukit.get_module(model, prefix + "embedding")
         return embed.weight.shape[-1]
 
     return model.config.hidden_size

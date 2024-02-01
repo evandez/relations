@@ -5,7 +5,7 @@ from functools import cached_property
 from typing import Any, Literal
 
 from src import functional, models, operators
-from src.functional import untuple_residual
+from src.functional import untuple, untuple_residual
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput
 
@@ -432,6 +432,8 @@ def _apply_edit(
         h = untuple_residual(output, is_mamba_fast=is_mamba_fast)
         if h.shape[1] == 1:
             return output
+        # if is_mamba_fast:
+        #     h[:, index] -= output[0][:, index]
         if assign:
             h[:, index] = delta.squeeze()
         else:
