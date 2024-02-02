@@ -12,30 +12,6 @@ import torch
 logger = logging.getLogger(__name__)
 
 
-def save_order_1_approx(
-    approx: functional.Order1ApproxOutput | operators.LinearRelationOperator,
-    file_name: str = "order_1_approx",
-    path: str = "../results/interpolation",
-) -> None:
-    os.makedirs(path, exist_ok=True)
-    detached = {}
-    for k, v in approx.__dict__.items():
-        if k == "mt":  # will save the whole model and weights otherwise
-            continue
-        if isinstance(v, torch.Tensor):
-            detached[k] = v.detach().cpu().numpy()
-        else:
-            detached[k] = v
-    if file_name.endswith(".npz") == False:
-        file_name = file_name + ".npz"
-    np.savez(f"{path}/{file_name}", **detached)
-
-
-def normalize_on_sphere(h: torch.Tensor, scale: float | None = None) -> torch.Tensor:
-    lh = (h - h.mean(dim=0)) / h.std(dim=0)
-    return scale * lh / lh.norm(dim=0) if scale is not None else lh
-
-
 def main(
     relation_name: str,
     h_layer: typing.Layer | None = None,
@@ -119,11 +95,11 @@ def main(
                 prompt=icl_prompt.format(s1),
                 h_layer=h_layer,
                 h_index=h_index,
-                h=normalize_on_sphere(
+                h=functional.normalize_on_sphere(
                     h, scale=65.0  # scale is selected by eyeballing some examples
                 ),
             )
-            save_order_1_approx(
+            functional.save_linear_operator(
                 approx,
                 file_name=f"approx_{idx+1}",
                 path=f"results/interpolation/{relation_name}/{s1}-{s2}",

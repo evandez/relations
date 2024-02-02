@@ -1,7 +1,6 @@
 import argparse
 import logging
 
-from scripts.caching.interpolation import save_order_1_approx
 from src import data, functional, models, operators
 from src.utils import experiment_utils, logging_utils, typing
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
@@ -56,7 +55,7 @@ def main(
     assert operator.bias is not None
 
     # save LRE approximations
-    save_order_1_approx(
+    functional.save_linear_operator(
         approx=operator,
         file_name=relation_name.lower().replace(" ", "_"),
         path=args.save_dir,

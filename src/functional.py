@@ -907,13 +907,63 @@ def untuple(x: Any) -> Any:
     return x
 
 
+import os
 from dataclasses import dataclass
 from typing import Optional
 
+from src import operators
 from src.editors import LinearRelationEditResult
 from src.functional import PredictedToken
 from src.models import ModelAndTokenizer
 from src.utils.typing import Layer
+
+import numpy as np
+
+
+def save_linear_operator(
+    approx: Order1ApproxOutput | operators.LinearRelationOperator,
+    file_name: str = "order_1_approx",
+    path: str = "../results/interpolation",
+) -> None:
+    os.makedirs(path, exist_ok=True)
+    detached = {}
+    for k, v in approx.__dict__.items():
+        if k == "mt":  # will save the whole model and weights otherwise
+            continue
+        if isinstance(v, torch.Tensor):
+            detached[k] = v.detach().cpu().numpy()
+        else:
+            detached[k] = v
+    if file_name.endswith(".npz") == False:
+        file_name = file_name + ".npz"
+    np.savez_compressed(f"{path}/{file_name}", **detached)
+
+
+def load_cached_linear_operator(
+    file_path: str,
+    mt: (
+        ModelAndTokenizer | None
+    ) = None,  # will assume LinearRelationOperator if provided
+) -> operators.LinearRelationOperator | Order1ApproxOutput:
+    operator_npz = np.load(file_path, allow_pickle=True)
+    operator = {}
+    device = models.determine_device(mt)
+    for key, value in operator_npz.items():
+        try:
+            operator[key] = torch.Tensor(value).to(device)
+        except:
+            operator[key] = value
+
+    return (
+        operators.LinearRelationOperator(mt=mt, **operator)
+        if mt is not None
+        else order_1_approx(**operator)
+    )
+
+
+def normalize_on_sphere(h: torch.Tensor, scale: float | None = None) -> torch.Tensor:
+    lh = (h - h.mean(dim=0)) / h.std(dim=0)
+    return scale * lh / lh.norm(dim=0) if scale is not None else lh
 
 
 @dataclass
@@ -995,9 +1045,11 @@ def mamba_generate(
         predicted_tokens=predicted_tokens,
         model_logits=model_logits,
         model_generations=[
-            "".join(generated_tokens)
-            if isinstance(cur_generation, list)
-            else cur_generation
+            (
+                "".join(generated_tokens)
+                if isinstance(cur_generation, list)
+                else cur_generation
+            )
             for cur_generation in generated_tokens
         ],
     )
