@@ -14,9 +14,12 @@ seaborn
 sentencepiece
 tqdm
 transformers
-# torch==1.13
+# torch==1.13.1+cu117
 plotly
 chardet
+packaging
+causal-conv1d==1.1.0
+mamba-ssm
 
 # dev dependencies
 black
@@ -24,3 +27,11 @@ isort
 mypy
 pytest
 types-requests
+
+# For Mamba
+# conda create --name fact python=3.10 
+# pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+# pip install causal-conv1d==1.1.0
+# pip install mamba-ssm
+# pip install invoke
+# invoke install

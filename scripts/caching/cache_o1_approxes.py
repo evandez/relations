@@ -9,6 +9,8 @@ from src import data, functional, models
 from src.utils import experiment_utils, logging_utils, typing
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
 
+import torch
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,7 +22,10 @@ def main(
     limit_approxes=40,
     save_dir: str = "results/cached_o1_approxes",
 ) -> None:
-    mt = models.load_model(name=model_name, fp16=False, device="cuda")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if "cuda" not in device:
+        logger.warning("!!! running on CPU, this will be slow !!!")
+    mt = models.load_model(name=model_name, fp16=False, device=device)
     relation = data.load_dataset().filter(relation_names=[relation_name])[0]
     prompt_template = relation.prompt_templates[0]
     relation = relation.set(prompt_templates=[prompt_template])
