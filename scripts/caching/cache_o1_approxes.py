@@ -8,6 +8,7 @@ from typing import Literal
 from src import data, functional, models
 from src.utils import experiment_utils, logging_utils, typing
 from src.utils.sweep_utils import read_sweep_results, relation_from_dict
+from src.utils.typing import Layer
 
 import torch
 
@@ -16,8 +17,8 @@ logger = logging.getLogger(__name__)
 
 def main(
     relation_name: str,
-    model_name: Literal["gptj", "llama-13b", "mamba-3b"] = "mamba-3b",
-    h_layer: typing.Layer | None = None,
+    model_name: Literal["gptj", "llama-13b", "mamba-3b"],
+    h_layers: list[Layer],
     n_icl: int = 5,
     limit_approxes=40,
     save_dir: str = "results/cached_o1_approxes",
@@ -30,8 +31,6 @@ def main(
     prompt_template = relation.prompt_templates[0]
     relation = relation.set(prompt_templates=[prompt_template])
 
-    assert h_layer is not None
-
     relation = functional.filter_relation_samples(
         mt=mt,
         relation=relation,
@@ -42,78 +41,85 @@ def main(
     logger.info(
         f"filtered {len(relation.samples)} test samples with {n_icl} ICL examples"
     )
-
-    assert len(relation.samples) > 1, "not enough number of test samples to interpolate"
-    save_dir = os.path.join(
-        save_dir, model_name, relation_name.lower().replace(" ", "_"), str(h_layer)
-    )
-    os.makedirs(save_dir, exist_ok=True)
+    assert len(relation.samples) > 3, "Not enough samples to cache approxes"
 
     samples = relation.samples
     limit_approxes = min(limit_approxes, len(samples))
-    num_saved = 0
-    num_skipped = 0
     random.shuffle(samples)
-    for sample in samples:
-        icl_examples = random.choices(
-            list(set(samples) - {sample}), k=min(2, len(samples) - 1)
-        )
-        prompt = functional.make_prompt(
-            mt=mt,
-            prompt_template=prompt_template,
-            subject=sample.subject,
-            examples=icl_examples,
-        )
 
-        prediction = functional.predict_next_token(
-            mt=mt,
-            prompt=prompt,
+    for h_layer in h_layers:
+        logger.info("#" * 50)
+        logger.info(f"layer {h_layer} | caching approxes for {relation_name}")
+        num_saved = 0
+        num_skipped = 0
+        layer_dir = os.path.join(
+            save_dir, model_name, relation_name.lower().replace(" ", "_"), str(h_layer)
         )
-        top_pred = prediction[0][0]
-        prediction_info = f"{sample.subject} -> {sample.object} | prediction: `{top_pred.token}` [p={top_pred.prob:.2f}]"
-        known = functional.is_nontrivial_prefix(
-            prediction=prediction[0][0].token, target=sample.object
-        )
-        tick = functional.get_tick_marker(known)
-        prediction_info += f" ({tick})"
-        logger.info(prediction_info)
-        if not known:
-            logger.info(" ---- skipping unknown prediction ---- ")
-            num_skipped += 1
-            continue
+        os.makedirs(save_dir, exist_ok=True)
 
-        h_index, inputs = functional.find_subject_token_index(
-            mt=mt,
-            prompt=prompt,
-            subject=sample.subject,
-        )
-        logger.debug(f"note that subject={sample.subject}, h_index={h_index}")
+        for sample in samples:
+            logger.info("-" * 50)
+            icl_examples = random.choices(
+                list(set(samples) - {sample}), k=min(2, len(samples) - 1)
+            )
+            prompt = functional.make_prompt(
+                mt=mt,
+                prompt_template=prompt_template,
+                subject=sample.subject,
+                examples=icl_examples,
+            )
 
-        order_1_approx = functional.order_1_approx(
-            mt=mt,
-            prompt=prompt,
-            h_layer=h_layer,
-            h_index=h_index,
-            inputs=inputs,
-        )
+            prediction = functional.predict_next_token(
+                mt=mt,
+                prompt=prompt,
+            )
+            top_pred = prediction[0][0]
+            prediction_info = f"{sample.subject} -> {sample.object} | prediction: `{top_pred.token}` [p={top_pred.prob:.2f}]"
+            known = functional.is_nontrivial_prefix(
+                prediction=prediction[0][0].token, target=sample.object
+            )
+            tick = functional.get_tick_marker(known)
+            prediction_info += f" ({tick})"
+            logger.info(prediction_info)
+            if not known:
+                logger.info(" ---- skipping unknown prediction ---- ")
+                num_skipped += 1
+                continue
 
-        functional.save_linear_operator(
-            approx=order_1_approx,
-            file_name=sample.subject.lower().replace(" ", "_"),
-            path=save_dir,
-            metadata={
-                "icl_examples": [example.to_dict() for example in icl_examples],
-                "sample": sample.to_dict(),
-            },
-        )
-        num_saved += 1
+            h_index, inputs = functional.find_subject_token_index(
+                mt=mt,
+                prompt=prompt,
+                subject=sample.subject,
+            )
+            logger.debug(f"note that subject={sample.subject}, h_index={h_index}")
 
-        logger.info(
-            f">>>>>> saved {num_saved}/{limit_approxes} approxes [skipped {num_skipped}] <<<<<<<<"
-        )
+            order_1_approx = functional.order_1_approx(
+                mt=mt,
+                prompt=prompt,
+                h_layer=int(h_layer) if h_layer not in ["emb", "ln_f"] else h_layer,
+                h_index=h_index,
+                inputs=inputs,
+            )
 
-        if num_saved == limit_approxes:
-            break
+            functional.save_linear_operator(
+                approx=order_1_approx,
+                file_name=sample.subject.lower().replace(" ", "_"),
+                path=layer_dir,
+                metadata={
+                    "icl_examples": [example.to_dict() for example in icl_examples],
+                    "sample": sample.to_dict(),
+                },
+            )
+            num_saved += 1
+
+            logger.info(
+                f">>>>>> saved {num_saved}/{limit_approxes} approxes [skipped {num_skipped}] <<<<<<<<"
+            )
+
+            if num_saved == limit_approxes:
+                break
+
+        logger.info(f"#" * 50)
 
 
 if __name__ == "__main__":
@@ -134,10 +140,10 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--h-layer",
-        type=int,
-        default=20,
-        help="h layer",
+        "--h-layers",
+        nargs="+",
+        help="hidden layers to cache approxes for",
+        required=True,
     )
 
     parser.add_argument(
@@ -163,7 +169,7 @@ if __name__ == "__main__":
     main(
         relation_name=args.rel,
         model_name=args.model,
-        h_layer=args.h_layer,
+        h_layers=args.h_layers,
         n_icl=args.n_icl,
         save_dir=args.save_dir,
         limit_approxes=args.limit_approxes,
