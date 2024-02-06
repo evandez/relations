@@ -1,4 +1,5 @@
 """Methods for using LRE to edit representations."""
+
 import logging
 from dataclasses import dataclass
 from functools import cached_property

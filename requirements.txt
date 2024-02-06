@@ -14,8 +14,9 @@ seaborn
 sentencepiece
 tqdm
 transformers
-torch
+# torch==1.13
 plotly
+chardet
 
 # dev dependencies
 black

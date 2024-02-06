@@ -50,7 +50,7 @@ class Order1ApproxOutput:
     z_layer: Layer
     z_index: int
 
-    inputs: ModelInput
+    inputs: torch.Tensor  # only the input_ids, the attention masks will be same anyways
     logits: torch.Tensor
 
     metadata: dict = field(default_factory=dict)
@@ -192,20 +192,18 @@ def order_1_approx(
         weight = torch.autograd.functional.jacobian(compute_z_from_h, h, vectorize=True)
 
     bias = z[None] - h[None].mm(weight.t())
+    logits = outputs.logits.cpu() if hasattr(outputs, "logits") else outputs.cpu()
     approx = Order1ApproxOutput(
+        weight=weight,
+        bias=bias,
         h=h,
         h_layer=h_layer,
         h_index=h_index,
         z=z,
         z_layer=z_layer,
         z_index=z_index,
-        weight=weight,
-        bias=bias,
-        inputs=inputs.to("cpu"),
-        logits=outputs.logits.cpu() if hasattr(outputs, "logits") else outputs.cpu(),
-        metadata={
-            "Jh": (weight @ h).detach().cpu(),
-        },
+        inputs=inputs.input_ids.to("cpu"),
+        logits=logits[:, -1],
     )
 
     # NB(evan): Something about the jacobian computation causes a lot of memory
@@ -880,9 +878,9 @@ def compute_hs_and_zs(
     return HZBySubject(h_by_subj, z_by_subj)
 
 
-def untuple_residual(x: Any, is_mamba_fast: bool) -> Any:
+def untuple_residual(x: Any, is_mamba_fast: bool = False) -> Any:
     """untuples the residual stream from attention output (in transformers) and block contribution (in mamba official implementation)"""
-    assert is_mamba_fast == True
+    # assert is_mamba_fast == True
     if isinstance(x, tuple):
         if is_mamba_fast:
             # residual stream is the last element in mamba fast implementation
@@ -924,6 +922,7 @@ def save_linear_operator(
     approx: Order1ApproxOutput | operators.LinearRelationOperator,
     file_name: str = "order_1_approx",
     path: str = "../results/interpolation",
+    metadata: dict = {},
 ) -> None:
     os.makedirs(path, exist_ok=True)
     detached = {}
@@ -934,6 +933,8 @@ def save_linear_operator(
             detached[k] = v.detach().cpu().numpy()
         else:
             detached[k] = v
+    if len(metadata) > 0:
+        detached["metadata"] = metadata
     if file_name.endswith(".npz") == False:
         file_name = file_name + ".npz"
     np.savez_compressed(f"{path}/{file_name}", **detached)
@@ -947,17 +948,21 @@ def load_cached_linear_operator(
 ) -> operators.LinearRelationOperator | Order1ApproxOutput:
     operator_npz = np.load(file_path, allow_pickle=True)
     operator = {}
-    device = models.determine_device(mt)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = models.determine_device(mt) if mt is not None else device
+
+    tensor_attrs = ["weight", "bias", "h", "z", "logits"]
+
     for key, value in operator_npz.items():
-        try:
+        if key in tensor_attrs:
             operator[key] = torch.Tensor(value).to(device)
-        except:
-            operator[key] = value
+        else:
+            operator[key] = value.item() if key not in ["inputs"] else value
 
     return (
         operators.LinearRelationOperator(mt=mt, **operator)
         if mt is not None
-        else order_1_approx(**operator)
+        else Order1ApproxOutput(**operator)
     )
 
 
@@ -966,10 +971,13 @@ def normalize_on_sphere(h: torch.Tensor, scale: float | None = None) -> torch.Te
     return scale * lh / lh.norm(dim=0) if scale is not None else lh
 
 
+from typing import Callable
+
+
 @dataclass
 class EditConfig:
     layers: list[Layer]
-    intervention: callable
+    intervention: Callable
 
 
 # custom generate function for mamba
@@ -981,7 +989,7 @@ def mamba_generate(
     max_new_tokens: int = 10,
     topk: int = 5,
     edit_config: Optional[EditConfig] = None,
-):
+) -> LinearRelationEditResult:
     assert prompt is not None or input_ids is not None
     if isinstance(prompt, str):
         prompt = [prompt]

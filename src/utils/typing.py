@@ -1,4 +1,5 @@
 """Some useful type aliases relevant to this project."""
+
 import pathlib
 from typing import Literal, Sequence
 

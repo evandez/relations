@@ -305,8 +305,12 @@ class JacobianIclMeanEstimator_Imaginary(LinearRelationEstimator):
     rank: int | None = None  # If None, don't do low rank approximation.
     interpolate_on: int = 2  # number of examples to average on to get the imaginary h
     n_trials: int = 5  # (maximum) number of trials to average over
-    average_on_sphere: bool = True  # will interpolate to make all latent vectors have the same norm (hence contribution?)
-    magnitude_h: float | None = None  # ||h_myth||, if average_on_sphere is True. Shouldn't matter much, since `o` should be insensitive to `||h||` anyways
+    average_on_sphere: bool = (
+        True  # will interpolate to make all latent vectors have the same norm (hence contribution?)
+    )
+    magnitude_h: float | None = (
+        None  # ||h_myth||, if average_on_sphere is True. Shouldn't matter much, since `o` should be insensitive to `||h||` anyways
+    )
     assert (
         interpolate_on >= 2
     ), """need at least 2 examples to get imaginary latent. 
