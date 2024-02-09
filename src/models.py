@@ -4,6 +4,7 @@ This module is designed to house all the annoying branching logic
 that comes with supporting analysis of many slightly different model
 implementations.
 """
+
 import argparse
 import logging
 from contextlib import contextmanager
@@ -76,9 +77,18 @@ class ModelAndTokenizer:
         """Set model to eval mode."""
         self.model.eval()
 
+    @property
+    def is_mamba(self) -> bool:
+        return isinstance(self.model, Mamba) or "mamba" in self.name.lower()
+
+    @property
+    def is_mamba_fast(self) -> bool:
+        return self.is_mamba and hasattr(self.model, "backbone")
+
     def __call__(self, *args, **kwargs) -> Any:
         """Call the model."""
-        if isinstance(self.model, Mamba):  # Mamba can only handle input_ids
+        print(f"{self.is_mamba=} | {self.is_mamba_fast=}")
+        if self.is_mamba:  # Mamba can only handle input_ids
             for k in list(kwargs.keys()):
                 if k.startswith("input") == False:
                     kwargs.pop(k)
