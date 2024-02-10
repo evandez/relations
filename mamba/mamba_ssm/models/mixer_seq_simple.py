@@ -22,8 +22,25 @@ import torch.nn as nn
 
 try:
     from mamba_ssm.ops.triton.layernorm import RMSNorm, layer_norm_fn, rms_norm_fn
+
+    raise ImportError
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
+
+
+# redefine RMSNorm
+class RMSNorm(nn.Module):
+    def __init__(self, d_model: int, eps: float = 1e-5, device=None, dtype=None):
+        super().__init__()
+        self.eps = eps
+        self.weight = nn.Parameter(torch.ones(d_model))
+
+    def forward(self, x):
+        output = (
+            x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps) * self.weight
+        )
+
+        return output
 
 
 def create_block(
@@ -261,6 +278,7 @@ class MambaLMHeadModel(nn.Module, GenerationMixin):
     def from_pretrained(cls, pretrained_model_name, device=None, dtype=None, **kwargs):
         config_data = load_config_hf(pretrained_model_name)
         config_data["fused_add_norm"] = False
+        # config_data["rms_norm"] = False
         print(config_data)
         config = MambaConfig(**config_data)
         model = cls(config, device=device, dtype=dtype, **kwargs)
