@@ -3,11 +3,15 @@
 import math
 from typing import Optional
 
+from mamba.mamba_ssm.ops.selective_scan_interface import (
+    mamba_inner_fn,
+    selective_scan_fn,
+)
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, repeat
-from mamba_ssm.ops.selective_scan_interface import mamba_inner_fn, selective_scan_fn
 from torch import Tensor
 
 try:
@@ -379,7 +383,9 @@ class Block(nn.Module):
             hidden_states: the sequence to the encoder layer (required).
             residual: hidden_states = Mixer(LN(residual))
         """
-        print(">>>>>>>>> ", self.fused_add_norm, " <<<<<<<<<<<")
+        print(
+            f">>>>>>>>>>>>>>>> Block.forward() | {self.fused_add_norm=} <<<<<<<<<<<<<<<<<<<"
+        )
         if not self.fused_add_norm:
             residual = (
                 (hidden_states + residual) if residual is not None else hidden_states
