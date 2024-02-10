@@ -87,7 +87,7 @@ class ModelAndTokenizer:
 
     def __call__(self, *args, **kwargs) -> Any:
         """Call the model."""
-        print(f"{self.is_mamba=} | {self.is_mamba_fast=}")
+        # print(f"{self.is_mamba=} | {self.is_mamba_fast=}")
         if self.is_mamba:  # Mamba can only handle input_ids
             for k in list(kwargs.keys()):
                 if k.startswith("input") == False:

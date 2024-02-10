@@ -27,9 +27,12 @@ except ImportError:
 try:
     from mamba_ssm.ops.triton.layernorm import RMSNorm, layer_norm_fn, rms_norm_fn
 
-    raise ImportError
+    raise ImportError  # ! CAIS cluster can't import triton functions (temporary patch). fused_add_norm is turned off as well
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
+
+
+from mamba.mamba_ssm.ops.patch_avoid_triton import RMSNorm
 
 
 # redefine RMSNorm
@@ -381,7 +384,6 @@ class Block(nn.Module):
         self.residual_in_fp32 = residual_in_fp32
         self.fused_add_norm = fused_add_norm
         self.mixer = mixer_cls(dim)
-        print(f"============> Block.__init__() | {norm_cls=} | {dim=}<============")
         self.norm = norm_cls(dim)
         if self.fused_add_norm:
             assert RMSNorm is not None, "RMSNorm import fails"
@@ -401,14 +403,10 @@ class Block(nn.Module):
             hidden_states: the sequence to the encoder layer (required).
             residual: hidden_states = Mixer(LN(residual))
         """
-        print(
-            f">>>>>>>>>>>>>>>> Block.forward() | {self.fused_add_norm=} <<<<<<<<<<<<<<<<<<<"
-        )
         if not self.fused_add_norm:
             residual = (
                 (hidden_states + residual) if residual is not None else hidden_states
             )
-            print(type(self.norm))
             hidden_states = self.norm(residual.to(dtype=self.norm.weight.dtype))
             if self.residual_in_fp32:
                 residual = residual.to(torch.float32)

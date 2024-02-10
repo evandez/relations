@@ -23,24 +23,16 @@ import torch.nn as nn
 try:
     from mamba_ssm.ops.triton.layernorm import RMSNorm, layer_norm_fn, rms_norm_fn
 
-    raise ImportError
+    raise ImportError  # ! CAIS cluster can't import triton functions (temporary patch). fused_add_norm is turned off as well
 except ImportError:
     RMSNorm, layer_norm_fn, rms_norm_fn = None, None, None
 
 
-# redefine RMSNorm
-class RMSNorm(nn.Module):
-    def __init__(self, d_model: int, eps: float = 1e-5, device=None, dtype=None):
-        super().__init__()
-        self.eps = eps
-        self.weight = nn.Parameter(torch.ones(d_model))
+import logging
 
-    def forward(self, x):
-        output = (
-            x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps) * self.weight
-        )
+from mamba.mamba_ssm.ops.patch_avoid_triton import RMSNorm
 
-        return output
+logger = logging.getLogger(__name__)
 
 
 def create_block(
@@ -179,9 +171,9 @@ class MixerModel(nn.Module):
             hidden_states, residual = layer(
                 hidden_states, residual, inference_params=inference_params
             )
-        print(
-            f"------------------------------- MixerModel.forward() | {self.fused_add_norm=} -------------------------------"
-        )
+        # print(
+        #     f"------------------------------- MixerModel.forward() | {self.fused_add_norm=} -------------------------------"
+        # )
         if not self.fused_add_norm:
             residual = (
                 (hidden_states + residual) if residual is not None else hidden_states
@@ -277,9 +269,12 @@ class MambaLMHeadModel(nn.Module, GenerationMixin):
     @classmethod
     def from_pretrained(cls, pretrained_model_name, device=None, dtype=None, **kwargs):
         config_data = load_config_hf(pretrained_model_name)
+        logging.warning(
+            "!!! turning off fused_add_norm for to avoid using Triton !!! CAIS cluster can't import triton functions (temporary patch)"
+        )
         config_data["fused_add_norm"] = False
         # config_data["rms_norm"] = False
-        print(config_data)
+        logger.info(config_data)
         config = MambaConfig(**config_data)
         model = cls(config, device=device, dtype=dtype, **kwargs)
         model.load_state_dict(
