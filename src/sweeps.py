@@ -1,12 +1,17 @@
 """Tools for running sweeps over hyperparameters."""
+
 import logging
-from typing import Any, Literal, Sequence
+import os
+import random
+from typing import Any, Literal, Optional, Sequence
 
 from src import data, editors, functional, metrics, models, operators
 from src.functional import low_rank_approx
+from src.operators import LinearRelationOperator
 from src.utils import experiment_utils
 from src.utils.typing import Layer, PathLike
 
+import numpy as np
 import torch
 
 logger = logging.getLogger(__name__)
@@ -28,6 +33,20 @@ from src.utils.sweep_utils import (
 )
 
 
+def add_npz_extension(path: str):
+    return path if path.endswith(".npz") else path + ".npz"
+
+
+def load_o1_approxes(path: str, sample_subjects: Optional[list[str]] = None):
+    approxes = []
+    to_load = sample_subjects if sample_subjects is not None else os.listdir(path)
+    for cached_file in to_load:
+        file_path = add_npz_extension(os.path.join(path, cached_file))
+        approx = functional.load_cached_linear_operator(file_path=file_path)
+        approxes.append(approx)
+    return approxes
+
+
 def sweep(
     *,
     mt: models.ModelAndTokenizer,
@@ -46,17 +65,28 @@ def sweep(
     limit_test_samples: int | None = None,
     use_bare_prompt: bool = False,
     prompt_template: str | None = None,
+    o1_approxes_path: str | None = None,
     **kwargs: Any,
 ) -> SweepResuts:
     """Sweep over hyperparameters for faithfulness."""
     if h_layers is None:
         emb_layer: Layer = "emb"
         h_layers = [emb_layer] + list(models.determine_layers(mt))
+        # Currently hardcoded for mamba.
+        # TODO: make this more general depending on o1_approxes_path
+        if mt.is_mamba:
+            h_layers = list(np.arange(0, 64, 2))
     if betas is None:
-        beta_upper_limit = 5.0 if mt.name != "llama" else 10.0
-        betas = torch.linspace(0, beta_upper_limit, steps=21).tolist()
+        if mt.is_mamba or mt.name == "llama":
+            beta_upper_limit = 12.0
+        else:
+            beta_upper_limit = 5.0
+        betas = torch.linspace(0, beta_upper_limit, steps=25).tolist()
     if ranks is None:
-        low_rank_upper_limit = 320 if mt.name != "llama" else 512
+        if mt.is_mamba or mt.name == "llama":
+            low_rank_upper_limit = 512
+        else:
+            low_rank_upper_limit = 320
         ranks = range(0, low_rank_upper_limit, 8)
         # ranks = range(0, models.determine_hidden_size(mt), 64)
     limit_test_samples = (
@@ -112,10 +142,38 @@ def sweep(
 
             # Decide which will be the train samples we will try, and which will be the
             # ICL prompt examples.
-            train_relation, test_relation = relation.split(n_train_samples)
-            train_samples = train_relation.samples
 
-            logger.info(f"will train using: {[str(x) for x in train_samples]}")
+            if o1_approxes_path is not None:
+                logger.info(
+                    f"attempting to load cached approxes from {o1_approxes_path}"
+                )
+                relation_approxes_path = os.path.join(
+                    o1_approxes_path,
+                    mt.name,
+                    relation.name.lower().replace(" ", "_"),
+                )
+                layer_approxes_path = os.path.join(
+                    relation_approxes_path, str(h_layers[0])
+                )
+                all_cached_files = list(os.listdir(layer_approxes_path))
+                train_subj_files = random.sample(all_cached_files, n_train_samples)
+                train_approxes = load_o1_approxes(
+                    path=layer_approxes_path, sample_subjects=train_subj_files
+                )
+                train_samples = [
+                    data.RelationSample.from_dict(approx.metadata["sample"])
+                    for approx in train_approxes
+                ]
+                train_relation = relation.set(samples=train_samples)
+                test_relation = relation.set(
+                    samples=list(set(relation.samples) - set(train_relation.samples))
+                )
+
+            else:
+                train_relation, test_relation = relation.split(n_train_samples)
+                train_samples = train_relation.samples
+
+            logger.info(f"training samples: {[str(x) for x in train_samples]}")
 
             icl_prompt = functional.make_prompt(
                 mt=mt,
@@ -183,37 +241,84 @@ def sweep(
                 # precompute the hs for the test samples
                 test_hs = [hs_by_subj[x.subject][h_layer][None] for x in test_samples]
 
-                estimator = operators.JacobianIclMeanEstimator(
-                    mt=mt, h_layer=h_layer, **kwargs
-                )
-
-                # Estimate for imaginary/mythical subjects.
-                # estimator = operators.JacobianIclMeanEstimator_Imaginary(
-                #     mt=mt,
-                #     h_layer=h_layer,
-                #     ##############################################################
-                #     interpolate_on=4,  # interpolate on 5 real subjects
-                #     magnitude_h=65.0,  # magnitude of h)
-                #     ##############################################################
-                #     n_trials=len(train_samples),
-                #     **kwargs,
-                # )
-                try:
-                    operator = estimator(
-                        relation.set(
-                            samples=train_samples,
-                            prompt_templates=[prompt_template],
-                        )
+                if o1_approxes_path is not None:
+                    layer_approxes_path = os.path.join(
+                        relation_approxes_path, str(h_layer)
                     )
-                except RuntimeError as e:
-                    if "out of memory" in str(e):
-                        logger.error(
-                            f"OOM while LRE calculation on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                    layer_approxes_path = os.path.join(
+                        relation_approxes_path, str(h_layer)
+                    )
+                    train_approxes = load_o1_approxes(
+                        path=layer_approxes_path, sample_subjects=train_subj_files
+                    )
+
+                    weight = torch.stack(
+                        [approx.weight for approx in train_approxes]
+                    ).mean(dim=0)
+                    bias = torch.stack([approx.bias for approx in train_approxes]).mean(
+                        dim=0
+                    )
+                    prompt_template_icl = functional.make_prompt(
+                        mt=mt,
+                        prompt_template=prompt_template,
+                        subject="{}",
+                        examples=train_samples,
+                    )
+
+                    operator = LinearRelationOperator(
+                        mt=mt,
+                        weight=weight,
+                        bias=bias,
+                        h_layer=train_approxes[0].h_layer,
+                        z_layer=train_approxes[0].z_layer,
+                        prompt_template=prompt_template_icl,
+                        metadata={
+                            "Jh": [
+                                (approx.weight @ approx.h).detach().cpu()
+                                for approx in train_approxes
+                            ],
+                            "|w|": [
+                                approx.weight.norm().item() for approx in train_approxes
+                            ],
+                            "|b|": [
+                                approx.bias.norm().item() for approx in train_approxes
+                            ],
+                        },
+                    )
+
+                else:
+                    estimator = operators.JacobianIclMeanEstimator(
+                        mt=mt, h_layer=h_layer, **kwargs
+                    )
+
+                    # Estimate for imaginary/mythical subjects.
+                    # estimator = operators.JacobianIclMeanEstimator_Imaginary(
+                    #     mt=mt,
+                    #     h_layer=h_layer,
+                    #     ##############################################################
+                    #     interpolate_on=4,  # interpolate on 5 real subjects
+                    #     magnitude_h=65.0,  # magnitude of h)
+                    #     ##############################################################
+                    #     n_trials=len(train_samples),
+                    #     **kwargs,
+                    # )
+                    try:
+                        operator = estimator(
+                            relation.set(
+                                samples=train_samples,
+                                prompt_templates=[prompt_template],
+                            )
                         )
-                        exit_trial = True
-                        break
-                    else:
-                        raise e
+                    except RuntimeError as e:
+                        if "out of memory" in str(e):
+                            logger.error(
+                                f"OOM while LRE calculation on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                            )
+                            exit_trial = True
+                            break
+                        else:
+                            raise e
+
                 assert operator.weight is not None
                 weight = operator.weight.clone()
                 svd = torch.svd(weight.float())
@@ -242,9 +347,11 @@ def sweep(
                         recall = metrics.recall(pred_objects, test_objects)
                         cur_hparams_info = f"{h_layer=} {beta=}"
                         cur_hparams_info += f" {rank=}" if rank is not None else ""
+                        logger.info("-" * 80)
                         logger.info(
-                            f"reading finished, {cur_hparams_info} <> {recall[0]=:.2f}"
+                            f"reading finished, {cur_hparams_info} <> {recall=}"
                         )
+                        logger.info("-" * 80)
 
                         faithfulness_successes = []
                         for prediction, sample in zip(pred_objects, test_samples):
@@ -314,7 +421,10 @@ def sweep(
                             )
 
                     efficacy = metrics.recall(pred_objects, targ_objects)
+
+                    logger.info("-" * 80)
                     logger.info(f"editing finished: {h_layer=} {rank=} {efficacy=}")
+                    logger.info("-" * 80)
 
                     results_by_rank.append(
                         SweepRankResults(

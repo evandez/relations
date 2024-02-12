@@ -22,6 +22,7 @@ def main(
     n_icl: int = 5,
     limit_approxes=40,
     save_dir: str = "results/cached_o1_approxes",
+    seed=123456,
 ) -> None:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if "cuda" not in device:
@@ -48,6 +49,8 @@ def main(
     random.shuffle(samples)
 
     for h_layer in h_layers:
+        # setting seed at every layer to ensure same set of samples (with ICL examples) are cached
+        experiment_utils.set_seed(seed)
         logger.info("#" * 50)
         logger.info(f"layer {h_layer} | caching approxes for {relation_name}")
         num_saved = 0
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save-dir",
         type=str,
-        default="results/cached_o1_approxes",
+        default="results/cache_o1_approxes",
         help="directory to cache values",
     )
 
@@ -173,4 +176,5 @@ if __name__ == "__main__":
         n_icl=args.n_icl,
         save_dir=args.save_dir,
         limit_approxes=args.limit_approxes,
+        seed=args.seed,
     )

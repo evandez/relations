@@ -153,8 +153,13 @@ def order_1_approx(
             hs[0, _h_index] = h
 
             if is_mamba_fast:
-                # because the residual stream is decoupled in this case the update will not be in place
-                return (hs, output[1])
+                if isinstance(output, tuple):
+                    # because the residual stream is decoupled in this case the update will not be in place
+                    return (hs, output[1])
+                else:
+                    # for emb and ln_f layers
+                    return hs
+
             return output
 
         with baukit.TraceDict(
@@ -910,7 +915,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from src import operators
-from src.editors import LinearRelationEditResult
+from src.edit_result_classes import LinearRelationEditResult
 from src.functional import PredictedToken
 from src.models import ModelAndTokenizer
 from src.utils.typing import Layer

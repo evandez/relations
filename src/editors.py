@@ -6,6 +6,7 @@ from functools import cached_property
 from typing import Any, Literal
 
 from src import functional, models, operators
+from src.edit_result_classes import EditResult, LinearRelationEditResult
 from src.functional import untuple, untuple_residual
 from src.utils import tokenizer_utils
 from src.utils.typing import Layer, ModelInput
@@ -18,15 +19,6 @@ logger = logging.getLogger(__name__)
 DEFAULT_N_TOP_TOKENS = 5
 DEFAULT_N_SAMPLES = 1
 DEFAULT_N_NEW_TOKENS = 1
-
-
-@dataclass(frozen=True, kw_only=True)
-class EditResult:
-    """Edited LM output."""
-
-    predicted_tokens: list[functional.PredictedToken]
-    model_logits: torch.Tensor
-    model_generations: list[str]
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -49,11 +41,6 @@ class Editor:
     def expects() -> Literal["subject", "object"]:
         """Does this editor expect a target subject or target object as input?"""
         raise NotImplementedError
-
-
-@dataclass(frozen=True, kw_only=True)
-class LinearRelationEditResult(EditResult):
-    """Outputs of a linear relation editor."""
 
 
 @dataclass(frozen=True, kw_only=True)
