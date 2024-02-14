@@ -245,9 +245,12 @@ def sweep(
                     layer_approxes_path = os.path.join(
                         relation_approxes_path, str(h_layer)
                     )
-                    layer_approxes_path = os.path.join(
-                        relation_approxes_path, str(h_layer)
-                    )
+                    if not os.path.exists(layer_approxes_path):
+                        logger.warning(
+                            f"!!! Layer={h_layer} folder not found for relation={relation.name} !!!"
+                            f" Directory={layer_approxes_path} does not exist. Skipping."
+                        )
+                        continue
                     train_approxes = load_o1_approxes(
                         path=layer_approxes_path, sample_subjects=train_subj_files
                     )
