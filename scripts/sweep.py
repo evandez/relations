@@ -2,9 +2,11 @@
 
 import argparse
 import logging
+from typing import Union
 
 from src import data, hparams, models, sweeps
 from src.utils import experiment_utils, logging_utils
+from src.utils.typing import Layer
 
 import torch
 
@@ -23,7 +25,7 @@ def main(args: argparse.Namespace) -> None:
     results = sweeps.sweep(
         mt=mt,
         dataset=dataset,
-        h_layers=args.h_layers,
+        h_layers=["emb"] + args.h_layers,
         n_trials=args.n_trials,
         n_train_samples=args.n_train_samples,
         recall_k=args.recall_k,
@@ -68,7 +70,10 @@ if __name__ == "__main__":
     logging_utils.add_logging_args(parser)
     models.add_model_args(parser)
     parser.add_argument(
-        "--h-layers", type=int, nargs="+", help="h layers to try, defaults to all"
+        "--h-layers",
+        type=int,
+        nargs="+",
+        help="h layers to try, defaults to all",
     )
     parser.add_argument(
         "--recall-k",
