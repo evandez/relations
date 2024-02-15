@@ -1,4 +1,5 @@
 """Tools for reading and controlling the runtime environment."""
+
 import os
 import pathlib
 
@@ -10,7 +11,7 @@ ENV_RESULTS_DIR = "RELATIONS_RESULTS_DIR"
 ENV_HPARAMS_DIR = "RELATIONS_HPARAMS_DIR"
 
 DEFAULT_DATA_DIR = "data"
-DEFAULT_MODELS_DIR = "models"
+DEFAULT_MODELS_DIR = "../saved_model_weights"
 DEFAULT_RESULTS_DIR = "results"
 DEFAULT_HPARAMS_DIR = "hparams"
 

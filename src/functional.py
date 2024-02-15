@@ -939,6 +939,11 @@ def save_linear_operator(
         else:
             detached[k] = v
     if len(metadata) > 0:
+        for key in metadata:
+            if isinstance(metadata[key], torch.Tensor):
+                metadata[key] = metadata[key].detach().cpu().numpy()
+        detached["metadata"] = metadata
+
         detached["metadata"] = metadata
     if file_name.endswith(".npz") == False:
         file_name = file_name + ".npz"

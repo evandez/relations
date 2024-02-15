@@ -75,12 +75,12 @@ def sweep(
         # Currently hardcoded for mamba.
         # TODO: make this more general depending on o1_approxes_path
         if mt.is_mamba:
-            h_layers = list(np.arange(0, 64, 2))
+            h_layers = [emb_layer] + list(np.arange(0, 64, 2))
     if betas is None:
         if mt.is_mamba or mt.name == "llama":
             beta_upper_limit = 12.0
         else:
-            beta_upper_limit = 5.0
+            beta_upper_limit = 6.0
         betas = torch.linspace(0, beta_upper_limit, steps=25).tolist()
     if ranks is None:
         if mt.is_mamba or mt.name == "llama":

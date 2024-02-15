@@ -34,6 +34,9 @@ LLAMA_NAME_SHORT = "llama"
 MAMBA_3B_NAME = "state-spaces/mamba-2.8b-slimpj"
 MAMBA_3B_SHORT = "mamba-3b"
 
+PYTHIA_3B_NAME = "EleutherAI/pythia-2.8b-deduped"
+PYTHIA_3B_SHORT = "pythia-3b"
+
 DOWNLOADABLE_MODELS = frozenset({GPT_J_NAME, GPT_NEO_X_NAME, "gpt2-xl", MAMBA_3B_NAME})
 
 
@@ -118,6 +121,8 @@ def determine_embedding_layer_path(model: ModelAndTokenizer | Model) -> str:
     elif isinstance(model, Mamba):
         prefix = "backbone." if hasattr(model, "backbone") else ""
         return prefix + "embedding"
+    elif is_pythia_variant(model):
+        return "gpt_neox.embed_in"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
@@ -131,6 +136,8 @@ def determine_final_layer_norm_path(model: ModelAndTokenizer | Model) -> str:
     elif isinstance(model, Mamba):
         prefix = "backbone." if hasattr(model, "backbone") else ""
         return prefix + "norm_f"
+    elif is_pythia_variant(model):
+        return "gpt_neox.final_layer_norm"
     else:
         raise ValueError(f"unknown model type: {type(model).__name__}")
 
@@ -143,6 +150,10 @@ def determine_lm_head_path(model: ModelAndTokenizer | Model) -> str:
         return "model.lm_head"
     elif isinstance(model, Mamba):
         return "lm_head"
+    elif is_pythia_variant(model):
+        return "embed_out"
+    else:
+        raise ValueError(f"unknown model type: {type(model).__name__}")
 
 
 def determine_layers(model: ModelAndTokenizer | Model) -> tuple[int, ...]:
@@ -301,10 +312,29 @@ def maybe_prefix_eos(tokenizer: Tokenizer | ModelAndTokenizer, prompt: str) -> s
     return prompt
 
 
+def is_pythia_variant(model: Model | ModelAndTokenizer) -> bool:
+    """Determine if model is GPT variant."""
+    if isinstance(model, ModelAndTokenizer):
+        model = unwrap_model(model)
+    try:
+        return "pythia" in model.config._name_or_path.lower()
+    except:
+        return False
+
+
+def is_mamba_variant(model: Model | ModelAndTokenizer) -> bool:
+    return isinstance(self.model, Mamba) or "mamba" in self.name.lower()
+
+
 def is_gpt_variant(mt: Model | Tokenizer | ModelAndTokenizer) -> bool:
     """Determine if model/tokenizer is GPT variant."""
     if isinstance(mt, ModelAndTokenizer):
         mt = unwrap_model(mt)
+
+    # pythia models also have GPTNeoXForCausalLM architecture, but they have slightly  different structure
+    # so we need to check for them separately
+    if is_pythia_variant(mt):
+        return False
     return isinstance(
         mt,
         transformers.GPT2LMHeadModel
@@ -389,6 +419,8 @@ def load_model(
         name = LLAMA_13B_NAME
     elif name == MAMBA_3B_SHORT:
         name = MAMBA_3B_NAME
+    elif name == PYTHIA_3B_SHORT:
+        name = PYTHIA_3B_NAME
 
     # I usually save randomly initialized variants under the short name of the
     # corresponding real model (e.g. gptj_random, neox_random), so check here

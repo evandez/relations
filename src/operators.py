@@ -284,8 +284,7 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
             beta=self.beta,
             metadata={
                 "Jh": [
-                    (approx.weight @ approx.h).detach().cpu().numpy()
-                    for approx in approxes
+                    (approx.weight @ approx.h).detach().cpu() for approx in approxes
                 ],
                 "|w|": [approx.weight.norm().item() for approx in approxes],
                 "|b|": [approx.bias.norm().item() for approx in approxes],
