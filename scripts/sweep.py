@@ -21,11 +21,13 @@ def main(args: argparse.Namespace) -> None:
 
     dataset = data.load_dataset_from_args(args)
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
-
+    h_layers = args.h_layers
+    if h_layers is not None:
+        h_layers = ["emb"] + [int(h) for h in h_layers]
     results = sweeps.sweep(
         mt=mt,
         dataset=dataset,
-        h_layers=["emb"] + args.h_layers,
+        h_layers=h_layers,
         n_trials=args.n_trials,
         n_train_samples=args.n_train_samples,
         recall_k=args.recall_k,
