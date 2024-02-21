@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "occupation gender",
+    "h_layer": 14,
+    "beta": 2.25,
+    "rank": 14,
+    "z_layer": -1,
+    "h_layer_edit": 5
+}

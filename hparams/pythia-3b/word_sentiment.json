@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "word sentiment",
+    "h_layer": 9,
+    "beta": 2.25,
+    "rank": 55,
+    "z_layer": -1,
+    "h_layer_edit": 7
+}

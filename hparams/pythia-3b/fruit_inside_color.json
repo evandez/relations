@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "fruit inside color",
+    "h_layer": 19,
+    "beta": 2.25,
+    "rank": 100,
+    "z_layer": -1,
+    "h_layer_edit": 7
+}

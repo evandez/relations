@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "country capital city",
+    "h_layer": 13,
+    "beta": 2.25,
+    "rank": 70,
+    "z_layer": -1,
+    "h_layer_edit": 5
+}

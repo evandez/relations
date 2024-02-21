@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "person plays instrument",
+    "h_layer": 13,
+    "beta": 2.25,
+    "rank": 46,
+    "z_layer": -1,
+    "h_layer_edit": 11
+}

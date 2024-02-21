@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "food from country",
+    "h_layer": 14,
+    "beta": 2.25,
+    "rank": 83,
+    "z_layer": -1,
+    "h_layer_edit": 13
+}

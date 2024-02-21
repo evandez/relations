@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "product by company",
+    "h_layer": 18,
+    "beta": 2.25,
+    "rank": 89,
+    "z_layer": -1,
+    "h_layer_edit": 6
+}

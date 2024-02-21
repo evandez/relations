@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "task person type",
+    "h_layer": 14,
+    "beta": 2.25,
+    "rank": 71,
+    "z_layer": -1,
+    "h_layer_edit": 9
+}

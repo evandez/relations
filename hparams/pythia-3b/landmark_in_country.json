@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "landmark in country",
+    "h_layer": 15,
+    "beta": 2.25,
+    "rank": 40,
+    "z_layer": -1,
+    "h_layer_edit": 7
+}

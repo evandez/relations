@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "word last letter",
+    "h_layer": 17,
+    "beta": 2.25,
+    "rank": 132,
+    "z_layer": -1,
+    "h_layer_edit": 5
+}

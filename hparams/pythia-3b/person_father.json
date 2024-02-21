@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "person father",
+    "h_layer": 15,
+    "beta": 2.25,
+    "rank": 86,
+    "z_layer": -1,
+    "h_layer_edit": 7
+}

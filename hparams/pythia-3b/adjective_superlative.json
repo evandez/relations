@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "adjective superlative",
+    "h_layer": 11,
+    "beta": 2.25,
+    "rank": 191,
+    "z_layer": -1,
+    "h_layer_edit": 12
+}

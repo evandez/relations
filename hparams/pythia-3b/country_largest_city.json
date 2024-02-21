@@ -1,0 +1,9 @@
+{
+    "model_name": "pythia-3b",
+    "relation_name": "country largest city",
+    "h_layer": 15,
+    "beta": 2.25,
+    "rank": 93,
+    "z_layer": -1,
+    "h_layer_edit": 6
+}
