@@ -322,10 +322,6 @@ def is_pythia_variant(model: Model | ModelAndTokenizer) -> bool:
         return False
 
 
-def is_mamba_variant(model: Model | ModelAndTokenizer) -> bool:
-    return isinstance(self.model, Mamba) or "mamba" in self.name.lower()
-
-
 def is_gpt_variant(mt: Model | Tokenizer | ModelAndTokenizer) -> bool:
     """Determine if model/tokenizer is GPT variant."""
     if isinstance(mt, ModelAndTokenizer):

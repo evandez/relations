@@ -42,6 +42,10 @@ def load_o1_approxes(path: str, sample_subjects: Optional[list[str]] = None):
     to_load = sample_subjects if sample_subjects is not None else os.listdir(path)
     for cached_file in to_load:
         file_path = add_npz_extension(os.path.join(path, cached_file))
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(
+                f"cached approximation not found at path: {file_path}"
+            )
         approx = functional.load_cached_linear_operator(file_path=file_path)
         approxes.append(approx)
     return approxes
@@ -246,14 +250,22 @@ def sweep(
                         relation_approxes_path, str(h_layer)
                     )
                     if not os.path.exists(layer_approxes_path):
-                        logger.warning(
+                        logger.error(
                             f"!!! Layer={h_layer} folder not found for relation={relation.name} !!!"
                             f" Directory={layer_approxes_path} does not exist. Skipping."
                         )
                         continue
-                    train_approxes = load_o1_approxes(
-                        path=layer_approxes_path, sample_subjects=train_subj_files
-                    )
+                    try:
+                        train_approxes = load_o1_approxes(
+                            path=layer_approxes_path, sample_subjects=train_subj_files
+                        )
+                    except FileNotFoundError as e:
+                        logger.error(
+                            f"Couldn't load all the approxes for {h_layer=}"
+                            f"{e}"
+                            "Skipping.",
+                        )
+                        continue
 
                     weight = torch.stack(
                         [approx.weight for approx in train_approxes]

@@ -23,7 +23,10 @@ def main(args: argparse.Namespace) -> None:
     mt = models.load_model(args.model, fp16=args.fp16, device=device)
     h_layers = args.h_layers
     if h_layers is not None:
-        h_layers = ["emb"] + [int(h) for h in h_layers]
+        h_layers = [
+            int(h_layer) if h_layer not in ["emb", "ln_f"] else h_layer
+            for h_layer in h_layers
+        ]
     results = sweeps.sweep(
         mt=mt,
         dataset=dataset,
@@ -73,7 +76,6 @@ if __name__ == "__main__":
     models.add_model_args(parser)
     parser.add_argument(
         "--h-layers",
-        type=int,
         nargs="+",
         help="h layers to try, defaults to all",
     )
