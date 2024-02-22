@@ -261,9 +261,9 @@ def sweep(
                         )
                     except FileNotFoundError as e:
                         logger.error(
-                            f"Couldn't load all the approxes for {h_layer=}"
-                            f"{e}"
-                            "Skipping.",
+                            f"Couldn't load all the approxes for {h_layer=} |"
+                            f" {e} |"
+                            " ... Skipping.",
                         )
                         continue
 
@@ -418,12 +418,8 @@ def sweep(
                         )
 
                         pred = str(result.predicted_tokens[0])
-                        logger.debug(
-                            f"editing: {h_layer=} {rank=} {sample.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
-                        )
 
-                        pred_objects.append([p.token for p in result.predicted_tokens])
-                        targ_objects.append(target.object)
+                        tick = "✗"
                         if functional.is_nontrivial_prefix(
                             prediction=result.predicted_tokens[0].token,
                             target=target.object,
@@ -434,6 +430,14 @@ def sweep(
                                     target=target,
                                 )
                             )
+                            tick = "✓"
+
+                        logger.debug(
+                            f"editing: ({tick}) | {h_layer=} {rank=} {sample.subject=} | {target.subject=} -> {target.object=} |>> {pred=}"
+                        )
+
+                        pred_objects.append([p.token for p in result.predicted_tokens])
+                        targ_objects.append(target.object)
 
                     efficacy = metrics.recall(pred_objects, targ_objects)
 

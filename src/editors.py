@@ -399,6 +399,7 @@ def _compute_inputs(
     return inputs, subject_index
 
 
+from src import lens
 from src.utils.typing import Mamba
 
 
@@ -413,6 +414,7 @@ def _apply_edit(
     n_top_tokens: int = DEFAULT_N_TOP_TOKENS,
     n_new_tokens: int = DEFAULT_N_NEW_TOKENS,
     n_samples: int = DEFAULT_N_SAMPLES,
+    skip_generation: bool = True,  # will sip the generations. speed up the sweeping a bit
 ) -> LinearRelationEditResult:
     is_mamba_fast = isinstance(mt.model, Mamba) and hasattr(mt.model, "backbone")
 
@@ -433,47 +435,67 @@ def _apply_edit(
 
     [layer_name] = models.determine_layer_paths(mt, layers=[layer])
 
-    # NB(arnab): Mamba models are not supported by the HuggingFace API. Call custom `generate` function
-    if isinstance(mt.model, Mamba):
-        return functional.mamba_generate(
-            mt=mt,
-            input_ids=inputs.input_ids[:1].expand(n_samples, -1),
-            max_new_tokens=n_new_tokens,
-            edit_config=functional.EditConfig(
-                layers=[layer_name],
-                intervention=edit_output,
-            ),
+    if skip_generation:
+        with baukit.TraceDict(mt.model, layers=[layer_name], edit_output=edit_output):
+            output = mt(**inputs)
+        top_k_tokens = lens.interpret_logits(
+            mt=mt, logits=output.logits[0][-1], get_proba=True
+        )
+        # print(top_k_tokens)
+        predicted_tokens = [
+            functional.PredictedToken(
+                token=token,
+                prob=prob,
+            )
+            for token, prob in top_k_tokens
+        ]
+
+        return LinearRelationEditResult(
+            predicted_tokens=predicted_tokens,
         )
 
-    with baukit.Trace(mt.model, layer_name, edit_output=edit_output):
-        outputs = mt.model.generate(
-            # NB(evan): Only ever apply edit to first input.
-            input_ids=inputs.input_ids[:1].expand(n_samples, -1),
-            attention_mask=inputs.attention_mask[:1].expand(n_samples, -1),
-            max_new_tokens=n_new_tokens,
-            return_dict_in_generate=True,
-            output_scores=True,
-            do_sample=True,
-            **generate_kwargs,
+    else:
+        # NB(arnab): Mamba models are not supported by the HuggingFace API. Call custom `generate` function
+        if isinstance(mt.model, Mamba):
+            return functional.mamba_generate(
+                mt=mt,
+                input_ids=inputs.input_ids[:1].expand(n_samples, -1),
+                max_new_tokens=n_new_tokens,
+                edit_config=functional.EditConfig(
+                    layers=[layer_name],
+                    intervention=edit_output,
+                ),
+            )
+
+        with baukit.Trace(mt.model, layer_name, edit_output=edit_output):
+            outputs = mt.model.generate(
+                # NB(evan): Only ever apply edit to first input.
+                input_ids=inputs.input_ids[:1].expand(n_samples, -1),
+                attention_mask=inputs.attention_mask[:1].expand(n_samples, -1),
+                max_new_tokens=n_new_tokens,
+                return_dict_in_generate=True,
+                output_scores=True,
+                do_sample=True,
+                **generate_kwargs,
+            )
+
+        model_logits = outputs.scores[0][0]
+        model_generations = mt.tokenizer.batch_decode(
+            outputs.sequences, skip_special_tokens=True
         )
 
-    model_logits = outputs.scores[0][0]
-    model_generations = mt.tokenizer.batch_decode(
-        outputs.sequences, skip_special_tokens=True
-    )
+        probs = model_logits.float().softmax(dim=-1)
+        topk = probs.topk(k=n_top_tokens, dim=-1)
+        predicted_tokens = [
+            functional.PredictedToken(
+                token=mt.tokenizer.decode(token_id),
+                prob=prob,
+            )
+            for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
+        ]
 
-    probs = model_logits.float().softmax(dim=-1)
-    topk = probs.topk(k=n_top_tokens, dim=-1)
-    predicted_tokens = [
-        functional.PredictedToken(
-            token=mt.tokenizer.decode(token_id),
-            prob=prob,
+        return LinearRelationEditResult(
+            predicted_tokens=predicted_tokens,
+            model_logits=model_logits,
+            model_generations=model_generations,
         )
-        for token_id, prob in zip(topk.indices.tolist(), topk.values.tolist())
-    ]
-
-    return LinearRelationEditResult(
-        predicted_tokens=predicted_tokens,
-        model_logits=model_logits,
-        model_generations=model_generations,
-    )

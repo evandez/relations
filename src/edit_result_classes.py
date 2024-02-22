@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from src import functional
 
@@ -10,8 +11,8 @@ class EditResult:
     """Edited LM output."""
 
     predicted_tokens: list[functional.PredictedToken]
-    model_logits: torch.Tensor
-    model_generations: list[str]
+    model_logits: Optional[torch.Tensor] = None
+    model_generations: Optional[list[str]] = None
 
 
 @dataclass(frozen=True, kw_only=True)
