@@ -108,7 +108,7 @@ def main(
 
             functional.save_linear_operator(
                 approx=order_1_approx,
-                file_name=sample.subject.lower().replace(" ", "_"),
+                file_name=functional.subject_to_filename(sample.subject),
                 path=layer_dir,
                 metadata={
                     "icl_examples": [example.to_dict() for example in icl_examples],

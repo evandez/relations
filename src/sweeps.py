@@ -40,8 +40,10 @@ def add_npz_extension(path: str):
 def load_o1_approxes(path: str, sample_subjects: Optional[list[str]] = None):
     approxes = []
     to_load = sample_subjects if sample_subjects is not None else os.listdir(path)
-    for cached_file in to_load:
-        file_path = add_npz_extension(os.path.join(path, cached_file))
+    for subject in to_load:
+        # if subject is passd convert to the file name format
+        subject = functional.subject_to_filename(subject)
+        file_path = add_npz_extension(os.path.join(path, subject))
         if not os.path.exists(file_path):
             raise FileNotFoundError(
                 f"cached approximation not found at path: {file_path}"
@@ -49,6 +51,23 @@ def load_o1_approxes(path: str, sample_subjects: Optional[list[str]] = None):
         approx = functional.load_cached_linear_operator(file_path=file_path)
         approxes.append(approx)
     return approxes
+
+
+def get_samples_corresponding_to_cached_file_names(
+    relation: data.Relation, cached_file_names: list[str]
+) -> list[data.RelationSample]:
+    filtered_samples = []
+    for file_name in cached_file_names:
+        found = False
+        for sample in relation.samples:
+            if functional.subject_to_filename(sample.subject) in file_name:
+                filtered_samples.append(sample)
+                found = True
+                break
+        if not found:
+            # if file_name doesn't correspond to any of the subjects, there must be a problem
+            raise ValueError(f"couldn't find a sample corresponding to {file_name}")
+    return filtered_samples
 
 
 def sweep(
@@ -128,6 +147,20 @@ def sweep(
             )
             # prompt_template = " {} :"  # bare prompt with colon
 
+        cached_samples = None
+        if o1_approxes_path is not None:
+            logger.info(f"attempting to load cached approxes from {o1_approxes_path}")
+            relation_approxes_path = os.path.join(
+                o1_approxes_path,
+                mt.name,
+                relation.name.lower().replace(" ", "_"),
+            )
+            layer_approxes_path = os.path.join(relation_approxes_path, str(h_layers[0]))
+            all_cached_files = list(os.listdir(layer_approxes_path))
+            cached_samples = get_samples_corresponding_to_cached_file_names(
+                relation=relation, cached_file_names=all_cached_files
+            )
+
         relation_result = SweepRelationResults(
             relation_name=relation.name,
             trials=[],
@@ -149,34 +182,17 @@ def sweep(
             # ICL prompt examples.
 
             if o1_approxes_path is not None:
-                logger.info(
-                    f"attempting to load cached approxes from {o1_approxes_path}"
-                )
-                relation_approxes_path = os.path.join(
-                    o1_approxes_path,
-                    mt.name,
-                    relation.name.lower().replace(" ", "_"),
-                )
-                layer_approxes_path = os.path.join(
-                    relation_approxes_path, str(h_layers[0])
-                )
-                all_cached_files = list(os.listdir(layer_approxes_path))
-                train_subj_files = random.sample(all_cached_files, n_train_samples)
-                train_approxes = load_o1_approxes(
-                    path=layer_approxes_path, sample_subjects=train_subj_files
-                )
-                train_samples = [
-                    data.RelationSample.from_dict(approx.metadata["sample"])
-                    for approx in train_approxes
-                ]
-                train_relation = relation.set(samples=train_samples)
+                assert cached_samples is not None and len(cached_samples) > 0
+                train_relation = relation.set(samples=cached_samples).split(
+                    train_size=n_train_samples
+                )[0]
                 test_relation = relation.set(
                     samples=list(set(relation.samples) - set(train_relation.samples))
                 )
-
             else:
                 train_relation, test_relation = relation.split(n_train_samples)
-                train_samples = train_relation.samples
+
+            train_samples = train_relation.samples
 
             logger.info(f"training samples: {[str(x) for x in train_samples]}")
 
@@ -242,6 +258,8 @@ def sweep(
                     samples=test_relation.samples[:limit_test_samples]
                 )
 
+            train_subjects = [x.subject for x in train_samples]
+
             test_samples = test_relation.samples
             test_subjects = [x.subject for x in test_samples]
             test_objects = [x.object for x in test_samples]
@@ -266,7 +284,7 @@ def sweep(
                         continue
                     try:
                         train_approxes = load_o1_approxes(
-                            path=layer_approxes_path, sample_subjects=train_subj_files
+                            path=layer_approxes_path, sample_subjects=train_subjects
                         )
                     except FileNotFoundError as e:
                         logger.error(

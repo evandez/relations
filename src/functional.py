@@ -930,6 +930,9 @@ from src.utils.typing import Layer
 import numpy as np
 
 
+def subject_to_filename(subject: str) -> str:
+    return subject.strip().lower().replace(" ", "_")
+
 def save_linear_operator(
     approx: Order1ApproxOutput | operators.LinearRelationOperator,
     file_name: str = "order_1_approx",
