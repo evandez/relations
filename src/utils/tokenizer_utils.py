@@ -1,4 +1,5 @@
 """Utils for interacting with huggingface tokenizers."""
+
 from contextlib import contextmanager
 from typing import Any, Iterator, Optional, Sequence, Tuple
 
@@ -47,6 +48,7 @@ def find_token_range(
         raise ValueError("cannot set return_offsets_mapping")
     if substring not in string:
         raise ValueError(f'"{substring}" not found in "{string}"')
+
     if occurrence < 0:
         # If occurrence is negative, count from the right.
         char_start = string.rindex(substring)

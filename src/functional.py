@@ -844,13 +844,20 @@ def compute_hs_and_zs(
             if abs_index >= len(inputs.input_ids):
                 break
             subject = subjects[abs_index]
+            # logger.debug("subject: ", subject)
 
             if h_layer is not None:
                 prompt = prompts[abs_index]
                 _, h_index = tokenizer_utils.find_token_range(
-                    prompt, subject, offset_mapping=offset_mapping[abs_index]
+                    prompt,
+                    subject,
+                    offset_mapping=offset_mapping[abs_index],
+                    tokenizer=mt.tokenizer,
                 )
                 h_index -= 1
+                # logger.debug(
+                #     f"{h_index=} | {mt.tokenizer.decode(inputs.input_ids[abs_index, h_index])}"
+                # )
                 if isinstance(h_layer, int) or h_layer == "emb":
                     h_by_subj[subject] = untuple_residual(
                         traces[layer_idx_to_name[h_layer]].output,

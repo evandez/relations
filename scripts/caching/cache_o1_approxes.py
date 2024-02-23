@@ -21,7 +21,7 @@ def main(
     h_layers: list[Layer],
     n_icl: int = 5,
     limit_approxes=40,
-    save_dir: str = "results/cached_o1_approxes",
+    save_dir: str = "results/cache_o1_approxes",
     seed=123456,
 ) -> None:
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -62,8 +62,10 @@ def main(
 
         for sample in samples:
             logger.info("-" * 50)
-            icl_examples = random.choices(
-                list(set(samples) - {sample}), k=min(2, len(samples) - 1)
+            icl_examples = (
+                relation.set(samples=list(set(samples) - set([sample])))
+                .split(train_size=min(n_icl, len(samples) - 1))[0]
+                .samples
             )
             prompt = functional.make_prompt(
                 mt=mt,

@@ -227,8 +227,10 @@ class JacobianIclMeanEstimator(LinearRelationEstimator):
         for sample in samples:
             # Mamba goes into recursive mode during inference. Takes too long to compute Jacobian for all examples
             cur_samples = (
-                random.choices(
-                    list(set(samples) - {sample}), k=min(2, len(samples) - 1)
+                (
+                    relation.set(samples=list(set(relation.samples) - set([sample])))
+                    .split(train_size=min(2, len(relation.samples) - 1))[0]
+                    .samples
                 )
                 if isinstance(self.mt.model, Mamba)
                 else samples

@@ -132,8 +132,9 @@ def sweep(
             relation_name=relation.name,
             trials=[],
         )
-        for trial in range(n_trials):
-            logger.info(f"begin trial {trial + 1}/{n_trials}")
+        trial_no = 0
+        while trial_no < n_trials:
+            logger.info(f"begin trial {trial_no + 1}/{n_trials}")
             exit_trial = False
 
             if len(relation.samples) <= n_train_samples:
@@ -196,6 +197,14 @@ def sweep(
                     )
                 )
 
+                unique_objects = set([x.object for x in test_relation.samples])
+                if len(unique_objects) < 2:
+                    logger.error(
+                        "Not enough unique objects in the filtered test samples to check for Faithfulness and Causality. ... Skipping."
+                    )
+                    exit_trial = True
+                    continue
+
                 # Precompute all the hs to speed things up.
                 hs_by_subj, zs_by_subj = functional.compute_hs_and_zs(
                     mt=mt,
@@ -209,7 +218,7 @@ def sweep(
             except RuntimeError as e:
                 if "out of memory" in str(e):
                     logger.error(
-                        f"OOM while filtering on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                        f"OOM while filtering on trial {trial_no + 1}/{n_trials} for {relation.name}, skipping"
                     )
                     exit_trial = True
                     continue
@@ -327,7 +336,7 @@ def sweep(
                     except RuntimeError as e:
                         if "out of memory" in str(e):
                             logger.error(
-                                f"OOM while LRE calculation on trial {trial + 1}/{n_trials} for {relation.name}, skipping"
+                                f"OOM while LRE calculation on trial {trial_no + 1}/{n_trials} for {relation.name}, skipping"
                             )
                             exit_trial = True
                             break
@@ -401,12 +410,12 @@ def sweep(
                     pred_objects = []
                     targ_objects = []
                     efficacy_successes = []
-                    for sample in test_samples:
+
+                    # only check the samples with a valid target pair.
+                    # as long as there are 2 unique objects in the filtered test samples,
+                    # set(test_target.keys()) == set(test_samples)
+                    for sample in test_targets.keys():
                         target = test_targets.get(sample)
-                        assert target is not None
-                        if target is None:
-                            logger.debug(f"cannot edit {target}, skipping")
-                            continue
 
                         z_original = zs_by_subj[sample.subject]
                         z_target = zs_by_subj[target.subject]
@@ -497,6 +506,8 @@ def sweep(
                 results=relation_result,
                 name=relation.name,
             )
+            trial_no += 1  # only increment the trial number if the trial was successful
+
         relation_result.summarize()
         relation_results.append(relation_result)
     return SweepResuts(relation_results)
