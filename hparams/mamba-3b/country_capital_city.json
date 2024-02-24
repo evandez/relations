@@ -2,7 +2,7 @@
     "model_name": "mamba-3b",
     "relation_name": "country capital city",
     "h_layer": "emb",
-    "beta": 9.166666666666666,
+    "beta": 7.166666666666667,
     "rank": null,
     "z_layer": -1,
     "h_layer_edit": 12
